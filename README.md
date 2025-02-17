@@ -49,6 +49,30 @@
 4. data/repositories : 실제 레포지토리로, 데이터 소스와 연결되어 도메인 영역으로 데이터를 제공
 5. domain/usecases : 도메인 영역에서 제공되는 비즈니스 로직으로, 데이터 영역에서 전달받은 데이터를 각 용도에 맞게 presentation 계층으로 전달
 
+6. abstract, 추상화 : 클래스 또는 메소드를 구현없이 선언만 해놓는 것
+이를 통해 어떤 기능이 필요하다는 것까지는 정의하지만, 실제 구현은 다른 곳에서 정의
+
+왜 이렇게 하냐?? 답은 관심사 분리에 있었다..
+예를 들어 getSchedule이라는 기능을 abstract를 통해 선언했다면,
+위젯 입장에서는 getSchedule이라는 함수가 있다는 것, 인자와 리턴 타입 정도만 알고 있으면 아무튼 이렇게 쓰면 되겠지.. 하면서 쓰면 된다는거.
+실제 구현은 다른 곳에서 하게 되며(implements),
+
+getSchedule <-> widget
+getScheduleImpl -> getSchedule <-> widget
+이렇게 한 레이어를 더 두게 되면 파일은 많아지고 복잡해보이지만,
+위젯 입장에서 getSchedule의 구현체(Impl)와 상관 없이 getSchedule 인터페이스만 참고하면 되며,
+getScheduleImpl이 바뀌게 되더라도 getSchedule 인터페이스가 안변하면 위젯 입장에선 알빠노이기 때문에 관심사 분리에서 유리하다.
+
+근데 자세히 공부해보려니 인터페이스랑 추상화가 좀 다른 개념인거 같다..
+✅ 인터페이스: "구현 없이 메서드 시그니처만 정의하고, implements를 통해 모든 메서드를 강제 구현해야 하는 구조"
+✅ 추상 클래스: "일부 구현이 가능하며, extends를 통해 상속받거나, implements를 통해 인터페이스처럼 사용할 수 있는 클래스"
+일단 그렇다고 함.. 
+
+추상 클래스(abstract) : 상속을 위한 부모 클래스, 오버라이드와 같이 선언된 메소드를 재구현할 수 있고, 확장할 수 있음
+인터페이스(implement) : 클래스 간 규약(프로토콜)/요구사항이라고 보면 되며, 이 클래스를 기반으로 한 클래스는 반드시 이런 메소드를 구현해야 한다..
+
+7. 의존성 주입(injectable, get_it)
+
 ## 프로젝트 주요 기능(앱)
 
 1) CreatePage : 사용자가 링크를 입력하면 -> 서버에 링크를 보내 컨텐츠를 파싱/분석하며 그동안 로딩 애니메이션 보여줌 -> 서버로부터 결과 나오면 결과를 보여주며 해당 결과를 로컬 저장소(db or hive)에 저장
@@ -57,20 +81,3 @@
 3) DetailPage : 일정에 대한 자세한 정보를 제공 -> 우측상단 수정하기 버튼을 통해 일정을 수정 가능
 4) 그 외 : 푸시알림 기능을 통해 일정이 임박했을 때(전날) 앱 푸시 알림을 제공
 
-
-
-### 비고
-
-```dart
-import 'package:your_project/data/mappers/schedule_mapper.dart';
-import 'package:your_project/domain/entities/schedule.dart';
-import 'package:your_project/data/models/schedule_model.dart';
-
-// 도메인 엔터티를 데이터 모델로 변환
-Schedule schedule = // ... 도메인 엔터티 생성
-ScheduleModel scheduleModel = ScheduleMapper.toModel(schedule);
-
-// 데이터 모델을 도메인 엔터티로 변환
-ScheduleModel model = // ... 데이터 모델 생성
-Schedule entity = ScheduleMapper.toEntity(model);
-```
