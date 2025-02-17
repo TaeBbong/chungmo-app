@@ -1,9 +1,16 @@
+import 'package:injectable/injectable.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 import '../../models/schedule/schedule_model.dart';
 
-class ScheduleLocalSource {
+abstract class ScheduleLocalSource {
+  Future<void> saveSchedule(ScheduleModel schedule);
+  Future<List<ScheduleModel>> getSchedules();
+}
+
+@LazySingleton(as: ScheduleLocalSource)
+class ScheduleLocalSourceImpl implements ScheduleLocalSource {
   static Database? _database;
 
   /// 📌 데이터베이스 초기화

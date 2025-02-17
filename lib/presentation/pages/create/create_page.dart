@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../../controllers/create_viewmodel.dart';
 
 class CreatePage extends StatelessWidget {
-  final CreateController controller = Get.put(CreateController(Get.find(), Get.find()));
+  final CreateController controller = Get.put(CreateController());
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../models/schedule/schedule_model.dart';
 
@@ -6,10 +7,11 @@ abstract class ScheduleRemoteSource {
   Future<ScheduleModel> fetchScheduleFromServer(String url);
 }
 
+@LazySingleton(as: ScheduleRemoteSource)
 class ScheduleRemoteSourceImpl implements ScheduleRemoteSource {
-  final Dio dio;
+  final Dio dio = Dio();
 
-  ScheduleRemoteSourceImpl(this.dio);
+  ScheduleRemoteSourceImpl();
 
   @override
   Future<ScheduleModel> fetchScheduleFromServer(String link) async {
