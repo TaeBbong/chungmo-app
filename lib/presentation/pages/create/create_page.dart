@@ -1,3 +1,9 @@
+/// Step 8:
+/// Pages(widget)
+/// 
+/// Presentation layer connected with controller
+
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -1,3 +1,10 @@
+/// Step 4:
+/// Model
+/// 
+/// Based on entity from domain layer,
+/// Implement data model that can be used in data sources & repositories
+
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'schedule_model.freezed.dart';

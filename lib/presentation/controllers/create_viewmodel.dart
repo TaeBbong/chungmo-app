@@ -1,3 +1,10 @@
+/// Step 7:
+/// Controllers(viewmodel)
+/// 
+/// Implementation of controllers that receive data from usecase,
+/// control states for pages
+
+
 import '../../core/di/di.dart';
 import 'package:get/get.dart';
 
