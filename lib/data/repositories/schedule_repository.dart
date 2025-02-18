@@ -41,4 +41,11 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
     );
     await localSource.saveSchedule(scheduleModel);
   }
+
+  @override
+  Future<List<Schedule>> getSchedules() async {
+    final List<ScheduleModel> schedules = await localSource.getSchedules();
+    final List<Schedule> entitySchedules = schedules.map((e) => ScheduleMapper.toEntity(e)).toList();
+    return entitySchedules;
+  }
 }
