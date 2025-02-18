@@ -73,6 +73,8 @@ getScheduleImpl이 바뀌게 되더라도 getSchedule 인터페이스가 안변�
 
 7. 의존성 주입(injectable, get_it)
 
+8. flavor를 통한 dev/staging/production 환경 분리
+
 ## 프로젝트 주요 기능(앱)
 
 1) CreatePage : 사용자가 링크를 입력하면 -> 서버에 링크를 보내 컨텐츠를 파싱/분석하며 그동안 로딩 애니메이션 보여줌 -> 서버로부터 결과 나오면 결과를 보여주며 해당 결과를 로컬 저장소(db or hive)에 저장
