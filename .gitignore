@@ -1,3 +1,6 @@
+# Env
+lib/core/env.dart
+
 # Desktop stuffs
 linux/
 macos/

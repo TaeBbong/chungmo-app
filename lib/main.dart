@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'core/di/di.dart';
+import 'core/env.dart';
 import 'presentation/pages/create/create_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
+  Env.init(Environ.local);
   runApp(const MainApp());
 }
 

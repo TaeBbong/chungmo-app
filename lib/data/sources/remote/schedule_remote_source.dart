@@ -7,6 +7,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../core/env.dart';
 import '../../models/schedule/schedule_model.dart';
 
 abstract class ScheduleRemoteSource {
@@ -21,7 +22,7 @@ class ScheduleRemoteSourceImpl implements ScheduleRemoteSource {
 
   @override
   Future<ScheduleModel> fetchScheduleFromServer(String link) async {
-    final response = await dio.post('https://api.example.com/analyze', data: {'link': link});
+    final response = await dio.post('${Env.url}/', data: {'link': link});
 
     if (response.statusCode == 200) {
       return ScheduleModel.fromJson(response.data);

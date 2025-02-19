@@ -74,6 +74,33 @@ getScheduleImpl이 바뀌게 되더라도 getSchedule 인터페이스가 안변�
 7. 의존성 주입(injectable, get_it)
 
 8. flavor를 통한 dev/staging/production 환경 분리
+임시방편 : env.dart, static을 통한 전역 변수화
+```dart
+/// core/env.dart
+/// Temporary way to seperate environments.
+/// TODO: Apply Flavor to native env
+enum Environ { local, dev, production }
+
+class Env {
+  static late final Environ env;
+  static late final String url;
+
+  static void init(Environ environment) {
+    env = environment;
+    switch (environment) {
+      case Environ.local:
+        url = 'https://local-api.example.com';
+        break;
+      case Environ.dev:
+        url = 'https://dev-api.example.com';
+        break;
+      case Environ.production:
+        url = 'https://api.example.com';
+        break;
+    }
+  }
+}
+```
 
 ## 프로젝트 주요 기능(앱)
 
