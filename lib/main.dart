@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'core/di/di.dart';
 import 'core/env.dart';
 import 'presentation/pages/create/create_page.dart';
+import 'presentation/theme/dark_theme.dart';
+import 'presentation/theme/light_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +20,9 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: CreatePage(),
+      theme: LightTheme.theme,
+      darkTheme: DarkTheme.theme,
+      themeMode: ThemeMode.system,
     );
   }
 }
