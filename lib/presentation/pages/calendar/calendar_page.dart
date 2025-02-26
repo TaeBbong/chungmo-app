@@ -4,7 +4,10 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../controllers/calendar_viewmodel.dart';
 
 class CalendarPage extends StatefulWidget {
+  const CalendarPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _CalendarPageState createState() => _CalendarPageState();
 }
 
@@ -67,6 +70,7 @@ class _CalendarPageState extends State<CalendarPage> {
             return Stack(
               alignment: Alignment.center,
               children: [
+                // TODO: 각 날짜 클릭 시 일정 리스트 보여지게끔
                 Text(date.day.toString()),
                 if (eventCounts[date] != null && eventCounts[date]!.isNotEmpty)
                   Positioned(
@@ -130,6 +134,7 @@ class _CalendarPageState extends State<CalendarPage> {
               itemCount: schedules.length,
               itemBuilder: (context, index) {
                 final schedule = schedules[index];
+                // TODO: ListTile에 담을 정보 수정
                 return ListTile(
                   title: Text('${schedule.groom} & ${schedule.bride}'),
                   subtitle: Text(schedule.date.toString()),
