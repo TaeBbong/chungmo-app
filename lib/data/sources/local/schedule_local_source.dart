@@ -13,6 +13,10 @@ import '../../models/schedule/schedule_model.dart';
 abstract class ScheduleLocalSource {
   Future<void> saveSchedule(ScheduleModel schedule);
   Future<List<ScheduleModel>> getSchedules();
+  Future<List<ScheduleModel>> searchSchedule(String query);
+  Future<List<ScheduleModel>> getSchedulesByDate(DateTime date);
+  Future<Map<DateTime, List<ScheduleModel>>> getSchedulesForMonth(DateTime date);
+
 }
 
 @LazySingleton(as: ScheduleLocalSource)
@@ -46,6 +50,7 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
   }
 
   /// 📌 일정 저장
+  @override
   Future<void> saveSchedule(ScheduleModel schedule) async {
     final db = await database;
     await db.insert(
@@ -56,6 +61,7 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
   }
 
   /// 📌 일정 불러오기
+  @override
   Future<List<ScheduleModel>> getSchedules() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query('schedules');
@@ -66,6 +72,7 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
   }
 
   /// 📌 특정 필드 기반 검색
+  @override
   Future<List<ScheduleModel>> searchSchedule(String query) async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
@@ -76,4 +83,44 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
 
     return maps.map((map) => ScheduleModel.fromJson(map)).toList();
   }
+
+  @override
+  Future<List<ScheduleModel>> getSchedulesByDate(DateTime date) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'schedules',
+      where: "date = ?",
+      whereArgs: [date.toIso8601String()],
+    );
+    return maps.map((map) => ScheduleModel.fromJson(map)).toList();
+  }
+
+  @override
+  Future<Map<DateTime, List<ScheduleModel>>> getSchedulesForMonth(DateTime date) async {
+    final db = await database;
+    final firstDayOfMonth = DateTime(date.year, date.month, 1);
+    final lastDayOfMonth = DateTime(date.year, date.month + 1, 0);
+
+    final List<Map<String, dynamic>> maps = await db.query(
+      'schedules',
+      where: "date BETWEEN ? AND ?",
+      whereArgs: [
+        firstDayOfMonth.toIso8601String(),
+        lastDayOfMonth.toIso8601String(),
+      ],
+    );
+
+    List<ScheduleModel> schedules = maps.map((map) => ScheduleModel.fromJson(map)).toList();
+    Map<DateTime, List<ScheduleModel>> schedulesByDate = {};
+
+    for (var schedule in schedules) {
+      final scheduleDate = DateTime(schedule.date.year, schedule.date.month, schedule.date.day);
+      if (!schedulesByDate.containsKey(scheduleDate)) {
+        schedulesByDate[scheduleDate] = [];
+      }
+      schedulesByDate[scheduleDate]!.add(schedule);
+    }
+    return schedulesByDate;
+  }
+
 }

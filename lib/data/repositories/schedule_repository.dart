@@ -48,4 +48,24 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
     final List<Schedule> entitySchedules = schedules.map((e) => ScheduleMapper.toEntity(e)).toList();
     return entitySchedules;
   }
+
+  @override
+  Future<List<Schedule>> getSchedulesByDate(DateTime date) async {
+    final List<ScheduleModel> schedules = await localSource.getSchedulesByDate(date);
+    final List<Schedule> entitySchedules = schedules.map((e) => ScheduleMapper.toEntity(e)).toList();
+    return entitySchedules;
+  }
+
+  @override
+Future<Map<DateTime, List<Schedule>>> getSchedulesForMonth(DateTime date) async {
+  final Map<DateTime, List<ScheduleModel>> schedulesWithDate = await localSource.getSchedulesForMonth(date);
+  final Map<DateTime, List<Schedule>> entitySchedulesWithDate = schedulesWithDate.map(
+    (key, value) => MapEntry(
+      key,
+      value.map((e) => ScheduleMapper.toEntity(e)).toList(),
+    ),
+  );
+  return entitySchedulesWithDate;
+}
+
 }

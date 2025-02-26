@@ -9,4 +9,6 @@ abstract class ScheduleRepository {
   Future<Schedule> analyzeLink(String url);
   Future<void> saveSchedule(Schedule schedule);
   Future<List<Schedule>> getSchedules();
+  Future<List<Schedule>> getSchedulesByDate(DateTime date);
+  Future<Map<DateTime, List<Schedule>>> getSchedulesForMonth(DateTime date);
 }

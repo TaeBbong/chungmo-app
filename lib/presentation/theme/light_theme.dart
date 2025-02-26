@@ -6,7 +6,7 @@ class LightTheme {
     return ThemeData(
       brightness: Brightness.light,
       primaryColor: Palette.burgundy,
-      scaffoldBackgroundColor: Palette.beige,
+      scaffoldBackgroundColor: Palette.white,
       textTheme: TextTheme(
         bodyLarge: TextStyle(color: Palette.grey900, fontSize: 18),
         bodyMedium: TextStyle(color: Palette.grey800, fontSize: 16),
