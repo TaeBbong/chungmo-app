@@ -19,6 +19,6 @@ class AppFont {
 
   TextStyle get caption => TextStyle(
         fontSize: 14,
-        color: fontColor.withOpacity(0.7),
+        color: fontColor.withValues(red: 0, blue: 0, green: 0, alpha: 0.7),
       );
 }

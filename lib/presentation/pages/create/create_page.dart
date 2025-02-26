@@ -12,6 +12,7 @@ import '../../theme/palette.dart';
 
 class CreatePage extends StatelessWidget {
   final CreateController controller = Get.put(CreateController());
+  CreatePage({super.key});
 
   @override
   Widget build(BuildContext context) {
