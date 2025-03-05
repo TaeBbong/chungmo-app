@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import 'core/di/di.dart';
 import 'core/env.dart';
+import 'presentation/pages/calendar/calendar_page.dart';
 import 'presentation/pages/create/create_page.dart';
 import 'presentation/theme/dark_theme.dart';
 import 'presentation/theme/light_theme.dart';
@@ -20,10 +21,14 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      home: CreatePage(),
       theme: LightTheme.theme,
       darkTheme: DarkTheme.theme,
       themeMode: ThemeMode.system,
+      initialRoute: '/',
+      routes: {
+        '/': (context) => CreatePage(),
+        '/calendar': (context) => CalendarPage(),
+      },
     );
   }
 }
