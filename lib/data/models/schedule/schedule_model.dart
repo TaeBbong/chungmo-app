@@ -18,6 +18,7 @@ class ScheduleModel with _$ScheduleModel {
     required String thumbnail,
     required String groom,
     required String bride,
+    // ignore: invalid_annotation_target
     @JsonKey(name: 'datetime') required String date,
     required String location,
   }) = _ScheduleModel;
