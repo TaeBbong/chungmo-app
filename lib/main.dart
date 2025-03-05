@@ -27,6 +27,7 @@ class MainApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => CreatePage(),
+        // ignore: prefer_const_constructors
         '/calendar': (context) => CalendarPage(),
       },
     );

@@ -46,6 +46,7 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
+  // TODO: Calendar 모양 및 기능 미동작 수정
   Widget _buildCalendarView() {
     return Obx(() {
       final eventCounts = _controller.schedulesWithDate.value ?? {};
