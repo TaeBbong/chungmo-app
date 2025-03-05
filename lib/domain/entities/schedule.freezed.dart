@@ -16,12 +16,11 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$Schedule {
-  String get id => throw _privateConstructorUsedError;
   String get link => throw _privateConstructorUsedError;
   String get thumbnail => throw _privateConstructorUsedError;
   String get groom => throw _privateConstructorUsedError;
   String get bride => throw _privateConstructorUsedError;
-  DateTime get date => throw _privateConstructorUsedError;
+  String get date => throw _privateConstructorUsedError;
   String get location => throw _privateConstructorUsedError;
 
   /// Create a copy of Schedule
@@ -37,12 +36,11 @@ abstract class $ScheduleCopyWith<$Res> {
       _$ScheduleCopyWithImpl<$Res, Schedule>;
   @useResult
   $Res call(
-      {String id,
-      String link,
+      {String link,
       String thumbnail,
       String groom,
       String bride,
-      DateTime date,
+      String date,
       String location});
 }
 
@@ -61,7 +59,6 @@ class _$ScheduleCopyWithImpl<$Res, $Val extends Schedule>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
     Object? link = null,
     Object? thumbnail = null,
     Object? groom = null,
@@ -70,10 +67,6 @@ class _$ScheduleCopyWithImpl<$Res, $Val extends Schedule>
     Object? location = null,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
       link: null == link
           ? _value.link
           : link // ignore: cast_nullable_to_non_nullable
@@ -93,7 +86,7 @@ class _$ScheduleCopyWithImpl<$Res, $Val extends Schedule>
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as String,
       location: null == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
@@ -111,12 +104,11 @@ abstract class _$$ScheduleImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
-      String link,
+      {String link,
       String thumbnail,
       String groom,
       String bride,
-      DateTime date,
+      String date,
       String location});
 }
 
@@ -133,7 +125,6 @@ class __$$ScheduleImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
     Object? link = null,
     Object? thumbnail = null,
     Object? groom = null,
@@ -142,10 +133,6 @@ class __$$ScheduleImplCopyWithImpl<$Res>
     Object? location = null,
   }) {
     return _then(_$ScheduleImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
       link: null == link
           ? _value.link
           : link // ignore: cast_nullable_to_non_nullable
@@ -165,7 +152,7 @@ class __$$ScheduleImplCopyWithImpl<$Res>
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as String,
       location: null == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
@@ -178,16 +165,13 @@ class __$$ScheduleImplCopyWithImpl<$Res>
 
 class _$ScheduleImpl implements _Schedule {
   const _$ScheduleImpl(
-      {required this.id,
-      required this.link,
+      {required this.link,
       required this.thumbnail,
       required this.groom,
       required this.bride,
       required this.date,
       required this.location});
 
-  @override
-  final String id;
   @override
   final String link;
   @override
@@ -197,13 +181,13 @@ class _$ScheduleImpl implements _Schedule {
   @override
   final String bride;
   @override
-  final DateTime date;
+  final String date;
   @override
   final String location;
 
   @override
   String toString() {
-    return 'Schedule(id: $id, link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location)';
+    return 'Schedule(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location)';
   }
 
   @override
@@ -211,7 +195,6 @@ class _$ScheduleImpl implements _Schedule {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ScheduleImpl &&
-            (identical(other.id, id) || other.id == id) &&
             (identical(other.link, link) || other.link == link) &&
             (identical(other.thumbnail, thumbnail) ||
                 other.thumbnail == thumbnail) &&
@@ -223,8 +206,8 @@ class _$ScheduleImpl implements _Schedule {
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, link, thumbnail, groom, bride, date, location);
+  int get hashCode =>
+      Object.hash(runtimeType, link, thumbnail, groom, bride, date, location);
 
   /// Create a copy of Schedule
   /// with the given fields replaced by the non-null parameter values.
@@ -237,16 +220,13 @@ class _$ScheduleImpl implements _Schedule {
 
 abstract class _Schedule implements Schedule {
   const factory _Schedule(
-      {required final String id,
-      required final String link,
+      {required final String link,
       required final String thumbnail,
       required final String groom,
       required final String bride,
-      required final DateTime date,
+      required final String date,
       required final String location}) = _$ScheduleImpl;
 
-  @override
-  String get id;
   @override
   String get link;
   @override
@@ -256,7 +236,7 @@ abstract class _Schedule implements Schedule {
   @override
   String get bride;
   @override
-  DateTime get date;
+  String get date;
   @override
   String get location;
 

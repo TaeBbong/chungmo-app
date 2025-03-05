@@ -4,6 +4,8 @@
 /// CRUD based data source implement with remote/local source
 
 
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
@@ -25,7 +27,7 @@ class ScheduleRemoteSourceImpl implements ScheduleRemoteSource {
     final response = await dio.post('${Env.url}/', data: {'link': link});
 
     if (response.statusCode == 200) {
-      return ScheduleModel.fromJson(response.data);
+      return ScheduleModel.fromJson(jsonDecode(response.data)..addAll({'link': link}));
     } else {
       throw Exception('[-] Failed to fetch data from server');
     }

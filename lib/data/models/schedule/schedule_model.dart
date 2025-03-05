@@ -14,12 +14,11 @@ part 'schedule_model.g.dart';
 @freezed
 class ScheduleModel with _$ScheduleModel {
   factory ScheduleModel({
-    required String id,
     required String link,
     required String thumbnail,
     required String groom,
     required String bride,
-    required DateTime date,
+    @JsonKey(name: 'datetime') required String date,
     required String location,
   }) = _ScheduleModel;
 

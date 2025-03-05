@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'core/di/di.dart';
 import 'core/env.dart';
@@ -18,7 +19,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       home: CreatePage(),
       theme: LightTheme.theme,
       darkTheme: DarkTheme.theme,

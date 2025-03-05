@@ -4,7 +4,6 @@ import '../../domain/entities/schedule.dart';
 class ScheduleMapper {
   static ScheduleModel toModel(Schedule entity) {
     return ScheduleModel(
-      id: entity.id,
       link: entity.link,
       thumbnail: entity.thumbnail,
       groom: entity.groom,
@@ -16,7 +15,6 @@ class ScheduleMapper {
 
   static Schedule toEntity(ScheduleModel model) {
     return Schedule(
-      id: model.id,
       link: model.link,
       thumbnail: model.thumbnail,
       groom: model.groom,

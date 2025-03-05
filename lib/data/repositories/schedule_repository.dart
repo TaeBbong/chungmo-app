@@ -31,7 +31,6 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
   @override
   Future<void> saveSchedule(Schedule schedule) async {
     final scheduleModel = ScheduleModel(
-      id: schedule.id,
       link: schedule.link,
       thumbnail: schedule.thumbnail,
       groom: schedule.groom,

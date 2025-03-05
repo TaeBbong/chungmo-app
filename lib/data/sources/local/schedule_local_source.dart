@@ -38,13 +38,20 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE schedules (
-            id TEXT PRIMARY KEY,
-            link TEXT,
+            link TEXT PRIMARY KEY,
+            thumbnail TEXT,
             groom TEXT,
             bride TEXT,
-            date TEXT
+            datetime TEXT,
+            location TEXT
           )
         ''');
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        // if (oldVersion < 2) {
+        //   // UPDATE: 새로운 필드 추가 ('thumbnail')
+        //   await db.execute('ALTER TABLE schedules ADD COLUMN thumbnail TEXT;');
+        // }
       },
     );
   }
@@ -89,7 +96,7 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       'schedules',
-      where: "date = ?",
+      where: "datetime = ?",
       whereArgs: [date.toIso8601String()],
     );
     return maps.map((map) => ScheduleModel.fromJson(map)).toList();
@@ -103,7 +110,7 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
 
     final List<Map<String, dynamic>> maps = await db.query(
       'schedules',
-      where: "date BETWEEN ? AND ?",
+      where: "datetime BETWEEN ? AND ?",
       whereArgs: [
         firstDayOfMonth.toIso8601String(),
         lastDayOfMonth.toIso8601String(),
@@ -114,7 +121,7 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     Map<DateTime, List<ScheduleModel>> schedulesByDate = {};
 
     for (var schedule in schedules) {
-      final scheduleDate = DateTime(schedule.date.year, schedule.date.month, schedule.date.day);
+      final scheduleDate = DateTime.parse(schedule.date);
       if (!schedulesByDate.containsKey(scheduleDate)) {
         schedulesByDate[scheduleDate] = [];
       }

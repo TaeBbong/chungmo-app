@@ -20,12 +20,12 @@ ScheduleModel _$ScheduleModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ScheduleModel {
-  String get id => throw _privateConstructorUsedError;
   String get link => throw _privateConstructorUsedError;
   String get thumbnail => throw _privateConstructorUsedError;
   String get groom => throw _privateConstructorUsedError;
   String get bride => throw _privateConstructorUsedError;
-  DateTime get date => throw _privateConstructorUsedError;
+  @JsonKey(name: 'datetime')
+  String get date => throw _privateConstructorUsedError;
   String get location => throw _privateConstructorUsedError;
 
   /// Serializes this ScheduleModel to a JSON map.
@@ -45,12 +45,11 @@ abstract class $ScheduleModelCopyWith<$Res> {
       _$ScheduleModelCopyWithImpl<$Res, ScheduleModel>;
   @useResult
   $Res call(
-      {String id,
-      String link,
+      {String link,
       String thumbnail,
       String groom,
       String bride,
-      DateTime date,
+      @JsonKey(name: 'datetime') String date,
       String location});
 }
 
@@ -69,7 +68,6 @@ class _$ScheduleModelCopyWithImpl<$Res, $Val extends ScheduleModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
     Object? link = null,
     Object? thumbnail = null,
     Object? groom = null,
@@ -78,10 +76,6 @@ class _$ScheduleModelCopyWithImpl<$Res, $Val extends ScheduleModel>
     Object? location = null,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
       link: null == link
           ? _value.link
           : link // ignore: cast_nullable_to_non_nullable
@@ -101,7 +95,7 @@ class _$ScheduleModelCopyWithImpl<$Res, $Val extends ScheduleModel>
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as String,
       location: null == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
@@ -119,12 +113,11 @@ abstract class _$$ScheduleModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
-      String link,
+      {String link,
       String thumbnail,
       String groom,
       String bride,
-      DateTime date,
+      @JsonKey(name: 'datetime') String date,
       String location});
 }
 
@@ -141,7 +134,6 @@ class __$$ScheduleModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
     Object? link = null,
     Object? thumbnail = null,
     Object? groom = null,
@@ -150,10 +142,6 @@ class __$$ScheduleModelImplCopyWithImpl<$Res>
     Object? location = null,
   }) {
     return _then(_$ScheduleModelImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
       link: null == link
           ? _value.link
           : link // ignore: cast_nullable_to_non_nullable
@@ -173,7 +161,7 @@ class __$$ScheduleModelImplCopyWithImpl<$Res>
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as String,
       location: null == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
@@ -186,19 +174,16 @@ class __$$ScheduleModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ScheduleModelImpl implements _ScheduleModel {
   _$ScheduleModelImpl(
-      {required this.id,
-      required this.link,
+      {required this.link,
       required this.thumbnail,
       required this.groom,
       required this.bride,
-      required this.date,
+      @JsonKey(name: 'datetime') required this.date,
       required this.location});
 
   factory _$ScheduleModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$ScheduleModelImplFromJson(json);
 
-  @override
-  final String id;
   @override
   final String link;
   @override
@@ -208,13 +193,14 @@ class _$ScheduleModelImpl implements _ScheduleModel {
   @override
   final String bride;
   @override
-  final DateTime date;
+  @JsonKey(name: 'datetime')
+  final String date;
   @override
   final String location;
 
   @override
   String toString() {
-    return 'ScheduleModel(id: $id, link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location)';
+    return 'ScheduleModel(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location)';
   }
 
   @override
@@ -222,7 +208,6 @@ class _$ScheduleModelImpl implements _ScheduleModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ScheduleModelImpl &&
-            (identical(other.id, id) || other.id == id) &&
             (identical(other.link, link) || other.link == link) &&
             (identical(other.thumbnail, thumbnail) ||
                 other.thumbnail == thumbnail) &&
@@ -235,8 +220,8 @@ class _$ScheduleModelImpl implements _ScheduleModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, link, thumbnail, groom, bride, date, location);
+  int get hashCode =>
+      Object.hash(runtimeType, link, thumbnail, groom, bride, date, location);
 
   /// Create a copy of ScheduleModel
   /// with the given fields replaced by the non-null parameter values.
@@ -256,19 +241,16 @@ class _$ScheduleModelImpl implements _ScheduleModel {
 
 abstract class _ScheduleModel implements ScheduleModel {
   factory _ScheduleModel(
-      {required final String id,
-      required final String link,
+      {required final String link,
       required final String thumbnail,
       required final String groom,
       required final String bride,
-      required final DateTime date,
+      @JsonKey(name: 'datetime') required final String date,
       required final String location}) = _$ScheduleModelImpl;
 
   factory _ScheduleModel.fromJson(Map<String, dynamic> json) =
       _$ScheduleModelImpl.fromJson;
 
-  @override
-  String get id;
   @override
   String get link;
   @override
@@ -278,7 +260,8 @@ abstract class _ScheduleModel implements ScheduleModel {
   @override
   String get bride;
   @override
-  DateTime get date;
+  @JsonKey(name: 'datetime')
+  String get date;
   @override
   String get location;
 
