@@ -51,77 +51,125 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget _buildCalendarView() {
     return Obx(() {
       final eventCounts = _controller.schedulesWithDate.value ?? {};
-      return TableCalendar(
-        locale: 'ko_KR',
-        firstDay: DateTime(2000, 1, 1),
-        lastDay: DateTime(2100, 12, 31),
-        focusedDay: _focusedDay,
-        selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-        onDaySelected: (selectedDay, focusedDay) {
-          setState(() {
-            _focusedDay = selectedDay;
-            _selectedDay = selectedDay;
-          });
-        },
-        onPageChanged: (focusedDay) {
-          setState(() {
-            _focusedDay = focusedDay;
-            _controller.getSchedulesForMonth(focusedDay);
-          });
-        },
-        calendarFormat: CalendarFormat.month,
-        availableCalendarFormats: const {
-          CalendarFormat.month: 'Month',
-        },
-        daysOfWeekHeight: 40,
-        headerStyle: const HeaderStyle(
-          formatButtonVisible: false,
-          titleCentered: true,
-        ),
-        calendarStyle: CalendarStyle(
-          outsideDaysVisible: false,
-          todayDecoration: BoxDecoration(color: Palette.beige, shape: BoxShape.circle,),
-          selectedDecoration: BoxDecoration(color: Palette.beige, shape: BoxShape.circle,),
-          defaultTextStyle: const TextStyle(fontSize: 16),
-          selectedTextStyle: const TextStyle(fontSize: 16, color: Colors.black),
-          todayTextStyle: const TextStyle(fontSize: 16, color: Colors.black),
-        ),
-        calendarBuilders: CalendarBuilders(
-          defaultBuilder: (context, date, events) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(date.day.toString()),
-                const SizedBox(height: 4),
-              ],
-            );
-          },
-          markerBuilder: (context, date, events) {
-            final normalizedDate = DateTime(date.year, date.month, date.day);
-            final eventCount = eventCounts[normalizedDate]?.length ?? 0;
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: eventCount > 0
-                  ? List.generate(
-                      eventCount > 5 ? 5 : eventCount,
-                      (index) => Container(
-                        width: 6,
-                        height: 6,
-                        margin: const EdgeInsets.symmetric(horizontal: 2),
-                        decoration: const BoxDecoration(
-                          color: Colors.blue,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    )
-                  : [const SizedBox(height: 6)],
-            );
-          }
-        ),
+      print('[*] ${eventCounts}');
+      print(
+          '[*] ${DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day)} ${eventCounts[DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day)]}');
+      return Column(
+        children: [
+          TableCalendar(
+            locale: 'ko_KR',
+            firstDay: DateTime(2000, 1, 1),
+            lastDay: DateTime(2100, 12, 31),
+            focusedDay: _focusedDay,
+            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+            onDaySelected: (selectedDay, focusedDay) {
+              setState(() {
+                _focusedDay = selectedDay;
+                _selectedDay = selectedDay;
+              });
+            },
+            onPageChanged: (focusedDay) {
+              setState(() {
+                _focusedDay = focusedDay;
+                _controller.getSchedulesForMonth(focusedDay);
+              });
+            },
+            calendarFormat: CalendarFormat.month,
+            availableCalendarFormats: const {
+              CalendarFormat.month: 'Month',
+            },
+            daysOfWeekHeight: 40,
+            headerStyle: const HeaderStyle(
+              formatButtonVisible: false,
+              titleCentered: true,
+            ),
+            calendarStyle: CalendarStyle(
+              outsideDaysVisible: false,
+              todayDecoration: BoxDecoration(
+                color: Palette.beige,
+                shape: BoxShape.circle,
+              ),
+              selectedDecoration: BoxDecoration(
+                color: Palette.beige,
+                shape: BoxShape.circle,
+              ),
+              defaultTextStyle: const TextStyle(fontSize: 16),
+              selectedTextStyle:
+                  const TextStyle(fontSize: 16, color: Colors.black),
+              todayTextStyle:
+                  const TextStyle(fontSize: 16, color: Colors.black),
+            ),
+            calendarBuilders: CalendarBuilders(
+              defaultBuilder: (context, date, events) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(date.day.toString()),
+                    const SizedBox(height: 4),
+                  ],
+                );
+              },
+              markerBuilder: (context, date, events) {
+                final normalizedDate =
+                    DateTime(date.year, date.month, date.day);
+                final eventCount = eventCounts[normalizedDate]?.length ?? 0;
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: eventCount > 0
+                      ? List.generate(
+                          eventCount > 5 ? 5 : eventCount,
+                          (index) => Container(
+                            width: 6,
+                            height: 6,
+                            margin: const EdgeInsets.symmetric(horizontal: 2),
+                            decoration: const BoxDecoration(
+                              color: Colors.blue,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        )
+                      : [const SizedBox(height: 6)],
+                );
+              },
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          eventCounts[DateTime(_selectedDay.year, _selectedDay.month,
+                      _selectedDay.day)] !=
+                  null
+              ? Expanded(
+                  child: ListView.builder(
+                      itemCount: eventCounts[DateTime(_selectedDay.year,
+                              _selectedDay.month, _selectedDay.day)]!
+                          .length,
+                      itemBuilder: (context, index) {
+                        final schedule = eventCounts[DateTime(_selectedDay.year,
+                            _selectedDay.month, _selectedDay.day)]![index];
+                        return Container(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 12.0,
+                              vertical: 4.0,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            child:
+                                // TODO: ListTile에 담을 정보 수정
+                                ListTile(
+                              title:
+                                  Text('${schedule.groom} & ${schedule.bride}'),
+                              subtitle: Text(schedule.date.toString()),
+                            ));
+                      }),
+                )
+              : Container(),
+        ],
       );
     });
   }
-
 
   Widget _buildListView() {
     return Column(
@@ -134,18 +182,21 @@ class _CalendarPageState extends State<CalendarPage> {
               IconButton(
                 icon: const Icon(Icons.chevron_left),
                 onPressed: () {
-                  _focusedDay = DateTime(_focusedDay.year, _focusedDay.month - 1, 1);
+                  _focusedDay =
+                      DateTime(_focusedDay.year, _focusedDay.month - 1, 1);
                   _controller.getSchedulesForMonth(_focusedDay);
                 },
               ),
               Text(
                 "${_focusedDay.year % 100}년 ${_focusedDay.month}월",
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               IconButton(
                 icon: const Icon(Icons.chevron_right),
                 onPressed: () {
-                  _focusedDay = DateTime(_focusedDay.year, _focusedDay.month + 1, 1);
+                  _focusedDay =
+                      DateTime(_focusedDay.year, _focusedDay.month + 1, 1);
                   _controller.getSchedulesForMonth(_focusedDay);
                 },
               ),
