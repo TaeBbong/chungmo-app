@@ -88,33 +88,35 @@ class _CalendarPageState extends State<CalendarPage> {
         ),
         calendarBuilders: CalendarBuilders(
           defaultBuilder: (context, date, events) {
-            final normalizedDate = DateTime(date.year, date.month, date.day);
-            final eventCount = eventCounts[normalizedDate]?.length ?? 0;
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(date.day.toString()),
                 const SizedBox(height: 4),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: eventCount > 0
-                      ? List.generate(
-                          eventCount > 5 ? 5 : eventCount,
-                          (index) => Container(
-                            width: 6,
-                            height: 6,
-                            margin: const EdgeInsets.symmetric(horizontal: 2),
-                            decoration: const BoxDecoration(
-                              color: Colors.blue,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                        )
-                      : [const SizedBox(height: 6)],
-                ),
               ],
             );
           },
+          markerBuilder: (context, date, events) {
+            final normalizedDate = DateTime(date.year, date.month, date.day);
+            final eventCount = eventCounts[normalizedDate]?.length ?? 0;
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: eventCount > 0
+                  ? List.generate(
+                      eventCount > 5 ? 5 : eventCount,
+                      (index) => Container(
+                        width: 6,
+                        height: 6,
+                        margin: const EdgeInsets.symmetric(horizontal: 2),
+                        decoration: const BoxDecoration(
+                          color: Colors.blue,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    )
+                  : [const SizedBox(height: 6)],
+            );
+          }
         ),
       );
     });
