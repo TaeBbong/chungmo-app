@@ -68,12 +68,13 @@ class _CalendarPageState extends State<CalendarPage> {
         calendarFormat: CalendarFormat.month,
         calendarBuilders: CalendarBuilders(
           defaultBuilder: (context, date, events) {
+            final normalizedDate = DateTime(date.year, date.month, date.day);
             return Stack(
               alignment: Alignment.center,
               children: [
                 // TODO: 각 날짜 클릭 시 일정 리스트 보여지게끔
                 Text(date.day.toString()),
-                if (eventCounts[date] != null && eventCounts[date]!.isNotEmpty)
+                if (eventCounts[normalizedDate] != null && eventCounts[normalizedDate]!.isNotEmpty)
                   Positioned(
                     bottom: 4,
                     child: Container(
@@ -83,7 +84,7 @@ class _CalendarPageState extends State<CalendarPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        '${eventCounts[date]!.length}',
+                        '${eventCounts[normalizedDate]!.length}',
                         style: const TextStyle(color: Colors.white, fontSize: 12),
                       ),
                     ),

@@ -122,10 +122,11 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
 
     for (var schedule in schedules) {
       final scheduleDate = DateTime.parse(schedule.date);
-      if (!schedulesByDate.containsKey(scheduleDate)) {
-        schedulesByDate[scheduleDate] = [];
+      final normalizedDate = DateTime(scheduleDate.year, scheduleDate.month, scheduleDate.day);
+      if (!schedulesByDate.containsKey(normalizedDate)) {
+        schedulesByDate[normalizedDate] = [];
       }
-      schedulesByDate[scheduleDate]!.add(schedule);
+      schedulesByDate[normalizedDate]!.add(schedule);
     }
     return schedulesByDate;
   }
