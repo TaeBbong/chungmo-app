@@ -49,11 +49,10 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildCalendarView() {
+    final normalizedSelectedDay =
+        DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day);
     return Obx(() {
       final eventCounts = _controller.schedulesWithDate.value ?? {};
-      print('[*] ${eventCounts}');
-      print(
-          '[*] ${DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day)} ${eventCounts[DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day)]}');
       return Column(
         children: [
           TableCalendar(
@@ -86,7 +85,7 @@ class _CalendarPageState extends State<CalendarPage> {
             calendarStyle: CalendarStyle(
               outsideDaysVisible: false,
               todayDecoration: BoxDecoration(
-                color: Palette.beige,
+                color: Palette.beige100,
                 shape: BoxShape.circle,
               ),
               selectedDecoration: BoxDecoration(
@@ -122,8 +121,8 @@ class _CalendarPageState extends State<CalendarPage> {
                             width: 6,
                             height: 6,
                             margin: const EdgeInsets.symmetric(horizontal: 2),
-                            decoration: const BoxDecoration(
-                              color: Colors.blue,
+                            decoration: BoxDecoration(
+                              color: Palette.burgundy,
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -136,17 +135,13 @@ class _CalendarPageState extends State<CalendarPage> {
           const SizedBox(
             height: 10,
           ),
-          eventCounts[DateTime(_selectedDay.year, _selectedDay.month,
-                      _selectedDay.day)] !=
-                  null
+          eventCounts[normalizedSelectedDay] != null
               ? Expanded(
                   child: ListView.builder(
-                      itemCount: eventCounts[DateTime(_selectedDay.year,
-                              _selectedDay.month, _selectedDay.day)]!
-                          .length,
+                      itemCount: eventCounts[normalizedSelectedDay]!.length,
                       itemBuilder: (context, index) {
-                        final schedule = eventCounts[DateTime(_selectedDay.year,
-                            _selectedDay.month, _selectedDay.day)]![index];
+                        final schedule =
+                            eventCounts[normalizedSelectedDay]![index];
                         return Container(
                             margin: const EdgeInsets.symmetric(
                               horizontal: 12.0,

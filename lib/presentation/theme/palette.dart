@@ -4,6 +4,7 @@ abstract class Palette {
   /// Chromatic color
   static Color burgundy = const Color(0xFF800020); // 버건디
   static Color beige = const Color(0xFFF5E6CC); // 베이지
+  static Color beige100 = const Color(0xFFFAF1E3);
 
   /// Achromatic color
   static Color white = const Color(0xFFFFFFFF);
