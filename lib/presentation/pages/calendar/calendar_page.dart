@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../controllers/calendar_viewmodel.dart';
+import '../../theme/palette.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
@@ -15,6 +16,7 @@ class _CalendarPageState extends State<CalendarPage> {
   final CalendarController _controller = Get.put(CalendarController());
   bool _isCalendarView = true;
   DateTime _focusedDay = DateTime.now();
+  DateTime _selectedDay = DateTime.now();
 
   @override
   void initState() {
@@ -26,7 +28,7 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("${_focusedDay.year % 100}년 ${_focusedDay.month}월"),
+        title: const Text("월간 스케줄"),
         actions: [
           IconButton(
             icon: Icon(_isCalendarView ? Icons.list : Icons.calendar_month),
@@ -46,17 +48,19 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-  // TODO: Calendar 모양 및 기능 미동작 수정
   Widget _buildCalendarView() {
     return Obx(() {
       final eventCounts = _controller.schedulesWithDate.value ?? {};
       return TableCalendar(
+        locale: 'ko_KR',
         firstDay: DateTime(2000, 1, 1),
         lastDay: DateTime(2100, 12, 31),
         focusedDay: _focusedDay,
+        selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
         onDaySelected: (selectedDay, focusedDay) {
           setState(() {
             _focusedDay = selectedDay;
+            _selectedDay = selectedDay;
           });
         },
         onPageChanged: (focusedDay) {
@@ -66,29 +70,48 @@ class _CalendarPageState extends State<CalendarPage> {
           });
         },
         calendarFormat: CalendarFormat.month,
+        availableCalendarFormats: const {
+          CalendarFormat.month: 'Month',
+        },
+        daysOfWeekHeight: 40,
+        headerStyle: const HeaderStyle(
+          formatButtonVisible: false,
+          titleCentered: true,
+        ),
+        calendarStyle: CalendarStyle(
+          outsideDaysVisible: false,
+          todayDecoration: BoxDecoration(color: Palette.beige, shape: BoxShape.circle,),
+          selectedDecoration: BoxDecoration(color: Palette.beige, shape: BoxShape.circle,),
+          defaultTextStyle: const TextStyle(fontSize: 16),
+          selectedTextStyle: const TextStyle(fontSize: 16, color: Colors.black),
+          todayTextStyle: const TextStyle(fontSize: 16, color: Colors.black),
+        ),
         calendarBuilders: CalendarBuilders(
           defaultBuilder: (context, date, events) {
             final normalizedDate = DateTime(date.year, date.month, date.day);
-            return Stack(
-              alignment: Alignment.center,
+            final eventCount = eventCounts[normalizedDate]?.length ?? 0;
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // TODO: 각 날짜 클릭 시 일정 리스트 보여지게끔
                 Text(date.day.toString()),
-                if (eventCounts[normalizedDate] != null && eventCounts[normalizedDate]!.isNotEmpty)
-                  Positioned(
-                    bottom: 4,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        '${eventCounts[normalizedDate]!.length}',
-                        style: const TextStyle(color: Colors.white, fontSize: 12),
-                      ),
-                    ),
-                  ),
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: eventCount > 0
+                      ? List.generate(
+                          eventCount > 5 ? 5 : eventCount,
+                          (index) => Container(
+                            width: 6,
+                            height: 6,
+                            margin: const EdgeInsets.symmetric(horizontal: 2),
+                            decoration: const BoxDecoration(
+                              color: Colors.blue,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        )
+                      : [const SizedBox(height: 6)],
+                ),
               ],
             );
           },
@@ -96,6 +119,7 @@ class _CalendarPageState extends State<CalendarPage> {
       );
     });
   }
+
 
   Widget _buildListView() {
     return Column(
