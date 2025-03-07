@@ -13,6 +13,7 @@ class ScheduleListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final String formatDate = DateConverter.generateKrDate(schedule.date);
 
+    // TODO: ListTile 탭해서 DetailPage로 Route
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       decoration: BoxDecoration(

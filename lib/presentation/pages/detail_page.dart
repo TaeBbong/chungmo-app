@@ -1,4 +1,4 @@
-// TODO: 일정 편집 기능(폼) / 축의금 금액 입력(db 필드 추가 및 업데이트)
+// TODO: 일정 편집 기능(폼) / 축의금 금액 입력(db 필드 추가 및 업데이트) / 링크 필드도 넣기
 
 import 'package:flutter/material.dart';
 
