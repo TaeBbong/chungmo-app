@@ -12,9 +12,25 @@ import 'package:lottie/lottie.dart';
 import '../controllers/create_viewmodel.dart';
 import '../theme/palette.dart';
 
-class CreatePage extends StatelessWidget {
+class CreatePage extends StatefulWidget {
+  const CreatePage({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _CreatePageState createState() => _CreatePageState();
+}
+
+class _CreatePageState extends State<CreatePage> {
   final CreateController controller = Get.put(CreateController());
-  CreatePage({super.key});
+  final TextEditingController _textEditingController = TextEditingController();
+
+  void _onSubmit() {
+    String userInput = _textEditingController.text.trim();
+    if (userInput.isNotEmpty) {
+      controller.analyzeLink(userInput);
+      _textEditingController.clear();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +138,8 @@ class CreatePage extends StatelessWidget {
             ],
           ),
           child: TextField(
-            onSubmitted: controller.analyzeLink,
+            controller: _textEditingController,
+            onSubmitted: (value) => _onSubmit(),
             style: const TextStyle(fontSize: 14),
             decoration: InputDecoration(
               hintText: '링크 입력...',
@@ -135,9 +152,7 @@ class CreatePage extends StatelessWidget {
               ),
               suffixIcon: IconButton(
                 icon: const Icon(Icons.send, size: 20),
-                onPressed: () {
-                  controller.analyzeLink;
-                },
+                onPressed: _onSubmit,
               ),
             ),
           ),
