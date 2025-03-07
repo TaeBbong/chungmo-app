@@ -3,12 +3,12 @@
 ///
 /// Presentation layer connected with controller
 
+import 'package:chungmo/presentation/widgets/schedule_detail_column.dart';
 import 'package:dotlottie_loader/dotlottie_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../core/utils/date_converter.dart';
 import '../../controllers/create_viewmodel.dart';
 import '../../theme/palette.dart';
 
@@ -75,44 +75,9 @@ class CreatePage extends StatelessWidget {
                 );
               }
               return controller.schedule.value?.link != null
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 200,
-                          height: 200,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                  controller.schedule.value!.thumbnail),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          '${controller.schedule.value!.groom} & ${controller.schedule.value!.bride}',
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          DateConverter.generateKrDate(
-                              controller.schedule.value!.date),
-                          style:
-                              const TextStyle(fontSize: 14, color: Colors.grey),
-                        ),
-                        SizedBox(
-                          width: 250,
-                          child: Text(
-                            controller.schedule.value!.location,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 14),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
+                  ? ScheduleDetailColumn(
+                      schedule: controller.schedule.value!,
+                      extraChildren: [
                         const SizedBox(height: 12),
                         Text(
                           '분석 결과를 일정에 추가할게요.',
