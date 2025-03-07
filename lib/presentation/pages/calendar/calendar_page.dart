@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../controllers/calendar_viewmodel.dart';
 import '../../theme/palette.dart';
+import '../../widgets/schedule_list_tile.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
@@ -142,22 +143,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       itemBuilder: (context, index) {
                         final schedule =
                             eventCounts[normalizedSelectedDay]![index];
-                        return Container(
-                            margin: const EdgeInsets.symmetric(
-                              horizontal: 12.0,
-                              vertical: 4.0,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border.all(),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            child:
-                                // TODO: ListTile에 담을 정보 수정
-                                ListTile(
-                              title:
-                                  Text('${schedule.groom} & ${schedule.bride}'),
-                              subtitle: Text(schedule.date.toString()),
-                            ));
+                        return ScheduleListTile(schedule: schedule);
                       }),
                 )
               : Container(),
@@ -208,11 +194,7 @@ class _CalendarPageState extends State<CalendarPage> {
               itemCount: schedules.length,
               itemBuilder: (context, index) {
                 final schedule = schedules[index];
-                // TODO: ListTile에 담을 정보 수정
-                return ListTile(
-                  title: Text('${schedule.groom} & ${schedule.bride}'),
-                  subtitle: Text(schedule.date.toString()),
-                );
+                return ScheduleListTile(schedule: schedule);
               },
             );
           }),
