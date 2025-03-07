@@ -6,6 +6,7 @@ import 'core/di/di.dart';
 import 'core/env.dart';
 import 'presentation/pages/calendar_page.dart';
 import 'presentation/pages/create_page.dart';
+import 'presentation/pages/detail_page.dart';
 import 'presentation/theme/dark_theme.dart';
 import 'presentation/theme/light_theme.dart';
 
@@ -39,6 +40,7 @@ class MainApp extends StatelessWidget {
         '/': (context) => CreatePage(),
         // ignore: prefer_const_constructors
         '/calendar': (context) => CalendarPage(),
+        '/detail': (context) => DetailPage(),
       },
     );
   }
