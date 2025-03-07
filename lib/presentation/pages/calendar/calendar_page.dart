@@ -29,7 +29,11 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("월간 스케줄"),
+        title: Text(
+          '일정',
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.bold, color: Palette.black),
+        ),
         actions: [
           IconButton(
             icon: Icon(_isCalendarView ? Icons.list : Icons.calendar_month),

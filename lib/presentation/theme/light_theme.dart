@@ -13,8 +13,8 @@ class LightTheme {
         bodySmall: TextStyle(color: Palette.grey700, fontSize: 14),
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: Palette.burgundy,
-        foregroundColor: Palette.white,
+        backgroundColor: Palette.white,
+        foregroundColor: Palette.burgundy,
         elevation: 0,
       ),
       buttonTheme: ButtonThemeData(

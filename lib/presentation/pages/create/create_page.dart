@@ -1,8 +1,7 @@
 /// Step 8:
 /// Pages(widget)
-/// 
+///
 /// Presentation layer connected with controller
-
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,7 +20,7 @@ class CreatePage extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.calendar_today),
           onPressed: () {
-            Get.toNamed('/calendar'); // CalendarPage로 이동
+            Get.toNamed('/calendar');
           },
         ),
         actions: [
@@ -39,13 +38,19 @@ class CreatePage extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      body: Stack(
         children: [
+          const Positioned(
+            top: 10,
+            left: 30,
+            child: Text('홈',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ),
           Center(
             child: Obx(() {
               if (controller.isLoading.value) {
                 return const Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     CircularProgressIndicator(),
                     SizedBox(height: 16),
@@ -55,7 +60,8 @@ class CreatePage extends StatelessWidget {
               }
               return Text(
                 controller.schedule.value?.link ?? '링크를 입력하세요.',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               );
             }),
           ),
@@ -69,7 +75,8 @@ class CreatePage extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(red: 0, blue: 0, green: 0, alpha: 0.1),
+                color: Colors.black
+                    .withValues(red: 0, blue: 0, green: 0, alpha: 0.1),
                 blurRadius: 10,
                 spreadRadius: 1,
               ),
@@ -81,7 +88,8 @@ class CreatePage extends StatelessWidget {
             decoration: InputDecoration(
               hintText: '링크 입력...',
               hintStyle: TextStyle(fontSize: 14, color: Palette.grey500),
-              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide.none,
