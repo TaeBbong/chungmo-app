@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
-import '../../controllers/calendar_viewmodel.dart';
-import '../../theme/palette.dart';
-import '../../widgets/schedule_list_tile.dart';
+import '../controllers/calendar_viewmodel.dart';
+import '../theme/palette.dart';
+import '../widgets/schedule_list_tile.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});

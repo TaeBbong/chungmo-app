@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../controllers/create_viewmodel.dart';
-import '../../theme/palette.dart';
+import '../controllers/create_viewmodel.dart';
+import '../theme/palette.dart';
 
 class CreatePage extends StatelessWidget {
   final CreateController controller = Get.put(CreateController());

@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 
 import 'core/di/di.dart';
 import 'core/env.dart';
-import 'presentation/pages/calendar/calendar_page.dart';
-import 'presentation/pages/create/create_page.dart';
+import 'presentation/pages/calendar_page.dart';
+import 'presentation/pages/create_page.dart';
 import 'presentation/theme/dark_theme.dart';
 import 'presentation/theme/light_theme.dart';
 
@@ -27,9 +27,9 @@ class MainApp extends StatelessWidget {
       darkTheme: DarkTheme.theme,
       themeMode: ThemeMode.system,
       localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-        ],
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
       supportedLocales: const [
         Locale('ko', 'KR'),
         Locale('en', 'US'),
