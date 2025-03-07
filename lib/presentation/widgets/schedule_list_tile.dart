@@ -34,15 +34,15 @@ class ScheduleListTile extends StatelessWidget {
               formatDate,
               style: const TextStyle(fontSize: 12),
             ),
-            SizedBox(
-              width: 250,
-              child: Text(
-                schedule.location,
-                style: const TextStyle(fontSize: 12),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
+            // SizedBox(
+            //   width: 250,
+            //   child: Text(
+            //     schedule.location,
+            //     style: const TextStyle(fontSize: 12),
+            //     maxLines: 2,
+            //     overflow: TextOverflow.ellipsis,
+            //   ),
+            // ),
           ],
         ),
       ),
