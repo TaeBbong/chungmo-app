@@ -49,11 +49,35 @@ class _CreatePageState extends State<CreatePage> {
               // TODO: 알림 관련 동작 추가(다가올 일정 local push notification)
             },
           ),
-          IconButton(
+          PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
-            onPressed: () {
-              // TODO: 더보기 버튼 동작 추가(about, license, privacy)
+            onSelected: (value) {
+              switch (value) {
+                case 'terms':
+                  Get.toNamed('/terms'); // TODO: urllaunch 이용 약관 페이지 이동
+                  break;
+                case 'privacy':
+                  Get.toNamed('/privacy'); // TODO: urllaunch 개인정보 처리방침 페이지 이동
+                  break;
+                case 'about':
+                  Get.toNamed('/about'); // TODO: urllaunch 앱 정보 페이지 이동
+                  break;
+              }
             },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'terms',
+                child: Text('이용 약관'),
+              ),
+              const PopupMenuItem(
+                value: 'privacy',
+                child: Text('개인정보 처리방침'),
+              ),
+              const PopupMenuItem(
+                value: 'about',
+                child: Text('앱 정보'),
+              ),
+            ],
           ),
         ],
       ),
