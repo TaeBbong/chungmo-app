@@ -30,13 +30,13 @@ class CreatePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.notifications),
             onPressed: () {
-              // 알림 관련 동작 추가
+              // TODO: 알림 관련 동작 추가(다가올 일정 local push notification)
             },
           ),
           IconButton(
             icon: const Icon(Icons.more_vert),
             onPressed: () {
-              // 더보기 버튼 동작 추가
+              // TODO: 더보기 버튼 동작 추가(about, license, privacy)
             },
           ),
         ],
