@@ -3,9 +3,12 @@
 ///
 /// Presentation layer connected with controller
 
+import 'package:dotlottie_loader/dotlottie_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 
+import '../../../core/utils/date_converter.dart';
 import '../../controllers/create_viewmodel.dart';
 import '../../theme/palette.dart';
 
@@ -49,20 +52,91 @@ class CreatePage extends StatelessWidget {
           Center(
             child: Obx(() {
               if (controller.isLoading.value) {
-                return const Column(
+                return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16),
-                    Text('링크 분석 중...', style: TextStyle(fontSize: 16)),
+                    SizedBox(
+                      width: 250,
+                      height: 250,
+                      child: DotLottieLoader.fromAsset(
+                          'assets/images/analyze.lottie', frameBuilder:
+                              (BuildContext ctx, DotLottie? dotlottie) {
+                        if (dotlottie != null) {
+                          return Lottie.memory(
+                              dotlottie.animations.values.single);
+                        } else {
+                          return const CircularProgressIndicator();
+                        }
+                      }),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text('링크 분석 중...', style: TextStyle(fontSize: 16)),
                   ],
                 );
               }
-              return Text(
-                controller.schedule.value?.link ?? '링크를 입력하세요.',
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              );
+              return controller.schedule.value?.link != null
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 200,
+                          height: 200,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: NetworkImage(
+                                  controller.schedule.value!.thumbnail),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          '${controller.schedule.value!.groom} & ${controller.schedule.value!.bride}',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          DateConverter.generateKrDate(
+                              controller.schedule.value!.date),
+                          style:
+                              const TextStyle(fontSize: 14, color: Colors.grey),
+                        ),
+                        SizedBox(
+                          width: 250,
+                          child: Text(
+                            controller.schedule.value!.location,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontSize: 14),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          '분석 결과를 일정에 추가할게요.',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Palette.burgundy),
+                        ),
+                      ],
+                    )
+                  : const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '모바일 청첩장을 첨부해주세요.',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'AI가 자동으로 일정을 분석해드릴게요.',
+                          style: TextStyle(fontSize: 14),
+                        )
+                      ],
+                    );
             }),
           ),
         ],

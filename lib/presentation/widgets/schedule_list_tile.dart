@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/utils/constants.dart';
+import '../../core/utils/date_converter.dart';
 import '../../domain/entities/schedule.dart';
 import '../theme/palette.dart';
 
@@ -11,10 +11,7 @@ class ScheduleListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DateTime dateTime = DateTime.parse(schedule.date);
-    String formatDate =
-        '${dateTime.month}월 ${dateTime.day}일(${Constants.weekdays[dateTime.weekday - 1]}) ${dateTime.hour}시';
-    if (dateTime.minute != 0) formatDate += '${dateTime.minute}분';
+    final String formatDate = DateConverter.generateKrDate(schedule.date);
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
