@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 
 import 'core/di/di.dart';
 import 'core/env.dart';
+import 'presentation/pages/about_page.dart';
+import 'presentation/pages/abouts/developer_info_page.dart';
 import 'presentation/pages/calendar_page.dart';
 import 'presentation/pages/create_page.dart';
 import 'presentation/pages/detail_page.dart';
@@ -42,6 +44,8 @@ class MainApp extends StatelessWidget {
         // ignore: prefer_const_constructors
         '/calendar': (context) => CalendarPage(),
         '/detail': (context) => DetailPage(),
+        '/about': (context) => AboutPage(),
+        '/about/developer_info': (context) => DeveloperInfoPage(),
       },
     );
   }
