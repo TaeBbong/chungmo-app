@@ -111,6 +111,48 @@ class _DetailPageState extends State<DetailPage> {
     }
   }
 
+  void _showDeleteDialog() {
+    Get.dialog(
+      AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12), // 둥근 테두리 추가
+        ),
+        title: const Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: Colors.red),
+            SizedBox(width: 8),
+            Text("삭제 확인"),
+          ],
+        ),
+        content: const Text(
+          "일정을 삭제하시겠습니까?",
+          style: TextStyle(fontSize: 16),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text("취소", style: TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red, // 삭제 버튼 색상
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            onPressed: () {
+              controller.deleteSchedule(controller.schedule.value!.link);
+              Get.snackbar('성공', '일정이 삭제되었습니다.');
+              Get.offNamedUntil(
+                  '/calendar', (route) => route.settings.name == '/');
+            },
+            child: const Text("삭제", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -126,12 +168,14 @@ class _DetailPageState extends State<DetailPage> {
               icon: Icon(editMode ? Icons.save : Icons.edit),
               onPressed: editMode ? saveChanges : toggleEditMode,
             ),
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () {
-                // TODO: 삭제 기능 추가 (ex. 다이얼로그 띄우기)
-              },
-            ),
+            editMode
+                ? Container()
+                : IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () {
+                      _showDeleteDialog();
+                    },
+                  ),
           ],
         ),
         body: Center(
@@ -221,26 +265,30 @@ class _DetailPageState extends State<DetailPage> {
               const SizedBox(height: 12),
 
               // 🔗 링크 열기 / 수정 불가
-              GestureDetector(
-                onTap: () async {
-                  final Uri url = Uri.parse(controller.schedule.value!.link);
-                  if (await canLaunchUrl(url)) {
-                    await launchUrl(url, mode: LaunchMode.externalApplication);
-                  }
-                },
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '🔗 링크 열기',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.blue,
+              editMode
+                  ? Container()
+                  : GestureDetector(
+                      onTap: () async {
+                        final Uri url =
+                            Uri.parse(controller.schedule.value!.link);
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url,
+                              mode: LaunchMode.externalApplication);
+                        }
+                      },
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            '🔗 링크 열기',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
 
               const SizedBox(height: 8),
 

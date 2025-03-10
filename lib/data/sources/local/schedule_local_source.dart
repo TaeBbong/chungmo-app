@@ -17,6 +17,7 @@ abstract class ScheduleLocalSource {
   Future<Map<DateTime, List<ScheduleModel>>> getSchedulesForMonth(
       DateTime date);
   Future<void> editSchedule(ScheduleModel schedule);
+  Future<void> deleteScheduleByLink(String link);
 }
 
 @LazySingleton(as: ScheduleLocalSource)
@@ -144,5 +145,16 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
       schedulesByDate[normalizedDate]!.add(schedule);
     }
     return schedulesByDate;
+  }
+
+  @override
+  Future<void> deleteScheduleByLink(String link) async {
+    final db = await database;
+    await db.delete(
+      'schedules',
+      where: "link = ?",
+      whereArgs: [link],
+    );
+    return;
   }
 }

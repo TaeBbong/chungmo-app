@@ -12,4 +12,5 @@ abstract class ScheduleRepository {
   Future<List<Schedule>> getSchedulesByDate(DateTime date);
   Future<Map<DateTime, List<Schedule>>> getSchedulesForMonth(DateTime date);
   Future<void> editSchedule(Schedule schedule);
+  Future<void> deleteSchedule(String link);
 }

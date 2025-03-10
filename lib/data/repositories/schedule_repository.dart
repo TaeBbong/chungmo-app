@@ -83,4 +83,9 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
         location: schedule.location);
     await localSource.editSchedule(scheduleModel);
   }
+
+  @override
+  Future<void> deleteSchedule(String link) async {
+    await localSource.deleteScheduleByLink(link);
+  }
 }
