@@ -23,6 +23,7 @@ class _CalendarPageState extends State<CalendarPage> {
   void initState() {
     super.initState();
     _controller.getSchedulesForMonth(_focusedDay);
+    _controller.getAllSchedules();
   }
 
   @override
@@ -156,51 +157,51 @@ class _CalendarPageState extends State<CalendarPage> {
     });
   }
 
-  // TODO: 월간단위 목록이 아닌 전체 목록, 지난 일정과 앞으로를 구분
   Widget _buildListView() {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.chevron_left),
-                onPressed: () {
-                  _focusedDay =
-                      DateTime(_focusedDay.year, _focusedDay.month - 1, 1);
-                  _controller.getSchedulesForMonth(_focusedDay);
-                },
-              ),
-              Text(
-                "${_focusedDay.year % 100}년 ${_focusedDay.month}월",
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              IconButton(
-                icon: const Icon(Icons.chevron_right),
-                onPressed: () {
-                  _focusedDay =
-                      DateTime(_focusedDay.year, _focusedDay.month + 1, 1);
-                  _controller.getSchedulesForMonth(_focusedDay);
-                },
-              ),
-            ],
-          ),
-        ),
         Expanded(
           child: Obx(() {
-            final schedules = _controller.getAllSchedulesForMonth();
-            if (schedules.isEmpty) {
+            if (_controller.allSchedules.value!.isEmpty) {
               return const Center(child: Text("일정이 없습니다."));
             }
-            return ListView.builder(
-              itemCount: schedules.length,
-              itemBuilder: (context, index) {
-                final schedule = schedules[index];
-                return ScheduleListTile(schedule: schedule);
-              },
+
+            final now = DateTime.now();
+            final pastSchedules = _controller.allSchedules.value!
+                .where((s) => DateTime.parse(s.date).isBefore(now))
+                .toList(); // `.toList()`로 새로운 리스트 생성
+
+            final upcomingSchedules = _controller.allSchedules.value!
+                .where((s) => !DateTime.parse(s.date).isBefore(now))
+                .toList();
+
+            return ListView(
+              children: [
+                if (upcomingSchedules.isNotEmpty) ...[
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      "앞으로의 일정",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  ...upcomingSchedules
+                      .map((schedule) => ScheduleListTile(schedule: schedule)),
+                ],
+                if (pastSchedules.isNotEmpty) ...[
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      "지난 일정",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  ...pastSchedules
+                      .map((schedule) => ScheduleListTile(schedule: schedule)),
+                ],
+              ],
             );
           }),
         ),
