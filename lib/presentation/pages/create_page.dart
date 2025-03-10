@@ -158,7 +158,10 @@ class _CreatePageState extends State<CreatePage> {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: controller.resetState,
+                    onPressed: () {
+                      controller.resetState();
+                      Get.snackbar('성공', '일정을 캘린더에 저장했습니다.');
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Palette.burgundy,
                       foregroundColor: Colors.white,
