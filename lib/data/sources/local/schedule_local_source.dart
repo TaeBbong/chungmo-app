@@ -1,8 +1,7 @@
 /// Step 5:
 /// Data source
-/// 
+///
 /// CRUD based data source implement with remote/local source
-
 
 import 'package:injectable/injectable.dart';
 import 'package:sqflite/sqflite.dart';
@@ -15,8 +14,9 @@ abstract class ScheduleLocalSource {
   Future<List<ScheduleModel>> getSchedules();
   Future<List<ScheduleModel>> searchSchedule(String query);
   Future<List<ScheduleModel>> getSchedulesByDate(DateTime date);
-  Future<Map<DateTime, List<ScheduleModel>>> getSchedulesForMonth(DateTime date);
-
+  Future<Map<DateTime, List<ScheduleModel>>> getSchedulesForMonth(
+      DateTime date);
+  Future<void> editSchedule(ScheduleModel schedule);
 }
 
 @LazySingleton(as: ScheduleLocalSource)
@@ -67,6 +67,18 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     );
   }
 
+  @override
+  Future<void> editSchedule(ScheduleModel schedule) async {
+    final db = await database;
+    await db.update(
+      'schedules',
+      schedule.toJson(),
+      where: 'link = ?',
+      whereArgs: [schedule.link],
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
   /// 📌 일정 불러오기
   @override
   Future<List<ScheduleModel>> getSchedules() async {
@@ -103,7 +115,8 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
   }
 
   @override
-  Future<Map<DateTime, List<ScheduleModel>>> getSchedulesForMonth(DateTime date) async {
+  Future<Map<DateTime, List<ScheduleModel>>> getSchedulesForMonth(
+      DateTime date) async {
     final db = await database;
     final firstDayOfMonth = DateTime(date.year, date.month, 1);
     final lastDayOfMonth = DateTime(date.year, date.month + 1, 0);
@@ -117,12 +130,14 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
       ],
     );
 
-    List<ScheduleModel> schedules = maps.map((map) => ScheduleModel.fromJson(map)).toList();
+    List<ScheduleModel> schedules =
+        maps.map((map) => ScheduleModel.fromJson(map)).toList();
     Map<DateTime, List<ScheduleModel>> schedulesByDate = {};
 
     for (var schedule in schedules) {
       final scheduleDate = DateTime.parse(schedule.date);
-      final normalizedDate = DateTime(scheduleDate.year, scheduleDate.month, scheduleDate.day);
+      final normalizedDate =
+          DateTime(scheduleDate.year, scheduleDate.month, scheduleDate.day);
       if (!schedulesByDate.containsKey(normalizedDate)) {
         schedulesByDate[normalizedDate] = [];
       }
@@ -130,5 +145,4 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     }
     return schedulesByDate;
   }
-
 }

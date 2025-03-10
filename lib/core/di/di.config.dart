@@ -17,6 +17,8 @@ import 'package:chungmo/data/sources/remote/schedule_remote_source.dart'
 import 'package:chungmo/domain/repositories/schedule_repository.dart' as _i561;
 import 'package:chungmo/domain/usecases/schedule/analyze_link_usecase.dart'
     as _i26;
+import 'package:chungmo/domain/usecases/schedule/edit_schedule_usecase.dart'
+    as _i542;
 import 'package:chungmo/domain/usecases/schedule/list_schedules_by_date_usecase.dart'
     as _i602;
 import 'package:chungmo/domain/usecases/schedule/list_schedules_usecase.dart'
@@ -48,6 +50,8 @@ extension GetItInjectableX on _i174.GetIt {
             ));
     gh.factory<_i26.AnalyzeLinkUsecase>(
         () => _i26.AnalyzeLinkUsecase(gh<_i561.ScheduleRepository>()));
+    gh.factory<_i542.EditScheduleUsecase>(
+        () => _i542.EditScheduleUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i602.ListSchedulesByDateUsecase>(
         () => _i602.ListSchedulesByDateUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i407.ListSchedulesUsecase>(
