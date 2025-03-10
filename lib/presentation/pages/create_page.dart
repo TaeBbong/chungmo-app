@@ -8,7 +8,9 @@ import 'package:dotlottie_loader/dotlottie_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/utils/constants.dart';
 import '../controllers/create_viewmodel.dart';
 import '../theme/palette.dart';
 
@@ -51,13 +53,16 @@ class _CreatePageState extends State<CreatePage> {
           ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
-            onSelected: (value) {
+            onSelected: (value) async {
               switch (value) {
                 case 'terms':
                   Get.toNamed('/terms'); // TODO: urllaunch 이용 약관 페이지 이동
                   break;
                 case 'privacy':
-                  Get.toNamed('/privacy'); // TODO: urllaunch 개인정보 처리방침 페이지 이동
+                  final Uri url = Uri.parse(Constants.privacy_url);
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                  }
                   break;
                 case 'about':
                   Get.toNamed('/about'); // TODO: urllaunch 앱 정보 페이지 이동
