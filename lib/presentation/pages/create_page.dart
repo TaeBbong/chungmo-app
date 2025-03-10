@@ -151,42 +151,68 @@ class _CreatePageState extends State<CreatePage> {
           ),
         ],
       ),
-      bottomSheet: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black
-                    .withValues(red: 0, blue: 0, green: 0, alpha: 0.1),
-                blurRadius: 10,
-                spreadRadius: 1,
-              ),
-            ],
-          ),
-          child: TextField(
-            controller: _textEditingController,
-            onSubmitted: (value) => _onSubmit(),
-            style: const TextStyle(fontSize: 14),
-            decoration: InputDecoration(
-              hintText: '링크 입력...',
-              hintStyle: TextStyle(fontSize: 14, color: Palette.grey500),
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.send, size: 20),
-                onPressed: _onSubmit,
-              ),
-            ),
-          ),
-        ),
-      ),
+      bottomSheet: Obx(() {
+        return controller.schedule.value?.link != null
+            ? Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: controller.resetState,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Palette.burgundy,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      "확인",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              )
+            : Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black
+                            .withValues(red: 0, blue: 0, green: 0, alpha: 0.1),
+                        blurRadius: 10,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    controller: _textEditingController,
+                    onSubmitted: (value) => _onSubmit(),
+                    style: const TextStyle(fontSize: 14),
+                    decoration: InputDecoration(
+                      hintText: '링크 입력...',
+                      hintStyle:
+                          TextStyle(fontSize: 14, color: Palette.grey500),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 16),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide.none,
+                      ),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.send, size: 20),
+                        onPressed: _onSubmit,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+      }),
     );
   }
 }

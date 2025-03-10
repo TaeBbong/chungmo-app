@@ -26,4 +26,9 @@ class CreateController extends GetxController {
 
     await saveScheduleUseCase.execute(schedule.value!);
   }
+
+  void resetState() {
+    isLoading.value = false;
+    schedule.value = null;
+  }
 }
