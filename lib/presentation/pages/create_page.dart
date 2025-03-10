@@ -56,7 +56,10 @@ class _CreatePageState extends State<CreatePage> {
             onSelected: (value) async {
               switch (value) {
                 case 'terms':
-                  Get.toNamed('/terms'); // TODO: urllaunch 이용 약관 페이지 이동
+                  final Uri url = Uri.parse(Constants.termsUrl);
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                  }
                   break;
                 case 'privacy':
                   final Uri url = Uri.parse(Constants.privacyUrl);
