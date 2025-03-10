@@ -201,39 +201,55 @@ class _DetailPageState extends State<DetailPage> {
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Flexible(
-                          child: TextField(
-                            controller: groomController,
-                            decoration: customInputDecoration(labelText: '신랑'),
-                            style: const TextStyle(fontSize: 16),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0), // 양쪽 여백 추가
+                            child: TextField(
+                              controller: groomController,
+                              decoration:
+                                  customInputDecoration(labelText: '신랑'),
+                              style: const TextStyle(fontSize: 16),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Flexible(
-                          child: TextField(
-                            controller: brideController,
-                            decoration: customInputDecoration(labelText: '신부'),
-                            style: const TextStyle(fontSize: 16),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0), // 양쪽 여백 추가
+                            child: TextField(
+                              controller: brideController,
+                              decoration:
+                                  customInputDecoration(labelText: '신부'),
+                              style: const TextStyle(fontSize: 16),
+                            ),
                           ),
                         ),
                       ],
                     )
                   : Text(
-                      '👰‍♀️ ${controller.schedule.value!.bride} & 🤵‍♂️ ${controller.schedule.value!.groom}',
+                      '🤵‍♂️ ${controller.schedule.value!.groom} & 👰‍♀️ ${controller.schedule.value!.bride}',
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     ),
 
-              const SizedBox(height: 8),
+              const SizedBox(height: 16),
 
               editMode
-                  ? TextButton(
-                      onPressed: () =>
-                          _selectDateTime(context), // ✅ 날짜 + 시간 선택 함수
-                      child: Text(
-                        '📅 ${DateConverter.generateKrDate(selectedDate!.toIso8601String())} (수정)',
-                        style:
-                            const TextStyle(fontSize: 14, color: Colors.blue),
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: TextField(
+                        readOnly: true, // 직접 입력 방지
+                        onTap: () => _selectDateTime(context), // ✅ 날짜 선택 함수
+                        controller: TextEditingController(
+                          text: DateConverter.generateKrDate(
+                              selectedDate!.toIso8601String()),
+                        ), // 날짜를 TextField에 표시
+                        decoration: customInputDecoration(
+                          labelText: '날짜',
+                        ),
+                        style: const TextStyle(fontSize: 16),
                       ),
                     )
                   : Text(
@@ -241,14 +257,19 @@ class _DetailPageState extends State<DetailPage> {
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                     ),
 
+              const SizedBox(height: 16),
+
               // 🏡 장소 (수정 가능)
               editMode
-                  ? Flexible(
-                      // width: 250,
-                      child: TextField(
-                        controller: locationController,
-                        decoration: customInputDecoration(labelText: '장소'),
-                        style: const TextStyle(fontSize: 16),
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Flexible(
+                        // width: 250,
+                        child: TextField(
+                          controller: locationController,
+                          decoration: customInputDecoration(labelText: '장소'),
+                          style: const TextStyle(fontSize: 16),
+                        ),
                       ),
                     )
                   : SizedBox(
