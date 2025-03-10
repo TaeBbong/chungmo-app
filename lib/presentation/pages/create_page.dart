@@ -59,7 +59,7 @@ class _CreatePageState extends State<CreatePage> {
                   Get.toNamed('/terms'); // TODO: urllaunch 이용 약관 페이지 이동
                   break;
                 case 'privacy':
-                  final Uri url = Uri.parse(Constants.privacy_url);
+                  final Uri url = Uri.parse(Constants.privacyUrl);
                   if (await canLaunchUrl(url)) {
                     await launchUrl(url, mode: LaunchMode.externalApplication);
                   }
