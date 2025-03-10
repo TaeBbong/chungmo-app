@@ -32,7 +32,6 @@ class AboutPage extends StatelessWidget {
                 title: const Text('앱 업데이트'),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
-                  // TODO: 앱 업데이트 체크 로직 추가
                   Get.snackbar('알림', '최신 버전입니다.');
                 },
               ),

@@ -44,8 +44,8 @@ class MainApp extends StatelessWidget {
         // ignore: prefer_const_constructors
         '/calendar': (context) => CalendarPage(),
         '/detail': (context) => DetailPage(),
-        '/about': (context) => AboutPage(),
-        '/about/developer_info': (context) => DeveloperInfoPage(),
+        '/about': (context) => const AboutPage(),
+        '/about/developer_info': (context) => const DeveloperInfoPage(),
       },
     );
   }

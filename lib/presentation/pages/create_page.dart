@@ -68,7 +68,7 @@ class _CreatePageState extends State<CreatePage> {
                   }
                   break;
                 case 'about':
-                  Get.toNamed('/about'); // TODO: urllaunch 앱 정보 페이지 이동
+                  Get.toNamed('/about');
                   break;
               }
             },
