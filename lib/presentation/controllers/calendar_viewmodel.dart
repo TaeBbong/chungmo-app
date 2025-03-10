@@ -25,7 +25,7 @@ class CalendarController extends GetxController {
 
   @override
   void onClose() {
-    isLoading.close(); // 리소스 정리
+    isLoading.close();
     schedulesWithDate.close();
     super.onClose();
   }

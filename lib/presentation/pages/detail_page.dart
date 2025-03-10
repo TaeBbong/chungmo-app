@@ -16,7 +16,7 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
-  bool editMode = false; // ✏️ 수정 모드 상태
+  bool editMode = false;
 
   final DetailController controller = Get.put(DetailController());
   final TextEditingController groomController = TextEditingController();
@@ -115,7 +115,7 @@ class _DetailPageState extends State<DetailPage> {
     Get.dialog(
       AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12), // 둥근 테두리 추가
+          borderRadius: BorderRadius.circular(12),
         ),
         title: const Row(
           children: [
@@ -135,7 +135,7 @@ class _DetailPageState extends State<DetailPage> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red, // 삭제 버튼 색상
+              backgroundColor: Colors.red,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -203,8 +203,8 @@ class _DetailPageState extends State<DetailPage> {
                       children: [
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0), // 양쪽 여백 추가
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             child: TextField(
                               controller: groomController,
                               decoration:
@@ -216,8 +216,8 @@ class _DetailPageState extends State<DetailPage> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0), // 양쪽 여백 추가
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             child: TextField(
                               controller: brideController,
                               decoration:
@@ -240,8 +240,8 @@ class _DetailPageState extends State<DetailPage> {
                   ? Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: TextField(
-                        readOnly: true, // 직접 입력 방지
-                        onTap: () => _selectDateTime(context), // ✅ 날짜 선택 함수
+                        readOnly: true,
+                        onTap: () => _selectDateTime(context),
                         controller: TextEditingController(
                           text: DateConverter.generateKrDate(
                               selectedDate!.toIso8601String()),
@@ -264,7 +264,6 @@ class _DetailPageState extends State<DetailPage> {
                   ? Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Flexible(
-                        // width: 250,
                         child: TextField(
                           controller: locationController,
                           decoration: customInputDecoration(labelText: '장소'),

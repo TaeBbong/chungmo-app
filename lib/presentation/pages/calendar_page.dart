@@ -169,7 +169,7 @@ class _CalendarPageState extends State<CalendarPage> {
             final now = DateTime.now();
             final pastSchedules = _controller.allSchedules.value!
                 .where((s) => DateTime.parse(s.date).isBefore(now))
-                .toList(); // `.toList()`로 새로운 리스트 생성
+                .toList();
 
             final upcomingSchedules = _controller.allSchedules.value!
                 .where((s) => !DateTime.parse(s.date).isBefore(now))
