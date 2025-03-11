@@ -6,8 +6,10 @@
 import 'package:chungmo/presentation/widgets/schedule_detail_column.dart';
 import 'package:dotlottie_loader/dotlottie_loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/utils/constants.dart';
@@ -25,6 +27,35 @@ class CreatePage extends StatefulWidget {
 class _CreatePageState extends State<CreatePage> {
   final CreateController controller = Get.put(CreateController());
   final TextEditingController _textEditingController = TextEditingController();
+  final FlutterLocalNotificationsPlugin _localNotify =
+      FlutterLocalNotificationsPlugin();
+
+  @override
+  void initState() {
+    super.initState();
+    _getPermissions();
+    _initNotification();
+  }
+
+  void _getPermissions() async {
+    if (await Permission.notification.isDenied &&
+        !await Permission.notification.isPermanentlyDenied) {
+      await [Permission.notification].request();
+    }
+  }
+
+  void _initNotification() async {
+    AndroidInitializationSettings android =
+        const AndroidInitializationSettings("@mipmap/ic_launcher");
+    DarwinInitializationSettings ios = const DarwinInitializationSettings(
+      requestSoundPermission: false,
+      requestBadgePermission: false,
+      requestAlertPermission: false,
+    );
+    InitializationSettings settings =
+        InitializationSettings(android: android, iOS: ios);
+    await _localNotify.initialize(settings);
+  }
 
   void _onSubmit() {
     String userInput = _textEditingController.text.trim();
@@ -32,6 +63,24 @@ class _CreatePageState extends State<CreatePage> {
       controller.analyzeLink(userInput);
       _textEditingController.clear();
     }
+  }
+
+  void _testNotify() async {
+    NotificationDetails details = const NotificationDetails(
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
+      android: AndroidNotificationDetails(
+        "1",
+        "test",
+        importance: Importance.max,
+        priority: Priority.high,
+      ),
+    );
+
+    await _localNotify.show(1, "title", "body", details);
   }
 
   @override
@@ -49,6 +98,7 @@ class _CreatePageState extends State<CreatePage> {
             icon: const Icon(Icons.notifications),
             onPressed: () {
               // TODO: 알림 관련 동작 추가(다가올 일정 local push notification)
+              _testNotify();
             },
           ),
           PopupMenuButton<String>(
