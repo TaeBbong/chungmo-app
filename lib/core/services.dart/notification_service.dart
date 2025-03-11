@@ -72,7 +72,6 @@ class NotificationService {
   }
 
   static Future<void> checkAndSendNotifications() async {
-    print('[+] checkAndSendNotification');
     final ListSchedulesUsecase listSchedulesUsecase =
         getIt<ListSchedulesUsecase>();
 
