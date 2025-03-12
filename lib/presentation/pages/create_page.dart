@@ -54,8 +54,8 @@ class _CreatePageState extends State<CreatePage> {
           IconButton(
             icon: const Icon(Icons.notifications),
             onPressed: () {
-              // TODO: 알림 관련 동작 추가(다가올 일정 local push notification)
-              NotificationService.checkAndSendNotifications();
+              // TODO: Remove test button
+              NotificationService.checkScheduledNotifications();
             },
           ),
           PopupMenuButton<String>(

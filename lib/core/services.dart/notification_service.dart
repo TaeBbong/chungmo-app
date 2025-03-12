@@ -1,11 +1,10 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 import '../../domain/entities/schedule.dart';
-import '../../domain/usecases/schedule/list_schedules_usecase.dart';
-import '../di/di.dart';
-
-const String dailyCheckTask = "daily_schedule_check";
+import '../utils/url_hash.dart';
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin _localNotifyPlugin =
@@ -29,30 +28,11 @@ class NotificationService {
     InitializationSettings settings =
         InitializationSettings(android: android, iOS: ios);
     await _localNotifyPlugin.initialize(settings);
+    tz.initializeTimeZones();
   }
 
-  static void testNotify() async {
-    NotificationDetails details = const NotificationDetails(
-      iOS: DarwinNotificationDetails(
-        presentAlert: true,
-        presentBadge: true,
-        presentSound: true,
-      ),
-      android: AndroidNotificationDetails(
-        "1",
-        "test",
-        importance: Importance.max,
-        priority: Priority.high,
-      ),
-    );
-
-    await _localNotifyPlugin.show(1, "title", "body", details);
-  }
-
-  static Future<void> showNotify({
-    required int id,
-    required String title,
-    required String body,
+  static Future<void> notifyScheduleAtPreviousDay({
+    required Schedule schedule,
   }) async {
     NotificationDetails details = const NotificationDetails(
       iOS: DarwinNotificationDetails(
@@ -68,28 +48,48 @@ class NotificationService {
       ),
     );
 
-    await _localNotifyPlugin.show(id, title, body, details);
+    final int id = await UrlHash.hashUrlToInt(schedule.link);
+
+    await _localNotifyPlugin.zonedSchedule(
+      id,
+      "청모",
+      "내일 ${schedule.groom} & ${schedule.bride}님의 결혼식이 있습니다!",
+      _timeZoneSetting(scheduleDate: schedule.date, hour: 11, minute: 0),
+      details,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+    );
   }
 
-  static Future<void> checkAndSendNotifications() async {
-    final ListSchedulesUsecase listSchedulesUsecase =
-        getIt<ListSchedulesUsecase>();
+  static Future<void> cancelNotifySchedule({required String link}) async {
+    final int id = await UrlHash.hashUrlToInt(link);
+    await _localNotifyPlugin.cancel(id);
+  }
 
-    final List<Schedule> schedules = await listSchedulesUsecase.execute();
-    final DateTime now = DateTime.now();
-    final DateTime tomorrow = now.add(const Duration(days: 1));
+  static tz.TZDateTime _timeZoneSetting({
+    required String scheduleDate,
+    required int hour,
+    required int minute,
+  }) {
+    tz.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation('Asia/Seoul'));
+    DateTime dateTime = DateTime.parse(scheduleDate);
+    DateTime previousDay = dateTime.subtract(const Duration(days: 1));
+    tz.TZDateTime target = tz.TZDateTime(tz.getLocation('Asia/Seoul'),
+        previousDay.year, previousDay.month, previousDay.day, hour, minute);
+    return target;
+  }
 
-    for (var schedule in schedules) {
-      final DateTime eventDate = DateTime.parse(schedule.date);
-      if (eventDate.year == tomorrow.year &&
-          eventDate.month == tomorrow.month &&
-          eventDate.day == tomorrow.day) {
-        await NotificationService.showNotify(
-          id: 0,
-          title: "청모",
-          body: "내일 ${schedule.groom} & ${schedule.bride}님의 결혼식이 있습니다!",
-        );
-      }
+  static Future<void> checkScheduledNotifications() async {
+    List<PendingNotificationRequest> pendingNotifications =
+        await _localNotifyPlugin.pendingNotificationRequests();
+
+    print("📢 Total Scheduled Notifications: ${pendingNotifications.length}");
+
+    for (var notification in pendingNotifications) {
+      print(
+          "🔔 ID: ${notification.id}, Title: ${notification.title}, Body: ${notification.body}");
     }
   }
 }

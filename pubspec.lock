@@ -509,6 +509,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  murmur3:
+    dependency: "direct main"
+    description:
+      name: murmur3
+      sha256: dae85e6df94a31534f6cc8c079e68e93b6b6c2e7165512cf923bca676f130c62
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   package_config:
     dependency: transitive
     description:

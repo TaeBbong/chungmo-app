@@ -6,6 +6,7 @@
 
 import 'package:injectable/injectable.dart';
 
+import '../../core/services.dart/notification_service.dart';
 import '../../domain/entities/schedule.dart';
 import '../../domain/repositories/schedule_repository.dart';
 import '../mapper/schedule_mapper.dart';
@@ -38,6 +39,7 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
       location: schedule.location,
     );
     await localSource.saveSchedule(scheduleModel);
+    await NotificationService.notifyScheduleAtPreviousDay(schedule: schedule);
   }
 
   @override
@@ -82,10 +84,13 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
         date: schedule.date,
         location: schedule.location);
     await localSource.editSchedule(scheduleModel);
+    await NotificationService.cancelNotifySchedule(link: schedule.link);
+    await NotificationService.notifyScheduleAtPreviousDay(schedule: schedule);
   }
 
   @override
   Future<void> deleteSchedule(String link) async {
     await localSource.deleteScheduleByLink(link);
+    await NotificationService.cancelNotifySchedule(link: link);
   }
 }
