@@ -6,6 +6,8 @@ import '../../core/utils/date_converter.dart';
 import '../controllers/detail_viewmodel.dart';
 
 // TODO: 날짜 포맷 통일 및 확인
+// TODO: 다크모드에서 테마 적용 이슈(edit, ListTile) => 수동 적용 스타일 최대한 없애고 테마로 통합
+// TODO: 수정 후 저장 눌렀을 때 제대로 라우팅 안되는 상황 발생
 class DetailPage extends StatefulWidget {
   DetailPage({super.key});
   final Schedule schedule = Get.arguments as Schedule;
