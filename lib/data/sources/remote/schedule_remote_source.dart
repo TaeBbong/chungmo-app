@@ -1,8 +1,7 @@
 /// Step 5:
 /// Data source
-/// 
+///
 /// CRUD based data source implement with remote/local source
-
 
 import 'dart:convert';
 
@@ -24,11 +23,15 @@ class ScheduleRemoteSourceImpl implements ScheduleRemoteSource {
 
   @override
   Future<ScheduleModel> fetchScheduleFromServer(String link) async {
-    final response = await dio.post('${Env.url}/', data: {'link': link});
-
-    if (response.statusCode == 200) {
-      return ScheduleModel.fromJson(jsonDecode(response.data)..addAll({'link': link}));
-    } else {
+    try {
+      final response = await dio.post('${Env.url}/', data: {'link': link});
+      if (response.statusCode == 200) {
+        return ScheduleModel.fromJson(
+            jsonDecode(response.data)..addAll({'link': link}));
+      } else {
+        throw Exception('[-] Failed to fetch data from server');
+      }
+    } catch (e) {
       throw Exception('[-] Failed to fetch data from server');
     }
   }

@@ -23,9 +23,13 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Future<Schedule> analyzeLink(String url) async {
-    final schedule = await remoteSource.fetchScheduleFromServer(url);
-    Schedule entitySchedule = ScheduleMapper.toEntity(schedule);
-    return entitySchedule;
+    try {
+      final schedule = await remoteSource.fetchScheduleFromServer(url);
+      Schedule entitySchedule = ScheduleMapper.toEntity(schedule);
+      return entitySchedule;
+    } catch (e) {
+      throw Exception('[-] Error while fetching from server');
+    }
   }
 
   @override

@@ -129,34 +129,49 @@ class _CreatePageState extends State<CreatePage> {
                   ],
                 );
               }
-              return controller.schedule.value?.link != null
-                  ? ScheduleDetailColumn(
-                      schedule: controller.schedule.value!,
-                      extraChildren: [
-                        const SizedBox(height: 12),
-                        Text(
-                          '분석 결과를 일정에 추가할게요.',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Palette.burgundy),
-                        ),
-                      ],
-                    )
-                  : const Column(
+              return controller.isError.value
+                  ? const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          '모바일 청첩장을 첨부해주세요.',
+                          '다시 시도해주세요.',
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          'AI가 자동으로 일정을 분석해드릴게요.',
+                          '잠시 서버에 문제가 생겼어요.',
                           style: TextStyle(fontSize: 14),
                         )
                       ],
-                    );
+                    )
+                  : controller.schedule.value?.link != null
+                      ? ScheduleDetailColumn(
+                          schedule: controller.schedule.value!,
+                          extraChildren: [
+                            const SizedBox(height: 12),
+                            Text(
+                              '분석 결과를 일정에 추가할게요.',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Palette.burgundy),
+                            ),
+                          ],
+                        )
+                      : const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '모바일 청첩장을 첨부해주세요.',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              'AI가 자동으로 일정을 분석해드릴게요.',
+                              style: TextStyle(fontSize: 14),
+                            )
+                          ],
+                        );
             }),
           ),
         ],

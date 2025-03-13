@@ -16,12 +16,18 @@ class CreateController extends GetxController {
   final SaveScheduleUsecase saveScheduleUseCase = getIt<SaveScheduleUsecase>();
 
   var isLoading = false.obs;
+  var isError = false.obs;
   var schedule = Rxn<Schedule>();
 
-  // TODO: 잘 로드되었는지 확인하는 state 필요, 제대로 로드되지 않으면 위젯에서 실패 표시
   Future<void> analyzeLink(String url) async {
     isLoading(true);
-    schedule.value = await analyzeLinkUseCase.execute(url);
+    isError(false);
+    try {
+      schedule.value = await analyzeLinkUseCase.execute(url);
+    } catch (e) {
+      isError.value = true;
+      schedule.value = null;
+    }
     isLoading(false);
 
     await saveScheduleUseCase.execute(schedule.value!);
