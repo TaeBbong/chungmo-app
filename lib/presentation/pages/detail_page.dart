@@ -74,7 +74,6 @@ class _DetailPageState extends State<DetailPage> {
   InputDecoration customInputDecoration({required String labelText}) {
     return InputDecoration(
       filled: true,
-      fillColor: Colors.grey[100],
       labelText: labelText,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),

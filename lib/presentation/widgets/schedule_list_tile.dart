@@ -21,7 +21,6 @@ class ScheduleListTile extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Palette.beige, width: 2),
         ),
