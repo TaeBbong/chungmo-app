@@ -45,7 +45,7 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
       location: schedule.location,
     );
     await localSource.saveSchedule(scheduleModel);
-    await notificationService.notifyScheduleAtPreviousDay(schedule: schedule);
+    await notificationService.checkPreviousDayForNotify(schedule: schedule);
   }
 
   @override
@@ -91,7 +91,7 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
         location: schedule.location);
     await localSource.editSchedule(scheduleModel);
     await notificationService.cancelNotifySchedule(link: schedule.link);
-    await notificationService.notifyScheduleAtPreviousDay(schedule: schedule);
+    await notificationService.checkPreviousDayForNotify(schedule: schedule);
   }
 
   @override

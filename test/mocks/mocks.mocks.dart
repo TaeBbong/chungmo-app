@@ -11,6 +11,7 @@ import 'package:chungmo/data/sources/local/schedule_local_source.dart' as _i3;
 import 'package:chungmo/data/sources/remote/schedule_remote_source.dart' as _i5;
 import 'package:chungmo/domain/entities/schedule.dart' as _i7;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:timezone/timezone.dart' as _i8;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -162,12 +163,31 @@ class MockNotificationService extends _i1.Mock
           as _i4.Future<void>);
 
   @override
-  _i4.Future<void> notifyScheduleAtPreviousDay({
+  _i4.Future<void> checkPreviousDayForNotify({
     required _i7.Schedule? schedule,
   }) =>
       (super.noSuchMethod(
-            Invocation.method(#notifyScheduleAtPreviousDay, [], {
+            Invocation.method(#checkPreviousDayForNotify, [], {
               #schedule: schedule,
+            }),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> addNotifySchedule({
+    required int? id,
+    required String? appName,
+    required String? title,
+    required _i8.TZDateTime? scheduleDate,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#addNotifySchedule, [], {
+              #id: id,
+              #appName: appName,
+              #title: title,
+              #scheduleDate: scheduleDate,
             }),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),

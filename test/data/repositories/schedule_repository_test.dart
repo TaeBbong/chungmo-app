@@ -30,6 +30,11 @@ void main() {
     location: "Seoul",
   );
 
+  final today = DateTime.now();
+  final yesterday = today.subtract(const Duration(days: 1));
+  final tomorrow = today.add(const Duration(days: 1));
+  final farFuture = today.add(const Duration(days: 365));
+
   final tSchedule = ScheduleMapper.toEntity(tScheduleModel);
 
   group('analyzeLink', () {
@@ -65,7 +70,7 @@ void main() {
         () async {
       // Given
       when(mockLocalSource.saveSchedule(any)).thenAnswer((_) async => {});
-      when(mockNotificationService.notifyScheduleAtPreviousDay(
+      when(mockNotificationService.checkPreviousDayForNotify(
               schedule: anyNamed('schedule')))
           .thenAnswer((_) async => {});
 
@@ -74,7 +79,7 @@ void main() {
 
       // Then
       verify(mockLocalSource.saveSchedule(any)).called(1);
-      verify(mockNotificationService.notifyScheduleAtPreviousDay(
+      verify(mockNotificationService.checkPreviousDayForNotify(
               schedule: anyNamed('schedule')))
           .called(1);
     });
@@ -134,26 +139,102 @@ void main() {
     });
   });
 
-  group('editSchedule', () {
-    test('should update schedule in local storage and re-trigger notification',
+  group('editSchedule - Notification Behavior', () {
+    test('should NOT trigger notification if schedule date is in the past',
         () async {
       // Given
+      final pastSchedule =
+          tSchedule.copyWith(date: yesterday.toIso8601String());
+
       when(mockLocalSource.editSchedule(any)).thenAnswer((_) async => {});
       when(mockNotificationService.cancelNotifySchedule(link: anyNamed('link')))
           .thenAnswer((_) async => {});
-      when(mockNotificationService.notifyScheduleAtPreviousDay(
-              schedule: anyNamed('schedule')))
-          .thenAnswer((_) async => {});
 
       // When
-      await repository.editSchedule(tSchedule);
+      await repository.editSchedule(pastSchedule);
 
       // Then
       verify(mockLocalSource.editSchedule(any)).called(1);
       verify(mockNotificationService.cancelNotifySchedule(
               link: anyNamed('link')))
           .called(1);
-      verify(mockNotificationService.notifyScheduleAtPreviousDay(
+      verifyNever(mockNotificationService.addNotifySchedule(
+          id: anyNamed('id'),
+          appName: anyNamed('appName'),
+          title: anyNamed('title'),
+          scheduleDate: anyNamed('scheduleDate')));
+    });
+
+    test('should NOT trigger notification if schedule date is today', () async {
+      // Given
+      final todaySchedule = tSchedule.copyWith(date: today.toIso8601String());
+
+      when(mockLocalSource.editSchedule(any)).thenAnswer((_) async => {});
+      when(mockNotificationService.cancelNotifySchedule(link: anyNamed('link')))
+          .thenAnswer((_) async => {});
+
+      // When
+      await repository.editSchedule(todaySchedule);
+
+      // Then
+      verify(mockLocalSource.editSchedule(any)).called(1);
+      verify(mockNotificationService.cancelNotifySchedule(
+              link: anyNamed('link')))
+          .called(1);
+      verifyNever(mockNotificationService.addNotifySchedule(
+          id: anyNamed('id'),
+          appName: anyNamed('appName'),
+          title: anyNamed('title'),
+          scheduleDate: anyNamed('scheduleDate')));
+    });
+
+    test('should trigger notification if schedule date is tomorrow', () async {
+      // Given
+      final tomorrowSchedule =
+          tSchedule.copyWith(date: tomorrow.toIso8601String());
+
+      when(mockLocalSource.editSchedule(any)).thenAnswer((_) async => {});
+      when(mockNotificationService.cancelNotifySchedule(link: anyNamed('link')))
+          .thenAnswer((_) async => {});
+      when(mockNotificationService.checkPreviousDayForNotify(
+              schedule: anyNamed('schedule')))
+          .thenAnswer((_) async => {});
+
+      // When
+      await repository.editSchedule(tomorrowSchedule);
+
+      // Then
+      verify(mockLocalSource.editSchedule(any)).called(1);
+      verify(mockNotificationService.cancelNotifySchedule(
+              link: anyNamed('link')))
+          .called(1);
+      verify(mockNotificationService.checkPreviousDayForNotify(
+              schedule: anyNamed('schedule')))
+          .called(1);
+    });
+
+    test('should trigger notification if schedule date is in the far future',
+        () async {
+      // Given
+      final futureSchedule =
+          tSchedule.copyWith(date: farFuture.toIso8601String());
+
+      when(mockLocalSource.editSchedule(any)).thenAnswer((_) async => {});
+      when(mockNotificationService.cancelNotifySchedule(link: anyNamed('link')))
+          .thenAnswer((_) async => {});
+      when(mockNotificationService.checkPreviousDayForNotify(
+              schedule: anyNamed('schedule')))
+          .thenAnswer((_) async => {});
+
+      // When
+      await repository.editSchedule(futureSchedule);
+
+      // Then
+      verify(mockLocalSource.editSchedule(any)).called(1);
+      verify(mockNotificationService.cancelNotifySchedule(
+              link: anyNamed('link')))
+          .called(1);
+      verify(mockNotificationService.checkPreviousDayForNotify(
               schedule: anyNamed('schedule')))
           .called(1);
     });

@@ -10,7 +10,12 @@ import '../utils/url_hash.dart';
 abstract class NotificationService {
   Future<void> getPermissions();
   Future<void> init();
-  Future<void> notifyScheduleAtPreviousDay({required Schedule schedule});
+  Future<void> checkPreviousDayForNotify({required Schedule schedule});
+  Future<void> addNotifySchedule(
+      {required int id,
+      required String appName,
+      required String title,
+      required tz.TZDateTime scheduleDate});
   Future<void> cancelNotifySchedule({required String link});
   Future<void> checkScheduledNotifications();
 }
@@ -56,23 +61,9 @@ class NotificationServiceImpl implements NotificationService {
   ///
   /// Called by ScheduleRepository; when user create/edit schedule.
   @override
-  Future<void> notifyScheduleAtPreviousDay({
+  Future<void> checkPreviousDayForNotify({
     required Schedule schedule,
   }) async {
-    NotificationDetails details = const NotificationDetails(
-      iOS: DarwinNotificationDetails(
-        presentAlert: true,
-        presentBadge: true,
-        presentSound: true,
-      ),
-      android: AndroidNotificationDetails(
-        "1",
-        "test",
-        importance: Importance.max,
-        priority: Priority.high,
-      ),
-    );
-
     final int id = await UrlHash.hashUrlToInt(schedule.link);
     String title = "내일 ${schedule.groom} & ${schedule.bride}님의 결혼식이 있습니다!";
     tz.TZDateTime scheduleDate =
@@ -91,6 +82,33 @@ class NotificationServiceImpl implements NotificationService {
     } else if (scheduleDate.isBefore(todayEleven)) {
       return;
     }
+
+    await addNotifySchedule(
+        id: id, appName: '청모', title: title, scheduleDate: scheduleDate);
+  }
+
+  /// Add notification schedule.
+  ///
+  /// Called by notifyScheduleAtPreviousDay()
+  @override
+  Future<void> addNotifySchedule(
+      {required int id,
+      required String appName,
+      required String title,
+      required tz.TZDateTime scheduleDate}) async {
+    NotificationDetails details = const NotificationDetails(
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
+      android: AndroidNotificationDetails(
+        "1",
+        "test",
+        importance: Importance.max,
+        priority: Priority.high,
+      ),
+    );
 
     await _localNotifyPlugin.zonedSchedule(
       id,
