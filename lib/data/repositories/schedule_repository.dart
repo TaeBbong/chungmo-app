@@ -6,7 +6,7 @@
 
 import 'package:injectable/injectable.dart';
 
-import '../../core/services.dart/notification_service.dart';
+import '../../core/services/notification_service.dart';
 import '../../domain/entities/schedule.dart';
 import '../../domain/repositories/schedule_repository.dart';
 import '../mapper/schedule_mapper.dart';
@@ -18,8 +18,10 @@ import '../sources/remote/schedule_remote_source.dart';
 class ScheduleRepositoryImpl implements ScheduleRepository {
   final ScheduleRemoteSource remoteSource;
   final ScheduleLocalSource localSource;
+  final NotificationService notificationService;
 
-  ScheduleRepositoryImpl(this.remoteSource, this.localSource);
+  ScheduleRepositoryImpl(
+      this.remoteSource, this.localSource, this.notificationService);
 
   @override
   Future<Schedule> analyzeLink(String url) async {
@@ -43,7 +45,7 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
       location: schedule.location,
     );
     await localSource.saveSchedule(scheduleModel);
-    await NotificationService.notifyScheduleAtPreviousDay(schedule: schedule);
+    await notificationService.notifyScheduleAtPreviousDay(schedule: schedule);
   }
 
   @override
@@ -88,13 +90,13 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
         date: schedule.date,
         location: schedule.location);
     await localSource.editSchedule(scheduleModel);
-    await NotificationService.cancelNotifySchedule(link: schedule.link);
-    await NotificationService.notifyScheduleAtPreviousDay(schedule: schedule);
+    await notificationService.cancelNotifySchedule(link: schedule.link);
+    await notificationService.notifyScheduleAtPreviousDay(schedule: schedule);
   }
 
   @override
   Future<void> deleteSchedule(String link) async {
     await localSource.deleteScheduleByLink(link);
-    await NotificationService.cancelNotifySchedule(link: link);
+    await notificationService.cancelNotifySchedule(link: link);
   }
 }

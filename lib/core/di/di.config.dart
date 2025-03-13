@@ -9,6 +9,7 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:chungmo/core/services/notification_service.dart' as _i109;
 import 'package:chungmo/data/repositories/schedule_repository.dart' as _i798;
 import 'package:chungmo/data/sources/local/schedule_local_source.dart'
     as _i1014;
@@ -41,6 +42,8 @@ extension GetItInjectableX on _i174.GetIt {
       environment,
       environmentFilter,
     );
+    gh.lazySingleton<_i109.NotificationService>(
+        () => _i109.NotificationServiceImpl());
     gh.lazySingleton<_i1014.ScheduleLocalSource>(
         () => _i1014.ScheduleLocalSourceImpl());
     gh.lazySingleton<_i153.ScheduleRemoteSource>(
@@ -49,9 +52,12 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i798.ScheduleRepositoryImpl(
               gh<_i153.ScheduleRemoteSource>(),
               gh<_i1014.ScheduleLocalSource>(),
+              gh<_i109.NotificationService>(),
             ));
     gh.factory<_i26.AnalyzeLinkUsecase>(
         () => _i26.AnalyzeLinkUsecase(gh<_i561.ScheduleRepository>()));
+    gh.factory<_i867.DeleteScheduleUsecase>(
+        () => _i867.DeleteScheduleUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i542.EditScheduleUsecase>(
         () => _i542.EditScheduleUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i602.ListSchedulesByDateUsecase>(
@@ -60,8 +66,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i407.ListSchedulesUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i346.SaveScheduleUsecase>(
         () => _i346.SaveScheduleUsecase(gh<_i561.ScheduleRepository>()));
-    gh.factory<_i867.DeleteScheduleUsecase>(
-        () => _i867.DeleteScheduleUsecase(gh<_i561.ScheduleRepository>()));
     return this;
   }
 }

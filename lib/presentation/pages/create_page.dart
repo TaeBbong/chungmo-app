@@ -9,7 +9,8 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../core/services.dart/notification_service.dart';
+import '../../core/di/di.dart';
+import '../../core/services/notification_service.dart';
 import '../../core/utils/constants.dart';
 import '../controllers/create_viewmodel.dart';
 import '../theme/palette.dart';
@@ -26,6 +27,7 @@ class CreatePage extends StatefulWidget {
 class _CreatePageState extends State<CreatePage> {
   final CreateController controller = Get.put(CreateController());
   final TextEditingController _textEditingController = TextEditingController();
+  final NotificationService notificationService = getIt<NotificationService>();
 
   @override
   void initState() {
@@ -55,7 +57,7 @@ class _CreatePageState extends State<CreatePage> {
             icon: const Icon(Icons.notifications),
             onPressed: () {
               // TODO: Remove test button
-              NotificationService.checkScheduledNotifications();
+              notificationService.checkScheduledNotifications();
             },
           ),
           PopupMenuButton<String>(
