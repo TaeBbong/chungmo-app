@@ -5,7 +5,6 @@ import '../../domain/entities/schedule.dart';
 import '../../core/utils/date_converter.dart';
 import '../controllers/detail_viewmodel.dart';
 
-// TODO: 수정 후 저장 눌렀을 때 제대로 라우팅 안되는 상황 발생
 class DetailPage extends StatefulWidget {
   DetailPage({super.key});
   final Schedule schedule = Get.arguments as Schedule;
@@ -262,12 +261,17 @@ class _DetailPageState extends State<DetailPage> {
               editMode
                   ? Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Flexible(
-                        child: TextField(
-                          controller: locationController,
-                          decoration: customInputDecoration(labelText: '장소'),
-                          style: const TextStyle(fontSize: 16),
-                        ),
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: TextField(
+                              controller: locationController,
+                              decoration:
+                                  customInputDecoration(labelText: '장소'),
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ],
                       ),
                     )
                   : SizedBox(
