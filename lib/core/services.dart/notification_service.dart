@@ -119,9 +119,11 @@ class NotificationService {
     List<PendingNotificationRequest> pendingNotifications =
         await _localNotifyPlugin.pendingNotificationRequests();
 
+    // ignore: avoid_print
     print("📢 Total Scheduled Notifications: ${pendingNotifications.length}");
 
     for (var notification in pendingNotifications) {
+      // ignore: avoid_print
       print(
           "🔔 ID: ${notification.id}, Title: ${notification.title}, Body: ${notification.body}, Date: ${notification.payload}");
     }
