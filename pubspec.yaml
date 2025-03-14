@@ -50,8 +50,8 @@ flutter_native_splash:
   android: true
   ios: true
   web: true
-  color: "#F5E6CC"
+  color: "#F95E48"
   image: assets/images/icon_trans.png
   android_12:
-    color: "#F5E6CC"
+    color: "#F95E48"
     image: assets/images/icon_trans.png
