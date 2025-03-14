@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 
 import 'core/di/di.dart';
@@ -14,13 +15,15 @@ import 'presentation/theme/dark_theme.dart';
 import 'presentation/theme/light_theme.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await configureDependencies();
   final NotificationService notificationService = getIt<NotificationService>();
   await notificationService.getPermissions();
   await notificationService.init();
   // await initializeDateFormatting('ko_KR', 'null');
   Env.init(Environ.local);
+  FlutterNativeSplash.remove();
   runApp(const MainApp());
 }
 
