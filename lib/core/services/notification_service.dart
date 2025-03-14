@@ -7,6 +7,11 @@ import 'package:timezone/timezone.dart' as tz;
 import '../../domain/entities/schedule.dart';
 import '../utils/url_hash.dart';
 
+/// Abstract class for NotificationService
+///
+/// 1. NotificationService gets permission(ALARM) from user.
+///
+/// 2. NotificationService adds, cancels local notification schedule for registered Schedules.
 abstract class NotificationService {
   Future<void> getPermissions();
   Future<void> init();
