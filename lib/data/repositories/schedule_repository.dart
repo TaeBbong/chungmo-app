@@ -14,6 +14,7 @@ import '../models/schedule/schedule_model.dart';
 import '../sources/local/schedule_local_source.dart';
 import '../sources/remote/schedule_remote_source.dart';
 
+/// Implementation class for `ScheduleRepository`
 @LazySingleton(as: ScheduleRepository)
 class ScheduleRepositoryImpl implements ScheduleRepository {
   final ScheduleRemoteSource remoteSource;
