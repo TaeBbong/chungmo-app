@@ -12,7 +12,7 @@
     <!-- local_notifictaions -->
 
     <application
-        android:label="chungmo"
+        android:label="청모"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
