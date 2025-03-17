@@ -4,6 +4,7 @@
 /// Presentation layer connected with controller
 
 import 'package:dotlottie_loader/dotlottie_loader.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -53,13 +54,15 @@ class _CreatePageState extends State<CreatePage> {
           },
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              // TODO: Remove test button
-              notificationService.checkScheduledNotifications();
-            },
-          ),
+          // Only shows notification button in `kDebugMode`.
+          kDebugMode
+              ? IconButton(
+                  icon: const Icon(Icons.notifications),
+                  onPressed: () {
+                    notificationService.checkScheduledNotifications();
+                  },
+                )
+              : Container(),
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
             onSelected: (value) async {
