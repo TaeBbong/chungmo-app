@@ -102,6 +102,11 @@ class Env {
 }
 ```
 
+## Versioning
+
+1(major) . 0(minor) . 0(maintain) + 1(version code)
+여기서 version code는 계속 증가해야 함(안드로이드에 한하여)
+
 ## 프로젝트 주요 기능(앱)
 
 1) CreatePage : 사용자가 링크를 입력하면 -> 서버에 링크를 보내 컨텐츠를 파싱/분석하며 그동안 로딩 애니메이션 보여줌 -> 서버로부터 결과 나오면 결과를 보여주며 해당 결과를 로컬 저장소(db or hive)에 저장
