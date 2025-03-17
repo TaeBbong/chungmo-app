@@ -37,7 +37,7 @@ class NotificationServiceImpl implements NotificationService {
   Future<void> getPermissions() async {
     if (await Permission.notification.isDenied &&
         !await Permission.notification.isPermanentlyDenied) {
-      await [Permission.notification].request();
+      await [Permission.notification, Permission.scheduleExactAlarm].request();
     }
   }
 
