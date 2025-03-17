@@ -1,16 +1,17 @@
 /// Step 4:
 /// Model
-/// 
+///
 /// Based on entity from domain layer,
 /// Implement data model that can be used in data sources & repositories
-
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'schedule_model.freezed.dart';
 part 'schedule_model.g.dart';
 
-
+/// ScheduleModel in data layer.
+///
+/// Used in local/remote data sources.
 @freezed
 class ScheduleModel with _$ScheduleModel {
   factory ScheduleModel({
@@ -23,5 +24,6 @@ class ScheduleModel with _$ScheduleModel {
     required String location,
   }) = _ScheduleModel;
 
-  factory ScheduleModel.fromJson(Map<String, dynamic> json) => _$ScheduleModelFromJson(json);
+  factory ScheduleModel.fromJson(Map<String, dynamic> json) =>
+      _$ScheduleModelFromJson(json);
 }

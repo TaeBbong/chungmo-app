@@ -19,8 +19,13 @@ class CalendarController extends GetxController {
   final ListSchedulesUsecase listSchedulesUsecase =
       getIt<ListSchedulesUsecase>();
 
+  /// `isLoading` checks if getSchedules*() from local data source is running.
   var isLoading = false.obs;
+
+  /// `schedulesWithDate` contains schedules filtered by month.
   var schedulesWithDate = Rxn<Map<DateTime, List<Schedule>>>();
+
+  /// `allSchedules` contains whole schedules from db.
   var allSchedules = Rxn<List<Schedule>>();
 
   @override
@@ -30,8 +35,9 @@ class CalendarController extends GetxController {
     super.onClose();
   }
 
-  Future<Map<DateTime, List<Schedule>>> getSchedulesForMonth(
-      DateTime date) async {
+  /// `getSchedulesForMonth` executes `listSchedulesByDateUsecase`
+  /// then updates `schedulesWithDate`.
+  Future<void> getSchedulesForMonth(DateTime date) async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       isLoading(true);
     });
@@ -39,15 +45,12 @@ class CalendarController extends GetxController {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       isLoading(false);
     });
-    return schedulesWithDate.value!;
+    return;
   }
 
-  List<Schedule> getAllSchedulesForMonth() {
-    final schedulesMap = schedulesWithDate.value ?? {};
-    return schedulesMap.values.expand((schedules) => schedules).toList();
-  }
-
-  Future<List<Schedule>> getAllSchedules() async {
+  /// `getAllSchedules` executes `listSchedulesUsecase`
+  /// then updates `allSchedules`.
+  Future<void> getAllSchedules() async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       isLoading(true);
     });
@@ -55,6 +58,6 @@ class CalendarController extends GetxController {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       isLoading(false);
     });
-    return allSchedules.value!;
+    return;
   }
 }

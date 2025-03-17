@@ -10,8 +10,11 @@ class DetailController extends GetxController {
   final DeleteScheduleUsecase deleteScheduleUsecase =
       getIt<DeleteScheduleUsecase>();
 
+  /// `schedule` is entity that currently watching in `DetailPage`.
   var schedule = Rxn<Schedule>();
 
+  /// `editSchedule` copies `editedSchedule` to `schedule`
+  /// then executes `editScheduleUsecase`.
   Future<void> editSchedule(Schedule editedSchedule) async {
     schedule.value = schedule.value!.copyWith(
         bride: editedSchedule.bride,
@@ -21,6 +24,8 @@ class DetailController extends GetxController {
     await editScheduleUsecase.execute(schedule.value!);
   }
 
+  /// `deleteSchedule` deletes schedule within key `link`
+  /// executes `deleteScheduleUsecase`.
   Future<void> deleteSchedule(String link) async {
     await deleteScheduleUsecase.execute(link);
   }
