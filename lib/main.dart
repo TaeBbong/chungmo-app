@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -22,7 +23,11 @@ void main() async {
   await notificationService.getPermissions();
   await notificationService.init();
   // await initializeDateFormatting('ko_KR', 'null');
-  Env.init(Environ.local);
+  if (kDebugMode) {
+    Env.init(Environ.local);
+  } else {
+    Env.init(Environ.production);
+  }
   FlutterNativeSplash.remove();
   runApp(const MainApp());
 }
