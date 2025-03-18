@@ -59,7 +59,18 @@ class _CreatePageState extends State<CreatePage> {
               ? IconButton(
                   icon: const Icon(Icons.notifications),
                   onPressed: () {
+                    notificationService.addTestNotifySchedule(id: 1);
                     notificationService.checkScheduledNotifications();
+                    Get.defaultDialog(
+                      title: "알림",
+                      middleText: "스케쥴이 등록되었습니다.",
+                      textConfirm: "확인",
+                      textCancel: "취소",
+                      onConfirm: () {
+                        Get.back(); // 다이얼로그 닫기
+                      },
+                      onCancel: () {},
+                    );
                   },
                 )
               : Container(),

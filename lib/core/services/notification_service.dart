@@ -23,6 +23,7 @@ abstract class NotificationService {
       required tz.TZDateTime scheduleDate});
   Future<void> cancelNotifySchedule({required String link});
   Future<void> checkScheduledNotifications();
+  Future<void> addTestNotifySchedule({required int id});
 }
 
 @LazySingleton(as: NotificationService)
@@ -165,5 +166,36 @@ class NotificationServiceImpl implements NotificationService {
       print(
           "🔔 ID: ${notification.id}, Title: ${notification.title}, Body: ${notification.body}, Date: ${notification.payload}");
     }
+  }
+
+  @override
+  Future<void> addTestNotifySchedule({required int id}) async {
+    NotificationDetails details = const NotificationDetails(
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
+      android: AndroidNotificationDetails(
+        "1",
+        "test",
+        importance: Importance.max,
+        priority: Priority.high,
+      ),
+    );
+
+    tz.setLocalLocation(tz.getLocation('Asia/Seoul'));
+    tz.TZDateTime target = tz.TZDateTime.now(tz.getLocation('Asia/Seoul'))
+        .add(const Duration(minutes: 2));
+    await _localNotifyPlugin.zonedSchedule(
+      id,
+      "청모",
+      "test notify $id",
+      target,
+      details,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+    );
   }
 }
