@@ -15,6 +15,7 @@ import 'presentation/pages/detail_page.dart';
 import 'presentation/theme/dark_theme.dart';
 import 'presentation/theme/light_theme.dart';
 
+@pragma('vm:entry-point')
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
