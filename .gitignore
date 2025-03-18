@@ -1,6 +1,10 @@
 # Env
 lib/core/env.dart
 
+# Keystore
+keystore
+keystore/*
+
 # Desktop stuffs
 linux/
 macos/
