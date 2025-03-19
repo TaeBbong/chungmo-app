@@ -58,6 +58,14 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
   }
 
   @override
+  Future<Schedule> getScheduleByLink(String link) async {
+    final ScheduleModel scheduleModel =
+        await localSource.getScheduleByLink(link);
+    final Schedule schedule = ScheduleMapper.toEntity(scheduleModel);
+    return schedule;
+  }
+
+  @override
   Future<List<Schedule>> getSchedulesByDate(DateTime date) async {
     final List<ScheduleModel> schedules =
         await localSource.getSchedulesByDate(date);

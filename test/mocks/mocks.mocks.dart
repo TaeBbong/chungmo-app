@@ -71,6 +71,19 @@ class MockScheduleLocalSource extends _i1.Mock
           as _i4.Future<List<_i2.ScheduleModel>>);
 
   @override
+  _i4.Future<_i2.ScheduleModel> getScheduleByLink(String? link) =>
+      (super.noSuchMethod(
+            Invocation.method(#getScheduleByLink, [link]),
+            returnValue: _i4.Future<_i2.ScheduleModel>.value(
+              _FakeScheduleModel_0(
+                this,
+                Invocation.method(#getScheduleByLink, [link]),
+              ),
+            ),
+          )
+          as _i4.Future<_i2.ScheduleModel>);
+
+  @override
   _i4.Future<List<_i2.ScheduleModel>> getSchedulesByDate(DateTime? date) =>
       (super.noSuchMethod(
             Invocation.method(#getSchedulesByDate, [date]),
@@ -207,6 +220,15 @@ class MockNotificationService extends _i1.Mock
   _i4.Future<void> checkScheduledNotifications() =>
       (super.noSuchMethod(
             Invocation.method(#checkScheduledNotifications, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> addTestNotifySchedule({required int? id}) =>
+      (super.noSuchMethod(
+            Invocation.method(#addTestNotifySchedule, [], {#id: id}),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
