@@ -1,10 +1,13 @@
+import 'package:chungmo/domain/usecases/schedule/get_schedule_by_link_usecase.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 import '../../domain/entities/schedule.dart';
+import '../di/di.dart';
 import '../utils/url_hash.dart';
 
 /// Abstract class for NotificationService
@@ -56,7 +59,20 @@ class NotificationServiceImpl implements NotificationService {
     );
     InitializationSettings settings =
         InitializationSettings(android: android, iOS: ios);
-    await _localNotifyPlugin.initialize(settings);
+    await _localNotifyPlugin.initialize(
+      settings,
+      onDidReceiveNotificationResponse: (details) async {
+        if (details.payload != null) {
+          final String link = details.payload!;
+          final GetScheduleByLinkUsecase getScheduleByLinkUsecase =
+              getIt<GetScheduleByLinkUsecase>();
+          final Schedule targetSchedule =
+              await getScheduleByLinkUsecase.execute(link);
+          Get.toNamed('/');
+          Get.toNamed('/detail', arguments: targetSchedule);
+        }
+      },
+    );
     tz.initializeTimeZones();
   }
 
@@ -196,6 +212,7 @@ class NotificationServiceImpl implements NotificationService {
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      payload: "https://naver.com",
     );
   }
 }
