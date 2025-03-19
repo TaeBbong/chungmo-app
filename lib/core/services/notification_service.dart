@@ -16,6 +16,7 @@ import '../utils/url_hash.dart';
 ///
 /// 2. NotificationService adds, cancels local notification schedule for registered Schedules.
 abstract class NotificationService {
+  FlutterLocalNotificationsPlugin getLocalNotificationPlugin();
   Future<void> getPermissions();
   Future<void> init();
   Future<void> checkPreviousDayForNotify({required Schedule schedule});
@@ -33,6 +34,11 @@ abstract class NotificationService {
 class NotificationServiceImpl implements NotificationService {
   static final FlutterLocalNotificationsPlugin _localNotifyPlugin =
       FlutterLocalNotificationsPlugin();
+
+  @override
+  FlutterLocalNotificationsPlugin getLocalNotificationPlugin() {
+    return _localNotifyPlugin;
+  }
 
   /// Get permissions from user when opens app.
   ///

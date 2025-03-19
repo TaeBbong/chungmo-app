@@ -6,6 +6,7 @@
 import 'package:dotlottie_loader/dotlottie_loader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -13,6 +14,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/di/di.dart';
 import '../../core/services/notification_service.dart';
 import '../../core/utils/constants.dart';
+import '../../domain/entities/schedule.dart';
+import '../../domain/usecases/schedule/get_schedule_by_link_usecase.dart';
 import '../controllers/create_viewmodel.dart';
 import '../theme/palette.dart';
 import '../widgets/schedule_detail_column.dart';
@@ -43,8 +46,27 @@ class _CreatePageState extends State<CreatePage> {
     }
   }
 
+  void checkIfNotification() async {
+    /// testing terminated onClickNotification
+    final NotificationService notificationService =
+        getIt<NotificationService>();
+    FlutterLocalNotificationsPlugin notificationsPlugin =
+        notificationService.getLocalNotificationPlugin();
+    NotificationAppLaunchDetails? details =
+        await notificationsPlugin.getNotificationAppLaunchDetails();
+    if (details?.didNotificationLaunchApp ?? false) {
+      final String link = details!.notificationResponse!.payload!;
+      final GetScheduleByLinkUsecase getScheduleByLinkUsecase =
+          getIt<GetScheduleByLinkUsecase>();
+      final Schedule targetSchedule =
+          await getScheduleByLinkUsecase.execute(link);
+      Get.toNamed('/detail', arguments: targetSchedule);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    checkIfNotification();
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
