@@ -314,3 +314,93 @@ void main() async {
   runApp(const MainApp());
 }
 ```
+
+## 푸시 알림을 눌러서 앱으로 돌아오기
+
+### 포그라운드/백그라운드
+
+```dart
+  @override
+  Future<void> init() async {
+    AndroidInitializationSettings android =
+        const AndroidInitializationSettings("@mipmap/ic_launcher");
+    DarwinInitializationSettings ios = const DarwinInitializationSettings(
+      requestSoundPermission: false,
+      requestBadgePermission: false,
+      requestAlertPermission: false,
+    );
+    InitializationSettings settings =
+        InitializationSettings(android: android, iOS: ios);
+    await _localNotifyPlugin.initialize(
+      settings,
+      onDidReceiveNotificationResponse: (details) async {
+        if (details.payload != null) {
+          final String link = details.payload!;
+          ...
+          Get.toNamed('/detail', arguments: link);
+        }
+      },
+    );
+    tz.initializeTimeZones();
+  }
+```
+
+이렇게 onDidReceiveNotificationResponse을 설정하여 해결할 수 있음.
+
+문제는...
+
+### 앱 종료 상태에서
+
+원래 개념적으로는 위의 initialize 코드에서
+
+```dart
+  await _localNotifyPlugin.initialize(
+      settings,
+      onDidReceiveNotificationResponse: (details) async {
+        if (details.payload != null) {
+          final String link = details.payload!;
+          ...
+          Get.toNamed('/detail', arguments: link);
+        }
+      },
+      onDidReceiveBackgroundNotificationResponse: (details) async {}
+    );
+```
+
+이렇게 onDidReceiveBackgroundNotificationResponse을 설정하는걸로 알고 있음.
+해당 파라미터를 설정하려면 값으로 넣어야 하는 콜백 함수가 전역에서 접근이 되어야 한다고 한다.
+그도 그럴 것이 앱이 종료된 상태에서 푸시 알림을 클릭해서 들어오려면 해당 함수를 통해 들어올 것이기 때문이다.
+
+그런데 이해가 안되는 것은 앱이 시작되고, initialize를 전부 마친 상태에서 해당 콜백이 실행되는게 아니라, 해당 콜백을 먼저 찾으려고 앱이 동작한다는 것임..
+사실 정확히 무슨 상태인지는 모르겠음.. 암튼 어떤 정상적인 방법으로도 onDidReceiveBackgroundNotificationResponse을 설정하기 어려웠음.
+
+그래서 해결한 방식은, onDidReceiveBackgroundNotificationResponse을 설정하지 않고 앱 실행이 된 후에 처리하는 방식임.
+어차피 푸시알림을 누르면 앱이 실행됨. 이건 앱이 종료된 상태에서도 마찬가지.
+따라서 앱이 정상적으로 모든 initialize 과정을 거치며 실행된 다음에, 처음 만나는 CreatePage에서 Widget build를 할 때 아래 함수를 실행시키는 것임.
+
+```dart
+  void checkIfNotification() async {
+    /// testing terminated onClickNotification
+    final NotificationService notificationService =
+        getIt<NotificationService>();
+    FlutterLocalNotificationsPlugin notificationsPlugin =
+        notificationService.getLocalNotificationPlugin();
+    NotificationAppLaunchDetails? details =
+        await notificationsPlugin.getNotificationAppLaunchDetails();
+    if (details?.didNotificationLaunchApp ?? false) {
+      final String link = details!.notificationResponse!.payload!;
+      ...
+      Get.toNamed('/detail', arguments: link);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    checkIfNotification();
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          ...
+```
+
+이런 느낌으로 따로 처리하게끔 만드니 정상적으로 잘 동작되었다. onDidReceiveBackgroundNotificationResponse을 살리지 못해서 다른 방법을 쓰긴 했는데 되긴 한다.
