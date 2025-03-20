@@ -21,6 +21,11 @@ class ScheduleRemoteSourceImpl implements ScheduleRemoteSource {
 
   ScheduleRemoteSourceImpl();
 
+  /// Fetch analyzed data in `json` type from Firebase functions API.
+  ///
+  /// If result, returns `ScheduleModel` type data.
+  ///
+  /// If not, throw error.
   @override
   Future<ScheduleModel> fetchScheduleFromServer(String link) async {
     try {
