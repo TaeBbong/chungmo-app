@@ -34,14 +34,15 @@ class CreateController extends GetxController {
     isLoading(true);
     isError(false);
     try {
-      schedule.value = await analyzeLinkUseCase.execute(url);
+      final Schedule scheduleFromRemote = await analyzeLinkUseCase.execute(url);
+      schedule.value = scheduleFromRemote;
+      await saveScheduleUseCase.execute(schedule.value!);
     } catch (e) {
       isError.value = true;
       schedule.value = null;
+    } finally {
+      isLoading(false);
     }
-    isLoading(false);
-
-    await saveScheduleUseCase.execute(schedule.value!);
   }
 
   /// `resetState` resets states for next analyze.
