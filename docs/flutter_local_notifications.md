@@ -404,3 +404,9 @@ void main() async {
 ```
 
 이런 느낌으로 따로 처리하게끔 만드니 정상적으로 잘 동작되었다. onDidReceiveBackgroundNotificationResponse을 살리지 못해서 다른 방법을 쓰긴 했는데 되긴 한다.
+
+## 참고자료
+
+[https://pub.dev/packages/flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications#getting-details-on-if-the-app-was-launched-via-a-notification-created-by-this-plugin)
+[https://stackoverflow.com/questions](https://stackoverflow.com/questions/79185077/background-notifications-not-working-in-release-mode-firebasemessagingbackgro)
+[https://velog.io/@tygerhwang](https://velog.io/@tygerhwang/Flutter-Local-Notifications-%EC%82%AC%EC%9A%A9%ED%95%B4-%EB%B3%B4%EA%B8%B0)
