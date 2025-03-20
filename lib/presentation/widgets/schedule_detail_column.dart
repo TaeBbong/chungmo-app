@@ -35,7 +35,7 @@ class ScheduleDetailColumn extends StatelessWidget {
 
         // 👰‍♀️ & 🤵‍♂️ 신랑 & 신부
         Text(
-          '👰‍♀️ ${schedule.bride} & 🤵‍♂️ ${schedule.groom}',
+          '🤵‍♂️ ${schedule.groom} & 👰‍♀️ ${schedule.bride}',
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
 
