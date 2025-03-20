@@ -6,16 +6,11 @@
 import 'package:dotlottie_loader/dotlottie_loader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../core/di/di.dart';
-import '../../core/services/notification_service.dart';
 import '../../core/utils/constants.dart';
-import '../../domain/entities/schedule.dart';
-import '../../domain/usecases/schedule/get_schedule_by_link_usecase.dart';
 import '../controllers/create_viewmodel.dart';
 import '../theme/palette.dart';
 import '../widgets/schedule_detail_column.dart';
@@ -31,7 +26,6 @@ class CreatePage extends StatefulWidget {
 class _CreatePageState extends State<CreatePage> {
   final CreateController controller = Get.put(CreateController());
   final TextEditingController _textEditingController = TextEditingController();
-  final NotificationService notificationService = getIt<NotificationService>();
 
   @override
   void initState() {
@@ -46,27 +40,9 @@ class _CreatePageState extends State<CreatePage> {
     }
   }
 
-  void checkIfNotification() async {
-    /// testing terminated onClickNotification
-    final NotificationService notificationService =
-        getIt<NotificationService>();
-    FlutterLocalNotificationsPlugin notificationsPlugin =
-        notificationService.getLocalNotificationPlugin();
-    NotificationAppLaunchDetails? details =
-        await notificationsPlugin.getNotificationAppLaunchDetails();
-    if (details?.didNotificationLaunchApp ?? false) {
-      final String link = details!.notificationResponse!.payload!;
-      final GetScheduleByLinkUsecase getScheduleByLinkUsecase =
-          getIt<GetScheduleByLinkUsecase>();
-      final Schedule targetSchedule =
-          await getScheduleByLinkUsecase.execute(link);
-      Get.toNamed('/detail', arguments: targetSchedule);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    checkIfNotification();
+    controller.checkIfNotification();
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -76,20 +52,21 @@ class _CreatePageState extends State<CreatePage> {
           },
         ),
         actions: [
-          // Only shows notification button in `kDebugMode`.
+          /// Only shows notification button in `kDebugMode`.
           kDebugMode
               ? IconButton(
                   icon: const Icon(Icons.notifications),
                   onPressed: () {
-                    notificationService.addTestNotifySchedule(id: 1);
-                    notificationService.checkScheduledNotifications();
+                    controller.notificationService.addTestNotifySchedule(id: 1);
+                    controller.notificationService
+                        .checkScheduledNotifications();
                     Get.defaultDialog(
                       title: "알림",
                       middleText: "스케쥴이 등록되었습니다.",
                       textConfirm: "확인",
                       textCancel: "취소",
                       onConfirm: () {
-                        Get.back(); // 다이얼로그 닫기
+                        Get.back();
                       },
                       onCancel: () {},
                     );
