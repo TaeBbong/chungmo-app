@@ -92,8 +92,8 @@ Based on clean architecture
 
 ## Todo
 
-- [ ] push notification 클릭 후 넘어오는 페이지(detail) 설정
-- [ ] splash page 좀 더 길게..
+- [x] push notification 클릭 후 넘어오는 페이지(detail) 설정
+- [x] splash page 좀 더 길게..
 
 ## Release Note
 
