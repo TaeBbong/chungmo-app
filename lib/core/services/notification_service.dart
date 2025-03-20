@@ -19,6 +19,7 @@ abstract class NotificationService {
   FlutterLocalNotificationsPlugin getLocalNotificationPlugin();
   Future<void> getPermissions();
   Future<void> init();
+  Future<void> onDidReceiveNotificationResponse({required String link});
   Future<void> checkPreviousDayForNotify({required Schedule schedule});
   Future<void> addNotifySchedule(
       {required int id,
@@ -69,17 +70,31 @@ class NotificationServiceImpl implements NotificationService {
       settings,
       onDidReceiveNotificationResponse: (details) async {
         if (details.payload != null) {
-          final String link = details.payload!;
-          final GetScheduleByLinkUsecase getScheduleByLinkUsecase =
-              getIt<GetScheduleByLinkUsecase>();
-          final Schedule targetSchedule =
-              await getScheduleByLinkUsecase.execute(link);
-          Get.toNamed('/');
-          Get.toNamed('/detail', arguments: targetSchedule);
+          onDidReceiveNotificationResponse(link: details.payload!);
         }
       },
     );
     tz.initializeTimeZones();
+  }
+
+  /// `onDidReceiveNotificationResponse` handles onClickNotification from foreground/background state.
+  ///
+  /// Callback function for plugin.initialize(onDidReceiveNotificationResponse: () {}).
+  ///
+  /// Finds `targetSchedule` by key `link`, then routes to `detail` page.
+  /// If `targetSchedule` was not found by key `link`, routes to `create` page.
+  @override
+  Future<void> onDidReceiveNotificationResponse({required String link}) async {
+    final GetScheduleByLinkUsecase getScheduleByLinkUsecase =
+        getIt<GetScheduleByLinkUsecase>();
+    final Schedule? targetSchedule =
+        await getScheduleByLinkUsecase.execute(link);
+    if (targetSchedule != null) {
+      Get.toNamed('/');
+      Get.toNamed('/detail', arguments: targetSchedule);
+    } else {
+      Get.toNamed('/');
+    }
   }
 
   /// Add notification at calculated date(_timeZoneSetting).

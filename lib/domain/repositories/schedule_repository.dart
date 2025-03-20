@@ -17,7 +17,7 @@ abstract class ScheduleRepository {
   Future<void> saveSchedule(Schedule schedule);
 
   /// Get a `schedule` from local sqflite db by key `link` for routing `/detail`.
-  Future<Schedule> getScheduleByLink(String link);
+  Future<Schedule?> getScheduleByLink(String link);
 
   /// Get all `schedules` from local sqflite db for `ListView`
   Future<List<Schedule>> getSchedules();

@@ -8,7 +8,7 @@ class GetScheduleByLinkUsecase {
   final ScheduleRepository repository;
   GetScheduleByLinkUsecase(this.repository);
 
-  Future<Schedule> execute(String link) {
+  Future<Schedule?> execute(String link) {
     return repository.getScheduleByLink(link);
   }
 }

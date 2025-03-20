@@ -13,7 +13,7 @@ abstract class ScheduleLocalSource {
   Future<void> saveSchedule(ScheduleModel schedule);
   Future<List<ScheduleModel>> getSchedules();
   Future<List<ScheduleModel>> searchSchedule(String query);
-  Future<ScheduleModel> getScheduleByLink(String link);
+  Future<ScheduleModel?> getScheduleByLink(String link);
   Future<List<ScheduleModel>> getSchedulesByDate(DateTime date);
   Future<Map<DateTime, List<ScheduleModel>>> getSchedulesForMonth(
       DateTime date);
@@ -105,15 +105,21 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     return maps.map((map) => ScheduleModel.fromJson(map)).toList();
   }
 
+  /// `getScheduleByLink` finds `ScheduleModel` from db by key `link`.
+  ///
+  /// If no matching results, returns `null`.
   @override
-  Future<ScheduleModel> getScheduleByLink(String link) async {
+  Future<ScheduleModel?> getScheduleByLink(String link) async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       'schedules',
       where: "link = ?",
       whereArgs: [link],
     );
-    return ScheduleModel.fromJson(maps[0]);
+    if (maps.isEmpty) {
+      return null;
+    }
+    return ScheduleModel.fromJson(maps.first);
   }
 
   @override

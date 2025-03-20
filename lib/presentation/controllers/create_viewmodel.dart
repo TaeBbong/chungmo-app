@@ -54,6 +54,7 @@ class CreateController extends GetxController {
   /// `checkIfNotification` handles onClickNotification from terminated state.
   ///
   /// Detects NotificationAppLaunchDetails.response.payload, then routes to `detail` page.
+  /// If `targetSchedule` was not found by key `payload`, do nothing.
   void checkIfNotification() async {
     final NotificationService notificationService =
         getIt<NotificationService>();
@@ -65,9 +66,14 @@ class CreateController extends GetxController {
       final String link = details!.notificationResponse!.payload!;
       final GetScheduleByLinkUsecase getScheduleByLinkUsecase =
           getIt<GetScheduleByLinkUsecase>();
-      final Schedule targetSchedule =
+      final Schedule? targetSchedule =
           await getScheduleByLinkUsecase.execute(link);
-      Get.toNamed('/detail', arguments: targetSchedule);
+
+      if (targetSchedule != null) {
+        Get.toNamed('/detail', arguments: targetSchedule);
+      } else {
+        /// Do nothing.
+      }
     }
   }
 }
