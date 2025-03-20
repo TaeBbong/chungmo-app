@@ -22,11 +22,6 @@ abstract class ScheduleRepository {
   /// Get all `schedules` from local sqflite db for `ListView`
   Future<List<Schedule>> getSchedules();
 
-  /// [NEED TO REMOVE]
-  ///
-  /// Get `schedule` by DateTime `date`.
-  Future<List<Schedule>> getSchedulesByDate(DateTime date);
-
   /// Get monthly `schedules` from local sqflite db for `CalendarView`
   Future<Map<DateTime, List<Schedule>>> getSchedulesForMonth(DateTime date);
 

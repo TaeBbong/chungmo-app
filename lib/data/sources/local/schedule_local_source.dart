@@ -10,14 +10,25 @@ import 'package:path/path.dart';
 import '../../models/schedule/schedule_model.dart';
 
 abstract class ScheduleLocalSource {
+  /// Create `schedule` data row from model `ScheduleModel`.
   Future<void> saveSchedule(ScheduleModel schedule);
-  Future<List<ScheduleModel>> getSchedules();
-  Future<List<ScheduleModel>> searchSchedule(String query);
+
+  /// Update `schedule` data row from updated instance type `ScheduleModel`.
+  Future<void> editSchedule(ScheduleModel schedule);
+
+  /// Retrieves all `schedules` in type `List<ScheduleModel>`.
+  Future<List<ScheduleModel>> getAllSchedules();
+
+  /// Retrieve a `schedule` in type `ScheduleModel` by key `link`.
+  ///
+  /// If no matching results, returns `null`.
   Future<ScheduleModel?> getScheduleByLink(String link);
-  Future<List<ScheduleModel>> getSchedulesByDate(DateTime date);
+
+  /// Retrieve monthly `schedules` in type `Map<DateTime, List<ScheduleModel>>` by key `DateTime date`.
   Future<Map<DateTime, List<ScheduleModel>>> getSchedulesForMonth(
       DateTime date);
-  Future<void> editSchedule(ScheduleModel schedule);
+
+  /// Deletes `schedule` from db by key `link`.
   Future<void> deleteScheduleByLink(String link);
 }
 
@@ -25,13 +36,16 @@ abstract class ScheduleLocalSource {
 class ScheduleLocalSourceImpl implements ScheduleLocalSource {
   static Database? _database;
 
-  /// 📌 데이터베이스 초기화
+  /// Getter for internal `_database`.
+  ///
+  /// If not initialized, initDB then returns `_database`.
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDB();
     return _database!;
   }
 
+  /// Initialize DB with `CREATE TABLE schedules`.
   Future<Database> _initDB() async {
     final path = join(await getDatabasesPath(), 'schedule_database.db');
     return await openDatabase(
@@ -58,7 +72,7 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     );
   }
 
-  /// 📌 일정 저장
+  /// Create `schedule` data row from model `ScheduleModel`.
   @override
   Future<void> saveSchedule(ScheduleModel schedule) async {
     final db = await database;
@@ -69,6 +83,7 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     );
   }
 
+  /// Update `schedule` data row from updated instance type `ScheduleModel`.
   @override
   Future<void> editSchedule(ScheduleModel schedule) async {
     final db = await database;
@@ -81,9 +96,9 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     );
   }
 
-  /// 📌 일정 불러오기
+  /// Retrieves all `schedules` in type `List<ScheduleModel>`.
   @override
-  Future<List<ScheduleModel>> getSchedules() async {
+  Future<List<ScheduleModel>> getAllSchedules() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query('schedules');
 
@@ -92,20 +107,7 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     });
   }
 
-  /// 📌 특정 필드 기반 검색
-  @override
-  Future<List<ScheduleModel>> searchSchedule(String query) async {
-    final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      'schedules',
-      where: "groom LIKE ? OR bride LIKE ?",
-      whereArgs: ['%$query%', '%$query%'],
-    );
-
-    return maps.map((map) => ScheduleModel.fromJson(map)).toList();
-  }
-
-  /// `getScheduleByLink` finds `ScheduleModel` from db by key `link`.
+  /// Retrieve a `schedule` in type `ScheduleModel` by key `link`.
   ///
   /// If no matching results, returns `null`.
   @override
@@ -122,17 +124,9 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     return ScheduleModel.fromJson(maps.first);
   }
 
-  @override
-  Future<List<ScheduleModel>> getSchedulesByDate(DateTime date) async {
-    final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      'schedules',
-      where: "datetime = ?",
-      whereArgs: [date.toIso8601String()],
-    );
-    return maps.map((map) => ScheduleModel.fromJson(map)).toList();
-  }
-
+  /// Retrieve monthly `schedules` in type `Map<DateTime, List<ScheduleModel>>` by key `DateTime date`.
+  ///
+  /// If no matching results, returns empty list `[]`.
   @override
   Future<Map<DateTime, List<ScheduleModel>>> getSchedulesForMonth(
       DateTime date) async {
@@ -165,6 +159,7 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     return schedulesByDate;
   }
 
+  /// Deletes `schedule` from db by key `link`.
   @override
   Future<void> deleteScheduleByLink(String link) async {
     final db = await database;

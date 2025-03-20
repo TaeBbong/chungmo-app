@@ -89,7 +89,7 @@ void main() {
     test('should return list of schedules when local source is successful',
         () async {
       // Given
-      when(mockLocalSource.getSchedules())
+      when(mockLocalSource.getAllSchedules())
           .thenAnswer((_) async => [tScheduleModel]);
 
       // When
@@ -97,24 +97,7 @@ void main() {
 
       // Then
       expect(result, [tSchedule]);
-      verify(mockLocalSource.getSchedules()).called(1);
-    });
-  });
-
-  group('getSchedulesByDate', () {
-    final tDate = DateTime(2024, 6, 10);
-
-    test('should return list of schedules for a specific date', () async {
-      // Given
-      when(mockLocalSource.getSchedulesByDate(tDate))
-          .thenAnswer((_) async => [tScheduleModel]);
-
-      // When
-      final result = await repository.getSchedulesByDate(tDate);
-
-      // Then
-      expect(result, [tSchedule]);
-      verify(mockLocalSource.getSchedulesByDate(tDate)).called(1);
+      verify(mockLocalSource.getAllSchedules()).called(1);
     });
   });
 
