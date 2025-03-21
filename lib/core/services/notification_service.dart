@@ -101,6 +101,7 @@ class NotificationServiceImpl implements NotificationService {
   ///
   /// If calculated date is before now, doesn't make notification.
   /// If calculated date is now but time is over 11:00am, notify tomorrow 9:00am.
+  /// If calculated date is after today, notify schedule's previous day 9:00am.
   ///
   /// Called by ScheduleRepository; when user create/edit schedule.
   @override
@@ -110,7 +111,7 @@ class NotificationServiceImpl implements NotificationService {
     final int id = await UrlHash.hashUrlToInt(schedule.link);
     String title = "내일 ${schedule.groom} & ${schedule.bride}님의 결혼식이 있습니다!";
     tz.TZDateTime scheduleDate =
-        _timeZoneSetting(scheduleDate: schedule.date, hour: 11, minute: 0);
+        _timeZoneSetting(scheduleDate: schedule.date, hour: 9, minute: 0);
 
     final now = tz.TZDateTime.now(scheduleDate.location);
     final todayEleven = tz.TZDateTime(
