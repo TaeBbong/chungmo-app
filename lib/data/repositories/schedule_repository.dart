@@ -39,7 +39,9 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
   Future<void> saveSchedule(Schedule schedule) async {
     final scheduleModel = ScheduleModel(
       link: schedule.link,
-      thumbnail: schedule.thumbnail,
+      thumbnail: schedule.thumbnail.isEmpty
+          ? "https://img.freepik.com/free-vector/bride-groom-getting-married-illustration_23-2148404918.jpg?semt=ais_hybrid"
+          : schedule.thumbnail,
       groom: schedule.groom,
       bride: schedule.bride,
       date: schedule.date,

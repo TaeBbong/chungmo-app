@@ -100,7 +100,8 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
   @override
   Future<List<ScheduleModel>> getAllSchedules() async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('schedules');
+    final List<Map<String, dynamic>> maps =
+        await db.query('schedules', orderBy: 'datetime');
 
     return List.generate(maps.length, (i) {
       return ScheduleModel.fromJson(maps[i]);
