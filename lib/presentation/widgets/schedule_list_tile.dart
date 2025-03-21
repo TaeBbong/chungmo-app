@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -28,7 +29,7 @@ class ScheduleListTile extends StatelessWidget {
           contentPadding:
               const EdgeInsets.symmetric(vertical: 2, horizontal: 16),
           leading: CircleAvatar(
-            backgroundImage: NetworkImage(schedule.thumbnail),
+            backgroundImage: CachedNetworkImageProvider(schedule.thumbnail),
             backgroundColor: Colors.transparent,
           ),
           title: Text('${schedule.groom} & ${schedule.bride}'),

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/utils/date_converter.dart';
@@ -26,7 +27,7 @@ class ScheduleDetailColumn extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             image: DecorationImage(
-              image: NetworkImage(schedule.thumbnail),
+              image: CachedNetworkImageProvider(schedule.thumbnail),
               fit: BoxFit.cover,
             ),
           ),

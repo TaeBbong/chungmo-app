@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -187,7 +188,8 @@ class _DetailPageState extends State<DetailPage> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                    image: NetworkImage(controller.schedule.value!.thumbnail),
+                    image: CachedNetworkImageProvider(
+                        controller.schedule.value!.thumbnail),
                     fit: BoxFit.cover,
                   ),
                 ),
