@@ -106,8 +106,7 @@ Based on clean architecture
 
 ## Todo
 
-- [x] push notification 클릭 후 넘어오는 페이지(detail) 설정
-- [x] splash page 좀 더 길게..
+- [ ] detailPage에서 calendarPage로 Get.back 했을 때 (최대한) 자연스럽게 날짜 변경 사항 UI에 반영시키기
 
 ## Release Note
 
