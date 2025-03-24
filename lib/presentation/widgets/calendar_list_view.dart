@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../controllers/calendar_viewmodel.dart';
 import 'schedule_list_tile.dart';
 
+// ignore: use_key_in_widget_constructors
 class CalendarListView extends StatelessWidget {
   final CalendarController _controller = Get.find<CalendarController>();
   @override
