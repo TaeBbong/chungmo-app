@@ -158,7 +158,8 @@ class _DetailPageState extends State<DetailPage> {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
-        Get.offNamedUntil('/calendar', (route) => route.settings.name == '/');
+        Get.back(result: controller.schedule.value);
+        // Get.offNamedUntil('/calendar', (route) => route.settings.name == '/');
       },
       child: Scaffold(
         appBar: AppBar(
