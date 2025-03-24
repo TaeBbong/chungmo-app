@@ -113,8 +113,7 @@ Based on clean architecture
 
 ### Versioning
 
-1(major) . 0(minor) . 0(maintain) + 1(version code)
-여기서 version code는 계속 증가해야 함(안드로이드에 한하여)
+- [1.0.0+1]() 출시 등록(25.03.24.)
 
 ## Depends on
 
