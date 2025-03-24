@@ -31,11 +31,6 @@ class CalendarController extends GetxController {
   /// `allSchedules` contains whole schedules from db.
   var allSchedules = Rxn<List<Schedule>>();
 
-  @override
-  void onClose() {
-    // TODO: why close for states??
-  }
-
   void onDaySelected(DateTime selected, DateTime focused) {
     focusedDay.value = selected;
     selectedDay.value = selected;
@@ -71,6 +66,11 @@ class CalendarController extends GetxController {
     return;
   }
 
+  /// `onUpdateSchedule` is a callback when `Get.back()` called from '/detail' to '/calendar'.
+  ///
+  /// (Originally intended only for `updateSchedule` event, but works for every `Get.back()`..)
+  ///
+  /// (Not a big issue for small size of `schedules`, but need to be fixed.)
   Future<void> onUpdateSchedule({required Schedule updatedSchedule}) async {
     // Step 1. Update focusedDay, selectedDay for CalendarView.
     focusedDay.value = DateTime.parse(updatedSchedule.date);
