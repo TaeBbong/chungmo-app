@@ -106,8 +106,8 @@ Based on clean architecture
 
 ## Todo
 
-- [ ] detailPage에서 calendarPage로 Get.back 했을 때 (최대한) 자연스럽게 날짜 변경 사항 UI에 반영시키기
-- [ ] 이걸 하려면 Obx와 Rx의 이해가 필요하고, CalendarPage의 리팩토링이 필요할 듯(최대한 개별 위젯이 개별 상태에 영향을 받게끔)
+- [x] detailPage에서 calendarPage로 Get.back 했을 때 (최대한) 자연스럽게 날짜 변경 사항 UI에 반영시키기
+- [x] 이걸 하려면 Obx와 Rx의 이해가 필요하고, CalendarPage의 리팩토링이 필요할 듯(최대한 개별 위젯이 개별 상태에 영향을 받게끔)
 
 ## Release Note
 
