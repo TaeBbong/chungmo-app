@@ -158,3 +158,130 @@ WorkManager는 플러터에서 네이티브 백그라운드 서비스를 구현�
 보통 클린 아키텍처를 구성하는 폴더와 파일, 레이어가 있지만 꼭 이것에 국한될 필요는 없겠다고 생각했습니다.
 ~~물론 아직 잘 모르는 입장에서는 건방진 소리일 수도..~~
 그래서 가장 중요하게 거론되는 철학 1. 가장 안쪽의 레이어는 엔티티, 비즈니스 로직으로 구성되며 이들은 외부 의존성이 없거나 최소가 되어야 한다, 2. 이를 위해 추상화로 의존성 역전을 발생시킨다, 3. 각 파일/클래스는 한가지 책임을 가지게 하여 결합도를 낮춘다 를 우선적으로 지키게끔 설계하고 개발했습니다.
+
+최종적으로 선택한 프로젝트 구조는 다음과 같은데,
+
+```css
+📂 core/
+   ├── di/             (의존성 주입)
+   ├── services/       (앱 전역에서 사용되는 서비스(Push Notifications))
+   ├── utils/          (공통 유틸 함수)
+   ├── env.dart        (각종 설정 값 파일)
+
+📂 data/  
+   ├── mapper/         (데이터 모델 <-> 엔티티 변환기)
+   ├── models/         (데이터 모델)
+   ├── repositories/   (Repository 구현체)
+   ├── sources/        (로컬, 원격 데이터 소스)
+
+📂 domain/
+   ├── entities/       (순수 도메인 모델)
+   ├── repositories/   (추상 Repository)
+   ├── usecases/       (비즈니스 로직)
+
+📂 presentation/
+   ├── controllers/    (GetX ViewModel)
+   ├── pages/          (화면 UI)
+   ├── widgets/        (재사용 가능한 UI 컴포넌트)
+   ├── themes/         (앱 테마 관리)
+
+main.dart
+```
+
+나름 정석적인 아키텍처를 적용하게 되었습니다.
+
+여기서 고민된 부분이 몇 가지 있었습니다.
+
+##### 1. usecase는 필요한가??
+usecase는 repository에 선언된 기능 하나를 실행하여 presentation 레이어로 전달하는 역할을 수행합니다.
+파일 관점에서 보면 불필요한 파일이 하나 더 생기는 느낌이 있는데, UI에서 원하는 데이터의 용도를 명확히 한다는 점에서 의미가 있다고 결국 판단했습니다.
+적용된 사례를 살펴보면,
+```dart
+import '../../entities/schedule.dart';
+import '../../repositories/schedule_repository.dart';
+
+@injectable
+class AnalyzeLinkUsecase {
+    final ScheduleRepository repository;
+
+    AnalyzeLinkUsecase(this.repository);
+
+    Future<Schedule> execute(String link) {
+        return repository.analyzeLink(link);
+    }
+}
+```
+여기서 ScheduleRepository는,
+```dart
+import '../entities/schedule.dart';
+
+abstract class ScheduleRepository {
+/// Request to remote server with user input string `url`,
+///
+/// Response `schedule` json data.
+Future<Schedule> analyzeLink(String url);
+
+/// Save Schedule `schedule` into local sqflite db by type ScheduleModel.
+///
+/// Add notify schedule if `date` is after today.
+Future<void> saveSchedule(Schedule schedule);
+
+/// Get a `schedule` from local sqflite db by key `link` for routing `/detail`.
+Future<Schedule?> getScheduleByLink(String link);
+
+/// Get all `schedules` from local sqflite db for `ListView`
+Future<List<Schedule>> getSchedules();
+
+/// Get monthly `schedules` from local sqflite db for `CalendarView`
+Future<Map<DateTime, List<Schedule>>> getSchedulesForMonth(DateTime date);
+
+/// Edit `schedule` from local sqflite db.
+///
+/// Change notify schedule if `date` changed.
+Future<void> editSchedule(Schedule schedule);
+
+/// Delete `schedule` from local sqflite db.
+///
+/// Delete notify schedule.
+Future<void> deleteSchedule(String link);
+}
+```
+이와 같이 Schedule과 관련된 모든 데이터 처리/가공 기능을 구현합니다.
+이를 실제로 사용하는 부분은 controllers인데,
+```dart
+import '../../core/services/notification_service.dart';
+import '../../domain/entities/schedule.dart';
+import '../../domain/usecases/schedule/get_schedule_by_link_usecase.dart';
+import '../../domain/usecases/schedule/analyze_link_usecase.dart';
+import '../../domain/usecases/schedule/save_schedule_usecase.dart';
+
+class CreateController extends GetxController {
+final AnalyzeLinkUsecase analyzeLinkUseCase = getIt<AnalyzeLinkUsecase>();
+final SaveScheduleUsecase saveScheduleUseCase = getIt<SaveScheduleUsecase>();
+final NotificationService notificationService = getIt<NotificationService>();
+
+/// `analyzeLink` executes `analyzeLinkUseCase`
+/// then executes `saveScheduleUseCase`.
+Future<void> analyzeLink(String url) async {
+    isLoading(true);
+    isError(false);
+    try {
+        final Schedule scheduleFromRemote = await analyzeLinkUseCase.execute(url);
+        ...
+```
+이와 같이 필요한 곳에서 용도를 명확히 한다는 것이 usecase의 장점이라고 판단했습니다.
+usecase를 통해 데이터의 흐름과 용도가 읽기 쉽게 정리되었습니다.
+
+또한 controller에서 repository를 직접 참조하게 되면 data 영역에서의 변화가 presentation 영역에 영향을 미치게 됩니다.
+repository_impl(data) -> repository(domain) <- usecase(domain) <- controller(presentation)와 같은 구조에서,
+repository_impl(data) -> repository(domain) <- controller(presentation) 이와 같이 presentation을 한 차례 더 보호해주는 usecase가 없다면, repository의 변화가 presentation에 바로 영향을 주기 때문에 usecase는 있는게 더 낫겠다 판단했습니다.
+
+이는 반대로 presentation 영역에서의 변화에도 적용됩니다.
+지금은 usecase에서 어떤 가공 작업도 하지 않기 때문에 더욱 불필요하다고 느껴집니다.
+만약 repository에서 생산된 데이터를 사용하는 곳이 여러 곳이라고 가정해보면, 이를 각 presentation 사용처에서 사용할 수 있게 가공하는 역할이 필요합니다.
+이를 repository에서 구현하면 불필요한 코드가 반복되며, usecase에서 가공하는 것이 더 합리적입니다.
+
+여기까지의 내용으로 냉정하게 판단하면 현재 코드 구조에서는 usecase가 없어도 괜찮습니다.
+그러나 1. 여러 곳에서 하나의 데이터가 쓰이게 될 상황, 2. repository와 presentation의 변화 상황을 고려하면 usecase를 지금 도입하는게 부담은 아니라고 최종 판단했습니다.
+
+##### 2. data/model과 domain/entity의 구분은 필요한가??
