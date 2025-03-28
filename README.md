@@ -7,7 +7,7 @@
 <a href="">
 <img src="https://img.shields.io/badge/appstore-0D96F6?style=for-the-badge&logo=appstore&logoColor=white" >
 </a>
-<a href="">
+<a href="https://play.google.com/store/apps/details?id=com.taebbong.chungmo">
 <img src="https://img.shields.io/badge/google play-414141?style=for-the-badge&logo=googleplay&logoColor=white">
 </a>
 
