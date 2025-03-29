@@ -10,7 +10,7 @@ class ScheduleMapper {
       thumbnail: entity.thumbnail,
       groom: entity.groom,
       bride: entity.bride,
-      date: entity.date,
+      date: entity.date.toIso8601String(),
       location: entity.location,
     );
   }
@@ -22,7 +22,7 @@ class ScheduleMapper {
       thumbnail: model.thumbnail,
       groom: model.groom,
       bride: model.bride,
-      date: model.date,
+      date: DateTime.parse(model.date),
       location: model.location,
     );
   }

@@ -73,8 +73,8 @@ class CalendarController extends GetxController {
   /// (Not a big issue for small size of `schedules`, but need to be fixed.)
   Future<void> onUpdateSchedule({required Schedule updatedSchedule}) async {
     // Step 1. Update focusedDay, selectedDay for CalendarView.
-    focusedDay.value = DateTime.parse(updatedSchedule.date);
-    selectedDay.value = DateTime.parse(updatedSchedule.date);
+    focusedDay.value = updatedSchedule.date;
+    selectedDay.value = updatedSchedule.date;
 
     // Step 2. Update `allSchedules` by key `link`.
     final currentList = allSchedules.value ?? [];
@@ -90,12 +90,11 @@ class CalendarController extends GetxController {
     DateTime normalizeDate(DateTime dt) => DateTime(dt.year, dt.month, dt.day);
 
     final Map<DateTime, List<Schedule>> updatedMap = {};
-    final DateTime targetMonth = DateTime(
-        DateTime.parse(updatedSchedule.date).year,
-        DateTime.parse(updatedSchedule.date).month);
+    final DateTime targetMonth =
+        DateTime(updatedSchedule.date.year, updatedSchedule.date.month);
 
     for (final schedule in allSchedules.value!) {
-      final dateKey = normalizeDate(DateTime.parse(schedule.date));
+      final dateKey = normalizeDate(schedule.date);
       final DateTime scheduleMonth = DateTime(dateKey.year, dateKey.month);
       if (scheduleMonth == targetMonth) {
         if (!updatedMap.containsKey(dateKey)) {

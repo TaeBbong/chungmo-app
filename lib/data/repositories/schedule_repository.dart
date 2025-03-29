@@ -7,6 +7,7 @@
 import 'package:injectable/injectable.dart';
 
 import '../../core/services/notification_service.dart';
+import '../../core/utils/constants.dart';
 import '../../domain/entities/schedule.dart';
 import '../../domain/repositories/schedule_repository.dart';
 import '../mapper/schedule_mapper.dart';
@@ -37,16 +38,11 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Future<void> saveSchedule(Schedule schedule) async {
-    final scheduleModel = ScheduleModel(
-      link: schedule.link,
-      thumbnail: schedule.thumbnail.isEmpty
-          ? "https://img.freepik.com/free-vector/bride-groom-getting-married-illustration_23-2148404918.jpg?semt=ais_hybrid"
-          : schedule.thumbnail,
-      groom: schedule.groom,
-      bride: schedule.bride,
-      date: schedule.date,
-      location: schedule.location,
-    );
+    ScheduleModel scheduleModel = ScheduleMapper.toModel(schedule);
+    if (scheduleModel.thumbnail.isEmpty) {
+      scheduleModel =
+          scheduleModel.copyWith(thumbnail: Constants.defaultThumbnail);
+    }
     await localSource.saveSchedule(scheduleModel);
     await notificationService.checkPreviousDayForNotify(schedule: schedule);
   }
@@ -87,13 +83,7 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Future<void> editSchedule(Schedule schedule) async {
-    final scheduleModel = ScheduleModel(
-        link: schedule.link,
-        thumbnail: schedule.thumbnail,
-        groom: schedule.groom,
-        bride: schedule.bride,
-        date: schedule.date,
-        location: schedule.location);
+    ScheduleModel scheduleModel = ScheduleMapper.toModel(schedule);
     await localSource.editSchedule(scheduleModel);
     await notificationService.cancelNotifySchedule(link: schedule.link);
     await notificationService.checkPreviousDayForNotify(schedule: schedule);

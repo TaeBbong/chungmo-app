@@ -178,14 +178,13 @@ class NotificationServiceImpl implements NotificationService {
 
   /// Calculate targetDate = scheduleDate - 1, so user can get notification on day before event.
   tz.TZDateTime _timeZoneSetting({
-    required String scheduleDate,
+    required DateTime scheduleDate,
     required int hour,
     required int minute,
   }) {
     tz.initializeTimeZones();
     tz.setLocalLocation(tz.getLocation('Asia/Seoul'));
-    DateTime dateTime = DateTime.parse(scheduleDate);
-    DateTime previousDay = dateTime.subtract(const Duration(days: 1));
+    DateTime previousDay = scheduleDate.subtract(const Duration(days: 1));
     tz.TZDateTime target = tz.TZDateTime(tz.getLocation('Asia/Seoul'),
         previousDay.year, previousDay.month, previousDay.day, hour, minute);
     return target;

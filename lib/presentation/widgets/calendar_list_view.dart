@@ -19,11 +19,11 @@ class CalendarListView extends StatelessWidget {
 
             final now = DateTime.now();
             final pastSchedules = _controller.allSchedules.value!
-                .where((s) => DateTime.parse(s.date).isBefore(now))
+                .where((s) => s.date.isBefore(now))
                 .toList();
 
             final upcomingSchedules = _controller.allSchedules.value!
-                .where((s) => !DateTime.parse(s.date).isBefore(now))
+                .where((s) => !s.date.isBefore(now))
                 .toList();
 
             return ListView(

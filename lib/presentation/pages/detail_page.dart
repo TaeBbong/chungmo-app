@@ -35,7 +35,7 @@ class _DetailPageState extends State<DetailPage> {
     locationController.text = widget.schedule.location;
     linkController.text = widget.schedule.link;
     // payController.text = widget.schedule.pay;
-    selectedDate = DateTime.parse(widget.schedule.date);
+    selectedDate = widget.schedule.date;
   }
 
   @override
@@ -61,7 +61,7 @@ class _DetailPageState extends State<DetailPage> {
           thumbnail: controller.schedule.value!.thumbnail,
           groom: groomController.text,
           bride: brideController.text,
-          date: selectedDate!.toIso8601String(),
+          date: selectedDate!,
           location: locationController.text);
       controller.editSchedule(editedSchedule);
       editMode = false;
@@ -244,8 +244,7 @@ class _DetailPageState extends State<DetailPage> {
                         readOnly: true,
                         onTap: () => _selectDateTime(context),
                         controller: TextEditingController(
-                          text: DateConverter.generateKrDate(
-                              selectedDate!.toIso8601String()),
+                          text: DateConverter.generateKrDate(selectedDate!),
                         ), // 날짜를 TextField에 표시
                         decoration: customInputDecoration(
                           labelText: '날짜',
