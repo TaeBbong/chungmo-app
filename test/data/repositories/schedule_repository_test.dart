@@ -126,8 +126,7 @@ void main() {
     test('should NOT trigger notification if schedule date is in the past',
         () async {
       // Given
-      final pastSchedule =
-          tSchedule.copyWith(date: yesterday.toIso8601String());
+      final pastSchedule = tSchedule.copyWith(date: yesterday);
 
       when(mockLocalSource.editSchedule(any)).thenAnswer((_) async => {});
       when(mockNotificationService.cancelNotifySchedule(link: anyNamed('link')))
@@ -150,7 +149,7 @@ void main() {
 
     test('should NOT trigger notification if schedule date is today', () async {
       // Given
-      final todaySchedule = tSchedule.copyWith(date: today.toIso8601String());
+      final todaySchedule = tSchedule.copyWith(date: today);
 
       when(mockLocalSource.editSchedule(any)).thenAnswer((_) async => {});
       when(mockNotificationService.cancelNotifySchedule(link: anyNamed('link')))
@@ -173,8 +172,7 @@ void main() {
 
     test('should trigger notification if schedule date is tomorrow', () async {
       // Given
-      final tomorrowSchedule =
-          tSchedule.copyWith(date: tomorrow.toIso8601String());
+      final tomorrowSchedule = tSchedule.copyWith(date: tomorrow);
 
       when(mockLocalSource.editSchedule(any)).thenAnswer((_) async => {});
       when(mockNotificationService.cancelNotifySchedule(link: anyNamed('link')))
@@ -199,8 +197,7 @@ void main() {
     test('should trigger notification if schedule date is in the far future',
         () async {
       // Given
-      final futureSchedule =
-          tSchedule.copyWith(date: farFuture.toIso8601String());
+      final futureSchedule = tSchedule.copyWith(date: farFuture);
 
       when(mockLocalSource.editSchedule(any)).thenAnswer((_) async => {});
       when(mockNotificationService.cancelNotifySchedule(link: anyNamed('link')))
