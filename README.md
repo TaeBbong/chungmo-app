@@ -106,14 +106,24 @@ Based on clean architecture
 
 ## Todo
 
-- [x] detailPage에서 calendarPage로 Get.back 했을 때 (최대한) 자연스럽게 날짜 변경 사항 UI에 반영시키기
-- [x] 이걸 하려면 Obx와 Rx의 이해가 필요하고, CalendarPage의 리팩토링이 필요할 듯(최대한 개별 위젯이 개별 상태에 영향을 받게끔)
+### 1.0.1+2 배포 준비
+
+- [ ] 플레이스토어 경고 수정
+- [ ] entity의 date는 DateTime으로 정리, mapper에서 string <-> DateTime 수행하게끔
+- [ ] showcaseview 기반 온보딩 튜토리얼 만들기
+- [ ] 메인 페이지에서 등록된 일정 일부 보여지게끔
+- [ ] 푸시 알림 권한 강조 요청
+- [ ] iOS 배포를 위한 테스트
+
+### 1.1.0+3 배포 준비
+
+- [ ] 계좌 정보 파싱/추가
 
 ## Release Note
 
 ### Versioning
 
-- [1.0.0+1]() 출시 등록(25.03.24.)
+- [1.0.0+1]() 출시 완료(25.03.27.)
 
 ## Depends on
 
