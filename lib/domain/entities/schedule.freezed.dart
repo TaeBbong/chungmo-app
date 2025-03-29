@@ -20,7 +20,7 @@ mixin _$Schedule {
   String get thumbnail => throw _privateConstructorUsedError;
   String get groom => throw _privateConstructorUsedError;
   String get bride => throw _privateConstructorUsedError;
-  String get date => throw _privateConstructorUsedError;
+  DateTime get date => throw _privateConstructorUsedError;
   String get location => throw _privateConstructorUsedError;
 
   /// Create a copy of Schedule
@@ -40,7 +40,7 @@ abstract class $ScheduleCopyWith<$Res> {
       String thumbnail,
       String groom,
       String bride,
-      String date,
+      DateTime date,
       String location});
 }
 
@@ -86,7 +86,7 @@ class _$ScheduleCopyWithImpl<$Res, $Val extends Schedule>
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as String,
+              as DateTime,
       location: null == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
@@ -108,7 +108,7 @@ abstract class _$$ScheduleImplCopyWith<$Res>
       String thumbnail,
       String groom,
       String bride,
-      String date,
+      DateTime date,
       String location});
 }
 
@@ -152,7 +152,7 @@ class __$$ScheduleImplCopyWithImpl<$Res>
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as String,
+              as DateTime,
       location: null == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
@@ -181,7 +181,7 @@ class _$ScheduleImpl implements _Schedule {
   @override
   final String bride;
   @override
-  final String date;
+  final DateTime date;
   @override
   final String location;
 
@@ -224,7 +224,7 @@ abstract class _Schedule implements Schedule {
       required final String thumbnail,
       required final String groom,
       required final String bride,
-      required final String date,
+      required final DateTime date,
       required final String location}) = _$ScheduleImpl;
 
   @override
@@ -236,7 +236,7 @@ abstract class _Schedule implements Schedule {
   @override
   String get bride;
   @override
-  String get date;
+  DateTime get date;
   @override
   String get location;
 

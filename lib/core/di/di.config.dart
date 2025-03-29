@@ -56,20 +56,20 @@ extension GetItInjectableX on _i174.GetIt {
               gh<_i1014.ScheduleLocalSource>(),
               gh<_i109.NotificationService>(),
             ));
+    gh.factory<_i407.ListSchedulesUsecase>(
+        () => _i407.ListSchedulesUsecase(gh<_i561.ScheduleRepository>()));
+    gh.factory<_i933.GetScheduleByLinkUsecase>(
+        () => _i933.GetScheduleByLinkUsecase(gh<_i561.ScheduleRepository>()));
+    gh.factory<_i346.SaveScheduleUsecase>(
+        () => _i346.SaveScheduleUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i26.AnalyzeLinkUsecase>(
         () => _i26.AnalyzeLinkUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i867.DeleteScheduleUsecase>(
         () => _i867.DeleteScheduleUsecase(gh<_i561.ScheduleRepository>()));
-    gh.factory<_i542.EditScheduleUsecase>(
-        () => _i542.EditScheduleUsecase(gh<_i561.ScheduleRepository>()));
-    gh.factory<_i933.GetScheduleByLinkUsecase>(
-        () => _i933.GetScheduleByLinkUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i602.ListSchedulesByDateUsecase>(
         () => _i602.ListSchedulesByDateUsecase(gh<_i561.ScheduleRepository>()));
-    gh.factory<_i407.ListSchedulesUsecase>(
-        () => _i407.ListSchedulesUsecase(gh<_i561.ScheduleRepository>()));
-    gh.factory<_i346.SaveScheduleUsecase>(
-        () => _i346.SaveScheduleUsecase(gh<_i561.ScheduleRepository>()));
+    gh.factory<_i542.EditScheduleUsecase>(
+        () => _i542.EditScheduleUsecase(gh<_i561.ScheduleRepository>()));
     return this;
   }
 }
