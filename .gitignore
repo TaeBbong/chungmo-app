@@ -10,6 +10,10 @@ linux/
 macos/
 windows/
 
+# fvm
+.fvmrc
+.vscode/settings.json
+
 # Miscellaneous
 *.class
 *.log

@@ -1,6 +1,6 @@
 name: chungmo
 description: "모바일 청첩장 모음 앱 청모"
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
