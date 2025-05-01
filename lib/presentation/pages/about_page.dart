@@ -23,11 +23,6 @@ class AboutPage extends StatelessWidget {
                 subtitle: Text(version),
               ),
               const Divider(),
-              // ListTile(
-              //   title: const Text('오픈 소스 라이브러리'),
-              //   trailing: const Icon(Icons.chevron_right),
-              //   onTap: () => Get.toNamed('/open_source'),
-              // ),
               ListTile(
                 title: const Text('앱 업데이트'),
                 trailing: const Icon(Icons.chevron_right),
@@ -35,17 +30,6 @@ class AboutPage extends StatelessWidget {
                   Get.snackbar('알림', '최신 버전입니다.');
                 },
               ),
-              // const Divider(),
-              // ListTile(
-              //   title: const Text('개인정보처리방침'),
-              //   trailing: const Icon(Icons.chevron_right),
-              //   onTap: () => Get.toNamed('/privacy_policy'),
-              // ),
-              // ListTile(
-              //   title: const Text('이용 약관'),
-              //   trailing: const Icon(Icons.chevron_right),
-              //   onTap: () => Get.toNamed('/terms_of_service'),
-              // ),
               const Divider(),
               ListTile(
                 title: const Text('개발자 정보'),
@@ -56,6 +40,20 @@ class AboutPage extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class DeveloperInfoPage extends StatelessWidget {
+  const DeveloperInfoPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('개발자 정보')),
+      body: const Center(
+          child: Text(
+              '개발자: 권태형\n이메일: mok05289@naver.com\nCopyright 2025. TaeBbong All rights reserved.')),
     );
   }
 }

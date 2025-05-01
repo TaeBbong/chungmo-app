@@ -8,7 +8,6 @@ import 'core/di/di.dart';
 import 'core/env.dart';
 import 'core/services/notification_service.dart';
 import 'presentation/pages/about_page.dart';
-import 'presentation/pages/abouts/developer_info_page.dart';
 import 'presentation/pages/calendar_page.dart';
 import 'presentation/pages/create_page.dart';
 import 'presentation/pages/detail_page.dart';
