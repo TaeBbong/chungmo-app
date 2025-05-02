@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AppFont {
+abstract class AppFont {
   final String fontFamily;
   final Color fontColor;
 
