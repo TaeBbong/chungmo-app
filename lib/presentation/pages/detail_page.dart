@@ -244,7 +244,7 @@ class _DetailPageState extends State<DetailPage> {
                         readOnly: true,
                         onTap: () => _selectDateTime(context),
                         controller: TextEditingController(
-                          text: DateConverter.generateKrDate(selectedDate!),
+                          text: selectedDate!.krDate,
                         ), // 날짜를 TextField에 표시
                         decoration: customInputDecoration(
                           labelText: '날짜',
@@ -253,7 +253,7 @@ class _DetailPageState extends State<DetailPage> {
                       ),
                     )
                   : Text(
-                      '📅 ${DateConverter.generateKrDate(controller.schedule.value!.date)}',
+                      '📅 ${controller.schedule.value!.date.krDate}',
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                     ),
 

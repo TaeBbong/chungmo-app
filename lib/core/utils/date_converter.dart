@@ -1,13 +1,10 @@
 import 'constants.dart';
 
-class DateConverter {
-  /// Convert formatted string `date`(2020-11-27:11:00:00) into K-style string `formatDate`(11월 27일 11시 30분)
-  ///
-  /// Doesn't add `분` if minute == 0
-  static String generateKrDate(DateTime date) {
+extension DateExtension on DateTime {
+  String get krDate {
     String formatDate =
-        '${date.month}월 ${date.day}일(${Constants.weekdays[date.weekday - 1]}) ${date.hour}시';
-    if (date.minute != 0) formatDate += '${date.minute}분';
+        '$month월 $day일(${Constants.weekdays[weekday - 1]}) $hour시';
+    if (minute != 0) formatDate += '$minute분';
     return formatDate;
   }
 }

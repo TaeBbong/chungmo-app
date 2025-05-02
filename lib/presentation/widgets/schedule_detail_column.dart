@@ -42,7 +42,7 @@ class ScheduleDetailColumn extends StatelessWidget {
 
         // 📅 날짜
         Text(
-          '📅 ${DateConverter.generateKrDate(schedule.date)}',
+          '📅 ${schedule.date.krDate}',
           style: const TextStyle(fontSize: 14, color: Colors.grey),
         ),
 

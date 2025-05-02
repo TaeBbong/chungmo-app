@@ -14,7 +14,7 @@ class ScheduleListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String formatDate = DateConverter.generateKrDate(schedule.date);
+    final String formatDate = schedule.date.krDate;
 
     return GestureDetector(
       onTap: () async {
