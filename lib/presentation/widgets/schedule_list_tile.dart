@@ -3,7 +3,7 @@ import 'package:chungmo/presentation/controllers/calendar_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../core/utils/date_converter.dart';
+import '../../core/utils/date_extension.dart';
 import '../../domain/entities/schedule.dart';
 import '../theme/palette.dart';
 

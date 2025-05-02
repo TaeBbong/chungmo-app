@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/utils/date_converter.dart';
+import '../../core/utils/date_extension.dart';
 import '../../domain/entities/schedule.dart';
 
 class ScheduleDetailColumn extends StatelessWidget {

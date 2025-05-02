@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../domain/entities/schedule.dart';
-import '../../core/utils/date_converter.dart';
+import '../../core/utils/date_extension.dart';
 import '../controllers/detail_viewmodel.dart';
 
 class DetailPage extends StatefulWidget {
