@@ -16,15 +16,16 @@ import 'package:chungmo/data/sources/local/schedule_local_source.dart'
 import 'package:chungmo/data/sources/remote/schedule_remote_source.dart'
     as _i153;
 import 'package:chungmo/domain/repositories/schedule_repository.dart' as _i561;
-import 'package:chungmo/domain/usecases/analyze_link_usecase.dart' as _i26;
-import 'package:chungmo/domain/usecases/delete_schedule_usecase.dart' as _i867;
-import 'package:chungmo/domain/usecases/edit_schedule_usecase.dart' as _i542;
+import 'package:chungmo/domain/usecases/analyze_link_usecase.dart' as _i596;
+import 'package:chungmo/domain/usecases/count_schedules_usecase.dart' as _i877;
+import 'package:chungmo/domain/usecases/delete_schedule_usecase.dart' as _i993;
+import 'package:chungmo/domain/usecases/edit_schedule_usecase.dart' as _i15;
 import 'package:chungmo/domain/usecases/get_schedule_by_link_usecase.dart'
-    as _i933;
+    as _i634;
 import 'package:chungmo/domain/usecases/list_schedules_by_date_usecase.dart'
-    as _i602;
-import 'package:chungmo/domain/usecases/list_schedules_usecase.dart' as _i407;
-import 'package:chungmo/domain/usecases/save_schedule_usecase.dart' as _i346;
+    as _i437;
+import 'package:chungmo/domain/usecases/list_schedules_usecase.dart' as _i56;
+import 'package:chungmo/domain/usecases/save_schedule_usecase.dart' as _i485;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -51,20 +52,22 @@ extension GetItInjectableX on _i174.GetIt {
               gh<_i1014.ScheduleLocalSource>(),
               gh<_i109.NotificationService>(),
             ));
-    gh.factory<_i407.ListSchedulesUsecase>(
-        () => _i407.ListSchedulesUsecase(gh<_i561.ScheduleRepository>()));
-    gh.factory<_i933.GetScheduleByLinkUsecase>(
-        () => _i933.GetScheduleByLinkUsecase(gh<_i561.ScheduleRepository>()));
-    gh.factory<_i346.SaveScheduleUsecase>(
-        () => _i346.SaveScheduleUsecase(gh<_i561.ScheduleRepository>()));
-    gh.factory<_i26.AnalyzeLinkUsecase>(
-        () => _i26.AnalyzeLinkUsecase(gh<_i561.ScheduleRepository>()));
-    gh.factory<_i867.DeleteScheduleUsecase>(
-        () => _i867.DeleteScheduleUsecase(gh<_i561.ScheduleRepository>()));
-    gh.factory<_i602.ListSchedulesByDateUsecase>(
-        () => _i602.ListSchedulesByDateUsecase(gh<_i561.ScheduleRepository>()));
-    gh.factory<_i542.EditScheduleUsecase>(
-        () => _i542.EditScheduleUsecase(gh<_i561.ScheduleRepository>()));
+    gh.factory<_i596.AnalyzeLinkUsecase>(
+        () => _i596.AnalyzeLinkUsecase(gh<_i561.ScheduleRepository>()));
+    gh.factory<_i877.CountSchedulesUsecase>(
+        () => _i877.CountSchedulesUsecase(gh<_i561.ScheduleRepository>()));
+    gh.factory<_i993.DeleteScheduleUsecase>(
+        () => _i993.DeleteScheduleUsecase(gh<_i561.ScheduleRepository>()));
+    gh.factory<_i15.EditScheduleUsecase>(
+        () => _i15.EditScheduleUsecase(gh<_i561.ScheduleRepository>()));
+    gh.factory<_i634.GetScheduleByLinkUsecase>(
+        () => _i634.GetScheduleByLinkUsecase(gh<_i561.ScheduleRepository>()));
+    gh.factory<_i437.ListSchedulesByDateUsecase>(
+        () => _i437.ListSchedulesByDateUsecase(gh<_i561.ScheduleRepository>()));
+    gh.factory<_i56.ListSchedulesUsecase>(
+        () => _i56.ListSchedulesUsecase(gh<_i561.ScheduleRepository>()));
+    gh.factory<_i485.SaveScheduleUsecase>(
+        () => _i485.SaveScheduleUsecase(gh<_i561.ScheduleRepository>()));
     return this;
   }
 }
