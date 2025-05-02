@@ -118,8 +118,9 @@ Based on clean architecture
   - [ ] mixin(상속 없이 객체 기능 추가)
   - [ ] factory(비슷한 위젯),
   - [-] single import,
+  - [-] extension type
   - [ ] part/extension(viewmodel 분할)
-  - [ ] static util 클래스에 abstract, private constructor 적용
+  - [-] static util 클래스에 abstract, private constructor 적용
   - [ ] baseview, baseviewmodel 만들기?
   - [ ] base usecase도 만들 수 있겠지?
 - [ ] Isolate 활용(어디서?)
