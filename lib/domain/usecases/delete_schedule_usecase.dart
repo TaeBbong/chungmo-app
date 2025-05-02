@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import '../../repositories/schedule_repository.dart';
+import '../repositories/schedule_repository.dart';
 
 @injectable
 class DeleteScheduleUsecase {

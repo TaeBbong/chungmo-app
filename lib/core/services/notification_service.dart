@@ -1,4 +1,3 @@
-import 'package:chungmo/domain/usecases/schedule/get_schedule_by_link_usecase.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:injectable/injectable.dart';
@@ -6,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../../domain/usecases/usecases.dart';
 import '../../domain/entities/schedule.dart';
 import '../di/di.dart';
 import '../utils/url_hash.dart';

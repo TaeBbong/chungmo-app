@@ -7,12 +7,9 @@ import 'package:get/get.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../core/di/di.dart';
-
 import '../../core/services/notification_service.dart';
 import '../../domain/entities/schedule.dart';
-import '../../domain/usecases/schedule/get_schedule_by_link_usecase.dart';
-import '../../domain/usecases/schedule/analyze_link_usecase.dart';
-import '../../domain/usecases/schedule/save_schedule_usecase.dart';
+import '../../domain/usecases/usecases.dart';
 
 class CreateController extends GetxController {
   final AnalyzeLinkUsecase analyzeLinkUseCase = getIt<AnalyzeLinkUsecase>();
