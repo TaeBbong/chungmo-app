@@ -122,7 +122,7 @@ Based on clean architecture
   - [ ] part/extension(viewmodel 분할)
   - [-] static util 클래스에 abstract, private constructor 적용
   - [ ] baseview, baseviewmodel 만들기?
-  - [ ] base usecase도 만들 수 있겠지?
+  - [-] base usecase도 만들 수 있겠지?(abstract interface, implements)
 - [ ] Isolate 활용(어디서?)
   - 복잡한 위젯 빌드와 대용량 이미지 로드할 때 적용함(보통의 경우 불필요)
   - 그래도 걍 적용해보자(lottie랑 api call 동시에 해야하는 CreatePage / 이미지들 로드 해야하는 CalendarPage)
