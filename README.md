@@ -128,6 +128,8 @@ Based on clean architecture
   - 그래도 걍 적용해보자(lottie랑 api call 동시에 해야하는 CreatePage / 이미지들 로드 해야하는 CalendarPage)
 - 리팩토링 건마다 블로그 하나씩?
 
+- [-] 1차 리팩토링 완료
+
 ### 1.0.1+2 배포 준비
 
 - [-] entity의 date는 DateTime으로 정리, mapper에서 string <-> DateTime 수행하게끔
