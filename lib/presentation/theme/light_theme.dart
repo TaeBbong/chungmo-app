@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'palette.dart';
 
-class LightTheme {
+abstract class LightTheme {
   static ThemeData get theme {
     return ThemeData(
       brightness: Brightness.light,

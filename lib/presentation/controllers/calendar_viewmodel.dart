@@ -5,13 +5,11 @@
 /// control states for pages
 
 import 'package:flutter/material.dart';
-
-import '../../core/di/di.dart';
 import 'package:get/get.dart';
 
+import '../../core/di/di.dart';
 import '../../domain/entities/schedule.dart';
-import '../../domain/usecases/schedule/list_schedules_by_date_usecase.dart';
-import '../../domain/usecases/schedule/list_schedules_usecase.dart';
+import '../../domain/usecases/usecases.dart';
 
 class CalendarController extends GetxController {
   final ListSchedulesByDateUsecase listSchedulesByDateUsecase =

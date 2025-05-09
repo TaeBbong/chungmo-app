@@ -7,11 +7,7 @@ import 'package:get/get.dart';
 import 'core/di/di.dart';
 import 'core/env.dart';
 import 'core/services/notification_service.dart';
-import 'presentation/pages/about_page.dart';
-import 'presentation/pages/abouts/developer_info_page.dart';
-import 'presentation/pages/calendar_page.dart';
-import 'presentation/pages/create_page.dart';
-import 'presentation/pages/detail_page.dart';
+import 'presentation/pages/pages.dart';
 import 'presentation/theme/dark_theme.dart';
 import 'presentation/theme/light_theme.dart';
 

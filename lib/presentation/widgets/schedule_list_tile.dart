@@ -3,7 +3,7 @@ import 'package:chungmo/presentation/controllers/calendar_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../core/utils/date_converter.dart';
+import '../../core/utils/date_extension.dart';
 import '../../domain/entities/schedule.dart';
 import '../theme/palette.dart';
 
@@ -14,7 +14,7 @@ class ScheduleListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String formatDate = DateConverter.generateKrDate(schedule.date);
+    final String formatDate = schedule.date.krDate;
 
     return GestureDetector(
       onTap: () async {

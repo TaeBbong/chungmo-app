@@ -1,4 +1,3 @@
-import 'package:chungmo/domain/usecases/schedule/get_schedule_by_link_usecase.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:injectable/injectable.dart';
@@ -6,9 +5,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../../domain/usecases/usecases.dart';
 import '../../domain/entities/schedule.dart';
 import '../di/di.dart';
-import '../utils/url_hash.dart';
+import '../utils/string_extension.dart';
 
 /// Abstract class for NotificationService
 ///
@@ -108,7 +108,7 @@ class NotificationServiceImpl implements NotificationService {
   Future<void> checkPreviousDayForNotify({
     required Schedule schedule,
   }) async {
-    final int id = await UrlHash.hashUrlToInt(schedule.link);
+    final int id = await schedule.link.hashUrl;
     String title = "내일 ${schedule.groom} & ${schedule.bride}님의 결혼식이 있습니다!";
     tz.TZDateTime scheduleDate =
         _timeZoneSetting(scheduleDate: schedule.date, hour: 9, minute: 0);
@@ -172,7 +172,7 @@ class NotificationServiceImpl implements NotificationService {
   /// Called by ScheduleRepository when user edit/delete schedule.
   @override
   Future<void> cancelNotifySchedule({required String link}) async {
-    final int id = await UrlHash.hashUrlToInt(link);
+    final int id = await link.hashUrl;
     await _localNotifyPlugin.cancel(id);
   }
 

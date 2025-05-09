@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/utils/date_converter.dart';
+import '../../core/utils/date_extension.dart';
 import '../../domain/entities/schedule.dart';
 
 class ScheduleDetailColumn extends StatelessWidget {
@@ -42,7 +42,7 @@ class ScheduleDetailColumn extends StatelessWidget {
 
         // 📅 날짜
         Text(
-          '📅 ${DateConverter.generateKrDate(schedule.date)}',
+          '📅 ${schedule.date.krDate}',
           style: const TextStyle(fontSize: 14, color: Colors.grey),
         ),
 

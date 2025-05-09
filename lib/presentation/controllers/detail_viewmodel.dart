@@ -2,8 +2,7 @@ import 'package:get/get.dart';
 
 import '../../core/di/di.dart';
 import '../../domain/entities/schedule.dart';
-import '../../domain/usecases/schedule/delete_schedule_usecase.dart';
-import '../../domain/usecases/schedule/edit_schedule_usecase.dart';
+import '../../domain/usecases/usecases.dart';
 
 class DetailController extends GetxController {
   final EditScheduleUsecase editScheduleUsecase = getIt<EditScheduleUsecase>();
