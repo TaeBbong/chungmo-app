@@ -2,7 +2,6 @@
 /// Pages(widget)
 ///
 /// Presentation layer connected with controller
-
 import 'package:dotlottie_loader/dotlottie_loader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/services/tutorial_manager.dart';
 import '../../core/utils/constants.dart';
 import '../controllers/create_viewmodel.dart';
 import '../theme/palette.dart';
@@ -19,7 +19,6 @@ class CreatePage extends StatefulWidget {
   const CreatePage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _CreatePageState createState() => _CreatePageState();
 }
 
@@ -27,9 +26,22 @@ class _CreatePageState extends State<CreatePage> {
   final CreateController controller = Get.put(CreateController());
   final TextEditingController _textEditingController = TextEditingController();
 
+  late TutorialManager tutorialManager;
+  final GlobalKey linkInputKey = GlobalKey(debugLabel: 'link-input');
+  final GlobalKey resultBodyKey = GlobalKey(debugLabel: 'result-body');
+  final GlobalKey calendarPageKey = GlobalKey(debugLabel: 'calendar-page');
+
   @override
   void initState() {
     super.initState();
+    tutorialManager = TutorialManager(
+      context: context,
+      linkInputKey: linkInputKey,
+      resultBodyKey: resultBodyKey,
+      calendarPageKey: calendarPageKey,
+    );
+    tutorialManager.initTargets();
+    tutorialManager.showTutorial();
   }
 
   void _onSubmit() {
@@ -43,9 +55,11 @@ class _CreatePageState extends State<CreatePage> {
   @override
   Widget build(BuildContext context) {
     controller.checkIfNotification();
+    // showTutorial();
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
+          key: calendarPageKey,
           icon: const Icon(Icons.calendar_today),
           onPressed: () {
             Get.toNamed('/calendar');
@@ -173,15 +187,16 @@ class _CreatePageState extends State<CreatePage> {
                             ),
                           ],
                         )
-                      : const Column(
+                      : Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
+                              key: resultBodyKey,
                               '모바일 청첩장을 첨부해주세요.',
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold),
                             ),
-                            Text(
+                            const Text(
                               'AI가 자동으로 일정을 분석해드릴게요.',
                               style: TextStyle(fontSize: 14),
                             )
@@ -218,6 +233,7 @@ class _CreatePageState extends State<CreatePage> {
                 ),
               )
             : Padding(
+                key: linkInputKey,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 child: Container(
