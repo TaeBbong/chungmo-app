@@ -9,6 +9,8 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/di/di.dart';
+import '../../core/services/preferences_checker.dart';
 import '../../core/services/tutorial_manager.dart';
 import '../../core/utils/constants.dart';
 import '../controllers/create_viewmodel.dart';
@@ -24,6 +26,7 @@ class CreatePage extends StatefulWidget {
 
 class _CreatePageState extends State<CreatePage> {
   final CreateController controller = Get.put(CreateController());
+  final PreferencesChecker preferencesChecker = getIt<PreferencesChecker>();
   final TextEditingController _textEditingController = TextEditingController();
 
   late TutorialManager tutorialManager;
@@ -34,14 +37,22 @@ class _CreatePageState extends State<CreatePage> {
   @override
   void initState() {
     super.initState();
-    tutorialManager = TutorialManager(
-      context: context,
-      linkInputKey: linkInputKey,
-      resultBodyKey: resultBodyKey,
-      calendarPageKey: calendarPageKey,
-    );
-    tutorialManager.initTargets();
-    tutorialManager.showTutorial();
+    _initTutorial();
+  }
+
+  Future<void> _initTutorial() async {
+    final bool isFirst = !(await preferencesChecker.hasKey('is_first'));
+    if (isFirst) {
+      tutorialManager = TutorialManager(
+        context: context,
+        linkInputKey: linkInputKey,
+        resultBodyKey: resultBodyKey,
+        calendarPageKey: calendarPageKey,
+      );
+      tutorialManager.initTargets();
+      tutorialManager.showTutorial();
+      await preferencesChecker.setKey('is_first');
+    }
   }
 
   void _onSubmit() {
@@ -55,7 +66,6 @@ class _CreatePageState extends State<CreatePage> {
   @override
   Widget build(BuildContext context) {
     controller.checkIfNotification();
-    // showTutorial();
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
