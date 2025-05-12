@@ -1,6 +1,6 @@
 # _chungmo_ project with clean architecture
 
-![previewed](./designs/previews/brand.jpeg)
+![previewed](./designs/previews_android/brand.jpeg)
 
 모바일 청첩장 링크를 첨부하면 GPT가 일정을 파싱하여 캘린더에 등록하는 앱입니다.
 
@@ -13,7 +13,7 @@
 
 ## Features
 
-![merged](./designs/previews/merged.jpeg)
+![merged](./designs/previews_android/merged.jpeg)
 
 1. CreatePage : 사용자가 링크를 입력하면 -> 서버에 링크를 보내 컨텐츠를 파싱/분석하며 그동안 로딩 애니메이션 보여줌 -> 서버로부터 결과 나오면 결과를 보여주며 해당 결과를 로컬 저장소(db)에 저장
 2. CalendarPage : CreatePage 왼쪽 상단 달력 아이콘 버튼을 통해 접근됨.
