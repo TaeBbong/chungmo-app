@@ -24,9 +24,9 @@
 ### App Screenshots
 
 | ![](./designs/screenshots/splash.jpg) | ![](./designs/screenshots/permission.jpg) | ![](./designs/screenshots/main.jpg)     | ![](./designs/screenshots/loading.jpg) |
-| ------------------------------------- | ----------------------------------------- | --------------------------------------- | -------------------------------------- | --- | ---------------------- | ---------------------- | ---------------------- | ---------------------- |
-| ![](./designs/screenshots/result.jpg) | ![](./designs/screenshots/done.jpg)       | ![](./designs/screenshots/calendar.jpg) | ![](./designs/screenshots/list.jpg)    |     | ---------------------- | ---------------------- | ---------------------- | ---------------------- |
-| ![](./designs/screenshots/detail.jpg) | ![](./designs/screenshots/edit.jpg)       | ![]()                                   | ![]()                                  |
+| ------------------------------------- | ----------------------------------------- | --------------------------------------- | -------------------------------------- |
+| ![](./designs/screenshots/result.jpg) | ![](./designs/screenshots/done.jpg)       | ![](./designs/screenshots/calendar.jpg) | ![](./designs/screenshots/list.jpg)    |
+| ![](./designs/screenshots/detail.jpg) | ![](./designs/screenshots/edit.jpg)       |                                         |                                        |
 
 ## Get Started
 
