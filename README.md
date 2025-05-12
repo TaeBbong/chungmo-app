@@ -146,7 +146,7 @@ Based on clean architecture
 
 ### Versioning
 
-- [1.0.1+1]() 출시 완료(25.05.12.)
+- [1.0.1+1]() 출시 완료(25.05.12.) / playstore, appstore 배포 완료
 - [1.0.0+1]() 출시 완료(25.03.27.)
 
 ## Depends on
