@@ -133,10 +133,10 @@ Based on clean architecture
 ### 1.0.1+2 배포 준비
 
 - [-] entity의 date는 DateTime으로 정리, mapper에서 string <-> DateTime 수행하게끔
-- [ ] showcaseview 기반 온보딩 튜토리얼 만들기
+- [-] showcaseview 기반 온보딩 튜토리얼 만들기
 - [ ] 메인 페이지에서 등록된 일정 일부 보여지게끔
 - [ ] 푸시 알림 권한 강조 요청
-- [ ] iOS 배포를 위한 테스트
+- [-] iOS 배포를 위한 테스트
 
 ### 1.1.0+3 배포 준비
 
@@ -146,6 +146,7 @@ Based on clean architecture
 
 ### Versioning
 
+- [1.0.1+1]() 출시 완료(25.05.12.)
 - [1.0.0+1]() 출시 완료(25.03.27.)
 
 ## Depends on
