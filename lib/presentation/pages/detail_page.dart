@@ -142,8 +142,7 @@ class _DetailPageState extends State<DetailPage> {
             onPressed: () {
               controller.deleteSchedule(controller.schedule.value!.link);
               Get.snackbar('성공', '일정이 삭제되었습니다.');
-              Get.offNamedUntil(
-                  '/calendar', (route) => route.settings.name == '/');
+              Get.until((route) => route.settings.name == '/calendar');
             },
             child: const Text("삭제", style: TextStyle(color: Colors.white)),
           ),
@@ -158,8 +157,7 @@ class _DetailPageState extends State<DetailPage> {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
-        Get.back(result: controller.schedule.value);
-        // Get.offNamedUntil('/calendar', (route) => route.settings.name == '/');
+        Get.until((route) => route.settings.name == '/calendar');
       },
       child: Scaffold(
         appBar: AppBar(

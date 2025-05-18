@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chungmo/presentation/controllers/calendar_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,10 +16,8 @@ class ScheduleListTile extends StatelessWidget {
     final String formatDate = schedule.date.krDate;
 
     return GestureDetector(
-      onTap: () async {
-        final updated = await Get.toNamed('/detail', arguments: schedule);
-        final calendarController = Get.find<CalendarController>();
-        calendarController.onUpdateSchedule(updatedSchedule: updated);
+      onTap: () {
+        Get.toNamed('/detail', arguments: schedule);
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),

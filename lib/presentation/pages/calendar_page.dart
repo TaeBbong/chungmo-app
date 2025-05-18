@@ -20,8 +20,6 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   void initState() {
     super.initState();
-    _controller.getSchedulesForMonth(_controller.focusedDay.value);
-    _controller.getAllSchedules();
   }
 
   @override

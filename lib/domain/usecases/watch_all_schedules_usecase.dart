@@ -5,12 +5,11 @@ import '../entities/schedule.dart';
 import '../repositories/schedule_repository.dart';
 
 @injectable
-class ListSchedulesUsecase implements NoParamUsecase<Future<List<Schedule>>> {
+class WatchAllSchedulesUsecase
+    implements NoParamUsecase<Stream<List<Schedule>>> {
   final ScheduleRepository repository;
-  ListSchedulesUsecase(this.repository);
+  WatchAllSchedulesUsecase(this.repository);
 
   @override
-  Future<List<Schedule>> execute() {
-    return repository.getSchedules();
-  }
+  Stream<List<Schedule>> execute() => repository.getAllSchedules();
 }

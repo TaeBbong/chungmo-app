@@ -52,6 +52,23 @@ class MockScheduleLocalSource extends _i1.Mock
   }
 
   @override
+  _i5.Stream<List<_i2.ScheduleModel>> get allSchedulesStream =>
+      (super.noSuchMethod(
+            Invocation.getter(#allSchedulesStream),
+            returnValue: _i5.Stream<List<_i2.ScheduleModel>>.empty(),
+          )
+          as _i5.Stream<List<_i2.ScheduleModel>>);
+
+  @override
+  _i5.Future<void> emitAllSchedules() =>
+      (super.noSuchMethod(
+            Invocation.method(#emitAllSchedules, []),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
   _i5.Future<void> saveSchedule(_i2.ScheduleModel? schedule) =>
       (super.noSuchMethod(
             Invocation.method(#saveSchedule, [schedule]),
@@ -70,14 +87,13 @@ class MockScheduleLocalSource extends _i1.Mock
           as _i5.Future<void>);
 
   @override
-  _i5.Future<List<_i2.ScheduleModel>> getAllSchedules() =>
+  _i5.Future<void> deleteScheduleByLink(String? link) =>
       (super.noSuchMethod(
-            Invocation.method(#getAllSchedules, []),
-            returnValue: _i5.Future<List<_i2.ScheduleModel>>.value(
-              <_i2.ScheduleModel>[],
-            ),
+            Invocation.method(#deleteScheduleByLink, [link]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i5.Future<List<_i2.ScheduleModel>>);
+          as _i5.Future<void>);
 
   @override
   _i5.Future<_i2.ScheduleModel?> getScheduleByLink(String? link) =>
@@ -88,22 +104,9 @@ class MockScheduleLocalSource extends _i1.Mock
           as _i5.Future<_i2.ScheduleModel?>);
 
   @override
-  _i5.Future<Map<DateTime, List<_i2.ScheduleModel>>> getSchedulesForMonth(
-    DateTime? date,
-  ) =>
+  _i5.Future<void> refresh() =>
       (super.noSuchMethod(
-            Invocation.method(#getSchedulesForMonth, [date]),
-            returnValue:
-                _i5.Future<Map<DateTime, List<_i2.ScheduleModel>>>.value(
-                  <DateTime, List<_i2.ScheduleModel>>{},
-                ),
-          )
-          as _i5.Future<Map<DateTime, List<_i2.ScheduleModel>>>);
-
-  @override
-  _i5.Future<void> deleteScheduleByLink(String? link) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteScheduleByLink, [link]),
+            Invocation.method(#refresh, []),
             returnValue: _i5.Future<void>.value(),
             returnValueForMissingStub: _i5.Future<void>.value(),
           )
