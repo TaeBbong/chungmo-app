@@ -127,8 +127,16 @@ Based on clean architecture
   - 복잡한 위젯 빌드와 대용량 이미지 로드할 때 적용함(보통의 경우 불필요)
   - 그래도 걍 적용해보자(lottie랑 api call 동시에 해야하는 CreatePage / 이미지들 로드 해야하는 CalendarPage)
 - 리팩토링 건마다 블로그 하나씩?
-
 - [x] 1차 리팩토링 완료
+
+### Features
+
+- [ ] 백엔드 요청 안정화
+  - [ ] 백엔드에서 요청 오래 걸릴 때(에러, cold state이거나) 빠르게 끊고 새로 요청 보내는 로직
+- [ ] 테스트 코드 재작성
+  - [ ] Stream 기반 테스트 코드 재작성
+
+## Release
 
 ### 1.0.1+2 배포 준비
 
