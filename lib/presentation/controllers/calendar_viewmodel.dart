@@ -4,7 +4,8 @@
 /// Implementation of controllers that receive data from usecase,
 /// control states for pages
 
-import 'package:flutter/material.dart';
+import 'dart:async';
+
 import 'package:get/get.dart';
 
 import '../../core/di/di.dart';
@@ -12,10 +13,10 @@ import '../../domain/entities/schedule.dart';
 import '../../domain/usecases/usecases.dart';
 
 class CalendarController extends GetxController {
-  final ListSchedulesByDateUsecase listSchedulesByDateUsecase =
-      getIt<ListSchedulesByDateUsecase>();
-  final ListSchedulesUsecase listSchedulesUsecase =
-      getIt<ListSchedulesUsecase>();
+  final WatchAllSchedulesUsecase watchAllSchedulesUsecase =
+      getIt<WatchAllSchedulesUsecase>();
+  final WatchSchedulesForMonthUsecase watchMonthUsecase =
+      getIt<WatchSchedulesForMonthUsecase>();
 
   /// `isLoading` checks if getSchedules*() from local data source is running.
   var isLoading = false.obs;
@@ -24,83 +25,54 @@ class CalendarController extends GetxController {
   Rx<DateTime> selectedDay = DateTime.now().obs;
 
   /// `schedulesWithDate` contains schedules filtered by month.
-  var schedulesWithDate = Rxn<Map<DateTime, List<Schedule>>>();
+  // var schedulesWithDate = Rxn<Map<DateTime, List<Schedule>>>();
 
-  /// `allSchedules` contains whole schedules from db.
-  var allSchedules = Rxn<List<Schedule>>();
+  RxList<Schedule> allSchedules = <Schedule>[].obs;
+  RxMap<DateTime, List<Schedule>> currentMonthSchedules =
+      <DateTime, List<Schedule>>{}.obs;
+
+  StreamSubscription? _allSub;
+  StreamSubscription? _monthSub;
+
+  RxMap<DateTime, List<Schedule>> schedulesWithDate =
+      <DateTime, List<Schedule>>{}.obs;
+
+  @override
+  void onInit() {
+    listenAllSchedules();
+    listenSchedulesForMonth(focusedDay.value);
+    super.onInit();
+  }
 
   void onDaySelected(DateTime selected, DateTime focused) {
     focusedDay.value = selected;
     selectedDay.value = selected;
+    listenSchedulesForMonth(selected);
   }
 
   void onPageChanged(DateTime focused) {
     focusedDay.value = focused;
+    listenSchedulesForMonth(focused);
   }
 
-  /// `getSchedulesForMonth` executes `listSchedulesByDateUsecase`
-  /// then updates `schedulesWithDate`.
-  Future<void> getSchedulesForMonth(DateTime date) async {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      isLoading(true);
+  void listenAllSchedules() {
+    _allSub?.cancel();
+    _allSub = watchAllSchedulesUsecase.execute().listen((list) {
+      allSchedules.value = list;
     });
-    schedulesWithDate.value = await listSchedulesByDateUsecase.execute(date);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      isLoading(false);
-    });
-    return;
   }
 
-  /// `getAllSchedules` executes `listSchedulesUsecase`
-  /// then updates `allSchedules`.
-  Future<void> getAllSchedules() async {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      isLoading(true);
+  void listenSchedulesForMonth(DateTime month) {
+    _monthSub?.cancel();
+    _monthSub = watchMonthUsecase.execute(month).listen((map) {
+      currentMonthSchedules.value = map;
     });
-    allSchedules.value = await listSchedulesUsecase.execute();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      isLoading(false);
-    });
-    return;
   }
 
-  /// `onUpdateSchedule` is a callback when `Get.back()` called from '/detail' to '/calendar'.
-  ///
-  /// (Originally intended only for `updateSchedule` event, but works for every `Get.back()`..)
-  ///
-  /// (Not a big issue for small size of `schedules`, but need to be fixed.)
-  Future<void> onUpdateSchedule({required Schedule updatedSchedule}) async {
-    // Step 1. Update focusedDay, selectedDay for CalendarView.
-    focusedDay.value = updatedSchedule.date;
-    selectedDay.value = updatedSchedule.date;
-
-    // Step 2. Update `allSchedules` by key `link`.
-    final currentList = allSchedules.value ?? [];
-    final updatedList = currentList.map((s) {
-      if (s.link == updatedSchedule.link) {
-        return updatedSchedule;
-      }
-      return s;
-    }).toList();
-    allSchedules.value = updatedList;
-
-    // Step 3. Update `schedulesWithDate` from updated `allSchedules`.
-    DateTime normalizeDate(DateTime dt) => DateTime(dt.year, dt.month, dt.day);
-
-    final Map<DateTime, List<Schedule>> updatedMap = {};
-    final DateTime targetMonth =
-        DateTime(updatedSchedule.date.year, updatedSchedule.date.month);
-
-    for (final schedule in allSchedules.value!) {
-      final dateKey = normalizeDate(schedule.date);
-      final DateTime scheduleMonth = DateTime(dateKey.year, dateKey.month);
-      if (scheduleMonth == targetMonth) {
-        if (!updatedMap.containsKey(dateKey)) {
-          updatedMap[dateKey] = [];
-        }
-        updatedMap[dateKey]!.add(schedule);
-      }
-    }
-    schedulesWithDate.value = updatedMap;
+  @override
+  void onClose() {
+    _allSub?.cancel();
+    _monthSub?.cancel();
+    super.onClose();
   }
 }
