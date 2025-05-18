@@ -138,15 +138,15 @@ Based on clean architecture
 - [ ] 푸시 알림 권한 강조 요청
 - [-] iOS 배포를 위한 테스트
 
-### 1.1.0+3 배포 준비
+### 1.0.2+3 배포 준비
 
-- [ ] 계좌 정보 파싱/추가
+- [ ] hotfix: 일정 등록 후 제대로 안나오는 것 해결(stream 적용하기)
 
 ## Release Note
 
 ### Versioning
 
-- [1.0.1+1]() 출시 완료(25.05.12.) / playstore, appstore 배포 완료
+- [1.0.1+2]() 출시 완료(25.05.12.) / playstore, appstore 배포 완료
 - [1.0.0+1]() 출시 완료(25.03.27.)
 
 ## Depends on
