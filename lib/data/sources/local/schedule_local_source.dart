@@ -3,38 +3,40 @@
 ///
 /// CRUD based data source implement with remote/local source
 
+import 'dart:async';
+
 import 'package:injectable/injectable.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
 import '../../models/schedule/schedule_model.dart';
 
 abstract class ScheduleLocalSource {
+  Future<void> emitAllSchedules();
+
   /// Create `schedule` data row from model `ScheduleModel`.
   Future<void> saveSchedule(ScheduleModel schedule);
 
   /// Update `schedule` data row from updated instance type `ScheduleModel`.
   Future<void> editSchedule(ScheduleModel schedule);
 
-  /// Retrieves all `schedules` in type `List<ScheduleModel>`.
-  Future<List<ScheduleModel>> getAllSchedules();
-
-  /// Retrieve a `schedule` in type `ScheduleModel` by key `link`.
-  ///
-  /// If no matching results, returns `null`.
-  Future<ScheduleModel?> getScheduleByLink(String link);
-
-  /// Retrieve monthly `schedules` in type `Map<DateTime, List<ScheduleModel>>` by key `DateTime date`.
-  Future<Map<DateTime, List<ScheduleModel>>> getSchedulesForMonth(
-      DateTime date);
-
   /// Deletes `schedule` from db by key `link`.
   Future<void> deleteScheduleByLink(String link);
+
+  Stream<List<ScheduleModel>> get allSchedulesStream;
+
+  Future<ScheduleModel?> getScheduleByLink(String link);
+
+  Future<void> refresh();
 }
 
 @LazySingleton(as: ScheduleLocalSource)
 class ScheduleLocalSourceImpl implements ScheduleLocalSource {
   static Database? _database;
+
+  final _controller = StreamController<List<ScheduleModel>>.broadcast();
+
+  @override
+  Stream<List<ScheduleModel>> get allSchedulesStream => _controller.stream;
 
   /// Getter for internal `_database`.
   ///
@@ -72,6 +74,14 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     );
   }
 
+  @override
+  Future<void> emitAllSchedules() async {
+    final db = await database;
+    final maps = await db.query('schedules');
+    final list = maps.map((e) => ScheduleModel.fromJson(e)).toList();
+    _controller.add(list);
+  }
+
   /// Create `schedule` data row from model `ScheduleModel`.
   @override
   Future<void> saveSchedule(ScheduleModel schedule) async {
@@ -81,6 +91,7 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
       schedule.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    await emitAllSchedules();
   }
 
   /// Update `schedule` data row from updated instance type `ScheduleModel`.
@@ -94,18 +105,20 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
       whereArgs: [schedule.link],
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    await emitAllSchedules();
   }
 
-  /// Retrieves all `schedules` in type `List<ScheduleModel>`.
+  /// Deletes `schedule` from db by key `link`.
   @override
-  Future<List<ScheduleModel>> getAllSchedules() async {
+  Future<void> deleteScheduleByLink(String link) async {
     final db = await database;
-    final List<Map<String, dynamic>> maps =
-        await db.query('schedules', orderBy: 'datetime');
-
-    return List.generate(maps.length, (i) {
-      return ScheduleModel.fromJson(maps[i]);
-    });
+    await db.delete(
+      'schedules',
+      where: "link = ?",
+      whereArgs: [link],
+    );
+    await emitAllSchedules();
+    return;
   }
 
   /// Retrieve a `schedule` in type `ScheduleModel` by key `link`.
@@ -125,50 +138,12 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     return ScheduleModel.fromJson(maps.first);
   }
 
-  /// Retrieve monthly `schedules` in type `Map<DateTime, List<ScheduleModel>>` by key `DateTime date`.
-  ///
-  /// If no matching results, returns empty list `[]`.
   @override
-  Future<Map<DateTime, List<ScheduleModel>>> getSchedulesForMonth(
-      DateTime date) async {
-    final db = await database;
-    final firstDayOfMonth = DateTime(date.year, date.month, 1);
-    final lastDayOfMonth = DateTime(date.year, date.month + 1, 0);
-
-    final List<Map<String, dynamic>> maps = await db.query(
-      'schedules',
-      where: "datetime BETWEEN ? AND ?",
-      whereArgs: [
-        firstDayOfMonth.toIso8601String(),
-        lastDayOfMonth.toIso8601String(),
-      ],
-    );
-
-    List<ScheduleModel> schedules =
-        maps.map((map) => ScheduleModel.fromJson(map)).toList();
-    Map<DateTime, List<ScheduleModel>> schedulesByDate = {};
-
-    for (var schedule in schedules) {
-      final scheduleDate = DateTime.parse(schedule.date);
-      final normalizedDate =
-          DateTime(scheduleDate.year, scheduleDate.month, scheduleDate.day);
-      if (!schedulesByDate.containsKey(normalizedDate)) {
-        schedulesByDate[normalizedDate] = [];
-      }
-      schedulesByDate[normalizedDate]!.add(schedule);
-    }
-    return schedulesByDate;
+  Future<void> refresh() async {
+    await emitAllSchedules();
   }
 
-  /// Deletes `schedule` from db by key `link`.
-  @override
-  Future<void> deleteScheduleByLink(String link) async {
-    final db = await database;
-    await db.delete(
-      'schedules',
-      where: "link = ?",
-      whereArgs: [link],
-    );
-    return;
+  void dispose() {
+    _controller.close();
   }
 }
