@@ -108,8 +108,8 @@ Based on clean architecture
 
 ### refact
 
-- [-] pages 정리(about 등)
-- [ ] controller에서 initial fetch 하는 방법 바꾸기(Stateful => controller의 onInit)
+- [x] pages 정리(about 등)
+- [x] controller에서 initial fetch 하는 방법 바꾸기(Stateful => controller의 onInit)
   - onInit은 Get.put 시점에 실행됨 => 위젯 빌드보다 먼저 호출됨(왜냐면 Get.put의 시점 => 위젯 클래스 객체 생성 시점)
   - Worker의 ever, debounce 이런거는 용도에 맞게 나중에 써보자
   - GetX 문서, 레포를 좀 더 공부해볼 필요가 있을듯.. 이걸 다 하면 GetX 졸업
@@ -117,35 +117,36 @@ Based on clean architecture
   - https://velog.io/@ximya_hf 이걸 참고해라..
   - [ ] mixin(상속 없이 객체 기능 추가)
   - [ ] factory(비슷한 위젯),
-  - [-] single import,
-  - [-] extension type
+  - [x] single import,
+  - [x] extension type
   - [ ] part/extension(viewmodel 분할)
-  - [-] static util 클래스에 abstract, private constructor 적용
+  - [x] static util 클래스에 abstract, private constructor 적용
   - [ ] baseview, baseviewmodel 만들기?
-  - [-] base usecase도 만들 수 있겠지?(abstract interface, implements)
+  - [x] base usecase도 만들 수 있겠지?(abstract interface, implements)
 - [ ] Isolate 활용(어디서?)
   - 복잡한 위젯 빌드와 대용량 이미지 로드할 때 적용함(보통의 경우 불필요)
   - 그래도 걍 적용해보자(lottie랑 api call 동시에 해야하는 CreatePage / 이미지들 로드 해야하는 CalendarPage)
 - 리팩토링 건마다 블로그 하나씩?
 
-- [-] 1차 리팩토링 완료
+- [x] 1차 리팩토링 완료
 
 ### 1.0.1+2 배포 준비
 
-- [-] entity의 date는 DateTime으로 정리, mapper에서 string <-> DateTime 수행하게끔
-- [-] showcaseview 기반 온보딩 튜토리얼 만들기
+- [x] entity의 date는 DateTime으로 정리, mapper에서 string <-> DateTime 수행하게끔
+- [x] showcaseview 기반 온보딩 튜토리얼 만들기
 - [ ] 메인 페이지에서 등록된 일정 일부 보여지게끔
 - [ ] 푸시 알림 권한 강조 요청
-- [-] iOS 배포를 위한 테스트
+- [x] iOS 배포를 위한 테스트
 
 ### 1.0.2+3 배포 준비
 
-- [ ] hotfix: 일정 등록 후 제대로 안나오는 것 해결(stream 적용하기)
+- [x] hotfix: 일정 등록 후 제대로 안나오는 것 해결(stream 적용하기)
 
 ## Release Note
 
 ### Versioning
 
+- [1.0.2+3]() 출시 완료(25.05.18.) / hotfix 적용
 - [1.0.1+2]() 출시 완료(25.05.12.) / playstore, appstore 배포 완료
 - [1.0.0+1]() 출시 완료(25.03.27.)
 
