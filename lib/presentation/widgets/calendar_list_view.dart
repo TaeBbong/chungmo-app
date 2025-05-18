@@ -13,16 +13,16 @@ class CalendarListView extends StatelessWidget {
       children: [
         Expanded(
           child: Obx(() {
-            if (_controller.allSchedules.value!.isEmpty) {
+            if (_controller.allSchedules.isEmpty) {
               return const Center(child: Text("일정이 없습니다."));
             }
 
             final now = DateTime.now();
-            final pastSchedules = _controller.allSchedules.value!
+            final pastSchedules = _controller.allSchedules
                 .where((s) => s.date.isBefore(now))
                 .toList();
 
-            final upcomingSchedules = _controller.allSchedules.value!
+            final upcomingSchedules = _controller.allSchedules
                 .where((s) => !s.date.isBefore(now))
                 .toList();
 

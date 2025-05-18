@@ -17,7 +17,7 @@ class CalendarView extends StatelessWidget {
           _controller.selectedDay.value.year,
           _controller.selectedDay.value.month,
           _controller.selectedDay.value.day);
-      final eventCounts = _controller.schedulesWithDate.value ?? {};
+      final eventCounts = _controller.currentMonthSchedules;
       return Column(
         children: [
           TableCalendar(
@@ -33,7 +33,6 @@ class CalendarView extends StatelessWidget {
             },
             onPageChanged: (focusedDay) {
               _controller.onPageChanged(focusedDay);
-              _controller.getSchedulesForMonth(focusedDay);
             },
             calendarFormat: CalendarFormat.month,
             availableCalendarFormats: const {
