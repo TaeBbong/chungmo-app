@@ -16,14 +16,15 @@ abstract class ScheduleRepository {
   /// Add notify schedule if `date` is after today.
   Future<void> saveSchedule(Schedule schedule);
 
-  /// Get a `schedule` from local sqflite db by key `link` for routing `/detail`.
-  Future<Schedule?> getScheduleByLink(String link);
+  Stream<List<Schedule>> getAllSchedules();
 
-  /// Get all `schedules` from local sqflite db for `ListView`
-  Future<List<Schedule>> getSchedules();
+  Stream<Map<DateTime, List<Schedule>>> getSchedulesGroupedByDate();
 
   /// Get monthly `schedules` from local sqflite db for `CalendarView`
-  Future<Map<DateTime, List<Schedule>>> getSchedulesForMonth(DateTime date);
+  Stream<Map<DateTime, List<Schedule>>> getSchedulesForMonth(DateTime month);
+
+  /// Get a `schedule` from local sqflite db by key `link` for routing `/detail`.
+  Future<Schedule?> getScheduleByLink(String link);
 
   /// Edit `schedule` from local sqflite db.
   ///

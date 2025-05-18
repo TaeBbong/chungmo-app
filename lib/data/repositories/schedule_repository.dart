@@ -48,11 +48,33 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
   }
 
   @override
-  Future<List<Schedule>> getSchedules() async {
-    final List<ScheduleModel> schedules = await localSource.getAllSchedules();
-    final List<Schedule> entitySchedules =
-        schedules.map((e) => ScheduleMapper.toEntity(e)).toList();
-    return entitySchedules;
+  Stream<List<Schedule>> getAllSchedules() {
+    localSource.refresh(); // 초기 emit
+    return localSource.allSchedulesStream.map(
+      (list) => list.map(ScheduleMapper.toEntity).toList(),
+    );
+  }
+
+  @override
+  Stream<Map<DateTime, List<Schedule>>> getSchedulesGroupedByDate() {
+    localSource.refresh(); // 초기 emit
+    return localSource.allSchedulesStream.map((models) {
+      final entities = models.map(ScheduleMapper.toEntity).toList();
+      final grouped = <DateTime, List<Schedule>>{};
+      for (final s in entities) {
+        final key = DateTime(s.date.year, s.date.month, s.date.day);
+        grouped.putIfAbsent(key, () => []).add(s);
+      }
+      return grouped;
+    });
+  }
+
+  @override
+  Stream<Map<DateTime, List<Schedule>>> getSchedulesForMonth(DateTime month) {
+    return getSchedulesGroupedByDate().map((grouped) {
+      return Map.fromEntries(grouped.entries.where((entry) =>
+          entry.key.year == month.year && entry.key.month == month.month));
+    });
   }
 
   @override
@@ -64,21 +86,6 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
       return schedule;
     }
     return null;
-  }
-
-  @override
-  Future<Map<DateTime, List<Schedule>>> getSchedulesForMonth(
-      DateTime date) async {
-    final Map<DateTime, List<ScheduleModel>> schedulesWithDate =
-        await localSource.getSchedulesForMonth(date);
-    final Map<DateTime, List<Schedule>> entitySchedulesWithDate =
-        schedulesWithDate.map(
-      (key, value) => MapEntry(
-        key,
-        value.map((e) => ScheduleMapper.toEntity(e)).toList(),
-      ),
-    );
-    return entitySchedulesWithDate;
   }
 
   @override
