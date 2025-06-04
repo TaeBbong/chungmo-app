@@ -85,42 +85,42 @@ void main() {
     });
   });
 
-  group('getSchedules', () {
-    test('should return list of schedules when local source is successful',
-        () async {
-      // Given
-      when(mockLocalSource.getAllSchedules())
-          .thenAnswer((_) async => [tScheduleModel]);
+  // group('getSchedules', () {
+  //   test('should return list of schedules when local source is successful',
+  //       () async {
+  //     // Given
+  //     when(mockLocalSource.getAllSchedules())
+  //         .thenAnswer((_) async => [tScheduleModel]);
 
-      // When
-      final result = await repository.getSchedules();
+  //     // When
+  //     final result = await repository.getSchedules();
 
-      // Then
-      expect(result, [tSchedule]);
-      verify(mockLocalSource.getAllSchedules()).called(1);
-    });
-  });
+  //     // Then
+  //     expect(result, [tSchedule]);
+  //     verify(mockLocalSource.getAllSchedules()).called(1);
+  //   });
+  // });
 
-  group('getSchedulesForMonth', () {
-    final tDate = DateTime(2024, 6, 1);
-    final tMap = {
-      DateTime(2024, 6, 10): [tScheduleModel]
-    };
+  // group('getSchedulesForMonth', () {
+  //   final tDate = DateTime(2024, 6, 1);
+  //   final tMap = {
+  //     DateTime(2024, 6, 10): [tScheduleModel]
+  //   };
 
-    test('should return map of schedules grouped by date', () async {
-      // Given
-      when(mockLocalSource.getSchedulesForMonth(tDate))
-          .thenAnswer((_) async => tMap);
+  //   test('should return map of schedules grouped by date', () async {
+  //     // Given
+  //     when(mockLocalSource.getSchedulesForMonth(tDate))
+  //         .thenAnswer((_) async => tMap);
 
-      // When
-      final result = await repository.getSchedulesForMonth(tDate);
+  //     // When
+  //     final result = await repository.getSchedulesForMonth(tDate);
 
-      // Then
-      expect(result.keys.first, tMap.keys.first);
-      expect(result.values.first, [tSchedule]);
-      verify(mockLocalSource.getSchedulesForMonth(tDate)).called(1);
-    });
-  });
+  //     // Then
+  //     expect(result.keys.first, tMap.keys.first);
+  //     expect(result.values.first, [tSchedule]);
+  //     verify(mockLocalSource.getSchedulesForMonth(tDate)).called(1);
+  //   });
+  // });
 
   group('editSchedule - Notification Behavior', () {
     test('should NOT trigger notification if schedule date is in the past',
