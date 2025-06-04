@@ -57,7 +57,7 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Stream<Map<DateTime, List<Schedule>>> getSchedulesGroupedByDate() {
-    localSource.refresh(); // 초기 emit
+    // localSource.refresh(); // 초기 emit
     return localSource.allSchedulesStream.map((models) {
       final entities = models.map(ScheduleMapper.toEntity).toList();
       final grouped = <DateTime, List<Schedule>>{};
