@@ -11,6 +11,8 @@ import 'package:path/path.dart';
 import '../../models/schedule/schedule_model.dart';
 
 abstract class ScheduleLocalSource {
+  Stream<List<ScheduleModel>> watchAllSchedules();
+
   Future<void> emitAllSchedules();
 
   /// Create `schedule` data row from model `ScheduleModel`.
@@ -34,6 +36,8 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
   static Database? _database;
 
   final _controller = StreamController<List<ScheduleModel>>.broadcast();
+
+  bool _initialized = false;
 
   @override
   Stream<List<ScheduleModel>> get allSchedulesStream => _controller.stream;
@@ -80,6 +84,15 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     final maps = await db.query('schedules');
     final list = maps.map((e) => ScheduleModel.fromJson(e)).toList();
     _controller.add(list);
+  }
+
+  @override
+  Stream<List<ScheduleModel>> watchAllSchedules() {
+    if (!_initialized) {
+      _initialized = true;
+      refresh();
+    }
+    return _controller.stream;
   }
 
   /// Create `schedule` data row from model `ScheduleModel`.

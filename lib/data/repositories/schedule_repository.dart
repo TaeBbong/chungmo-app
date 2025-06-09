@@ -49,17 +49,14 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Stream<List<Schedule>> getAllSchedules() {
-    localSource.refresh(); // 초기 emit
-    return localSource.allSchedulesStream.map(
-      (list) => list.map(ScheduleMapper.toEntity).toList(),
-    );
+    return localSource.watchAllSchedules().map(
+          (list) => list.map(ScheduleMapper.toEntity).toList(),
+        );
   }
 
   @override
   Stream<Map<DateTime, List<Schedule>>> getSchedulesGroupedByDate() {
-    // localSource.refresh(); // 초기 emit
-    return localSource.allSchedulesStream.map((models) {
-      final entities = models.map(ScheduleMapper.toEntity).toList();
+    return getAllSchedules().map((entities) {
       final grouped = <DateTime, List<Schedule>>{};
       for (final s in entities) {
         final key = DateTime(s.date.year, s.date.month, s.date.day);
