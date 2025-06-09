@@ -18,11 +18,6 @@ abstract class ScheduleRepository {
 
   Stream<List<Schedule>> getAllSchedules();
 
-  Stream<Map<DateTime, List<Schedule>>> getSchedulesGroupedByDate();
-
-  /// Get monthly `schedules` from local sqflite db for `CalendarView`
-  Stream<Map<DateTime, List<Schedule>>> getSchedulesForMonth(DateTime month);
-
   /// Get a `schedule` from local sqflite db by key `link` for routing `/detail`.
   Future<Schedule?> getScheduleByLink(String link);
 

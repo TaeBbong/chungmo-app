@@ -49,32 +49,9 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Stream<List<Schedule>> getAllSchedules() {
-    localSource.refresh(); // 초기 emit
-    return localSource.allSchedulesStream.map(
-      (list) => list.map(ScheduleMapper.toEntity).toList(),
-    );
-  }
-
-  @override
-  Stream<Map<DateTime, List<Schedule>>> getSchedulesGroupedByDate() {
-    localSource.refresh(); // 초기 emit
-    return localSource.allSchedulesStream.map((models) {
-      final entities = models.map(ScheduleMapper.toEntity).toList();
-      final grouped = <DateTime, List<Schedule>>{};
-      for (final s in entities) {
-        final key = DateTime(s.date.year, s.date.month, s.date.day);
-        grouped.putIfAbsent(key, () => []).add(s);
-      }
-      return grouped;
-    });
-  }
-
-  @override
-  Stream<Map<DateTime, List<Schedule>>> getSchedulesForMonth(DateTime month) {
-    return getSchedulesGroupedByDate().map((grouped) {
-      return Map.fromEntries(grouped.entries.where((entry) =>
-          entry.key.year == month.year && entry.key.month == month.month));
-    });
+    return localSource.watchAllSchedules().map(
+          (list) => list.map(ScheduleMapper.toEntity).toList(),
+        );
   }
 
   @override

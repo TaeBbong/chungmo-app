@@ -27,8 +27,6 @@ import 'package:chungmo/domain/usecases/get_schedule_by_link_usecase.dart'
 import 'package:chungmo/domain/usecases/save_schedule_usecase.dart' as _i485;
 import 'package:chungmo/domain/usecases/watch_all_schedules_usecase.dart'
     as _i389;
-import 'package:chungmo/domain/usecases/watch_schedules_for_month_usecase.dart'
-    as _i266;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -71,8 +69,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i15.EditScheduleUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i389.WatchAllSchedulesUsecase>(
         () => _i389.WatchAllSchedulesUsecase(gh<_i561.ScheduleRepository>()));
-    gh.factory<_i266.WatchSchedulesForMonthUsecase>(() =>
-        _i266.WatchSchedulesForMonthUsecase(gh<_i561.ScheduleRepository>()));
     return this;
   }
 }
