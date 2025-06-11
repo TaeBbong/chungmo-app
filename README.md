@@ -132,7 +132,7 @@ Based on clean architecture
 ### Features
 
 - [x] 캘린더 위젯 넘길 때(월 바꿀 때) Frame drop 발생
-- [ ] Notification Payload 제대로 설정 안돼있어서 클릭 후 제대로 동작하지 않음
+- [x] Notification Payload 제대로 설정 안돼있어서 클릭 후 제대로 동작하지 않음
 - [ ] 백엔드 요청 안정화
   - [ ] 백엔드에서 요청 오래 걸릴 때(에러, cold state이거나) 빠르게 끊고 새로 요청 보내는 로직
 - [ ] 테스트 코드 재작성

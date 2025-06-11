@@ -21,11 +21,13 @@ abstract class NotificationService {
   Future<void> init();
   Future<void> onDidReceiveNotificationResponse({required String link});
   Future<void> checkPreviousDayForNotify({required Schedule schedule});
-  Future<void> addNotifySchedule(
-      {required int id,
-      required String appName,
-      required String title,
-      required tz.TZDateTime scheduleDate});
+  Future<void> addNotifySchedule({
+    required int id,
+    required String appName,
+    required String title,
+    required tz.TZDateTime scheduleDate,
+    required String payload,
+  });
   Future<void> cancelNotifySchedule({required String link});
   Future<void> checkScheduledNotifications();
   Future<void> addTestNotifySchedule({required int id});
@@ -128,18 +130,25 @@ class NotificationServiceImpl implements NotificationService {
     }
 
     await addNotifySchedule(
-        id: id, appName: '청모', title: title, scheduleDate: scheduleDate);
+      id: id,
+      appName: '청모',
+      title: title,
+      scheduleDate: scheduleDate,
+      payload: schedule.link,
+    );
   }
 
   /// Add notification schedule.
   ///
   /// Called by notifyScheduleAtPreviousDay()
   @override
-  Future<void> addNotifySchedule(
-      {required int id,
-      required String appName,
-      required String title,
-      required tz.TZDateTime scheduleDate}) async {
+  Future<void> addNotifySchedule({
+    required int id,
+    required String appName,
+    required String title,
+    required tz.TZDateTime scheduleDate,
+    required String payload,
+  }) async {
     NotificationDetails details = const NotificationDetails(
       iOS: DarwinNotificationDetails(
         presentAlert: true,
@@ -156,14 +165,14 @@ class NotificationServiceImpl implements NotificationService {
 
     await _localNotifyPlugin.zonedSchedule(
       id,
-      "청모",
+      appName,
       title,
       scheduleDate,
       details,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      payload: scheduleDate.toIso8601String(),
+      payload: payload,
     );
   }
 
