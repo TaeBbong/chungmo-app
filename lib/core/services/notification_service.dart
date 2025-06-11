@@ -165,7 +165,7 @@ class NotificationServiceImpl implements NotificationService {
 
     await _localNotifyPlugin.zonedSchedule(
       id,
-      "청모",
+      appName,
       title,
       scheduleDate,
       details,
