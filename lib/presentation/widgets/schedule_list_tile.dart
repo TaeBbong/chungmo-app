@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
+import '../../core/navigation/app_navigation.dart';
 import '../../core/utils/date_extension.dart';
 import '../../domain/entities/schedule.dart';
 import '../theme/palette.dart';
@@ -17,7 +17,7 @@ class ScheduleListTile extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Get.toNamed('/detail', arguments: schedule);
+        navigatorKey.currentState?.pushNamed('/detail', arguments: schedule);
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
