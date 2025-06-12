@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../controllers/calendar_viewmodel.dart';
+import '../bloc/calendar/calendar_bloc.dart';
+import '../bloc/calendar/calendar_event.dart';
+import '../bloc/calendar/calendar_state.dart';
 import '../theme/palette.dart';
 import 'schedule_list_tile.dart';
 
-// ignore: use_key_in_widget_constructors
 class CalendarView extends StatelessWidget {
-  final CalendarController _controller = Get.find<CalendarController>();
+  const CalendarView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      final normalizedSelectedDay = DateTime(
-          _controller.selectedDay.value.year,
-          _controller.selectedDay.value.month,
-          _controller.selectedDay.value.day);
-      final eventCounts = _controller.currentMonthSchedules;
+    return BlocBuilder<CalendarBloc, CalendarState>(builder: (context, state) {
+      final normalizedSelectedDay = DateTime(state.selectedDay.year,
+          state.selectedDay.month, state.selectedDay.day);
+      final eventCounts = state.currentMonthSchedules;
       return Column(
         children: [
           TableCalendar(
@@ -25,14 +24,15 @@ class CalendarView extends StatelessWidget {
             locale: 'ko_KR',
             firstDay: DateTime(2000, 1, 1),
             lastDay: DateTime(2100, 12, 31),
-            focusedDay: _controller.focusedDay.value,
-            selectedDayPredicate: (day) =>
-                isSameDay(_controller.selectedDay.value, day),
+            focusedDay: state.focusedDay,
+            selectedDayPredicate: (day) => isSameDay(state.selectedDay, day),
             onDaySelected: (selectedDay, focusedDay) {
-              _controller.onDaySelected(selectedDay, focusedDay);
+              context
+                  .read<CalendarBloc>()
+                  .add(DaySelected(selectedDay, focusedDay));
             },
             onPageChanged: (focusedDay) {
-              _controller.onPageChanged(focusedDay);
+              context.read<CalendarBloc>().add(PageChanged(focusedDay));
             },
             calendarFormat: CalendarFormat.month,
             availableCalendarFormats: const {

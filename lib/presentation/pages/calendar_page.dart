@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '../controllers/calendar_viewmodel.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../bloc/calendar/calendar_bloc.dart';
+import '../bloc/calendar/calendar_event.dart';
+import '../bloc/calendar/calendar_state.dart';
 import '../theme/palette.dart';
 import '../widgets/calendar_list_view.dart';
 import '../widgets/calendar_view.dart';
@@ -14,47 +17,54 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
-  final CalendarController _controller = Get.put(CalendarController());
+  late final CalendarBloc bloc;
   bool _isCalendarView = true;
 
   @override
   void initState() {
     super.initState();
+    bloc = CalendarBloc()..add(CalendarStarted());
   }
 
   @override
   void dispose() {
-    Get.delete<CalendarController>();
+    bloc.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          '일정',
-          style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.bold, color: Palette.black),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(_isCalendarView ? Icons.list : Icons.calendar_month),
-            onPressed: () {
-              setState(() {
-                _isCalendarView = !_isCalendarView;
-              });
-            },
+    return BlocProvider<CalendarBloc>.value(
+      value: bloc,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            '일정',
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Palette.black),
           ),
-        ],
+          actions: [
+            IconButton(
+              icon: Icon(_isCalendarView ? Icons.list : Icons.calendar_month),
+              onPressed: () {
+                setState(() {
+                  _isCalendarView = !_isCalendarView;
+                });
+              },
+            ),
+          ],
+        ),
+        body:
+            BlocBuilder<CalendarBloc, CalendarState>(builder: (context, state) {
+          return state.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _isCalendarView
+                  ? const CalendarView()
+                  : const CalendarListView();
+        }),
       ),
-      body: Obx(() {
-        return _controller.isLoading.value
-            ? const Center(child: CircularProgressIndicator())
-            : _isCalendarView
-                ? CalendarView()
-                : CalendarListView();
-      }),
     );
   }
 }
