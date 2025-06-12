@@ -2,14 +2,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:get/get.dart';
 
 import 'core/di/di.dart';
 import 'core/env.dart';
+import 'core/navigation/app_navigation.dart';
 import 'core/services/notification_service.dart';
 import 'presentation/pages/pages.dart';
 import 'presentation/theme/dark_theme.dart';
 import 'presentation/theme/light_theme.dart';
+import 'domain/entities/schedule.dart';
 
 @pragma('vm:entry-point')
 void main() async {
@@ -36,8 +37,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       theme: LightTheme.theme,
       darkTheme: DarkTheme.theme,
       themeMode: ThemeMode.system,
@@ -55,7 +57,11 @@ class MainApp extends StatelessWidget {
         '/': (context) => const CreatePage(),
         // ignore: prefer_const_constructors
         '/calendar': (context) => CalendarPage(),
-        '/detail': (context) => DetailPage(),
+        '/detail': (context) {
+          final schedule =
+              ModalRoute.of(context)!.settings.arguments as Schedule;
+          return DetailPage(schedule: schedule);
+        },
         '/about': (context) => const AboutPage(),
         '/about/developer_info': (context) => const DeveloperInfoPage(),
       },
