@@ -1,10 +1,10 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:get/get.dart';
 import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../navigation/app_navigation.dart';
 import '../../domain/usecases/usecases.dart';
 import '../../domain/entities/schedule.dart';
 import '../di/di.dart';
@@ -92,10 +92,11 @@ class NotificationServiceImpl implements NotificationService {
     final Schedule? targetSchedule =
         await getScheduleByLinkUsecase.execute(link);
     if (targetSchedule != null) {
-      Get.toNamed('/');
-      Get.toNamed('/detail', arguments: targetSchedule);
+      navigatorKey.currentState?.pushNamed('/');
+      navigatorKey.currentState
+          ?.pushNamed('/detail', arguments: targetSchedule);
     } else {
-      Get.toNamed('/');
+      navigatorKey.currentState?.pushNamed('/');
     }
   }
 
