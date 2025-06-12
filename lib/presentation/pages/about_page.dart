@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+
+import '../../core/navigation/app_navigation.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
@@ -27,14 +28,16 @@ class AboutPage extends StatelessWidget {
                 title: const Text('앱 업데이트'),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
-                  Get.snackbar('알림', '최신 버전입니다.');
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(const SnackBar(content: Text('최신 버전입니다.')));
                 },
               ),
               const Divider(),
               ListTile(
                 title: const Text('개발자 정보'),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () => Get.toNamed('/about/developer_info'),
+                onTap: () => navigatorKey.currentState
+                    ?.pushNamed('/about/developer_info'),
               ),
             ],
           );
