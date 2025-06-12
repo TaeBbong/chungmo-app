@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../controllers/calendar_viewmodel.dart';
+import '../bloc/calendar/calendar_bloc.dart';
+import '../bloc/calendar/calendar_state.dart';
 import 'schedule_list_tile.dart';
 
-// ignore: use_key_in_widget_constructors
 class CalendarListView extends StatelessWidget {
-  final CalendarController _controller = Get.find<CalendarController>();
+  const CalendarListView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(
-          child: Obx(() {
-            if (_controller.allSchedules.isEmpty) {
+          child: BlocBuilder<CalendarBloc, CalendarState>(
+              builder: (context, state) {
+            if (state.allSchedules.isEmpty) {
               return const Center(child: Text("일정이 없습니다."));
             }
 
             final now = DateTime.now();
-            final pastSchedules = _controller.allSchedules
-                .where((s) => s.date.isBefore(now))
-                .toList();
+            final pastSchedules =
+                state.allSchedules.where((s) => s.date.isBefore(now)).toList();
 
-            final upcomingSchedules = _controller.allSchedules
-                .where((s) => !s.date.isBefore(now))
-                .toList();
+            final upcomingSchedules =
+                state.allSchedules.where((s) => !s.date.isBefore(now)).toList();
 
             return ListView(
               children: [
