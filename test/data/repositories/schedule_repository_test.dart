@@ -144,7 +144,8 @@ void main() {
           id: anyNamed('id'),
           appName: anyNamed('appName'),
           title: anyNamed('title'),
-          scheduleDate: anyNamed('scheduleDate')));
+          scheduleDate: anyNamed('scheduleDate'),
+          payload: anyNamed('payload')));
     });
 
     test('should NOT trigger notification if schedule date is today', () async {
@@ -167,7 +168,8 @@ void main() {
           id: anyNamed('id'),
           appName: anyNamed('appName'),
           title: anyNamed('title'),
-          scheduleDate: anyNamed('scheduleDate')));
+          scheduleDate: anyNamed('scheduleDate'),
+          payload: anyNamed('payload')));
     });
 
     test('should trigger notification if schedule date is tomorrow', () async {
