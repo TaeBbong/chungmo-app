@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import '../../../domain/entities/schedule.dart';
 
@@ -44,6 +45,14 @@ class CalendarState extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [isLoading, focusedDay, selectedDay, allSchedules, currentMonthSchedules];
+  List<Object?> get props => [
+        isLoading,
+        focusedDay,
+        selectedDay,
+        const DeepCollectionEquality().hash(allSchedules),
+        const DeepCollectionEquality().hash(currentMonthSchedules),
+      ];
+
+  @override
+  bool get stringify => true;
 }
