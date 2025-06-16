@@ -40,7 +40,7 @@ class CreateCubit extends Cubit<CreateState> {
     emit(CreateState.initial());
   }
 
-  void checkIfNotification() async {
+  Future<void> checkIfNotification() async {
     final NotificationService notificationService =
         getIt<NotificationService>();
     final details = await notificationService
