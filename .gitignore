@@ -1,3 +1,6 @@
+# MCP
+.vscode/mcp.json
+
 # Env
 lib/core/env.dart
 
