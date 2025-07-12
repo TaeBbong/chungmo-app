@@ -36,34 +36,37 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return BlocProvider<CalendarBloc>.value(
       value: bloc,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            '일정',
-            style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Palette.black),
-          ),
-          actions: [
-            IconButton(
-              icon: Icon(_isCalendarView ? Icons.list : Icons.calendar_month),
-              onPressed: () {
-                setState(() {
-                  _isCalendarView = !_isCalendarView;
-                });
-              },
+      child: SafeArea(
+        top: false,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              '일정',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Palette.black),
             ),
-          ],
+            actions: [
+              IconButton(
+                icon: Icon(_isCalendarView ? Icons.list : Icons.calendar_month),
+                onPressed: () {
+                  setState(() {
+                    _isCalendarView = !_isCalendarView;
+                  });
+                },
+              ),
+            ],
+          ),
+          body: BlocBuilder<CalendarBloc, CalendarState>(
+              builder: (context, state) {
+            return state.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _isCalendarView
+                    ? const CalendarView()
+                    : const CalendarListView();
+          }),
         ),
-        body:
-            BlocBuilder<CalendarBloc, CalendarState>(builder: (context, state) {
-          return state.isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _isCalendarView
-                  ? const CalendarView()
-                  : const CalendarListView();
-        }),
       ),
     );
   }
