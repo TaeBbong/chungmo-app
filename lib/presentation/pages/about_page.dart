@@ -8,40 +8,43 @@ class AboutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('앱 정보')),
-      body: FutureBuilder<PackageInfo>(
-        future: PackageInfo.fromPlatform(),
-        builder: (context, snapshot) {
-          final version = snapshot.hasData
-              ? '버전 ${snapshot.data!.version} (${snapshot.data!.buildNumber})'
-              : '버전 정보 불러오는 중...';
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        appBar: AppBar(title: const Text('앱 정보')),
+        body: FutureBuilder<PackageInfo>(
+          future: PackageInfo.fromPlatform(),
+          builder: (context, snapshot) {
+            final version = snapshot.hasData
+                ? '버전 ${snapshot.data!.version} (${snapshot.data!.buildNumber})'
+                : '버전 정보 불러오는 중...';
 
-          return ListView(
-            children: [
-              ListTile(
-                title: const Text('앱 버전'),
-                subtitle: Text(version),
-              ),
-              const Divider(),
-              ListTile(
-                title: const Text('앱 업데이트'),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(const SnackBar(content: Text('최신 버전입니다.')));
-                },
-              ),
-              const Divider(),
-              ListTile(
-                title: const Text('개발자 정보'),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => navigatorKey.currentState
-                    ?.pushNamed('/about/developer_info'),
-              ),
-            ],
-          );
-        },
+            return ListView(
+              children: [
+                ListTile(
+                  title: const Text('앱 버전'),
+                  subtitle: Text(version),
+                ),
+                const Divider(),
+                ListTile(
+                  title: const Text('앱 업데이트'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('최신 버전입니다.')));
+                  },
+                ),
+                const Divider(),
+                ListTile(
+                  title: const Text('개발자 정보'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => navigatorKey.currentState
+                      ?.pushNamed('/about/developer_info'),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
