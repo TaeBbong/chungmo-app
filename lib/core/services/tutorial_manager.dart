@@ -147,6 +147,7 @@ class TutorialManager {
         radius: 8,
         contents: [
           TargetContent(
+            padding: const EdgeInsets.fromLTRB(16, 48, 0, 0),
             align: ContentAlign.right,
             child: Column(
               mainAxisSize: MainAxisSize.min,
