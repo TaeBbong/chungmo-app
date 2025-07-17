@@ -5,6 +5,7 @@
 import 'package:dotlottie_loader/dotlottie_loader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -25,7 +26,7 @@ class CreatePage extends StatefulWidget {
   _CreatePageState createState() => _CreatePageState();
 }
 
-class _CreatePageState extends State<CreatePage> {
+class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
   late final CreateCubit cubit;
   final PreferencesChecker preferencesChecker = getIt<PreferencesChecker>();
   final TextEditingController _textEditingController = TextEditingController();
@@ -34,6 +35,7 @@ class _CreatePageState extends State<CreatePage> {
   final GlobalKey linkInputKey = GlobalKey(debugLabel: 'link-input');
   final GlobalKey resultBodyKey = GlobalKey(debugLabel: 'result-body');
   final GlobalKey calendarPageKey = GlobalKey(debugLabel: 'calendar-page');
+  String _clipboardContent = '';
 
   @override
   void initState() {
@@ -41,6 +43,19 @@ class _CreatePageState extends State<CreatePage> {
     cubit = CreateCubit();
     cubit.checkIfNotification();
     _initTutorial();
+    WidgetsBinding.instance.addObserver(this);
+    _getClipboardContent();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        _getClipboardContent();
+        break;
+      default:
+        break;
+    }
   }
 
   Future<void> _initTutorial() async {
@@ -66,10 +81,28 @@ class _CreatePageState extends State<CreatePage> {
     }
   }
 
+  // TODO: After copy detected, do not set _textEditingController.text directly. Ask to user.
+  Future<void> _getClipboardContent() async {
+    try {
+      final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+      if (clipboardData != null && clipboardData.text != null) {
+        setState(() {
+          _clipboardContent = clipboardData.text!;
+        });
+        if (_clipboardContent.startsWith('http')) {
+          _textEditingController.text = _clipboardContent;
+        }
+      }
+    } on PlatformException catch (e) {
+      throw ("Failed to get clipboard data: '$e'.");
+    }
+  }
+
   @override
   void dispose() {
     cubit.close();
     _textEditingController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
