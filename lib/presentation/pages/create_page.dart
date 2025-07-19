@@ -82,16 +82,19 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
   }
 
   // TODO: After copy detected, do not set _textEditingController.text directly. Ask to user.
+  // TODO: Toast 상단/하단에 띄워서 선택할 수 있게 하기?
   Future<void> _getClipboardContent() async {
     try {
       final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
       if (clipboardData != null && clipboardData.text != null) {
-        setState(() {
-          _clipboardContent = clipboardData.text!;
-        });
-        if (_clipboardContent.startsWith('http')) {
-          _textEditingController.text = _clipboardContent;
+        if (clipboardData.text!.startsWith('http')) {
+          setState(() {
+            _clipboardContent = clipboardData.text!;
+          });
         }
+        // if (_clipboardContent.startsWith('http')) {
+        //   _textEditingController.text = _clipboardContent;
+        // }
       }
     } on PlatformException catch (e) {
       throw ("Failed to get clipboard data: '$e'.");
