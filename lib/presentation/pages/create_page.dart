@@ -86,7 +86,10 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
     try {
       final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
       if (clipboardData != null && clipboardData.text != null) {
-        if (Uri.tryParse(clipboardData.text!)!.hasAbsolutePath) {
+        final uri = Uri.tryParse(clipboardData.text!);
+        if (uri != null &&
+            uri.hasScheme &&
+            (uri.scheme == 'http' || uri.scheme == 'https')) {
           setState(() {
             _clipboardContent = clipboardData.text!;
             _showClipboardContent = _clipboardContent.length > 35
@@ -96,7 +99,9 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
         }
       }
     } on PlatformException catch (e) {
-      throw ("Failed to get clipboard data: '$e'.");
+      if (kDebugMode) {
+        throw ("Failed to get clipboard data: '$e'.");
+      }
     }
   }
 
