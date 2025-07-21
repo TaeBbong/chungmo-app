@@ -36,6 +36,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
   final GlobalKey resultBodyKey = GlobalKey(debugLabel: 'result-body');
   final GlobalKey calendarPageKey = GlobalKey(debugLabel: 'calendar-page');
   String _clipboardContent = '';
+  String _showClipboardContent = '';
 
   @override
   void initState() {
@@ -81,20 +82,18 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
     }
   }
 
-  // TODO: After copy detected, do not set _textEditingController.text directly. Ask to user.
-  // TODO: Toast 상단/하단에 띄워서 선택할 수 있게 하기?
   Future<void> _getClipboardContent() async {
     try {
       final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
       if (clipboardData != null && clipboardData.text != null) {
-        if (clipboardData.text!.startsWith('http')) {
+        if (Uri.tryParse(clipboardData.text!)!.hasAbsolutePath) {
           setState(() {
             _clipboardContent = clipboardData.text!;
+            _showClipboardContent = _clipboardContent.length > 35
+                ? '${_clipboardContent.substring(0, 35)}...'
+                : _clipboardContent;
           });
         }
-        // if (_clipboardContent.startsWith('http')) {
-        //   _textEditingController.text = _clipboardContent;
-        // }
       }
     } on PlatformException catch (e) {
       throw ("Failed to get clipboard data: '$e'.");
@@ -269,24 +268,39 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                                       const Text(
                                         'AI가 자동으로 일정을 분석해드릴게요.',
                                         style: TextStyle(fontSize: 14),
-                                      )
+                                      ),
+                                      _clipboardContent.isNotEmpty &&
+                                              _textEditingController
+                                                  .text.isEmpty
+                                          ? Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 20),
+                                              child: FilledButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _textEditingController
+                                                            .text =
+                                                        _clipboardContent;
+                                                    _clipboardContent = '';
+                                                  });
+                                                },
+                                                style: FilledButton.styleFrom(
+                                                  backgroundColor:
+                                                      Palette.beige,
+                                                  foregroundColor:
+                                                      Colors.black54,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                    '$_showClipboardContent 붙여넣기'),
+                                              ),
+                                            )
+                                          : Container(),
                                     ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 24),
-                                  child: FilledButton(
-                                    // or GestureDetector
-                                    onPressed: () {
-                                      setState(() {
-                                        _textEditingController.text =
-                                            _clipboardContent;
-                                        _clipboardContent = '';
-                                      });
-                                    },
-                                    child: Container(
-                                      child: Text('$_clipboardContent 붙여넣기'),
-                                    ),
                                   ),
                                 ),
                               ],
