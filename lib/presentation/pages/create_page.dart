@@ -254,19 +254,41 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                               ],
                             )
                           : Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                  key: resultBodyKey,
-                                  '모바일 청첩장을 첨부해주세요.',
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        key: resultBodyKey,
+                                        '모바일 청첩장을 첨부해주세요.',
+                                        style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const Text(
+                                        'AI가 자동으로 일정을 분석해드릴게요.',
+                                        style: TextStyle(fontSize: 14),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                                const Text(
-                                  'AI가 자동으로 일정을 분석해드릴게요.',
-                                  style: TextStyle(fontSize: 14),
-                                )
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 24),
+                                  child: FilledButton(
+                                    // or GestureDetector
+                                    onPressed: () {
+                                      setState(() {
+                                        _textEditingController.text =
+                                            _clipboardContent;
+                                        _clipboardContent = '';
+                                      });
+                                    },
+                                    child: Container(
+                                      child: Text('$_clipboardContent 붙여넣기'),
+                                    ),
+                                  ),
+                                ),
                               ],
                             );
                 }),
