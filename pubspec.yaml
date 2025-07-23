@@ -61,4 +61,4 @@ flutter_native_splash:
   image: assets/images/icon_trans.png
   android_12:
     color: "#F95E48"
-    image: assets/images/icon_trans.png
+    image: assets/images/icon_trans_960.png

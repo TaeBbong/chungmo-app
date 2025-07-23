@@ -1,5 +1,6 @@
-# MCP
+# MCP, Issue Logger
 .vscode/mcp.json
+.vscode/issue-logger.json
 
 # Env
 lib/core/env.dart
