@@ -9,6 +9,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../core/env.dart';
+import '../../../core/utils/constants.dart';
 import '../../models/schedule/schedule_model.dart';
 
 abstract class ScheduleRemoteSource {
@@ -31,8 +32,12 @@ class ScheduleRemoteSourceImpl implements ScheduleRemoteSource {
     try {
       final response = await dio.post('${Env.url}/', data: {'link': link});
       if (response.statusCode == 200) {
-        return ScheduleModel.fromJson(
+        ScheduleModel model = ScheduleModel.fromJson(
             jsonDecode(response.data)..addAll({'link': link}));
+        if (model.thumbnail.isEmpty) {
+          model = model.copyWith(thumbnail: Constants.defaultThumbnail);
+        }
+        return model;
       } else {
         throw Exception('[-] Failed to fetch data from server');
       }
