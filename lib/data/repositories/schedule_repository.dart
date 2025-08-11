@@ -7,7 +7,6 @@
 import 'package:injectable/injectable.dart';
 
 import '../../core/services/notification_service.dart';
-import '../../core/utils/constants.dart';
 import '../../domain/entities/schedule.dart';
 import '../../domain/repositories/schedule_repository.dart';
 import '../mapper/schedule_mapper.dart';
@@ -39,10 +38,6 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
   @override
   Future<void> saveSchedule(Schedule schedule) async {
     ScheduleModel scheduleModel = ScheduleMapper.toModel(schedule);
-    if (scheduleModel.thumbnail.isEmpty) {
-      scheduleModel =
-          scheduleModel.copyWith(thumbnail: Constants.defaultThumbnail);
-    }
     await localSource.saveSchedule(scheduleModel);
     await notificationService.checkPreviousDayForNotify(schedule: schedule);
   }
