@@ -133,8 +133,6 @@ Based on clean architecture
 
 - [x] 캘린더 위젯 넘길 때(월 바꿀 때) Frame drop 발생
 - [x] Notification Payload 제대로 설정 안돼있어서 클릭 후 제대로 동작하지 않음
-- [ ] 백엔드 요청 안정화
-  - [ ] 백엔드에서 요청 오래 걸릴 때(에러, cold state이거나) 빠르게 끊고 새로 요청 보내는 로직
 - [ ] 테스트 코드 재작성
   - [ ] Stream 기반 테스트 코드 재작성
 
@@ -152,10 +150,18 @@ Based on clean architecture
 
 - [x] hotfix: 일정 등록 후 제대로 안나오는 것 해결(stream 적용하기)
 
+### 1.1.0+4
+
+- [x] ClipBoard Detection
+- [x] Apply SafeArea
+- [x] 백엔드 요청 안정화
+  - [x] 백엔드에서 요청 오래 걸릴 때(에러, cold state이거나) 빠르게 끊고 새로 요청 보내는 로직
+
 ## Release Note
 
 ### Versioning
 
+- [1.1.0+4]() 출시 완료(25.07.27.) / stable version
 - [1.0.2+3]() 출시 완료(25.05.18.) / hotfix 적용
 - [1.0.1+2]() 출시 완료(25.05.12.) / playstore, appstore 배포 완료
 - [1.0.0+1]() 출시 완료(25.03.27.)
