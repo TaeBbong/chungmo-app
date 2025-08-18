@@ -1,25 +1,33 @@
-# _chungmo_ project with clean architecture
+<!-- README.md -->
 
-![previewed](./designs/previews_android/brand.jpeg)
+[한국어](./README.ko.md)
 
-모바일 청첩장 링크를 첨부하면 GPT가 일정을 파싱하여 캘린더에 등록하는 앱입니다.
+# chungmo: AI-Powered Wedding Invitation Parser
 
-<a href="">
-<img src="https://img.shields.io/badge/appstore-0D96F6?style=for-the-badge&logo=appstore&logoColor=white" >
-</a>
-<a href="https://play.google.com/store/apps/details?id=com.taebbong.chungmo">
-<img src="https://img.shields.io/badge/google play-414141?style=for-the-badge&logo=googleplay&logoColor=white">
-</a>
+![Brand Preview](./designs/previews_android/brand.jpeg)
+
+<p align="center">
+  <strong>Mobile wedding invitation parser app using GPT API</strong>
+</p>
+
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.taebbong.chungmo">
+    <img src="https://img.shields.io/badge/google play-414141?style=for-the-badge&logo=googleplay&logoColor=white" alt="Google Play">
+  </a>
+  <a href="">
+    <img src="https://img.shields.io/badge/appstore-0D96F6?style=for-the-badge&logo=appstore&logoColor=white" alt="App Store">
+  </a>
+</p>
 
 ## Features
 
-![merged](./designs/previews_android/merged.jpeg)
+![Feature Overview](./designs/previews_android/merged.jpeg)
 
-1. CreatePage : 사용자가 링크를 입력하면 -> 서버에 링크를 보내 컨텐츠를 파싱/분석하며 그동안 로딩 애니메이션 보여줌 -> 서버로부터 결과 나오면 결과를 보여주며 해당 결과를 로컬 저장소(db)에 저장
-2. CalendarPage : CreatePage 왼쪽 상단 달력 아이콘 버튼을 통해 접근됨.
-   달력 위젯으로 채워진 페이지 -> 로컬 저장소에 저장된 일정 정보를 바탕으로 달력 위젯에 보여줌 -> 우측 상단 버튼을 통해 달력 <-> 목록으로 보여주는 방식 전환 가능 -> 날짜를 탭하면 해당 날짜에 등록된 간략한 일정 정보(ListTile)를 bottom sheet으로 보여줌 -> 각 일정을 탭하면 DetailPage로 이동
-3. DetailPage : 일정에 대한 자세한 정보를 제공 -> 우측상단 수정하기 버튼을 통해 일정을 수정 가능
-4. 그 외 : 푸시알림 기능을 통해 일정이 임박했을 때(전날) 앱 푸시 알림을 제공
+- **AI-Powered Schedule Parsing**: Users can submit a wedding invitation URL. The app sends the link to a server for AI-powered content analysis and automatically extracts event details. This process is handled by `lib/domain/usecases/analyze_link_usecase.dart` and reflected in the UI via `lib/presentation/bloc/create/create_cubit.dart`.
+- **Calendar & List View**: View all saved schedules on a calendar or as a list. The UI logic for this is managed by `lib/presentation/bloc/calendar/calendar_bloc.dart`, with widgets like `lib/presentation/widgets/calendar_view.dart` and `lib/presentation/widgets/calendar_list_view.dart`. Tapping a date shows a summary, and tapping an event navigates to the detail page.
+- **Schedule Management**: View, edit, and delete schedule details. The `DetailPage` allows for modifications, which are processed by use cases such as `lib/domain/usecases/edit_schedule_usecase.dart` and `lib/domain/usecases/delete_schedule_usecase.dart`.
+- **Push Notifications**: The app provides timely reminders for upcoming events (e.g., the day before) using local push notifications, configured in `lib/core/services/notification_service.dart`.
+- **Clipboard Detection**: The app automatically detects and suggests a wedding invitation link from the user's clipboard to streamline the creation process.
 
 ### App Screenshots
 
@@ -30,12 +38,45 @@
 
 ## Get Started
 
-### env.dart
+### Prerequisites
 
-임시방편 : env.dart, static을 통한 전역 변수화
+- [Flutter SDK](https://flutter.dev/docs/get-started/install)
+- An editor like [VS Code](https://code.visualstudio.com/) or [Android Studio](https://developer.android.com/studio)
+
+### Installation
+
+1.  Clone the repository:
+
+    ```bash
+    git clone https://github.com/your-username/chungmo-app.git
+    cd chungmo-app
+    ```
+
+2.  Install dependencies:
+
+    ```bash
+    flutter pub get
+    ```
+
+3.  Run the code generator:
+
+    ```bash
+    dart run build_runner build --delete-conflicting-outputs
+    ```
+
+4.  Run the app:
+    ```bash
+    flutter run
+    ```
+
+## Configuration
+
+### Environment Setup
+
+The project uses a temporary, hard-coded method for managing environments (local, dev, production) via a static class.
 
 ```dart
-/// core/env.dart
+/// lib/core/env.dart
 /// Temporary way to seperate environments.
 /// TODO: Apply Flavor to native env
 enum Environ { local, dev, production }
@@ -61,103 +102,69 @@ class Env {
 }
 ```
 
+To set an environment, call `Env.init()` at the start of the application, for example in `lib/main.dart`.
+
 ## Project Architecture
 
-Based on clean architecture
+This project is based on **Clean Architecture** to separate concerns and create a scalable, maintainable codebase. The presentation layer is built using the **Bloc** pattern for state management.
 
 ```css
 📂 core/
-   ├── utils/       (공통 유틸 함수)
-   ├── errors/      (예외 처리)
-   ├── network/     (네트워크 관련 설정)
+   ├── utils/       (Common utility functions)
+   ├── di/          (Dependency injection setup)
+   ├── navigation/  (Routing logic)
+   └── services/    (Background services like notifications)
 
 📂 data/
-   ├── datasources/ (로컬, 원격 데이터 소스)
-   ├── repositories/ (Repository 구현체)
-   ├── models/      (데이터 모델)
+   ├── sources/     (Local and remote data sources)
+   ├── repositories/ (Implementation of domain repositories)
+   ├── models/      (Data Transfer Objects)
+   └── mapper/      (Mappers between models and entities)
 
 📂 domain/
-   ├── entities/    (순수 도메인 모델)
-   ├── repositories/ (추상 Repository)
-   ├── usecases/    (비즈니스 로직)
+   ├── entities/    (Pure domain models)
+   ├── repositories/ (Abstract repository interfaces)
+   ├── usecases/    (Business logic for specific tasks)
 
-📂 presentation/  (UI 계층)
-   ├── controllers/ (GetX의 Controller 또는 ViewModel)
-   ├── pages/       (화면 UI)
-   ├── widgets/     (재사용 가능한 UI 컴포넌트)
-   ├── themes/      (앱 테마 관리)
+📂 presentation/  (UI Layer)
+   ├── bloc/        (Blocs and Cubits for state management)
+   ├── pages/       (UI screens/pages)
+   ├── widgets/     (Reusable UI components)
+   └── theme/       (App theme and styling)
 
-📂 di/              (의존성 주입)
-📂 main.dart
+📂 main.dart      (Application entry point)
 ```
 
+The data flow follows a clear, unidirectional pattern from the UI to the data layer, orchestrated by dependency injection (`get_it` and `injectable`).
+
 ```txt
-┌────────────────────────── UI (MVVM) ──────────────────────────┐
-│  View (StatelessWidget)                                        │
-│     ├──> ViewModel (Controller, GetX)                         │
+┌────────────────────────── UI (Bloc) ──────────────────────────┐
+│  View (Widget)                                                 │
+│     ├──> Bloc / Cubit (State Management)                      │
 │     │     ├──> UseCase (Business Logic)                       │
 │     │     │     ├──> Repository (Interface)                   │
-│     │     │     │     ├──> Remote Data Source (API, Firebase) │
-│     │     │     │     ├──> Local Data Source (SQLite, Hive)   │
-│     │     │     │     ├──> Cache (SharedPrefs, SecureStorage) │
+│     │     │     │     ├──> Remote Data Source (API)           │
+│     │     │     │     └──> Local Data Source (SQLite)         │
 │     │     │     │                                              │
 └───────> Dependency Injection (get_it + injectable) ───────────┘
 ```
 
-## Todo
+## Release History
 
-### refact
+For detailed information on version changes, see the [Release Notes](./RELEASE.md).
 
-- [ ] 객체지향 컨셉 좀 더 적극적으로 써보기
-  - https://velog.io/@ximya_hf 이걸 참고해라..
-  - [ ] mixin(상속 없이 객체 기능 추가)
-  - [ ] factory(비슷한 위젯),
-  - [ ] part/extension(viewmodel 분할)
-  - [ ] baseview, baseviewmodel 만들기?
-- [ ] Isolate 활용(어디서?)
-  - 복잡한 위젯 빌드와 대용량 이미지 로드할 때 적용함(보통의 경우 불필요)
-  - 그래도 걍 적용해보자(lottie랑 api call 동시에 해야하는 CreatePage / 이미지들 로드 해야하는 CalendarPage)
-- 리팩토링 건마다 블로그 하나씩?
+## Dependencies
 
-### Features
+This project uses several key packages, including:
 
-- [ ] 테스트 코드 재작성
-  - [ ] Stream 기반 테스트 코드 재작성
+- `flutter_bloc` for state management.
+- `get_it` and `injectable` for dependency injection.
+- `dio` for networking.
+- `sqflite` for local database storage.
+- `table_calendar` for the calendar UI.
 
-## Release
-
-### 1.0.1+2 배포 준비
-
-- [x] entity의 date는 DateTime으로 정리, mapper에서 string <-> DateTime 수행하게끔
-- [x] showcaseview 기반 온보딩 튜토리얼 만들기
-- [ ] 메인 페이지에서 등록된 일정 일부 보여지게끔
-- [ ] 푸시 알림 권한 강조 요청
-- [x] iOS 배포를 위한 테스트
-
-### 1.0.2+3 배포 준비
-
-- [x] hotfix: 일정 등록 후 제대로 안나오는 것 해결(stream 적용하기)
-
-### 1.1.0+4
-
-- [x] ClipBoard Detection
-- [x] Apply SafeArea
-- [x] 백엔드 요청 안정화
-  - [x] 백엔드에서 요청 오래 걸릴 때(에러, cold state이거나) 빠르게 끊고 새로 요청 보내는 로직
-
-## Release Note
-
-### Versioning
-
-- [1.1.0+4]() 출시 완료(25.07.27.) / stable version
-- [1.0.2+3]() 출시 완료(25.05.18.) / hotfix 적용
-- [1.0.1+2]() 출시 완료(25.05.12.) / playstore, appstore 배포 완료
-- [1.0.0+1]() 출시 완료(25.03.27.)
-
-## Depends on
-
-사용중인 패키지
+A full list of dependencies is available in the [`pubspec.yaml`](./pubspec.yaml) file.
 
 ## License
 
-오픈소스 라이센스
+This project is open source. Please check the license file for more details.
