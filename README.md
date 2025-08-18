@@ -23,11 +23,16 @@
 
 ![Feature Overview](./designs/previews_android/merged.jpeg)
 
-- **AI-Powered Schedule Parsing**: Users can submit a wedding invitation URL. The app sends the link to a server for AI-powered content analysis and automatically extracts event details. This process is handled by `lib/domain/usecases/analyze_link_usecase.dart` and reflected in the UI via `lib/presentation/bloc/create/create_cubit.dart`.
-- **Calendar & List View**: View all saved schedules on a calendar or as a list. The UI logic for this is managed by `lib/presentation/bloc/calendar/calendar_bloc.dart`, with widgets like `lib/presentation/widgets/calendar_view.dart` and `lib/presentation/widgets/calendar_list_view.dart`. Tapping a date shows a summary, and tapping an event navigates to the detail page.
-- **Schedule Management**: View, edit, and delete schedule details. The `DetailPage` allows for modifications, which are processed by use cases such as `lib/domain/usecases/edit_schedule_usecase.dart` and `lib/domain/usecases/delete_schedule_usecase.dart`.
-- **Push Notifications**: The app provides timely reminders for upcoming events (e.g., the day before) using local push notifications, configured in `lib/core/services/notification_service.dart`.
-- **Clipboard Detection**: The app automatically detects and suggests a wedding invitation link from the user's clipboard to streamline the creation process.
+- **AI-Powered Schedule Parsing**
+  - Users can submit a wedding invitation URL. The app sends the link to a server for AI-powered content analysis and automatically extracts event details. This process is handled by `lib/domain/usecases/analyze_link_usecase.dart` and reflected in the UI via `lib/presentation/bloc/create/create_cubit.dart`.
+- **Calendar & List View**
+  - View all saved schedules on a calendar or as a list. The UI logic for this is managed by `lib/presentation/bloc/calendar/calendar_bloc.dart`, with widgets like `lib/presentation/widgets/calendar_view.dart` and `lib/presentation/widgets/calendar_list_view.dart`. Tapping a date shows a summary, and tapping an event navigates to the detail page.
+- **Schedule Management**
+  - View, edit, and delete schedule details. The `DetailPage` allows for modifications, which are processed by use cases such as `lib/domain/usecases/edit_schedule_usecase.dart` and `lib/domain/usecases/delete_schedule_usecase.dart`.
+- **Push Notifications**
+  - The app provides timely reminders for upcoming events (e.g., the day before) using local push notifications, configured in `lib/core/services/notification_service.dart`.
+- **Clipboard Detection**
+  - The app automatically detects and suggests a wedding invitation link from the user's clipboard to streamline the creation process.
 
 ### App Screenshots
 
@@ -55,7 +60,7 @@
 2.  Install dependencies:
 
     ```bash
-    flutter pub get
+    dart pub get
     ```
 
 3.  Run the code generator:
@@ -139,13 +144,13 @@ The data flow follows a clear, unidirectional pattern from the UI to the data la
 
 ```txt
 ┌────────────────────────── UI (Bloc) ──────────────────────────┐
-│  View (Widget)                                                 │
+│  View (Widget)                                                │
 │     ├──> Bloc / Cubit (State Management)                      │
 │     │     ├──> UseCase (Business Logic)                       │
 │     │     │     ├──> Repository (Interface)                   │
 │     │     │     │     ├──> Remote Data Source (API)           │
 │     │     │     │     └──> Local Data Source (SQLite)         │
-│     │     │     │                                              │
+│     │     │     │                                             │
 └───────> Dependency Injection (get_it + injectable) ───────────┘
 ```
 

@@ -23,11 +23,16 @@
 
 ![Feature Overview](./designs/previews_android/merged.jpeg)
 
-- **AI 기반 일정 분석**: 사용자가 청첩장 URL을 제출하면, 앱이 서버로 링크를 보내 AI 기반으로 콘텐츠를 분석하고 자동으로 일정 상세 정보를 추출합니다. 이 과정은 `lib/domain/usecases/analyze_link_usecase.dart`에서 처리되며, UI는 `lib/presentation/bloc/create/create_cubit.dart`를 통해 반영됩니다.
-- **캘린더 & 목록 뷰**: 저장된 모든 일정을 캘린더 또는 목록 형태로 볼 수 있습니다. 이 UI 로직은 `lib/presentation/bloc/calendar/calendar_bloc.dart`에서 관리되며, `lib/presentation/widgets/calendar_view.dart`와 `lib/presentation/widgets/calendar_list_view.dart` 같은 위젯을 사용합니다. 날짜를 탭하면 요약 정보가, 이벤트를 탭하면 상세 페이지로 이동합니다.
-- **일정 관리**: 일정 상세 정보를 보고, 수정하고, 삭제할 수 있습니다. `DetailPage`에서 수정을 할 수 있으며, 이는 `lib/domain/usecases/edit_schedule_usecase.dart`와 `lib/domain/usecases/delete_schedule_usecase.dart` 같은 유스케이스를 통해 처리됩니다.
-- **푸시 알림**: `lib/core/services/notification_service.dart`에 설정된 로컬 푸시 알림을 통해 예정된 이벤트(예: 하루 전)에 대한 시기적절한 알림을 제공합니다.
-- **클립보드 감지**: 앱이 사용자의 클립보드에서 청첩장 링크를 자동으로 감지하고 제안하여 생성 과정을 간소화합니다.
+- **AI 기반 일정 분석**
+  - 사용자가 청첩장 URL을 제출하면, 앱이 서버로 링크를 보내 AI 기반으로 콘텐츠를 분석하고 자동으로 일정 상세 정보를 추출합니다. 이 과정은 `lib/domain/usecases/analyze_link_usecase.dart`에서 처리되며, UI는 `lib/presentation/bloc/create/create_cubit.dart`를 통해 반영됩니다.
+- **캘린더 & 목록 뷰**
+  - 저장된 모든 일정을 캘린더 또는 목록 형태로 볼 수 있습니다. 이 UI 로직은 `lib/presentation/bloc/calendar/calendar_bloc.dart`에서 관리되며, `lib/presentation/widgets/calendar_view.dart`와 `lib/presentation/widgets/calendar_list_view.dart` 같은 위젯을 사용합니다. 날짜를 탭하면 요약 정보가, 이벤트를 탭하면 상세 페이지로 이동합니다.
+- **일정 관리**
+  - 일정 상세 정보를 보고, 수정하고, 삭제할 수 있습니다. `DetailPage`에서 수정을 할 수 있으며, 이는 `lib/domain/usecases/edit_schedule_usecase.dart`와 `lib/domain/usecases/delete_schedule_usecase.dart` 같은 유스케이스를 통해 처리됩니다.
+- **푸시 알림**
+  - `lib/core/services/notification_service.dart`에 설정된 로컬 푸시 알림을 통해 예정된 이벤트(예: 하루 전)에 대한 시기적절한 알림을 제공합니다.
+- **클립보드 감지**
+  - 앱이 사용자의 클립보드에서 청첩장 링크를 자동으로 감지하고 제안하여 생성 과정을 간소화합니다.
 
 ### 앱 스크린샷
 
@@ -55,7 +60,7 @@
 2.  의존성 설치:
 
     ```bash
-    flutter pub get
+    dart pub get
     ```
 
 3.  코드 생성기 실행:
@@ -139,14 +144,14 @@ class Env {
 
 ```txt
 ┌────────────────────────── UI (Bloc) ──────────────────────────┐
-│  View (Widget)                                                 │
-│     ├──> Bloc / Cubit (상태 관리)                             │
-│     │     ├──> UseCase (비즈니스 로직)                        │
-│     │     │     ├──> Repository (인터페이스)                  │
+│  View (Widget)                                                │
+│     ├──> Bloc / Cubit (상태 관리)                               │
+│     │     ├──> UseCase (비즈니스 로직)                           │
+│     │     │     ├──> Repository (인터페이스)                     │
 │     │     │     │     ├──> Remote Data Source (API)           │
 │     │     │     │     └──> Local Data Source (SQLite)         │
-│     │     │     │                                              │
-└───────> 의존성 주입 (get_it + injectable) ───────────┘
+│     │     │     │                                             │
+└───────> 의존성 주입 (get_it + injectable) ───────────────────────┘
 ```
 
 ## 릴리스 내역
