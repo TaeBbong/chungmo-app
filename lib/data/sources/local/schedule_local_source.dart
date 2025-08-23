@@ -37,8 +37,6 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
 
   final _controller = StreamController<List<ScheduleModel>>.broadcast();
 
-  bool _initialized = false;
-
   @override
   Stream<List<ScheduleModel>> get allSchedulesStream => _controller.stream;
 
@@ -88,10 +86,7 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
 
   @override
   Stream<List<ScheduleModel>> watchAllSchedules() {
-    if (!_initialized) {
-      _initialized = true;
-      refresh();
-    }
+    refresh();
     return _controller.stream;
   }
 
