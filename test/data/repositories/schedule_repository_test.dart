@@ -52,6 +52,22 @@ void main() {
       verify(mockRemoteSource.fetchScheduleFromServer(tUrl)).called(1);
     });
 
+    // TODO: Implement retry case for connection timeout(in remote source too)
+    test(
+        'should retry request when connection timeout occurs, then return Schedule successfully',
+        () async {
+      // Given
+      when(mockRemoteSource.fetchScheduleFromServer(any))
+          .thenAnswer((_) async => tScheduleModel);
+
+      // When
+      final result = await repository.analyzeLink(tUrl);
+
+      // Then
+      expect(result, tSchedule);
+      verify(mockRemoteSource.fetchScheduleFromServer(tUrl)).called(1);
+    });
+
     test('should throw Exception when remote source fails', () async {
       // Given
       when(mockRemoteSource.fetchScheduleFromServer(any))
@@ -85,6 +101,7 @@ void main() {
     });
   });
 
+  // TODO: Rewrite test codes for bloc implement(stream)
   // group('getSchedules', () {
   //   test('should return list of schedules when local source is successful',
   //       () async {
@@ -99,6 +116,10 @@ void main() {
   //     expect(result, [tSchedule]);
   //     verify(mockLocalSource.getAllSchedules()).called(1);
   //   });
+
+  //   // TODO: Implement below case
+  //   test('should return list of schedules when dispose, refresh CalendarPage',
+  //       () {});
   // });
 
   // group('getSchedulesForMonth', () {
@@ -120,6 +141,10 @@ void main() {
   //     expect(result.values.first, [tSchedule]);
   //     verify(mockLocalSource.getSchedulesForMonth(tDate)).called(1);
   //   });
+
+  //   // TODO: Implement below case
+  //   test('should return list of schedules when dispose, refresh CalendarPage',
+  //       () {});
   // });
 
   group('editSchedule - Notification Behavior', () {
