@@ -12,6 +12,8 @@ dependencies:
   dio: ^5.8.0+1
   dotlottie_loader: ^0.0.4
   equatable: ^2.0.7
+  firebase_ai: ^3.6.0
+  firebase_core: ^4.2.1
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
