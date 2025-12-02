@@ -16,6 +16,9 @@ import 'package:chungmo/data/sources/local/app_preferences_local_source.dart'
     as _i98;
 import 'package:chungmo/data/sources/local/schedule_local_source.dart'
     as _i1014;
+import 'package:chungmo/data/sources/remote/cloud_function_impl.dart' as _i409;
+import 'package:chungmo/data/sources/remote/firebase_ai_logic_impl.dart'
+    as _i695;
 import 'package:chungmo/data/sources/remote/schedule_remote_source.dart'
     as _i153;
 import 'package:chungmo/domain/repositories/schedule_repository.dart' as _i561;
@@ -29,6 +32,9 @@ import 'package:chungmo/domain/usecases/watch_all_schedules_usecase.dart'
     as _i389;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+
+const String _cloud = 'cloud';
+const String _firebase = 'firebase';
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -45,12 +51,18 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i109.NotificationServiceImpl());
     gh.lazySingleton<_i1014.ScheduleLocalSource>(
         () => _i1014.ScheduleLocalSourceImpl());
+    gh.lazySingleton<_i153.ScheduleRemoteSource>(
+      () => _i409.CloudFunctionImpl(),
+      registerFor: {_cloud},
+    );
     gh.lazySingleton<_i98.AppPreferencesLocalSource>(
         () => _i98.AppPreferencesSourceImpl());
-    gh.lazySingleton<_i153.ScheduleRemoteSource>(
-        () => _i153.ScheduleRemoteSourceImpl());
     gh.factory<_i391.PreferencesChecker>(
         () => _i391.PreferencesChecker(gh<_i98.AppPreferencesLocalSource>()));
+    gh.lazySingleton<_i153.ScheduleRemoteSource>(
+      () => _i695.FirebaseAiLogicImpl(),
+      registerFor: {_firebase},
+    );
     gh.lazySingleton<_i561.ScheduleRepository>(
         () => _i798.ScheduleRepositoryImpl(
               gh<_i153.ScheduleRemoteSource>(),
