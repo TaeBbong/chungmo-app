@@ -26,10 +26,10 @@ void main() async {
         environment: Environ.production,
         remoteSource: RemoteSourceEnv.firebase);
   }
-  await configureDependencies(environment: Env.backendType);
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await configureDependencies(environment: Env.backendType);
   final NotificationService notificationService = getIt<NotificationService>();
   await notificationService.getPermissions();
   await notificationService.init();
