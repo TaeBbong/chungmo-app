@@ -1,3 +1,5 @@
+import 'package:chungmo/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -16,16 +18,22 @@ import 'domain/entities/schedule.dart';
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  await configureDependencies();
+  if (kDebugMode) {
+    Env.init(
+        environment: Environ.local, remoteSource: RemoteSourceEnv.firebase);
+  } else {
+    Env.init(
+        environment: Environ.production,
+        remoteSource: RemoteSourceEnv.firebase);
+  }
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await configureDependencies(environment: Env.backendType);
   final NotificationService notificationService = getIt<NotificationService>();
   await notificationService.getPermissions();
   await notificationService.init();
   // await initializeDateFormatting('ko_KR', 'null');
-  if (kDebugMode) {
-    Env.init(Environ.local);
-  } else {
-    Env.init(Environ.production);
-  }
   Future.delayed(const Duration(seconds: 1), () {
     FlutterNativeSplash.remove();
   });

@@ -22,7 +22,7 @@ class ScheduleMapper {
       thumbnail: model.thumbnail,
       groom: model.groom,
       bride: model.bride,
-      date: DateTime.parse(model.date),
+      date: DateTime.parse(model.date).toLocal(),
       location: model.location,
     );
   }
