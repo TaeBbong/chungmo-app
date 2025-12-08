@@ -1,7 +1,7 @@
 name: chungmo
 description: "모바일 청첩장 모음 앱 청모"
 publish_to: "none"
-version: 1.1.0+4
+version: 1.2.0+5
 
 environment:
   sdk: ^3.5.4
