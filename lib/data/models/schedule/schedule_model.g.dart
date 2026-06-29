@@ -6,8 +6,8 @@ part of 'schedule_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ScheduleModelImpl _$$ScheduleModelImplFromJson(Map<String, dynamic> json) =>
-    _$ScheduleModelImpl(
+_ScheduleModel _$ScheduleModelFromJson(Map<String, dynamic> json) =>
+    _ScheduleModel(
       link: json['link'] as String,
       thumbnail: json['thumbnail'] as String,
       groom: json['groom'] as String,
@@ -16,7 +16,7 @@ _$ScheduleModelImpl _$$ScheduleModelImplFromJson(Map<String, dynamic> json) =>
       location: json['location'] as String,
     );
 
-Map<String, dynamic> _$$ScheduleModelImplToJson(_$ScheduleModelImpl instance) =>
+Map<String, dynamic> _$ScheduleModelToJson(_ScheduleModel instance) =>
     <String, dynamic>{
       'link': instance.link,
       'thumbnail': instance.thumbnail,

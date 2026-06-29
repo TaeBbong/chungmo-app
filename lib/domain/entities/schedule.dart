@@ -12,7 +12,7 @@ part 'schedule.freezed.dart';
 ///
 /// Used in main business logic, usecases, presentation layer.
 @freezed
-class Schedule with _$Schedule {
+abstract class Schedule with _$Schedule {
   const factory Schedule({
     required String link,
     required String thumbnail,

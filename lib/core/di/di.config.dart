@@ -1,5 +1,5 @@
-// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
 // **************************************************************************
 // InjectableConfigGenerator
@@ -69,16 +69,16 @@ extension GetItInjectableX on _i174.GetIt {
               gh<_i1014.ScheduleLocalSource>(),
               gh<_i109.NotificationService>(),
             ));
-    gh.factory<_i634.GetScheduleByLinkUsecase>(
-        () => _i634.GetScheduleByLinkUsecase(gh<_i561.ScheduleRepository>()));
-    gh.factory<_i485.SaveScheduleUsecase>(
-        () => _i485.SaveScheduleUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i596.AnalyzeLinkUsecase>(
         () => _i596.AnalyzeLinkUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i993.DeleteScheduleUsecase>(
         () => _i993.DeleteScheduleUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i15.EditScheduleUsecase>(
         () => _i15.EditScheduleUsecase(gh<_i561.ScheduleRepository>()));
+    gh.factory<_i634.GetScheduleByLinkUsecase>(
+        () => _i634.GetScheduleByLinkUsecase(gh<_i561.ScheduleRepository>()));
+    gh.factory<_i485.SaveScheduleUsecase>(
+        () => _i485.SaveScheduleUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i389.WatchAllSchedulesUsecase>(
         () => _i389.WatchAllSchedulesUsecase(gh<_i561.ScheduleRepository>()));
     return this;

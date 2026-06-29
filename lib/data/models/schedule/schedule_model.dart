@@ -13,7 +13,7 @@ part 'schedule_model.g.dart';
 ///
 /// Used in local/remote data sources.
 @freezed
-class ScheduleModel with _$ScheduleModel {
+abstract class ScheduleModel with _$ScheduleModel {
   factory ScheduleModel({
     required String link,
     required String thumbnail,

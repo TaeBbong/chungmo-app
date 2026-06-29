@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,109 +9,61 @@ part of 'schedule_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-ScheduleModel _$ScheduleModelFromJson(Map<String, dynamic> json) {
-  return _ScheduleModel.fromJson(json);
-}
 
 /// @nodoc
 mixin _$ScheduleModel {
-  String get link => throw _privateConstructorUsedError;
-  String get thumbnail => throw _privateConstructorUsedError;
-  String get groom => throw _privateConstructorUsedError;
-  String get bride =>
-      throw _privateConstructorUsedError; // ignore: invalid_annotation_target
+  String get link;
+  String get thumbnail;
+  String get groom;
+  String get bride; // ignore: invalid_annotation_target
   @JsonKey(name: 'datetime')
-  String get date => throw _privateConstructorUsedError;
-  String get location => throw _privateConstructorUsedError;
-
-  /// Serializes this ScheduleModel to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  String get date;
+  String get location;
 
   /// Create a copy of ScheduleModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $ScheduleModelCopyWith<ScheduleModel> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $ScheduleModelCopyWith<$Res> {
-  factory $ScheduleModelCopyWith(
-          ScheduleModel value, $Res Function(ScheduleModel) then) =
-      _$ScheduleModelCopyWithImpl<$Res, ScheduleModel>;
-  @useResult
-  $Res call(
-      {String link,
-      String thumbnail,
-      String groom,
-      String bride,
-      @JsonKey(name: 'datetime') String date,
-      String location});
-}
-
-/// @nodoc
-class _$ScheduleModelCopyWithImpl<$Res, $Val extends ScheduleModel>
-    implements $ScheduleModelCopyWith<$Res> {
-  _$ScheduleModelCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of ScheduleModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $ScheduleModelCopyWith<ScheduleModel> get copyWith =>
+      _$ScheduleModelCopyWithImpl<ScheduleModel>(
+          this as ScheduleModel, _$identity);
+
+  /// Serializes this ScheduleModel to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? link = null,
-    Object? thumbnail = null,
-    Object? groom = null,
-    Object? bride = null,
-    Object? date = null,
-    Object? location = null,
-  }) {
-    return _then(_value.copyWith(
-      link: null == link
-          ? _value.link
-          : link // ignore: cast_nullable_to_non_nullable
-              as String,
-      thumbnail: null == thumbnail
-          ? _value.thumbnail
-          : thumbnail // ignore: cast_nullable_to_non_nullable
-              as String,
-      groom: null == groom
-          ? _value.groom
-          : groom // ignore: cast_nullable_to_non_nullable
-              as String,
-      bride: null == bride
-          ? _value.bride
-          : bride // ignore: cast_nullable_to_non_nullable
-              as String,
-      date: null == date
-          ? _value.date
-          : date // ignore: cast_nullable_to_non_nullable
-              as String,
-      location: null == location
-          ? _value.location
-          : location // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ScheduleModel &&
+            (identical(other.link, link) || other.link == link) &&
+            (identical(other.thumbnail, thumbnail) ||
+                other.thumbnail == thumbnail) &&
+            (identical(other.groom, groom) || other.groom == groom) &&
+            (identical(other.bride, bride) || other.bride == bride) &&
+            (identical(other.date, date) || other.date == date) &&
+            (identical(other.location, location) ||
+                other.location == location));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, link, thumbnail, groom, bride, date, location);
+
+  @override
+  String toString() {
+    return 'ScheduleModel(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location)';
   }
 }
 
 /// @nodoc
-abstract class _$$ScheduleModelImplCopyWith<$Res>
-    implements $ScheduleModelCopyWith<$Res> {
-  factory _$$ScheduleModelImplCopyWith(
-          _$ScheduleModelImpl value, $Res Function(_$ScheduleModelImpl) then) =
-      __$$ScheduleModelImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $ScheduleModelCopyWith<$Res> {
+  factory $ScheduleModelCopyWith(
+          ScheduleModel value, $Res Function(ScheduleModel) _then) =
+      _$ScheduleModelCopyWithImpl;
   @useResult
   $Res call(
       {String link,
@@ -123,12 +75,12 @@ abstract class _$$ScheduleModelImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$ScheduleModelImplCopyWithImpl<$Res>
-    extends _$ScheduleModelCopyWithImpl<$Res, _$ScheduleModelImpl>
-    implements _$$ScheduleModelImplCopyWith<$Res> {
-  __$$ScheduleModelImplCopyWithImpl(
-      _$ScheduleModelImpl _value, $Res Function(_$ScheduleModelImpl) _then)
-      : super(_value, _then);
+class _$ScheduleModelCopyWithImpl<$Res>
+    implements $ScheduleModelCopyWith<$Res> {
+  _$ScheduleModelCopyWithImpl(this._self, this._then);
+
+  final ScheduleModel _self;
+  final $Res Function(ScheduleModel) _then;
 
   /// Create a copy of ScheduleModel
   /// with the given fields replaced by the non-null parameter values.
@@ -142,48 +94,213 @@ class __$$ScheduleModelImplCopyWithImpl<$Res>
     Object? date = null,
     Object? location = null,
   }) {
-    return _then(_$ScheduleModelImpl(
+    return _then(_self.copyWith(
       link: null == link
-          ? _value.link
+          ? _self.link
           : link // ignore: cast_nullable_to_non_nullable
               as String,
       thumbnail: null == thumbnail
-          ? _value.thumbnail
+          ? _self.thumbnail
           : thumbnail // ignore: cast_nullable_to_non_nullable
               as String,
       groom: null == groom
-          ? _value.groom
+          ? _self.groom
           : groom // ignore: cast_nullable_to_non_nullable
               as String,
       bride: null == bride
-          ? _value.bride
+          ? _self.bride
           : bride // ignore: cast_nullable_to_non_nullable
               as String,
       date: null == date
-          ? _value.date
+          ? _self.date
           : date // ignore: cast_nullable_to_non_nullable
               as String,
       location: null == location
-          ? _value.location
+          ? _self.location
           : location // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
 }
 
+/// Adds pattern-matching-related methods to [ScheduleModel].
+extension ScheduleModelPatterns on ScheduleModel {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_ScheduleModel value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _ScheduleModel() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_ScheduleModel value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ScheduleModel():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_ScheduleModel value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ScheduleModel() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(String link, String thumbnail, String groom, String bride,
+            @JsonKey(name: 'datetime') String date, String location)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _ScheduleModel() when $default != null:
+        return $default(_that.link, _that.thumbnail, _that.groom, _that.bride,
+            _that.date, _that.location);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(String link, String thumbnail, String groom, String bride,
+            @JsonKey(name: 'datetime') String date, String location)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ScheduleModel():
+        return $default(_that.link, _that.thumbnail, _that.groom, _that.bride,
+            _that.date, _that.location);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(String link, String thumbnail, String groom, String bride,
+            @JsonKey(name: 'datetime') String date, String location)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ScheduleModel() when $default != null:
+        return $default(_that.link, _that.thumbnail, _that.groom, _that.bride,
+            _that.date, _that.location);
+      case _:
+        return null;
+    }
+  }
+}
+
 /// @nodoc
 @JsonSerializable()
-class _$ScheduleModelImpl implements _ScheduleModel {
-  _$ScheduleModelImpl(
+class _ScheduleModel implements ScheduleModel {
+  _ScheduleModel(
       {required this.link,
       required this.thumbnail,
       required this.groom,
       required this.bride,
       @JsonKey(name: 'datetime') required this.date,
       required this.location});
-
-  factory _$ScheduleModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ScheduleModelImplFromJson(json);
+  factory _ScheduleModel.fromJson(Map<String, dynamic> json) =>
+      _$ScheduleModelFromJson(json);
 
   @override
   final String link;
@@ -200,16 +317,26 @@ class _$ScheduleModelImpl implements _ScheduleModel {
   @override
   final String location;
 
+  /// Create a copy of ScheduleModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'ScheduleModel(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ScheduleModelCopyWith<_ScheduleModel> get copyWith =>
+      __$ScheduleModelCopyWithImpl<_ScheduleModel>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$ScheduleModelToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ScheduleModelImpl &&
+            other is _ScheduleModel &&
             (identical(other.link, link) || other.link == link) &&
             (identical(other.thumbnail, thumbnail) ||
                 other.thumbnail == thumbnail) &&
@@ -225,52 +352,76 @@ class _$ScheduleModelImpl implements _ScheduleModel {
   int get hashCode =>
       Object.hash(runtimeType, link, thumbnail, groom, bride, date, location);
 
-  /// Create a copy of ScheduleModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$ScheduleModelImplCopyWith<_$ScheduleModelImpl> get copyWith =>
-      __$$ScheduleModelImplCopyWithImpl<_$ScheduleModelImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ScheduleModelImplToJson(
-      this,
-    );
+  String toString() {
+    return 'ScheduleModel(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location)';
   }
 }
 
-abstract class _ScheduleModel implements ScheduleModel {
-  factory _ScheduleModel(
-      {required final String link,
-      required final String thumbnail,
-      required final String groom,
-      required final String bride,
-      @JsonKey(name: 'datetime') required final String date,
-      required final String location}) = _$ScheduleModelImpl;
+/// @nodoc
+abstract mixin class _$ScheduleModelCopyWith<$Res>
+    implements $ScheduleModelCopyWith<$Res> {
+  factory _$ScheduleModelCopyWith(
+          _ScheduleModel value, $Res Function(_ScheduleModel) _then) =
+      __$ScheduleModelCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {String link,
+      String thumbnail,
+      String groom,
+      String bride,
+      @JsonKey(name: 'datetime') String date,
+      String location});
+}
 
-  factory _ScheduleModel.fromJson(Map<String, dynamic> json) =
-      _$ScheduleModelImpl.fromJson;
+/// @nodoc
+class __$ScheduleModelCopyWithImpl<$Res>
+    implements _$ScheduleModelCopyWith<$Res> {
+  __$ScheduleModelCopyWithImpl(this._self, this._then);
 
-  @override
-  String get link;
-  @override
-  String get thumbnail;
-  @override
-  String get groom;
-  @override
-  String get bride; // ignore: invalid_annotation_target
-  @override
-  @JsonKey(name: 'datetime')
-  String get date;
-  @override
-  String get location;
+  final _ScheduleModel _self;
+  final $Res Function(_ScheduleModel) _then;
 
   /// Create a copy of ScheduleModel
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ScheduleModelImplCopyWith<_$ScheduleModelImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? link = null,
+    Object? thumbnail = null,
+    Object? groom = null,
+    Object? bride = null,
+    Object? date = null,
+    Object? location = null,
+  }) {
+    return _then(_ScheduleModel(
+      link: null == link
+          ? _self.link
+          : link // ignore: cast_nullable_to_non_nullable
+              as String,
+      thumbnail: null == thumbnail
+          ? _self.thumbnail
+          : thumbnail // ignore: cast_nullable_to_non_nullable
+              as String,
+      groom: null == groom
+          ? _self.groom
+          : groom // ignore: cast_nullable_to_non_nullable
+              as String,
+      bride: null == bride
+          ? _self.bride
+          : bride // ignore: cast_nullable_to_non_nullable
+              as String,
+      date: null == date
+          ? _self.date
+          : date // ignore: cast_nullable_to_non_nullable
+              as String,
+      location: null == location
+          ? _self.location
+          : location // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
+
+// dart format on
