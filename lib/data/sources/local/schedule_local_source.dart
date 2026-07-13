@@ -54,7 +54,7 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     final path = join(await getDatabasesPath(), 'schedule_database.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE schedules (
@@ -63,15 +63,21 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
             groom TEXT,
             bride TEXT,
             datetime TEXT,
-            location TEXT
+            location TEXT,
+            groom_accounts TEXT,
+            bride_accounts TEXT
           )
         ''');
       },
       onUpgrade: (db, oldVersion, newVersion) async {
-        // if (oldVersion < 2) {
-        //   // UPDATE: 새로운 필드 추가 ('thumbnail')
-        //   await db.execute('ALTER TABLE schedules ADD COLUMN thumbnail TEXT;');
-        // }
+        if (oldVersion < 2) {
+          // UPDATE: 축의금 계좌 추가 ('groom_accounts', 'bride_accounts')
+          // 기존 행은 NULL로 남고, ScheduleMapper가 빈 리스트로 해석한다.
+          await db.execute(
+              'ALTER TABLE schedules ADD COLUMN groom_accounts TEXT;');
+          await db.execute(
+              'ALTER TABLE schedules ADD COLUMN bride_accounts TEXT;');
+        }
       },
     );
   }

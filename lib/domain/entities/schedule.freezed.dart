@@ -21,6 +21,12 @@ mixin _$Schedule {
   DateTime get date;
   String get location;
 
+  /// 축의금 accounts of the groom's side. Empty when not found in invitation.
+  List<Account> get groomAccounts;
+
+  /// 축의금 accounts of the bride's side. Empty when not found in invitation.
+  List<Account> get brideAccounts;
+
   /// Create a copy of Schedule
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -40,16 +46,28 @@ mixin _$Schedule {
             (identical(other.bride, bride) || other.bride == bride) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.location, location) ||
-                other.location == location));
+                other.location == location) &&
+            const DeepCollectionEquality()
+                .equals(other.groomAccounts, groomAccounts) &&
+            const DeepCollectionEquality()
+                .equals(other.brideAccounts, brideAccounts));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, link, thumbnail, groom, bride, date, location);
+  int get hashCode => Object.hash(
+      runtimeType,
+      link,
+      thumbnail,
+      groom,
+      bride,
+      date,
+      location,
+      const DeepCollectionEquality().hash(groomAccounts),
+      const DeepCollectionEquality().hash(brideAccounts));
 
   @override
   String toString() {
-    return 'Schedule(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location)';
+    return 'Schedule(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts)';
   }
 }
 
@@ -64,7 +82,9 @@ abstract mixin class $ScheduleCopyWith<$Res> {
       String groom,
       String bride,
       DateTime date,
-      String location});
+      String location,
+      List<Account> groomAccounts,
+      List<Account> brideAccounts});
 }
 
 /// @nodoc
@@ -85,6 +105,8 @@ class _$ScheduleCopyWithImpl<$Res> implements $ScheduleCopyWith<$Res> {
     Object? bride = null,
     Object? date = null,
     Object? location = null,
+    Object? groomAccounts = null,
+    Object? brideAccounts = null,
   }) {
     return _then(_self.copyWith(
       link: null == link
@@ -111,6 +133,14 @@ class _$ScheduleCopyWithImpl<$Res> implements $ScheduleCopyWith<$Res> {
           ? _self.location
           : location // ignore: cast_nullable_to_non_nullable
               as String,
+      groomAccounts: null == groomAccounts
+          ? _self.groomAccounts
+          : groomAccounts // ignore: cast_nullable_to_non_nullable
+              as List<Account>,
+      brideAccounts: null == brideAccounts
+          ? _self.brideAccounts
+          : brideAccounts // ignore: cast_nullable_to_non_nullable
+              as List<Account>,
     ));
   }
 }
@@ -208,16 +238,30 @@ extension SchedulePatterns on Schedule {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String link, String thumbnail, String groom, String bride,
-            DateTime date, String location)?
+    TResult Function(
+            String link,
+            String thumbnail,
+            String groom,
+            String bride,
+            DateTime date,
+            String location,
+            List<Account> groomAccounts,
+            List<Account> brideAccounts)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _Schedule() when $default != null:
-        return $default(_that.link, _that.thumbnail, _that.groom, _that.bride,
-            _that.date, _that.location);
+        return $default(
+            _that.link,
+            _that.thumbnail,
+            _that.groom,
+            _that.bride,
+            _that.date,
+            _that.location,
+            _that.groomAccounts,
+            _that.brideAccounts);
       case _:
         return orElse();
     }
@@ -238,15 +282,29 @@ extension SchedulePatterns on Schedule {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String link, String thumbnail, String groom, String bride,
-            DateTime date, String location)
+    TResult Function(
+            String link,
+            String thumbnail,
+            String groom,
+            String bride,
+            DateTime date,
+            String location,
+            List<Account> groomAccounts,
+            List<Account> brideAccounts)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Schedule():
-        return $default(_that.link, _that.thumbnail, _that.groom, _that.bride,
-            _that.date, _that.location);
+        return $default(
+            _that.link,
+            _that.thumbnail,
+            _that.groom,
+            _that.bride,
+            _that.date,
+            _that.location,
+            _that.groomAccounts,
+            _that.brideAccounts);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -266,15 +324,29 @@ extension SchedulePatterns on Schedule {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String link, String thumbnail, String groom, String bride,
-            DateTime date, String location)?
+    TResult? Function(
+            String link,
+            String thumbnail,
+            String groom,
+            String bride,
+            DateTime date,
+            String location,
+            List<Account> groomAccounts,
+            List<Account> brideAccounts)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Schedule() when $default != null:
-        return $default(_that.link, _that.thumbnail, _that.groom, _that.bride,
-            _that.date, _that.location);
+        return $default(
+            _that.link,
+            _that.thumbnail,
+            _that.groom,
+            _that.bride,
+            _that.date,
+            _that.location,
+            _that.groomAccounts,
+            _that.brideAccounts);
       case _:
         return null;
     }
@@ -290,7 +362,11 @@ class _Schedule implements Schedule {
       required this.groom,
       required this.bride,
       required this.date,
-      required this.location});
+      required this.location,
+      final List<Account> groomAccounts = const <Account>[],
+      final List<Account> brideAccounts = const <Account>[]})
+      : _groomAccounts = groomAccounts,
+        _brideAccounts = brideAccounts;
 
   @override
   final String link;
@@ -304,6 +380,30 @@ class _Schedule implements Schedule {
   final DateTime date;
   @override
   final String location;
+
+  /// 축의금 accounts of the groom's side. Empty when not found in invitation.
+  final List<Account> _groomAccounts;
+
+  /// 축의금 accounts of the groom's side. Empty when not found in invitation.
+  @override
+  @JsonKey()
+  List<Account> get groomAccounts {
+    if (_groomAccounts is EqualUnmodifiableListView) return _groomAccounts;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_groomAccounts);
+  }
+
+  /// 축의금 accounts of the bride's side. Empty when not found in invitation.
+  final List<Account> _brideAccounts;
+
+  /// 축의금 accounts of the bride's side. Empty when not found in invitation.
+  @override
+  @JsonKey()
+  List<Account> get brideAccounts {
+    if (_brideAccounts is EqualUnmodifiableListView) return _brideAccounts;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_brideAccounts);
+  }
 
   /// Create a copy of Schedule
   /// with the given fields replaced by the non-null parameter values.
@@ -325,16 +425,28 @@ class _Schedule implements Schedule {
             (identical(other.bride, bride) || other.bride == bride) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.location, location) ||
-                other.location == location));
+                other.location == location) &&
+            const DeepCollectionEquality()
+                .equals(other._groomAccounts, _groomAccounts) &&
+            const DeepCollectionEquality()
+                .equals(other._brideAccounts, _brideAccounts));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, link, thumbnail, groom, bride, date, location);
+  int get hashCode => Object.hash(
+      runtimeType,
+      link,
+      thumbnail,
+      groom,
+      bride,
+      date,
+      location,
+      const DeepCollectionEquality().hash(_groomAccounts),
+      const DeepCollectionEquality().hash(_brideAccounts));
 
   @override
   String toString() {
-    return 'Schedule(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location)';
+    return 'Schedule(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts)';
   }
 }
 
@@ -351,7 +463,9 @@ abstract mixin class _$ScheduleCopyWith<$Res>
       String groom,
       String bride,
       DateTime date,
-      String location});
+      String location,
+      List<Account> groomAccounts,
+      List<Account> brideAccounts});
 }
 
 /// @nodoc
@@ -372,6 +486,8 @@ class __$ScheduleCopyWithImpl<$Res> implements _$ScheduleCopyWith<$Res> {
     Object? bride = null,
     Object? date = null,
     Object? location = null,
+    Object? groomAccounts = null,
+    Object? brideAccounts = null,
   }) {
     return _then(_Schedule(
       link: null == link
@@ -398,6 +514,14 @@ class __$ScheduleCopyWithImpl<$Res> implements _$ScheduleCopyWith<$Res> {
           ? _self.location
           : location // ignore: cast_nullable_to_non_nullable
               as String,
+      groomAccounts: null == groomAccounts
+          ? _self._groomAccounts
+          : groomAccounts // ignore: cast_nullable_to_non_nullable
+              as List<Account>,
+      brideAccounts: null == brideAccounts
+          ? _self._brideAccounts
+          : brideAccounts // ignore: cast_nullable_to_non_nullable
+              as List<Account>,
     ));
   }
 }

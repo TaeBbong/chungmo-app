@@ -22,6 +22,12 @@ abstract class ScheduleModel with _$ScheduleModel {
     // ignore: invalid_annotation_target
     @JsonKey(name: 'datetime') required String date,
     required String location,
+
+    /// JSON-encoded `List<AccountModel>`; sqflite has no list column type.
+    // ignore: invalid_annotation_target
+    @JsonKey(name: 'groom_accounts') @Default('[]') String groomAccounts,
+    // ignore: invalid_annotation_target
+    @JsonKey(name: 'bride_accounts') @Default('[]') String brideAccounts,
   }) = _ScheduleModel;
 
   factory ScheduleModel.fromJson(Map<String, dynamic> json) =>

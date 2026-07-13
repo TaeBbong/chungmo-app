@@ -6,6 +6,7 @@ import '../../domain/entities/schedule.dart';
 import '../../core/utils/date_extension.dart';
 import '../bloc/detail/detail_cubit.dart';
 import '../../core/navigation/app_navigation.dart';
+import '../widgets/account_section.dart';
 
 class DetailPage extends StatefulWidget {
   final Schedule schedule;
@@ -59,13 +60,12 @@ class _DetailPageState extends State<DetailPage> {
 
   void saveChanges() {
     setState(() {
-      final Schedule editedSchedule = Schedule(
-          link: cubit.state.schedule!.link,
-          thumbnail: cubit.state.schedule!.thumbnail,
-          groom: groomController.text,
-          bride: brideController.text,
-          date: selectedDate!,
-          location: locationController.text);
+      final Schedule editedSchedule = cubit.state.schedule!.copyWith(
+        groom: groomController.text,
+        bride: brideController.text,
+        date: selectedDate!,
+        location: locationController.text,
+      );
       cubit.editSchedule(editedSchedule);
       editMode = false;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -190,163 +190,184 @@ class _DetailPageState extends State<DetailPage> {
                       ),
               ],
             ),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // 📸 사진 (수정 불가능)
-                  Container(
-                    width: 200,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: CachedNetworkImageProvider(
-                            cubit.state.schedule!.thumbnail),
-                        fit: BoxFit.cover,
-                      ),
+            // 계좌 섹션을 펼치면 내용이 화면보다 길어질 수 있어 스크롤 가능하게 두되,
+            // 짧을 때는 기존처럼 세로 중앙 정렬을 유지한다.
+            body: LayoutBuilder(
+              builder: (context, constraints) => SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: IntrinsicHeight(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // 📸 사진 (수정 불가능)
+                        Container(
+                          width: 200,
+                          height: 200,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: CachedNetworkImageProvider(
+                                  cubit.state.schedule!.thumbnail),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+
+                        // 👰‍♀️ & 🤵‍♂️ 신랑 & 신부 (수정 가능)
+                        editMode
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0),
+                                      child: TextField(
+                                        controller: groomController,
+                                        decoration: customInputDecoration(
+                                            labelText: '신랑'),
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0),
+                                      child: TextField(
+                                        controller: brideController,
+                                        decoration: customInputDecoration(
+                                            labelText: '신부'),
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Text(
+                                '🤵‍♂️ ${cubit.state.schedule!.groom} & 👰‍♀️ ${cubit.state.schedule!.bride}',
+                                style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+
+                        const SizedBox(height: 16),
+
+                        editMode
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: TextField(
+                                  readOnly: true,
+                                  onTap: () => _selectDateTime(context),
+                                  controller: TextEditingController(
+                                    text: selectedDate!.krDate,
+                                  ), // 날짜를 TextField에 표시
+                                  decoration: customInputDecoration(
+                                    labelText: '날짜',
+                                  ),
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                              )
+                            : Text(
+                                '📅 ${cubit.state.schedule!.date.krDate}',
+                                style: const TextStyle(
+                                    fontSize: 14, color: Colors.grey),
+                              ),
+
+                        const SizedBox(height: 16),
+
+                        // 🏡 장소 (수정 가능)
+                        editMode
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: Row(
+                                  children: [
+                                    Flexible(
+                                      child: TextField(
+                                        controller: locationController,
+                                        decoration: customInputDecoration(
+                                            labelText: '장소'),
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : SizedBox(
+                                width: 250,
+                                child: Text(
+                                  '🏡 ${cubit.state.schedule!.location}',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 14),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+
+                        const SizedBox(height: 12),
+
+                        // 🔗 링크 열기 / 수정 불가
+                        editMode
+                            ? Container()
+                            : GestureDetector(
+                                onTap: () async {
+                                  final Uri url =
+                                      Uri.parse(cubit.state.schedule!.link);
+                                  if (await canLaunchUrl(url)) {
+                                    await launchUrl(url,
+                                        mode: LaunchMode.externalApplication);
+                                  }
+                                },
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '🔗 링크 열기',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                        const SizedBox(height: 8),
+
+                        // 💌 마음 전하실 곳 (보기 전용, 계좌가 없으면 렌더링되지 않음)
+                        editMode
+                            ? Container()
+                            : AccountSection(
+                                groomAccounts:
+                                    cubit.state.schedule!.groomAccounts,
+                                brideAccounts:
+                                    cubit.state.schedule!.brideAccounts,
+                              ),
+
+                        // 💰 축의금 (수정 가능)
+                        // editMode
+                        //     ? SizedBox(
+                        //         width: 150,
+                        //         child: TextField(
+                        //           // controller: payController,
+                        //           keyboardType: TextInputType.number,
+                        //           decoration: const InputDecoration(labelText: '축의금'),
+                        //         ),
+                        //       )
+                        //     : Text(
+                        //         // '💰 축의금 ${controller.schedule.value!.pay}만원',
+                        //         '💰 축의금 10만원',
+                        //         style: const TextStyle(
+                        //             fontSize: 16, fontWeight: FontWeight.bold),
+                        //       ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 12),
-
-                  // 👰‍♀️ & 🤵‍♂️ 신랑 & 신부 (수정 가능)
-                  editMode
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
-                                child: TextField(
-                                  controller: groomController,
-                                  decoration:
-                                      customInputDecoration(labelText: '신랑'),
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
-                                child: TextField(
-                                  controller: brideController,
-                                  decoration:
-                                      customInputDecoration(labelText: '신부'),
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                      : Text(
-                          '🤵‍♂️ ${cubit.state.schedule!.groom} & 👰‍♀️ ${cubit.state.schedule!.bride}',
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-
-                  const SizedBox(height: 16),
-
-                  editMode
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: TextField(
-                            readOnly: true,
-                            onTap: () => _selectDateTime(context),
-                            controller: TextEditingController(
-                              text: selectedDate!.krDate,
-                            ), // 날짜를 TextField에 표시
-                            decoration: customInputDecoration(
-                              labelText: '날짜',
-                            ),
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        )
-                      : Text(
-                          '📅 ${cubit.state.schedule!.date.krDate}',
-                          style:
-                              const TextStyle(fontSize: 14, color: Colors.grey),
-                        ),
-
-                  const SizedBox(height: 16),
-
-                  // 🏡 장소 (수정 가능)
-                  editMode
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Row(
-                            children: [
-                              Flexible(
-                                child: TextField(
-                                  controller: locationController,
-                                  decoration:
-                                      customInputDecoration(labelText: '장소'),
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : SizedBox(
-                          width: 250,
-                          child: Text(
-                            '🏡 ${cubit.state.schedule!.location}',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 14),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-
-                  const SizedBox(height: 12),
-
-                  // 🔗 링크 열기 / 수정 불가
-                  editMode
-                      ? Container()
-                      : GestureDetector(
-                          onTap: () async {
-                            final Uri url =
-                                Uri.parse(cubit.state.schedule!.link);
-                            if (await canLaunchUrl(url)) {
-                              await launchUrl(url,
-                                  mode: LaunchMode.externalApplication);
-                            }
-                          },
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '🔗 링크 열기',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                  const SizedBox(height: 8),
-
-                  // 💰 축의금 (수정 가능)
-                  // editMode
-                  //     ? SizedBox(
-                  //         width: 150,
-                  //         child: TextField(
-                  //           // controller: payController,
-                  //           keyboardType: TextInputType.number,
-                  //           decoration: const InputDecoration(labelText: '축의금'),
-                  //         ),
-                  //       )
-                  //     : Text(
-                  //         // '💰 축의금 ${controller.schedule.value!.pay}만원',
-                  //         '💰 축의금 10만원',
-                  //         style: const TextStyle(
-                  //             fontSize: 16, fontWeight: FontWeight.bold),
-                  //       ),
-                ],
+                ),
               ),
             ),
           ),

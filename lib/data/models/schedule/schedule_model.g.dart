@@ -14,6 +14,8 @@ _ScheduleModel _$ScheduleModelFromJson(Map<String, dynamic> json) =>
       bride: json['bride'] as String,
       date: json['datetime'] as String,
       location: json['location'] as String,
+      groomAccounts: json['groom_accounts'] as String? ?? '[]',
+      brideAccounts: json['bride_accounts'] as String? ?? '[]',
     );
 
 Map<String, dynamic> _$ScheduleModelToJson(_ScheduleModel instance) =>
@@ -24,4 +26,6 @@ Map<String, dynamic> _$ScheduleModelToJson(_ScheduleModel instance) =>
       'bride': instance.bride,
       'datetime': instance.date,
       'location': instance.location,
+      'groom_accounts': instance.groomAccounts,
+      'bride_accounts': instance.brideAccounts,
     };

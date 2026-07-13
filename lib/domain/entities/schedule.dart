@@ -6,6 +6,8 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'account.dart';
+
 part 'schedule.freezed.dart';
 
 /// Schedule entity in domain layer.
@@ -20,5 +22,11 @@ abstract class Schedule with _$Schedule {
     required String bride,
     required DateTime date,
     required String location,
+
+    /// 축의금 accounts of the groom's side. Empty when not found in invitation.
+    @Default(<Account>[]) List<Account> groomAccounts,
+
+    /// 축의금 accounts of the bride's side. Empty when not found in invitation.
+    @Default(<Account>[]) List<Account> brideAccounts,
   }) = _Schedule;
 }

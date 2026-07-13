@@ -22,6 +22,13 @@ mixin _$ScheduleModel {
   String get date;
   String get location;
 
+  /// JSON-encoded `List<AccountModel>`; sqflite has no list column type.
+// ignore: invalid_annotation_target
+  @JsonKey(name: 'groom_accounts')
+  String get groomAccounts; // ignore: invalid_annotation_target
+  @JsonKey(name: 'bride_accounts')
+  String get brideAccounts;
+
   /// Create a copy of ScheduleModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,17 +52,21 @@ mixin _$ScheduleModel {
             (identical(other.bride, bride) || other.bride == bride) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.location, location) ||
-                other.location == location));
+                other.location == location) &&
+            (identical(other.groomAccounts, groomAccounts) ||
+                other.groomAccounts == groomAccounts) &&
+            (identical(other.brideAccounts, brideAccounts) ||
+                other.brideAccounts == brideAccounts));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, link, thumbnail, groom, bride, date, location);
+  int get hashCode => Object.hash(runtimeType, link, thumbnail, groom, bride,
+      date, location, groomAccounts, brideAccounts);
 
   @override
   String toString() {
-    return 'ScheduleModel(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location)';
+    return 'ScheduleModel(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts)';
   }
 }
 
@@ -71,7 +82,9 @@ abstract mixin class $ScheduleModelCopyWith<$Res> {
       String groom,
       String bride,
       @JsonKey(name: 'datetime') String date,
-      String location});
+      String location,
+      @JsonKey(name: 'groom_accounts') String groomAccounts,
+      @JsonKey(name: 'bride_accounts') String brideAccounts});
 }
 
 /// @nodoc
@@ -93,6 +106,8 @@ class _$ScheduleModelCopyWithImpl<$Res>
     Object? bride = null,
     Object? date = null,
     Object? location = null,
+    Object? groomAccounts = null,
+    Object? brideAccounts = null,
   }) {
     return _then(_self.copyWith(
       link: null == link
@@ -118,6 +133,14 @@ class _$ScheduleModelCopyWithImpl<$Res>
       location: null == location
           ? _self.location
           : location // ignore: cast_nullable_to_non_nullable
+              as String,
+      groomAccounts: null == groomAccounts
+          ? _self.groomAccounts
+          : groomAccounts // ignore: cast_nullable_to_non_nullable
+              as String,
+      brideAccounts: null == brideAccounts
+          ? _self.brideAccounts
+          : brideAccounts // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -216,16 +239,30 @@ extension ScheduleModelPatterns on ScheduleModel {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String link, String thumbnail, String groom, String bride,
-            @JsonKey(name: 'datetime') String date, String location)?
+    TResult Function(
+            String link,
+            String thumbnail,
+            String groom,
+            String bride,
+            @JsonKey(name: 'datetime') String date,
+            String location,
+            @JsonKey(name: 'groom_accounts') String groomAccounts,
+            @JsonKey(name: 'bride_accounts') String brideAccounts)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _ScheduleModel() when $default != null:
-        return $default(_that.link, _that.thumbnail, _that.groom, _that.bride,
-            _that.date, _that.location);
+        return $default(
+            _that.link,
+            _that.thumbnail,
+            _that.groom,
+            _that.bride,
+            _that.date,
+            _that.location,
+            _that.groomAccounts,
+            _that.brideAccounts);
       case _:
         return orElse();
     }
@@ -246,15 +283,29 @@ extension ScheduleModelPatterns on ScheduleModel {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String link, String thumbnail, String groom, String bride,
-            @JsonKey(name: 'datetime') String date, String location)
+    TResult Function(
+            String link,
+            String thumbnail,
+            String groom,
+            String bride,
+            @JsonKey(name: 'datetime') String date,
+            String location,
+            @JsonKey(name: 'groom_accounts') String groomAccounts,
+            @JsonKey(name: 'bride_accounts') String brideAccounts)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ScheduleModel():
-        return $default(_that.link, _that.thumbnail, _that.groom, _that.bride,
-            _that.date, _that.location);
+        return $default(
+            _that.link,
+            _that.thumbnail,
+            _that.groom,
+            _that.bride,
+            _that.date,
+            _that.location,
+            _that.groomAccounts,
+            _that.brideAccounts);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -274,15 +325,29 @@ extension ScheduleModelPatterns on ScheduleModel {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String link, String thumbnail, String groom, String bride,
-            @JsonKey(name: 'datetime') String date, String location)?
+    TResult? Function(
+            String link,
+            String thumbnail,
+            String groom,
+            String bride,
+            @JsonKey(name: 'datetime') String date,
+            String location,
+            @JsonKey(name: 'groom_accounts') String groomAccounts,
+            @JsonKey(name: 'bride_accounts') String brideAccounts)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ScheduleModel() when $default != null:
-        return $default(_that.link, _that.thumbnail, _that.groom, _that.bride,
-            _that.date, _that.location);
+        return $default(
+            _that.link,
+            _that.thumbnail,
+            _that.groom,
+            _that.bride,
+            _that.date,
+            _that.location,
+            _that.groomAccounts,
+            _that.brideAccounts);
       case _:
         return null;
     }
@@ -298,7 +363,9 @@ class _ScheduleModel implements ScheduleModel {
       required this.groom,
       required this.bride,
       @JsonKey(name: 'datetime') required this.date,
-      required this.location});
+      required this.location,
+      @JsonKey(name: 'groom_accounts') this.groomAccounts = '[]',
+      @JsonKey(name: 'bride_accounts') this.brideAccounts = '[]'});
   factory _ScheduleModel.fromJson(Map<String, dynamic> json) =>
       _$ScheduleModelFromJson(json);
 
@@ -316,6 +383,16 @@ class _ScheduleModel implements ScheduleModel {
   final String date;
   @override
   final String location;
+
+  /// JSON-encoded `List<AccountModel>`; sqflite has no list column type.
+// ignore: invalid_annotation_target
+  @override
+  @JsonKey(name: 'groom_accounts')
+  final String groomAccounts;
+// ignore: invalid_annotation_target
+  @override
+  @JsonKey(name: 'bride_accounts')
+  final String brideAccounts;
 
   /// Create a copy of ScheduleModel
   /// with the given fields replaced by the non-null parameter values.
@@ -344,17 +421,21 @@ class _ScheduleModel implements ScheduleModel {
             (identical(other.bride, bride) || other.bride == bride) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.location, location) ||
-                other.location == location));
+                other.location == location) &&
+            (identical(other.groomAccounts, groomAccounts) ||
+                other.groomAccounts == groomAccounts) &&
+            (identical(other.brideAccounts, brideAccounts) ||
+                other.brideAccounts == brideAccounts));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, link, thumbnail, groom, bride, date, location);
+  int get hashCode => Object.hash(runtimeType, link, thumbnail, groom, bride,
+      date, location, groomAccounts, brideAccounts);
 
   @override
   String toString() {
-    return 'ScheduleModel(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location)';
+    return 'ScheduleModel(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts)';
   }
 }
 
@@ -372,7 +453,9 @@ abstract mixin class _$ScheduleModelCopyWith<$Res>
       String groom,
       String bride,
       @JsonKey(name: 'datetime') String date,
-      String location});
+      String location,
+      @JsonKey(name: 'groom_accounts') String groomAccounts,
+      @JsonKey(name: 'bride_accounts') String brideAccounts});
 }
 
 /// @nodoc
@@ -394,6 +477,8 @@ class __$ScheduleModelCopyWithImpl<$Res>
     Object? bride = null,
     Object? date = null,
     Object? location = null,
+    Object? groomAccounts = null,
+    Object? brideAccounts = null,
   }) {
     return _then(_ScheduleModel(
       link: null == link
@@ -419,6 +504,14 @@ class __$ScheduleModelCopyWithImpl<$Res>
       location: null == location
           ? _self.location
           : location // ignore: cast_nullable_to_non_nullable
+              as String,
+      groomAccounts: null == groomAccounts
+          ? _self.groomAccounts
+          : groomAccounts // ignore: cast_nullable_to_non_nullable
+              as String,
+      brideAccounts: null == brideAccounts
+          ? _self.brideAccounts
+          : brideAccounts // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
