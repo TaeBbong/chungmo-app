@@ -1,8 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/utils/int_extension.dart';
-import '../../domain/entities/schedule.dart';
 import '../bloc/calendar/calendar_bloc.dart';
 import '../bloc/calendar/calendar_state.dart';
 import '../theme/palette.dart';
@@ -29,7 +29,9 @@ class CalendarListView extends StatelessWidget {
           .where((s) => s.date.isBefore(now))
           .sorted((a, b) => b.date.compareTo(a.date));
 
-      final int paidThisYear = state.allSchedules
+      // Only weddings that already happened count as money actually given;
+      // an amount noted on an upcoming one is a plan, not a payment.
+      final int paidThisYear = pastSchedules
           .where((s) => s.date.year == now.year)
           .fold(0, (sum, s) => sum + s.pay);
 
@@ -106,11 +108,5 @@ class _YearlyTotal extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-extension _SortedSchedules on Iterable<Schedule> {
-  List<Schedule> sorted(int Function(Schedule a, Schedule b) compare) {
-    return toList()..sort(compare);
   }
 }

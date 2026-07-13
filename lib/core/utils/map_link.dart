@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 /// Builds the URI that opens [query] in the device's map app.
 ///
@@ -6,10 +6,12 @@ import 'dart:io';
 /// map app the user prefers. iOS has no such hook: `maps.apple.com` always
 /// opens Apple Maps.
 ///
-/// [isAndroid] is injectable for tests; it defaults to the running platform.
-Uri mapSearchUri(String query, {bool? isAndroid}) {
+/// Uses [defaultTargetPlatform] rather than `dart:io`'s `Platform`, which is
+/// unavailable on web and cannot be overridden in tests.
+Uri mapSearchUri(String query, {TargetPlatform? platform}) {
   final String encoded = Uri.encodeComponent(query);
-  final bool android = isAndroid ?? Platform.isAndroid;
+  final bool android =
+      (platform ?? defaultTargetPlatform) == TargetPlatform.android;
 
   return Uri.parse(
     android ? 'geo:0,0?q=$encoded' : 'https://maps.apple.com/?q=$encoded',

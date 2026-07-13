@@ -16,7 +16,7 @@ class CreateCubit extends Cubit<CreateState> {
   AnalyzeLinkUsecase analyzeLinkUseCase;
   SaveScheduleUsecase saveScheduleUseCase;
   NotificationService notificationService;
-  WatchAllSchedulesUsecase? watchAllSchedulesUseCase;
+  WatchAllSchedulesUsecase watchAllSchedulesUseCase;
 
   StreamSubscription<List<Schedule>>? _schedulesSub;
 
@@ -36,7 +36,7 @@ class CreateCubit extends Cubit<CreateState> {
   /// Feeds the home screen's preview of what is coming up.
   void watchUpcomingSchedules() {
     _schedulesSub?.cancel();
-    _schedulesSub = watchAllSchedulesUseCase?.execute().listen((schedules) {
+    _schedulesSub = watchAllSchedulesUseCase.execute().listen((schedules) {
       final DateTime now = DateTime.now();
       final List<Schedule> upcoming = schedules
           .where((schedule) => !schedule.date.isBefore(now))

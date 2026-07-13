@@ -96,7 +96,7 @@ class _DetailPageState extends State<DetailPage> {
     });
   }
 
-  InputDecoration customInputDecoration({required String labelText}) {
+  InputDecoration customInputDecoration({String? labelText}) {
     return InputDecoration(
       filled: true,
       labelText: labelText,
@@ -144,6 +144,18 @@ class _DetailPageState extends State<DetailPage> {
     }
   }
 
+  /// Leaves the detail page back to wherever it was opened from.
+  ///
+  /// The calendar is the usual entry point, but the home screen's preview and
+  /// a notification tap push the detail page straight onto the home route.
+  /// Popping until '/calendar' in those stacks would empty the navigator and
+  /// leave a black screen, so fall back to the first route.
+  void _leaveDetail() {
+    navigatorKey.currentState?.popUntil(
+      (route) => route.settings.name == '/calendar' || route.isFirst,
+    );
+  }
+
   Future<void> _openMap() async {
     final String location = cubit.state.schedule!.location;
     if (location.isEmpty) return;
@@ -189,8 +201,7 @@ class _DetailPageState extends State<DetailPage> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('일정이 삭제되었습니다.')),
               );
-              navigatorKey.currentState
-                  ?.popUntil((route) => route.settings.name == '/calendar');
+              _leaveDetail();
             },
             child: const Text("삭제", style: TextStyle(color: Colors.white)),
           ),
@@ -209,8 +220,7 @@ class _DetailPageState extends State<DetailPage> {
         canPop: false,
         onPopInvokedWithResult: (didPop, result) {
           if (didPop) return;
-          navigatorKey.currentState
-              ?.popUntil((route) => route.settings.name == '/calendar');
+          _leaveDetail();
         },
         child: SafeArea(
           top: false,
@@ -365,16 +375,9 @@ class _DetailPageState extends State<DetailPage> {
           // Presets fill this field; typing into it needs '직접 입력' first.
           enabled: customPay,
           // The '축의금' label already sits above, so the field only needs a hint.
-          decoration: InputDecoration(
-            filled: true,
+          decoration: customInputDecoration().copyWith(
             hintText: '0',
             suffixText: '원',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
-            ),
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           ),
           style: const TextStyle(fontSize: 16),
         ),
