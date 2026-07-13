@@ -1,6 +1,7 @@
 import 'package:chungmo/data/mapper/schedule_mapper.dart';
 import 'package:chungmo/data/models/schedule/schedule_model.dart';
 import 'package:chungmo/domain/entities/account.dart';
+import 'package:chungmo/domain/entities/attendance.dart';
 import 'package:chungmo/domain/entities/schedule.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -21,6 +22,8 @@ void main() {
       Account(
           bank: '신한', number: '110-222-333', holder: '이영희', relation: '신부'),
     ],
+    attendance: Attendance.attending,
+    pay: 100000,
   );
 
   group('accounts serialization', () {
@@ -37,8 +40,9 @@ void main() {
       expect(model.brideAccounts, contains('"holder":"이영희"'));
     });
 
-    test('should decode null column (pre-migration rows) into empty list', () {
-      // sqflite returns the added columns as null for rows written before v2.
+    test('should decode null columns (pre-migration rows) into defaults', () {
+      // sqflite returns the added columns as null for rows written before the
+      // migration that added them.
       final model = ScheduleModel.fromJson({
         'link': 'https://test.com',
         'thumbnail': 'https://test.com/thumbnail.jpg',
@@ -48,12 +52,16 @@ void main() {
         'location': 'Seoul',
         'groom_accounts': null,
         'bride_accounts': null,
+        'attendance': null,
+        'pay': null,
       });
 
       final result = ScheduleMapper.toEntity(model);
 
       expect(result.groomAccounts, isEmpty);
       expect(result.brideAccounts, isEmpty);
+      expect(result.attendance, Attendance.undecided);
+      expect(result.pay, 0);
     });
 
     test('should decode malformed payload into empty list', () {

@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../models/account/account_model.dart';
 import '../models/schedule/schedule_model.dart';
 import '../../domain/entities/account.dart';
+import '../../domain/entities/attendance.dart';
 import '../../domain/entities/schedule.dart';
 
 /// ScheduleMapper class converts Schedule(entity, domain) <-> ScheduleModel(model, data)
@@ -18,6 +19,8 @@ class ScheduleMapper {
       location: entity.location,
       groomAccounts: encodeAccounts(entity.groomAccounts),
       brideAccounts: encodeAccounts(entity.brideAccounts),
+      attendance: entity.attendance.name,
+      pay: entity.pay,
     );
   }
 
@@ -32,6 +35,8 @@ class ScheduleMapper {
       location: model.location,
       groomAccounts: decodeAccounts(model.groomAccounts),
       brideAccounts: decodeAccounts(model.brideAccounts),
+      attendance: Attendance.fromName(model.attendance),
+      pay: model.pay,
     );
   }
 

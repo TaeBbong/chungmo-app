@@ -54,7 +54,7 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     final path = join(await getDatabasesPath(), 'schedule_database.db');
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE schedules (
@@ -65,7 +65,9 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
             datetime TEXT,
             location TEXT,
             groom_accounts TEXT,
-            bride_accounts TEXT
+            bride_accounts TEXT,
+            attendance TEXT,
+            pay INTEGER
           )
         ''');
       },
@@ -73,10 +75,16 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
         if (oldVersion < 2) {
           // UPDATE: 축의금 accounts ('groom_accounts', 'bride_accounts').
           // Existing rows keep NULL, which ScheduleMapper reads as an empty list.
-          await db.execute(
-              'ALTER TABLE schedules ADD COLUMN groom_accounts TEXT;');
-          await db.execute(
-              'ALTER TABLE schedules ADD COLUMN bride_accounts TEXT;');
+          await db
+              .execute('ALTER TABLE schedules ADD COLUMN groom_accounts TEXT;');
+          await db
+              .execute('ALTER TABLE schedules ADD COLUMN bride_accounts TEXT;');
+        }
+        if (oldVersion < 3) {
+          // UPDATE: attendance & 축의금 the user gave ('attendance', 'pay').
+          // Existing rows keep NULL, read back as `undecided` / 0.
+          await db.execute('ALTER TABLE schedules ADD COLUMN attendance TEXT;');
+          await db.execute('ALTER TABLE schedules ADD COLUMN pay INTEGER;');
         }
       },
     );

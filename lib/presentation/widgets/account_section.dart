@@ -5,10 +5,12 @@ import '../../domain/entities/account.dart';
 import '../theme/palette.dart';
 import 'info_row.dart';
 
-/// The '축의금' row of the detail card.
+/// The '계좌' row of the detail card.
 ///
 /// Expands into the groom's and the bride's accounts; tapping one copies its
 /// account number. Renders nothing when the invitation had no account at all.
+///
+/// Distinct from the '축의금' row, which is what the user gave.
 class AccountSection extends StatelessWidget {
   final List<Account> groomAccounts;
   final List<Account> brideAccounts;
@@ -27,7 +29,7 @@ class AccountSection extends StatelessWidget {
 
     return InfoRow.expandable(
       icon: Icons.card_giftcard,
-      label: '축의금',
+      label: '계좌',
       value: '마음 전하실 곳',
       children: [
         if (groomAccounts.isNotEmpty)

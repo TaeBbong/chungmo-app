@@ -27,6 +27,12 @@ mixin _$Schedule {
   /// 축의금 accounts of the bride's side. Empty when not found in invitation.
   List<Account> get brideAccounts;
 
+  /// Whether the user plans to attend. Defaults to [Attendance.undecided].
+  Attendance get attendance;
+
+  /// 축의금 the user gave, in KRW. 0 means not recorded.
+  int get pay;
+
   /// Create a copy of Schedule
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -50,7 +56,10 @@ mixin _$Schedule {
             const DeepCollectionEquality()
                 .equals(other.groomAccounts, groomAccounts) &&
             const DeepCollectionEquality()
-                .equals(other.brideAccounts, brideAccounts));
+                .equals(other.brideAccounts, brideAccounts) &&
+            (identical(other.attendance, attendance) ||
+                other.attendance == attendance) &&
+            (identical(other.pay, pay) || other.pay == pay));
   }
 
   @override
@@ -63,11 +72,13 @@ mixin _$Schedule {
       date,
       location,
       const DeepCollectionEquality().hash(groomAccounts),
-      const DeepCollectionEquality().hash(brideAccounts));
+      const DeepCollectionEquality().hash(brideAccounts),
+      attendance,
+      pay);
 
   @override
   String toString() {
-    return 'Schedule(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts)';
+    return 'Schedule(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay)';
   }
 }
 
@@ -84,7 +95,9 @@ abstract mixin class $ScheduleCopyWith<$Res> {
       DateTime date,
       String location,
       List<Account> groomAccounts,
-      List<Account> brideAccounts});
+      List<Account> brideAccounts,
+      Attendance attendance,
+      int pay});
 }
 
 /// @nodoc
@@ -107,6 +120,8 @@ class _$ScheduleCopyWithImpl<$Res> implements $ScheduleCopyWith<$Res> {
     Object? location = null,
     Object? groomAccounts = null,
     Object? brideAccounts = null,
+    Object? attendance = null,
+    Object? pay = null,
   }) {
     return _then(_self.copyWith(
       link: null == link
@@ -141,6 +156,14 @@ class _$ScheduleCopyWithImpl<$Res> implements $ScheduleCopyWith<$Res> {
           ? _self.brideAccounts
           : brideAccounts // ignore: cast_nullable_to_non_nullable
               as List<Account>,
+      attendance: null == attendance
+          ? _self.attendance
+          : attendance // ignore: cast_nullable_to_non_nullable
+              as Attendance,
+      pay: null == pay
+          ? _self.pay
+          : pay // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -246,7 +269,9 @@ extension SchedulePatterns on Schedule {
             DateTime date,
             String location,
             List<Account> groomAccounts,
-            List<Account> brideAccounts)?
+            List<Account> brideAccounts,
+            Attendance attendance,
+            int pay)?
         $default, {
     required TResult orElse(),
   }) {
@@ -261,7 +286,9 @@ extension SchedulePatterns on Schedule {
             _that.date,
             _that.location,
             _that.groomAccounts,
-            _that.brideAccounts);
+            _that.brideAccounts,
+            _that.attendance,
+            _that.pay);
       case _:
         return orElse();
     }
@@ -290,7 +317,9 @@ extension SchedulePatterns on Schedule {
             DateTime date,
             String location,
             List<Account> groomAccounts,
-            List<Account> brideAccounts)
+            List<Account> brideAccounts,
+            Attendance attendance,
+            int pay)
         $default,
   ) {
     final _that = this;
@@ -304,7 +333,9 @@ extension SchedulePatterns on Schedule {
             _that.date,
             _that.location,
             _that.groomAccounts,
-            _that.brideAccounts);
+            _that.brideAccounts,
+            _that.attendance,
+            _that.pay);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -332,7 +363,9 @@ extension SchedulePatterns on Schedule {
             DateTime date,
             String location,
             List<Account> groomAccounts,
-            List<Account> brideAccounts)?
+            List<Account> brideAccounts,
+            Attendance attendance,
+            int pay)?
         $default,
   ) {
     final _that = this;
@@ -346,7 +379,9 @@ extension SchedulePatterns on Schedule {
             _that.date,
             _that.location,
             _that.groomAccounts,
-            _that.brideAccounts);
+            _that.brideAccounts,
+            _that.attendance,
+            _that.pay);
       case _:
         return null;
     }
@@ -364,7 +399,9 @@ class _Schedule implements Schedule {
       required this.date,
       required this.location,
       final List<Account> groomAccounts = const <Account>[],
-      final List<Account> brideAccounts = const <Account>[]})
+      final List<Account> brideAccounts = const <Account>[],
+      this.attendance = Attendance.undecided,
+      this.pay = 0})
       : _groomAccounts = groomAccounts,
         _brideAccounts = brideAccounts;
 
@@ -405,6 +442,16 @@ class _Schedule implements Schedule {
     return EqualUnmodifiableListView(_brideAccounts);
   }
 
+  /// Whether the user plans to attend. Defaults to [Attendance.undecided].
+  @override
+  @JsonKey()
+  final Attendance attendance;
+
+  /// 축의금 the user gave, in KRW. 0 means not recorded.
+  @override
+  @JsonKey()
+  final int pay;
+
   /// Create a copy of Schedule
   /// with the given fields replaced by the non-null parameter values.
   @override
@@ -429,7 +476,10 @@ class _Schedule implements Schedule {
             const DeepCollectionEquality()
                 .equals(other._groomAccounts, _groomAccounts) &&
             const DeepCollectionEquality()
-                .equals(other._brideAccounts, _brideAccounts));
+                .equals(other._brideAccounts, _brideAccounts) &&
+            (identical(other.attendance, attendance) ||
+                other.attendance == attendance) &&
+            (identical(other.pay, pay) || other.pay == pay));
   }
 
   @override
@@ -442,11 +492,13 @@ class _Schedule implements Schedule {
       date,
       location,
       const DeepCollectionEquality().hash(_groomAccounts),
-      const DeepCollectionEquality().hash(_brideAccounts));
+      const DeepCollectionEquality().hash(_brideAccounts),
+      attendance,
+      pay);
 
   @override
   String toString() {
-    return 'Schedule(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts)';
+    return 'Schedule(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay)';
   }
 }
 
@@ -465,7 +517,9 @@ abstract mixin class _$ScheduleCopyWith<$Res>
       DateTime date,
       String location,
       List<Account> groomAccounts,
-      List<Account> brideAccounts});
+      List<Account> brideAccounts,
+      Attendance attendance,
+      int pay});
 }
 
 /// @nodoc
@@ -488,6 +542,8 @@ class __$ScheduleCopyWithImpl<$Res> implements _$ScheduleCopyWith<$Res> {
     Object? location = null,
     Object? groomAccounts = null,
     Object? brideAccounts = null,
+    Object? attendance = null,
+    Object? pay = null,
   }) {
     return _then(_Schedule(
       link: null == link
@@ -522,6 +578,14 @@ class __$ScheduleCopyWithImpl<$Res> implements _$ScheduleCopyWith<$Res> {
           ? _self._brideAccounts
           : brideAccounts // ignore: cast_nullable_to_non_nullable
               as List<Account>,
+      attendance: null == attendance
+          ? _self.attendance
+          : attendance // ignore: cast_nullable_to_non_nullable
+              as Attendance,
+      pay: null == pay
+          ? _self.pay
+          : pay // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
