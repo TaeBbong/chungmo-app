@@ -427,6 +427,34 @@ class MockSaveScheduleUsecase extends _i1.Mock
       ) as _i10.Future<void>);
 }
 
+/// A class which mocks [WatchAllSchedulesUsecase].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockWatchAllSchedulesUsecase extends _i1.Mock
+    implements _i6.WatchAllSchedulesUsecase {
+  MockWatchAllSchedulesUsecase() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.ScheduleRepository get repository => (super.noSuchMethod(
+        Invocation.getter(#repository),
+        returnValue: _FakeScheduleRepository_2(
+          this,
+          Invocation.getter(#repository),
+        ),
+      ) as _i4.ScheduleRepository);
+
+  @override
+  _i10.Stream<List<_i5.Schedule>> execute() => (super.noSuchMethod(
+        Invocation.method(
+          #execute,
+          [],
+        ),
+        returnValue: _i10.Stream<List<_i5.Schedule>>.empty(),
+      ) as _i10.Stream<List<_i5.Schedule>>);
+}
+
 /// A class which mocks [CreateCubit].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -490,6 +518,16 @@ class MockCreateCubit extends _i1.Mock implements _i8.CreateCubit {
       );
 
   @override
+  set watchAllSchedulesUseCase(_i6.WatchAllSchedulesUsecase? value) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #watchAllSchedulesUseCase,
+          value,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   _i8.CreateState get state => (super.noSuchMethod(
         Invocation.getter(#state),
         returnValue: _FakeCreateState_7(
@@ -509,6 +547,25 @@ class MockCreateCubit extends _i1.Mock implements _i8.CreateCubit {
         Invocation.getter(#isClosed),
         returnValue: false,
       ) as bool);
+
+  @override
+  void watchUpcomingSchedules() => super.noSuchMethod(
+        Invocation.method(
+          #watchUpcomingSchedules,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i10.Future<void> close() => (super.noSuchMethod(
+        Invocation.method(
+          #close,
+          [],
+        ),
+        returnValue: _i10.Future<void>.value(),
+        returnValueForMissingStub: _i10.Future<void>.value(),
+      ) as _i10.Future<void>);
 
   @override
   _i10.Future<void> analyzeLink(String? url) => (super.noSuchMethod(
@@ -588,14 +645,4 @@ class MockCreateCubit extends _i1.Mock implements _i8.CreateCubit {
         ),
         returnValueForMissingStub: null,
       );
-
-  @override
-  _i10.Future<void> close() => (super.noSuchMethod(
-        Invocation.method(
-          #close,
-          [],
-        ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
 }

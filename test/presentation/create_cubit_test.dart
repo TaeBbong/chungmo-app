@@ -11,6 +11,7 @@ void main() {
     late MockAnalyzeLinkUsecase analyze;
     late MockSaveScheduleUsecase save;
     late MockNotificationService notify;
+    late MockWatchAllSchedulesUsecase watch;
 
     late CreateCubit cubit;
 
@@ -18,11 +19,13 @@ void main() {
       analyze = MockAnalyzeLinkUsecase();
       save = MockSaveScheduleUsecase();
       notify = MockNotificationService();
+      watch = MockWatchAllSchedulesUsecase();
       // Real cubit under test, with mocked dependencies injected.
       cubit = CreateCubit(
         analyzeLinkUsecase: analyze,
         saveScheduleUsecase: save,
         notificationSvc: notify,
+        watchAllSchedulesUsecase: watch,
       );
     });
 

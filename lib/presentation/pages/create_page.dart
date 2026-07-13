@@ -18,6 +18,7 @@ import '../../core/utils/constants.dart';
 import '../bloc/create/create_cubit.dart';
 import '../theme/palette.dart';
 import '../widgets/schedule_detail_column.dart';
+import '../widgets/upcoming_preview.dart';
 
 class CreatePage extends StatefulWidget {
   const CreatePage({super.key});
@@ -43,6 +44,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
     super.initState();
     cubit = CreateCubit();
     cubit.checkIfNotification();
+    cubit.watchUpcomingSchedules();
     _initTutorial();
     WidgetsBinding.instance.addObserver(this);
     _getClipboardContent();
@@ -307,6 +309,16 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                                             )
                                           : Container(),
                                     ],
+                                  ),
+                                ),
+
+                                // The saved schedules, so the empty home screen
+                                // still says something while it waits for a link.
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(16, 0, 16, 90),
+                                  child: UpcomingPreview(
+                                    schedules: state.upcomingSchedules,
                                   ),
                                 ),
                               ],

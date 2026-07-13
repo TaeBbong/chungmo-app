@@ -14,13 +14,11 @@ void main() {
     date: DateTime(2024, 6, 10),
     location: 'Seoul',
     groomAccounts: const [
-      Account(
-          bank: '국민', number: '123-45-6789', holder: '김철수', relation: '신랑'),
+      Account(bank: '국민', number: '123-45-6789', holder: '김철수', relation: '신랑'),
       Account(bank: '농협', number: '302-1111', holder: '김아버지', relation: '아버지'),
     ],
     brideAccounts: const [
-      Account(
-          bank: '신한', number: '110-222-333', holder: '이영희', relation: '신부'),
+      Account(bank: '신한', number: '110-222-333', holder: '이영희', relation: '신부'),
     ],
     attendance: Attendance.attending,
     pay: 100000,
