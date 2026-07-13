@@ -123,6 +123,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
           appBar: AppBar(
             leading: IconButton(
               key: calendarPageKey,
+              tooltip: '일정 보기',
               icon: const Icon(Icons.calendar_today),
               onPressed: () {
                 navigatorKey.currentState?.pushNamed('/calendar');

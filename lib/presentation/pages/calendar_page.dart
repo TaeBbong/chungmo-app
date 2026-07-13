@@ -49,6 +49,7 @@ class _CalendarPageState extends State<CalendarPage> {
             ),
             actions: [
               IconButton(
+                tooltip: _isCalendarView ? '목록으로 보기' : '달력으로 보기',
                 icon: Icon(_isCalendarView ? Icons.list : Icons.calendar_month),
                 onPressed: () {
                   setState(() {
