@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../core/di/di.dart';
+import '../../../core/utils/date_extension.dart';
 import '../../../core/navigation/app_navigation.dart';
 import '../../../core/services/notification_service.dart';
 import '../../../domain/entities/schedule.dart';
@@ -37,9 +38,9 @@ class CreateCubit extends Cubit<CreateState> {
   void watchUpcomingSchedules() {
     _schedulesSub?.cancel();
     _schedulesSub = watchAllSchedulesUseCase.execute().listen((schedules) {
-      final DateTime now = DateTime.now();
+      // By calendar day, matching the D-day badge and the calendar list.
       final List<Schedule> upcoming = schedules
-          .where((schedule) => !schedule.date.isBefore(now))
+          .where((schedule) => !schedule.date.isPastDay)
           .sorted((a, b) => a.date.compareTo(b.date));
 
       emit(state.copyWith(upcomingSchedules: upcoming));

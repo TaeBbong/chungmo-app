@@ -20,6 +20,13 @@ extension DateExtension on DateTime {
     return DateTime(year, month, day).difference(today).inDays;
   }
 
+  /// Whether the wedding day itself has passed.
+  ///
+  /// Counted by calendar day, like [daysLeft]: a wedding held earlier today is
+  /// still 'today', not past. Splitting a list by `isBefore(DateTime.now())`
+  /// instead would file it under 'past' while its badge still reads `D-DAY`.
+  bool get isPastDay => daysLeft < 0;
+
   /// `D-23`, `D-DAY`, `D+3`
   String get ddayLabel {
     final int days = daysLeft;

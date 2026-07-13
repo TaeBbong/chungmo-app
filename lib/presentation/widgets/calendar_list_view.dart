@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../core/utils/date_extension.dart';
 import '../../core/utils/int_extension.dart';
 import '../bloc/calendar/calendar_bloc.dart';
 import '../bloc/calendar/calendar_state.dart';
@@ -21,12 +22,14 @@ class CalendarListView extends StatelessWidget {
       final now = DateTime.now();
 
       // The nearest wedding first; past ones from the most recent backwards.
+      // Split by calendar day so a wedding held earlier today stays here rather
+      // than dropping into '지난 일정' while its badge still reads D-DAY.
       final upcomingSchedules = state.allSchedules
-          .where((s) => !s.date.isBefore(now))
+          .where((s) => !s.date.isPastDay)
           .sorted((a, b) => a.date.compareTo(b.date));
 
       final pastSchedules = state.allSchedules
-          .where((s) => s.date.isBefore(now))
+          .where((s) => s.date.isPastDay)
           .sorted((a, b) => b.date.compareTo(a.date));
 
       // Only weddings that already happened count as money actually given;
