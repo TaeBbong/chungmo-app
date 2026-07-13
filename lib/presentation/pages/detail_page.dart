@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../domain/entities/schedule.dart';
 import '../../core/utils/date_extension.dart';
+import '../../core/utils/map_link.dart';
 import '../bloc/detail/detail_cubit.dart';
 import '../../core/navigation/app_navigation.dart';
 import '../theme/palette.dart';
@@ -122,6 +123,16 @@ class _DetailPageState extends State<DetailPage> {
     }
   }
 
+  Future<void> _openMap() async {
+    final String location = cubit.state.schedule!.location;
+    if (location.isEmpty) return;
+
+    final Uri url = mapSearchUri(location);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
+  }
+
   void _showDeleteDialog() {
     showDialog(
       context: context,
@@ -231,6 +242,8 @@ class _DetailPageState extends State<DetailPage> {
           icon: Icons.place_outlined,
           label: '장소',
           value: schedule.location,
+          hint: '탭하면 지도로 열려요',
+          onTap: _openMap,
         ),
         const _RowDivider(),
         InfoRow(
