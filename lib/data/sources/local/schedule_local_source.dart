@@ -71,8 +71,8 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
-          // UPDATE: 축의금 계좌 추가 ('groom_accounts', 'bride_accounts')
-          // 기존 행은 NULL로 남고, ScheduleMapper가 빈 리스트로 해석한다.
+          // UPDATE: 축의금 accounts ('groom_accounts', 'bride_accounts').
+          // Existing rows keep NULL, which ScheduleMapper reads as an empty list.
           await db.execute(
               'ALTER TABLE schedules ADD COLUMN groom_accounts TEXT;');
           await db.execute(

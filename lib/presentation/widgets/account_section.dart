@@ -3,13 +3,12 @@ import 'package:flutter/services.dart';
 
 import '../../domain/entities/account.dart';
 import '../theme/palette.dart';
+import 'info_row.dart';
 
-/// 💌 마음 전하실 곳
+/// The '축의금' row of the detail card.
 ///
-/// Shows the parsed 축의금 accounts grouped by side.
-/// Tapping a row copies its account number to the clipboard.
-///
-/// Renders nothing when no account was parsed from the invitation.
+/// Expands into the groom's and the bride's accounts; tapping one copies its
+/// account number. Renders nothing when the invitation had no account at all.
 class AccountSection extends StatelessWidget {
   final List<Account> groomAccounts;
   final List<Account> brideAccounts;
@@ -26,27 +25,16 @@ class AccountSection extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    // 사진(200)·장소(250) 등 다른 항목과 폭을 맞춘다.
-    return SizedBox(
-      width: 250,
-      child: Theme(
-        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-          dense: true,
-          tilePadding: EdgeInsets.zero,
-          childrenPadding: EdgeInsets.zero,
-          title: const Text(
-            '💌 마음 전하실 곳',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-          ),
-          children: [
-            if (groomAccounts.isNotEmpty)
-              _AccountGroup(title: '신랑측', accounts: groomAccounts),
-            if (brideAccounts.isNotEmpty)
-              _AccountGroup(title: '신부측', accounts: brideAccounts),
-          ],
-        ),
-      ),
+    return InfoRow.expandable(
+      icon: Icons.card_giftcard,
+      label: '축의금',
+      value: '마음 전하실 곳',
+      children: [
+        if (groomAccounts.isNotEmpty)
+          _AccountGroup(title: '신랑측', accounts: groomAccounts),
+        if (brideAccounts.isNotEmpty)
+          _AccountGroup(title: '신부측', accounts: brideAccounts),
+      ],
     );
   }
 }
@@ -62,15 +50,9 @@ class _AccountGroup extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 2),
-          child: Text(
-            title,
-            style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                color: Palette.burgundy),
-          ),
+        Text(
+          title,
+          style: InfoRowMetrics.labelStyle.copyWith(color: Palette.grey600),
         ),
         ...accounts.map((account) => _AccountTile(account: account)),
         const SizedBox(height: 8),
@@ -84,14 +66,14 @@ class _AccountTile extends StatelessWidget {
 
   const _AccountTile({required this.account});
 
-  /// `아버지 · 김철수`, falling back to whichever part exists.
-  String get _label => [account.relation, account.holder]
-      .where((part) => part.isNotEmpty)
-      .join(' · ');
-
   /// `국민 123-45-6789`
   String get _number =>
       [account.bank, account.number].where((part) => part.isNotEmpty).join(' ');
+
+  /// `아버지 · 김철수`, falling back to whichever part exists.
+  String get _holder => [account.relation, account.holder]
+      .where((part) => part.isNotEmpty)
+      .join(' · ');
 
   void _copy(BuildContext context) {
     if (account.number.isEmpty) return;
@@ -103,20 +85,33 @@ class _AccountTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      dense: true,
-      visualDensity: VisualDensity.compact,
-      contentPadding: EdgeInsets.zero,
-      title: Text(
-        _label,
-        style: const TextStyle(fontSize: 12, color: Colors.grey),
-      ),
-      subtitle: Text(
-        _number,
-        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-      ),
-      trailing: const Icon(Icons.copy, size: 16),
+    return InkWell(
       onTap: () => _copy(context),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(_number, style: InfoRowMetrics.valueStyle),
+                  if (_holder.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Text(
+                        _holder,
+                        style: InfoRowMetrics.hintStyle
+                            .copyWith(color: Palette.grey500),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            Icon(Icons.copy, size: 16, color: Palette.grey500),
+          ],
+        ),
+      ),
     );
   }
 }
