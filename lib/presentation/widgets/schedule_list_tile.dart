@@ -5,6 +5,7 @@ import '../../core/navigation/app_navigation.dart';
 import '../../core/utils/date_extension.dart';
 import '../../domain/entities/schedule.dart';
 import '../theme/palette.dart';
+import 'dday_badge.dart';
 
 class ScheduleListTile extends StatelessWidget {
   final Schedule schedule;
@@ -42,6 +43,7 @@ class ScheduleListTile extends StatelessWidget {
               ),
             ],
           ),
+          trailing: DDayBadge(date: schedule.date),
         ),
       ),
     );

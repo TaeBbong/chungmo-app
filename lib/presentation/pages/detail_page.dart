@@ -2,10 +2,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../domain/entities/attendance.dart';
 import '../../domain/entities/schedule.dart';
 import '../../core/utils/date_extension.dart';
+import '../../core/utils/int_extension.dart';
+import '../../core/utils/map_link.dart';
 import '../bloc/detail/detail_cubit.dart';
 import '../../core/navigation/app_navigation.dart';
+import '../theme/palette.dart';
+import '../widgets/account_section.dart';
+import '../widgets/info_row.dart';
+import '../widgets/dday_badge.dart';
 
 class DetailPage extends StatefulWidget {
   final Schedule schedule;
@@ -24,8 +31,17 @@ class _DetailPageState extends State<DetailPage> {
   final TextEditingController brideController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
   final TextEditingController linkController = TextEditingController();
-  // final TextEditingController payController = TextEditingController();
+  final TextEditingController payController = TextEditingController();
   DateTime? selectedDate;
+  late Attendance selectedAttendance;
+
+  /// The amounts people actually give, offered as one-tap presets that fill
+  /// [payController].
+  static const List<int> payPresets = [50000, 100000, 200000, 300000];
+
+  /// True once '직접 입력' is picked; until then the amount field is read-only
+  /// and only the presets can fill it.
+  late bool customPay;
 
   @override
   void initState() {
@@ -36,8 +52,12 @@ class _DetailPageState extends State<DetailPage> {
     brideController.text = widget.schedule.bride;
     locationController.text = widget.schedule.location;
     linkController.text = widget.schedule.link;
-    // payController.text = widget.schedule.pay;
     selectedDate = widget.schedule.date;
+    selectedAttendance = widget.schedule.attendance;
+
+    final int pay = widget.schedule.pay;
+    customPay = pay > 0 && !payPresets.contains(pay);
+    payController.text = pay > 0 ? pay.toString() : '';
   }
 
   @override
@@ -46,7 +66,7 @@ class _DetailPageState extends State<DetailPage> {
     brideController.dispose();
     locationController.dispose();
     linkController.dispose();
-    // payController.dispose();
+    payController.dispose();
     cubit.close();
     super.dispose();
   }
@@ -59,13 +79,15 @@ class _DetailPageState extends State<DetailPage> {
 
   void saveChanges() {
     setState(() {
-      final Schedule editedSchedule = Schedule(
-          link: cubit.state.schedule!.link,
-          thumbnail: cubit.state.schedule!.thumbnail,
-          groom: groomController.text,
-          bride: brideController.text,
-          date: selectedDate!,
-          location: locationController.text);
+      final Schedule editedSchedule = cubit.state.schedule!.copyWith(
+        groom: groomController.text,
+        bride: brideController.text,
+        date: selectedDate!,
+        location: locationController.text,
+        attendance: selectedAttendance,
+        // The field is the single source of truth: presets write into it.
+        pay: int.tryParse(payController.text.trim()) ?? 0,
+      );
       cubit.editSchedule(editedSchedule);
       editMode = false;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -74,7 +96,7 @@ class _DetailPageState extends State<DetailPage> {
     });
   }
 
-  InputDecoration customInputDecoration({required String labelText}) {
+  InputDecoration customInputDecoration({String? labelText}) {
     return InputDecoration(
       filled: true,
       labelText: labelText,
@@ -115,6 +137,35 @@ class _DetailPageState extends State<DetailPage> {
     }
   }
 
+  Future<void> _openLink() async {
+    final Uri url = Uri.parse(cubit.state.schedule!.link);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  /// Leaves the detail page back to wherever it was opened from.
+  ///
+  /// The calendar is the usual entry point, but the home screen's preview and
+  /// a notification tap push the detail page straight onto the home route.
+  /// Popping until '/calendar' in those stacks would empty the navigator and
+  /// leave a black screen, so fall back to the first route.
+  void _leaveDetail() {
+    navigatorKey.currentState?.popUntil(
+      (route) => route.settings.name == '/calendar' || route.isFirst,
+    );
+  }
+
+  Future<void> _openMap() async {
+    final String location = cubit.state.schedule!.location;
+    if (location.isEmpty) return;
+
+    final Uri url = mapSearchUri(location);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
+  }
+
   void _showDeleteDialog() {
     showDialog(
       context: context,
@@ -150,8 +201,7 @@ class _DetailPageState extends State<DetailPage> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('일정이 삭제되었습니다.')),
               );
-              navigatorKey.currentState
-                  ?.popUntil((route) => route.settings.name == '/calendar');
+              _leaveDetail();
             },
             child: const Text("삭제", style: TextStyle(color: Colors.white)),
           ),
@@ -162,14 +212,15 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final Schedule schedule = cubit.state.schedule!;
+
     return BlocProvider<DetailCubit>.value(
       value: cubit,
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) {
           if (didPop) return;
-          navigatorKey.currentState
-              ?.popUntil((route) => route.settings.name == '/calendar');
+          _leaveDetail();
         },
         child: SafeArea(
           top: false,
@@ -177,175 +228,28 @@ class _DetailPageState extends State<DetailPage> {
             appBar: AppBar(
               actions: [
                 IconButton(
+                  tooltip: editMode ? '저장' : '수정',
                   icon: Icon(editMode ? Icons.save : Icons.edit),
                   onPressed: editMode ? saveChanges : toggleEditMode,
                 ),
                 editMode
                     ? Container()
                     : IconButton(
+                        tooltip: '삭제',
                         icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          _showDeleteDialog();
-                        },
+                        onPressed: _showDeleteDialog,
                       ),
               ],
             ),
-            body: Center(
+            body: SingleChildScrollView(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // 📸 사진 (수정 불가능)
-                  Container(
-                    width: 200,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: CachedNetworkImageProvider(
-                            cubit.state.schedule!.thumbnail),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                  _HeroHeader(schedule: schedule, showCouple: !editMode),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+                    child: editMode ? _buildEditForm() : _buildInfoCard(),
                   ),
-                  const SizedBox(height: 12),
-
-                  // 👰‍♀️ & 🤵‍♂️ 신랑 & 신부 (수정 가능)
-                  editMode
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
-                                child: TextField(
-                                  controller: groomController,
-                                  decoration:
-                                      customInputDecoration(labelText: '신랑'),
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
-                                child: TextField(
-                                  controller: brideController,
-                                  decoration:
-                                      customInputDecoration(labelText: '신부'),
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                      : Text(
-                          '🤵‍♂️ ${cubit.state.schedule!.groom} & 👰‍♀️ ${cubit.state.schedule!.bride}',
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-
-                  const SizedBox(height: 16),
-
-                  editMode
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: TextField(
-                            readOnly: true,
-                            onTap: () => _selectDateTime(context),
-                            controller: TextEditingController(
-                              text: selectedDate!.krDate,
-                            ), // 날짜를 TextField에 표시
-                            decoration: customInputDecoration(
-                              labelText: '날짜',
-                            ),
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        )
-                      : Text(
-                          '📅 ${cubit.state.schedule!.date.krDate}',
-                          style:
-                              const TextStyle(fontSize: 14, color: Colors.grey),
-                        ),
-
-                  const SizedBox(height: 16),
-
-                  // 🏡 장소 (수정 가능)
-                  editMode
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Row(
-                            children: [
-                              Flexible(
-                                child: TextField(
-                                  controller: locationController,
-                                  decoration:
-                                      customInputDecoration(labelText: '장소'),
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : SizedBox(
-                          width: 250,
-                          child: Text(
-                            '🏡 ${cubit.state.schedule!.location}',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 14),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-
-                  const SizedBox(height: 12),
-
-                  // 🔗 링크 열기 / 수정 불가
-                  editMode
-                      ? Container()
-                      : GestureDetector(
-                          onTap: () async {
-                            final Uri url =
-                                Uri.parse(cubit.state.schedule!.link);
-                            if (await canLaunchUrl(url)) {
-                              await launchUrl(url,
-                                  mode: LaunchMode.externalApplication);
-                            }
-                          },
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '🔗 링크 열기',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                  const SizedBox(height: 8),
-
-                  // 💰 축의금 (수정 가능)
-                  // editMode
-                  //     ? SizedBox(
-                  //         width: 150,
-                  //         child: TextField(
-                  //           // controller: payController,
-                  //           keyboardType: TextInputType.number,
-                  //           decoration: const InputDecoration(labelText: '축의금'),
-                  //         ),
-                  //       )
-                  //     : Text(
-                  //         // '💰 축의금 ${controller.schedule.value!.pay}만원',
-                  //         '💰 축의금 10만원',
-                  //         style: const TextStyle(
-                  //             fontSize: 16, fontWeight: FontWeight.bold),
-                  //       ),
                 ],
               ),
             ),
@@ -353,5 +257,292 @@ class _DetailPageState extends State<DetailPage> {
         ),
       ),
     );
+  }
+
+  Widget _buildInfoCard() {
+    final Schedule schedule = cubit.state.schedule!;
+
+    return _Card(
+      children: [
+        InfoRow(
+          icon: Icons.event,
+          label: '날짜',
+          value: schedule.date.krDate,
+          hint: schedule.date.ddayDescription,
+        ),
+        const _RowDivider(),
+        InfoRow(
+          icon: Icons.place_outlined,
+          label: '장소',
+          value: schedule.location,
+          hint: '탭하면 지도로 열려요',
+          onTap: _openMap,
+        ),
+        const _RowDivider(),
+        InfoRow(
+          icon: Icons.link,
+          label: '청첩장',
+          value: '링크 열기',
+          valueColor: Colors.blue,
+          onTap: _openLink,
+        ),
+        const _RowDivider(),
+        InfoRow(
+          icon: Icons.how_to_reg_outlined,
+          label: '참석',
+          value: schedule.attendance.label,
+        ),
+        const _RowDivider(),
+        InfoRow(
+          icon: Icons.payments_outlined,
+          label: '축의금',
+          value: schedule.pay > 0 ? schedule.pay.krCurrency : '아직 기록하지 않았어요',
+          valueColor: schedule.pay > 0 ? null : Palette.grey500,
+        ),
+
+        // Accounts row; renders nothing when none were parsed.
+        if (schedule.groomAccounts.isNotEmpty ||
+            schedule.brideAccounts.isNotEmpty) ...[
+          const _RowDivider(),
+          AccountSection(
+            groomAccounts: schedule.groomAccounts,
+            brideAccounts: schedule.brideAccounts,
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildEditForm() {
+    return _Card(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: groomController,
+                decoration: customInputDecoration(labelText: '신랑'),
+                style: const TextStyle(fontSize: 16),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: TextField(
+                controller: brideController,
+                decoration: customInputDecoration(labelText: '신부'),
+                style: const TextStyle(fontSize: 16),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          readOnly: true,
+          onTap: () => _selectDateTime(context),
+          controller: TextEditingController(text: selectedDate!.krDate),
+          decoration: customInputDecoration(labelText: '날짜'),
+          style: const TextStyle(fontSize: 16),
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          controller: locationController,
+          decoration: customInputDecoration(labelText: '장소'),
+          style: const TextStyle(fontSize: 16),
+        ),
+        const SizedBox(height: 16),
+        const _FieldLabel('참석 여부'),
+        Wrap(
+          spacing: 8,
+          children: Attendance.values
+              .map(
+                (attendance) => _choiceChip(
+                  label: attendance.label,
+                  selected: selectedAttendance == attendance,
+                  onSelected: () =>
+                      setState(() => selectedAttendance = attendance),
+                ),
+              )
+              .toList(),
+        ),
+        const SizedBox(height: 16),
+        const _FieldLabel('축의금'),
+        TextField(
+          key: const ValueKey('pay-field'),
+          controller: payController,
+          keyboardType: TextInputType.number,
+          // Right-aligned so the amount sits next to the '원' suffix.
+          textAlign: TextAlign.right,
+          // Presets fill this field; typing into it needs '직접 입력' first.
+          enabled: customPay,
+          // The '축의금' label already sits above, so the field only needs a hint.
+          decoration: customInputDecoration().copyWith(
+            hintText: '0',
+            suffixText: '원',
+          ),
+          style: const TextStyle(fontSize: 16),
+        ),
+        const SizedBox(height: 8),
+
+        // Shortcuts under the field, deliberately small: they feed the field
+        // above rather than being the primary control.
+        Wrap(
+          spacing: 6,
+          children: [
+            ...payPresets.map(
+              (amount) => _choiceChip(
+                label: '${amount ~/ 10000}만원',
+                selected: !customPay &&
+                    int.tryParse(payController.text.trim()) == amount,
+                onSelected: () => setState(() {
+                  customPay = false;
+                  payController.text = amount.toString();
+                }),
+              ),
+            ),
+            _choiceChip(
+              label: '직접 입력',
+              selected: customPay,
+              onSelected: () => setState(() => customPay = true),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _choiceChip({
+    required String label,
+    required bool selected,
+    required VoidCallback onSelected,
+  }) {
+    return ChoiceChip(
+      label: Text(label),
+      selected: selected,
+      showCheckmark: false,
+      // The default selected color comes from the theme's secondaryContainer,
+      // which is purple and off-palette.
+      selectedColor: Palette.beige,
+      labelStyle: TextStyle(
+        fontSize: 13,
+        color: selected ? Palette.burgundy : Palette.grey700,
+        fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+      ),
+      labelPadding: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      visualDensity: VisualDensity.compact,
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      onSelected: (_) => onSelected(),
+    );
+  }
+}
+
+class _FieldLabel extends StatelessWidget {
+  final String text;
+
+  const _FieldLabel(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 13, color: Palette.grey600),
+      ),
+    );
+  }
+}
+
+/// Full-width thumbnail with the D-day badge and the couple's names on top.
+class _HeroHeader extends StatelessWidget {
+  final Schedule schedule;
+  final bool showCouple;
+
+  const _HeroHeader({required this.schedule, required this.showCouple});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 280,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          CachedNetworkImage(
+            imageUrl: schedule.thumbnail,
+            fit: BoxFit.cover,
+            errorWidget: (_, __, ___) => Container(color: Palette.beige),
+          ),
+
+          // Darken the bottom only, so the names stay readable over the photo.
+          if (showCouple)
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.center,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withValues(alpha: 0.6),
+                  ],
+                ),
+              ),
+            ),
+
+          Positioned(
+            top: 16,
+            right: 16,
+            child: DDayBadge(date: schedule.date),
+          ),
+
+          if (showCouple)
+            Positioned(
+              left: 20,
+              right: 20,
+              bottom: 20,
+              child: Text(
+                '🤵‍♂️ ${schedule.groom} & 👰‍♀️ ${schedule.bride}',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Palette.white,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Card extends StatelessWidget {
+  final List<Widget> children;
+
+  const _Card({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Palette.beige, width: 2),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: children,
+      ),
+    );
+  }
+}
+
+class _RowDivider extends StatelessWidget {
+  const _RowDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return Divider(height: 1, thickness: 1, color: Palette.grey200);
   }
 }

@@ -1,7 +1,11 @@
+import 'dart:async';
+
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../core/di/di.dart';
+import '../../../core/utils/date_extension.dart';
 import '../../../core/navigation/app_navigation.dart';
 import '../../../core/services/notification_service.dart';
 import '../../../domain/entities/schedule.dart';
@@ -13,16 +17,41 @@ class CreateCubit extends Cubit<CreateState> {
   AnalyzeLinkUsecase analyzeLinkUseCase;
   SaveScheduleUsecase saveScheduleUseCase;
   NotificationService notificationService;
+  WatchAllSchedulesUsecase watchAllSchedulesUseCase;
+
+  StreamSubscription<List<Schedule>>? _schedulesSub;
 
   CreateCubit({
     AnalyzeLinkUsecase? analyzeLinkUsecase,
     SaveScheduleUsecase? saveScheduleUsecase,
     NotificationService? notificationSvc,
+    WatchAllSchedulesUsecase? watchAllSchedulesUsecase,
   })  : analyzeLinkUseCase = analyzeLinkUsecase ?? getIt<AnalyzeLinkUsecase>(),
         saveScheduleUseCase =
             saveScheduleUsecase ?? getIt<SaveScheduleUsecase>(),
         notificationService = notificationSvc ?? getIt<NotificationService>(),
+        watchAllSchedulesUseCase =
+            watchAllSchedulesUsecase ?? getIt<WatchAllSchedulesUsecase>(),
         super(CreateState.initial());
+
+  /// Feeds the home screen's preview of what is coming up.
+  void watchUpcomingSchedules() {
+    _schedulesSub?.cancel();
+    _schedulesSub = watchAllSchedulesUseCase.execute().listen((schedules) {
+      // By calendar day, matching the D-day badge and the calendar list.
+      final List<Schedule> upcoming = schedules
+          .where((schedule) => !schedule.date.isPastDay)
+          .sorted((a, b) => a.date.compareTo(b.date));
+
+      emit(state.copyWith(upcomingSchedules: upcoming));
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _schedulesSub?.cancel();
+    return super.close();
+  }
 
   Future<void> analyzeLink(String url) async {
     emit(state.copyWith(isLoading: true, isError: false));
