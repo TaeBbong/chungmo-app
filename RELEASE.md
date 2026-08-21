@@ -8,6 +8,17 @@ This file documents the main changes for each release.
 
 ---
 
+### Version 1.3.0+6 (2026-08-21)
+
+- **Added**
+  - Gift money accounts (groom/bride sides) are now parsed from invitations, with tap-to-copy.
+  - Record attendance and gift amount per wedding, with a yearly total.
+  - Upcoming schedules preview on the home screen.
+- **Changed**
+  - Redesigned the detail page with a D-day badge, and tap a location to open it in Maps.
+
+---
+
 ### Version 1.2.0+5 (2025-12-08)
 
 - **Changed**

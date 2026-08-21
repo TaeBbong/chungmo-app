@@ -14,7 +14,7 @@
   <a href="https://play.google.com/store/apps/details?id=com.taebbong.chungmo">
     <img src="https://img.shields.io/badge/google play-414141?style=for-the-badge&logo=googleplay&logoColor=white" alt="Google Play">
   </a>
-  <a href="">
+  <a href="https://apps.apple.com/kr/app/%EC%B2%AD%EB%AA%A8/id6745786004%EC%B2%AD%EB%AA%A8">
     <img src="https://img.shields.io/badge/appstore-0D96F6?style=for-the-badge&logo=appstore&logoColor=white" alt="App Store">
   </a>
 </p>
