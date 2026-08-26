@@ -1,3 +1,4 @@
+export 'analyze_image_usecase.dart';
 export 'analyze_link_usecase.dart';
 export 'delete_schedule_usecase.dart';
 export 'edit_schedule_usecase.dart';

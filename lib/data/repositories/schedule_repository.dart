@@ -7,6 +7,7 @@
 import 'package:injectable/injectable.dart';
 
 import '../../core/services/notification_service.dart';
+import '../../domain/entities/invitation_image.dart';
 import '../../domain/entities/schedule.dart';
 import '../../domain/repositories/schedule_repository.dart';
 import '../mapper/schedule_mapper.dart';
@@ -28,6 +29,18 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
   Future<Schedule> analyzeLink(String url) async {
     try {
       final schedule = await remoteSource.fetchScheduleFromServer(url);
+      Schedule entitySchedule = ScheduleMapper.toEntity(schedule);
+      return entitySchedule;
+    } catch (e) {
+      throw Exception('[-] Error while fetching from server');
+    }
+  }
+
+  @override
+  Future<Schedule> analyzeImage(InvitationImage image) async {
+    try {
+      final schedule =
+          await remoteSource.fetchScheduleFromImage(image.bytes, image.mimeType);
       Schedule entitySchedule = ScheduleMapper.toEntity(schedule);
       return entitySchedule;
     } catch (e) {
