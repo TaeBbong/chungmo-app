@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../core/analytics/analytics_events.dart';
+import '../../core/analytics/analytics_service.dart';
+import '../../core/di/di.dart';
 import '../../domain/entities/account.dart';
 import '../theme/palette.dart';
 import 'info_row.dart';
@@ -33,9 +36,9 @@ class AccountSection extends StatelessWidget {
       value: '마음 전하실 곳',
       children: [
         if (groomAccounts.isNotEmpty)
-          _AccountGroup(title: '신랑측', accounts: groomAccounts),
+          _AccountGroup(title: '신랑측', side: 'groom', accounts: groomAccounts),
         if (brideAccounts.isNotEmpty)
-          _AccountGroup(title: '신부측', accounts: brideAccounts),
+          _AccountGroup(title: '신부측', side: 'bride', accounts: brideAccounts),
       ],
     );
   }
@@ -43,9 +46,14 @@ class AccountSection extends StatelessWidget {
 
 class _AccountGroup extends StatelessWidget {
   final String title;
+  final String side;
   final List<Account> accounts;
 
-  const _AccountGroup({required this.title, required this.accounts});
+  const _AccountGroup({
+    required this.title,
+    required this.side,
+    required this.accounts,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +64,7 @@ class _AccountGroup extends StatelessWidget {
           title,
           style: InfoRowMetrics.labelStyle.copyWith(color: Palette.grey600),
         ),
-        ...accounts.map((account) => _AccountTile(account: account)),
+        ...accounts.map((account) => _AccountTile(account: account, side: side)),
         const SizedBox(height: 8),
       ],
     );
@@ -65,8 +73,9 @@ class _AccountGroup extends StatelessWidget {
 
 class _AccountTile extends StatelessWidget {
   final Account account;
+  final String side;
 
-  const _AccountTile({required this.account});
+  const _AccountTile({required this.account, required this.side});
 
   /// `국민 123-45-6789`
   String get _number =>
@@ -79,6 +88,8 @@ class _AccountTile extends StatelessWidget {
 
   void _copy(BuildContext context) {
     if (account.number.isEmpty) return;
+    getIt<AnalyticsService>().logEvent(AnalyticsEvents.accountCopied,
+        parameters: {AnalyticsParams.side: side});
     Clipboard.setData(ClipboardData(text: account.number));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('계좌번호를 복사했습니다.')),

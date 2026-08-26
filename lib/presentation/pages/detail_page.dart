@@ -4,6 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../domain/entities/attendance.dart';
 import '../../domain/entities/schedule.dart';
+import '../../core/analytics/analytics_events.dart';
+import '../../core/analytics/analytics_service.dart';
+import '../../core/di/di.dart';
 import '../../core/utils/date_extension.dart';
 import '../../core/utils/int_extension.dart';
 import '../../core/utils/map_link.dart';
@@ -46,6 +49,7 @@ class _DetailPageState extends State<DetailPage> {
   @override
   void initState() {
     super.initState();
+    getIt<AnalyticsService>().logEvent(AnalyticsEvents.scheduleOpened);
     cubit = DetailCubit();
     cubit.setSchedule(widget.schedule);
     groomController.text = widget.schedule.groom;
@@ -89,6 +93,13 @@ class _DetailPageState extends State<DetailPage> {
         pay: int.tryParse(payController.text.trim()) ?? 0,
       );
       cubit.editSchedule(editedSchedule);
+      final AnalyticsService analytics = getIt<AnalyticsService>();
+      analytics.logEvent(AnalyticsEvents.attendanceRecorded,
+          parameters: {AnalyticsParams.status: editedSchedule.attendance.name});
+      if (editedSchedule.pay > 0) {
+        analytics.logEvent(AnalyticsEvents.giftRecorded,
+            parameters: {AnalyticsParams.amountBucket: _amountBucket(editedSchedule.pay)});
+      }
       editMode = false;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('일정이 변경되었습니다.')),
@@ -160,9 +171,26 @@ class _DetailPageState extends State<DetailPage> {
     final String location = cubit.state.schedule!.location;
     if (location.isEmpty) return;
 
+    getIt<AnalyticsService>().logEvent(AnalyticsEvents.locationMapOpened);
     final Uri url = mapSearchUri(location);
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  /// Maps a gift amount onto the `amount_bucket` analytics value.
+  static String _amountBucket(int pay) {
+    switch (pay) {
+      case 50000:
+        return '50k';
+      case 100000:
+        return '100k';
+      case 200000:
+        return '200k';
+      case 300000:
+        return '300k';
+      default:
+        return 'custom';
     }
   }
 

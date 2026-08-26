@@ -9,6 +9,9 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:chungmo/core/analytics/analytics_service.dart' as _i413;
+import 'package:chungmo/core/analytics/firebase_analytics_service.dart'
+    as _i1037;
 import 'package:chungmo/core/services/notification_service.dart' as _i109;
 import 'package:chungmo/core/services/preferences_checker.dart' as _i391;
 import 'package:chungmo/data/repositories/schedule_repository.dart' as _i798;
@@ -49,6 +52,8 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i109.NotificationService>(
         () => _i109.NotificationServiceImpl());
+    gh.lazySingleton<_i413.AnalyticsService>(
+        () => _i1037.FirebaseAnalyticsService());
     gh.lazySingleton<_i1014.ScheduleLocalSource>(
         () => _i1014.ScheduleLocalSourceImpl());
     gh.lazySingleton<_i153.ScheduleRemoteSource>(

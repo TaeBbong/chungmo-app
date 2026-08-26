@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:chungmo/core/analytics/noop_analytics_service.dart';
 import 'package:chungmo/domain/entities/schedule.dart';
 import 'package:chungmo/presentation/bloc/create/create_cubit.dart';
 import 'package:mockito/mockito.dart';
@@ -26,6 +27,7 @@ void main() {
         saveScheduleUsecase: save,
         notificationSvc: notify,
         watchAllSchedulesUsecase: watch,
+        analyticsService: const NoopAnalyticsService(),
       );
     });
 

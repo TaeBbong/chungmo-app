@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../core/analytics/analytics_events.dart';
+import '../../core/analytics/analytics_service.dart';
+import '../../core/di/di.dart';
 import '../bloc/calendar/calendar_bloc.dart';
 import '../bloc/calendar/calendar_event.dart';
 import '../bloc/calendar/calendar_state.dart';
@@ -23,6 +26,8 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   void initState() {
     super.initState();
+    getIt<AnalyticsService>().logEvent(AnalyticsEvents.calendarViewed,
+        parameters: {AnalyticsParams.view: 'calendar'});
     bloc = CalendarBloc()..add(CalendarStarted());
   }
 
