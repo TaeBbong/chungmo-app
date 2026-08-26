@@ -8,6 +8,15 @@ This file documents the main changes for each release.
 
 ---
 
+### Version 1.3.1+7 (2026-08-26)
+
+- **Added**
+  - Firebase Analytics and Crashlytics for stability and usage metrics.
+- **Changed**
+  - Upgraded to Flutter 3.47.1; the minimum supported iOS version is now 15.
+
+---
+
 ### Version 1.3.0+6 (2026-08-21)
 
 - **Added**
