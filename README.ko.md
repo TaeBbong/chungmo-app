@@ -7,7 +7,7 @@
 ![Brand Preview](./designs/previews_android/brand.jpeg)
 
 <p align="center">
-  <strong>모바일 청첩장 링크를 첨부하면 GPT가 일정을 파싱하여 캘린더에 등록하는 앱입니다.</strong>
+  <strong>모바일 청첩장 링크를 첨부하면 Firebase AI Logic이 일정을 파싱하여 캘린더에 등록하는 앱입니다.</strong>
 </p>
 
 <p align="center">

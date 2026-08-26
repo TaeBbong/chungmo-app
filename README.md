@@ -7,7 +7,7 @@
 ![Brand Preview](./designs/previews_android/brand.jpeg)
 
 <p align="center">
-  <strong>Mobile wedding invitation parser app using GPT API</strong>
+  <strong>Mobile wedding invitation parser app using Firebase AI Logic</strong>
 </p>
 
 <p align="center">
