@@ -110,8 +110,19 @@ class _FakeNotificationService_6 extends _i1.SmartFake
         );
 }
 
-class _FakeCreateState_7 extends _i1.SmartFake implements _i8.CreateState {
-  _FakeCreateState_7(
+class _FakeWatchAllSchedulesUsecase_7 extends _i1.SmartFake
+    implements _i6.WatchAllSchedulesUsecase {
+  _FakeWatchAllSchedulesUsecase_7(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeCreateState_8 extends _i1.SmartFake implements _i8.CreateState {
+  _FakeCreateState_8(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -491,6 +502,16 @@ class MockCreateCubit extends _i1.Mock implements _i8.CreateCubit {
       ) as _i7.NotificationService);
 
   @override
+  _i6.WatchAllSchedulesUsecase get watchAllSchedulesUseCase =>
+      (super.noSuchMethod(
+        Invocation.getter(#watchAllSchedulesUseCase),
+        returnValue: _FakeWatchAllSchedulesUsecase_7(
+          this,
+          Invocation.getter(#watchAllSchedulesUseCase),
+        ),
+      ) as _i6.WatchAllSchedulesUsecase);
+
+  @override
   set analyzeLinkUseCase(_i6.AnalyzeLinkUsecase? value) => super.noSuchMethod(
         Invocation.setter(
           #analyzeLinkUseCase,
@@ -530,7 +551,7 @@ class MockCreateCubit extends _i1.Mock implements _i8.CreateCubit {
   @override
   _i8.CreateState get state => (super.noSuchMethod(
         Invocation.getter(#state),
-        returnValue: _FakeCreateState_7(
+        returnValue: _FakeCreateState_8(
           this,
           Invocation.getter(#state),
         ),

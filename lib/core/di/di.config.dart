@@ -9,6 +9,8 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:chungmo/core/analytics/analytics_service.dart' as _i413;
+import 'package:chungmo/core/analytics/noop_analytics_service.dart' as _i187;
 import 'package:chungmo/core/services/notification_service.dart' as _i109;
 import 'package:chungmo/core/services/preferences_checker.dart' as _i391;
 import 'package:chungmo/data/repositories/schedule_repository.dart' as _i798;
@@ -47,6 +49,8 @@ extension GetItInjectableX on _i174.GetIt {
       environment,
       environmentFilter,
     );
+    gh.lazySingleton<_i413.AnalyticsService>(
+        () => const _i187.NoopAnalyticsService());
     gh.lazySingleton<_i109.NotificationService>(
         () => _i109.NotificationServiceImpl());
     gh.lazySingleton<_i1014.ScheduleLocalSource>(
