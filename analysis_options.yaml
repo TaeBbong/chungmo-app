@@ -4,3 +4,11 @@ analyzer:
     dangling_library_doc_comments: ignore
     duplicate_ignore: ignore
     library_private_types_in_public_api: ignore
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
