@@ -126,9 +126,10 @@ Event and parameter names use `lower_snake_case` and stay within Firebase limits
 | Event | Trigger | Parameters |
 | --- | --- | --- |
 | `invitation_link_submitted` | User submits an invitation link | `source` |
-| `parse_started` | Parsing begins | — |
-| `parse_succeeded` | Parsing returns a schedule | `duration_ms`, `has_accounts`, `account_count` |
-| `parse_failed` | Parsing throws | `reason`, `duration_ms` |
+| `invitation_image_submitted` | User attaches an invitation image | `source` |
+| `parse_started` | Parsing begins | `input_type` |
+| `parse_succeeded` | Parsing returns a schedule | `input_type`, `duration_ms`, `has_accounts`, `account_count` |
+| `parse_failed` | Parsing throws | `input_type`, `reason`, `duration_ms` |
 | `schedule_saved` | Schedule stored locally | `days_until`, `has_accounts` |
 | `schedule_opened` | Detail page opened | `source` |
 | `location_map_opened` | Venue tapped to open Maps | — |
@@ -146,7 +147,8 @@ automatically by Firebase Analytics.
 
 | Parameter | Values |
 | --- | --- |
-| `source` | `paste`, `manual`, `clipboard`, `home`, `calendar`, `notification` |
+| `source` | `paste`, `manual`, `clipboard`, `home`, `calendar`, `notification`, `gallery`, `camera` |
+| `input_type` | `link`, `image` |
 | `reason` | `crawl`, `format`, `schema`, `timeout`, `unknown` |
 | `status` | `attending`, `absent` |
 | `side` | `groom`, `bride` |
