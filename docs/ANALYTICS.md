@@ -213,7 +213,7 @@ Call sites:
 | 7 | Instrument engagement events (detail, calendar, notifications) | Done |
 | 8 | Native setup (Android Crashlytics Gradle plugin) | Done |
 | 9 | iOS dSYM upload build phase for symbolicated crashes | Pending |
-| 10 | Enable Analytics and Crashlytics in the Firebase console | Pending |
+| 10 | Enable Analytics and Crashlytics in the Firebase console | Done |
 | 11 | Verify events in DebugView and a test crash in Crashlytics | Pending |
 
 ---
