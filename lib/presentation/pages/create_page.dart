@@ -66,6 +66,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
 
   Future<void> _initTutorial() async {
     final bool isFirst = !(await preferencesChecker.hasKey('is_first'));
+    if (!mounted) return;
     if (isFirst) {
       tutorialManager = TutorialManager(
         context: context,
