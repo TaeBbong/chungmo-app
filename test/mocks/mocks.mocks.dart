@@ -4,6 +4,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i11;
+import 'dart:typed_data' as _i13;
 
 import 'package:chungmo/core/analytics/analytics_service.dart' as _i8;
 import 'package:chungmo/core/services/notification_service.dart' as _i7;
@@ -11,15 +12,16 @@ import 'package:chungmo/data/models/schedule/schedule_model.dart' as _i2;
 import 'package:chungmo/data/sources/local/schedule_local_source.dart' as _i10;
 import 'package:chungmo/data/sources/remote/schedule_remote_source.dart'
     as _i12;
+import 'package:chungmo/domain/entities/invitation_image.dart' as _i15;
 import 'package:chungmo/domain/entities/schedule.dart' as _i5;
 import 'package:chungmo/domain/repositories/schedule_repository.dart' as _i4;
 import 'package:chungmo/domain/usecases/usecases.dart' as _i6;
 import 'package:chungmo/presentation/bloc/create/create_cubit.dart' as _i9;
-import 'package:flutter_bloc/flutter_bloc.dart' as _i14;
+import 'package:flutter_bloc/flutter_bloc.dart' as _i16;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     as _i3;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:timezone/timezone.dart' as _i13;
+import 'package:timezone/timezone.dart' as _i14;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -89,9 +91,20 @@ class _FakeAnalyzeLinkUsecase_4 extends _i1.SmartFake
         );
 }
 
-class _FakeSaveScheduleUsecase_5 extends _i1.SmartFake
+class _FakeAnalyzeImageUsecase_5 extends _i1.SmartFake
+    implements _i6.AnalyzeImageUsecase {
+  _FakeAnalyzeImageUsecase_5(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeSaveScheduleUsecase_6 extends _i1.SmartFake
     implements _i6.SaveScheduleUsecase {
-  _FakeSaveScheduleUsecase_5(
+  _FakeSaveScheduleUsecase_6(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -100,9 +113,9 @@ class _FakeSaveScheduleUsecase_5 extends _i1.SmartFake
         );
 }
 
-class _FakeNotificationService_6 extends _i1.SmartFake
+class _FakeNotificationService_7 extends _i1.SmartFake
     implements _i7.NotificationService {
-  _FakeNotificationService_6(
+  _FakeNotificationService_7(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -111,9 +124,9 @@ class _FakeNotificationService_6 extends _i1.SmartFake
         );
 }
 
-class _FakeWatchAllSchedulesUsecase_7 extends _i1.SmartFake
+class _FakeWatchAllSchedulesUsecase_8 extends _i1.SmartFake
     implements _i6.WatchAllSchedulesUsecase {
-  _FakeWatchAllSchedulesUsecase_7(
+  _FakeWatchAllSchedulesUsecase_8(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -122,9 +135,9 @@ class _FakeWatchAllSchedulesUsecase_7 extends _i1.SmartFake
         );
 }
 
-class _FakeAnalyticsService_8 extends _i1.SmartFake
+class _FakeAnalyticsService_9 extends _i1.SmartFake
     implements _i8.AnalyticsService {
-  _FakeAnalyticsService_8(
+  _FakeAnalyticsService_9(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -133,8 +146,8 @@ class _FakeAnalyticsService_8 extends _i1.SmartFake
         );
 }
 
-class _FakeCreateState_9 extends _i1.SmartFake implements _i9.CreateState {
-  _FakeCreateState_9(
+class _FakeCreateState_10 extends _i1.SmartFake implements _i9.CreateState {
+  _FakeCreateState_10(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -256,6 +269,31 @@ class MockScheduleRemoteSource extends _i1.Mock
           ),
         )),
       ) as _i11.Future<_i2.ScheduleModel>);
+
+  @override
+  _i11.Future<_i2.ScheduleModel> fetchScheduleFromImage(
+    _i13.Uint8List? bytes,
+    String? mimeType,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #fetchScheduleFromImage,
+          [
+            bytes,
+            mimeType,
+          ],
+        ),
+        returnValue: _i11.Future<_i2.ScheduleModel>.value(_FakeScheduleModel_0(
+          this,
+          Invocation.method(
+            #fetchScheduleFromImage,
+            [
+              bytes,
+              mimeType,
+            ],
+          ),
+        )),
+      ) as _i11.Future<_i2.ScheduleModel>);
 }
 
 /// A class which mocks [NotificationService].
@@ -333,7 +371,7 @@ class MockNotificationService extends _i1.Mock
     required int? id,
     required String? appName,
     required String? title,
-    required _i13.TZDateTime? scheduleDate,
+    required _i14.TZDateTime? scheduleDate,
     required String? payload,
   }) =>
       (super.noSuchMethod(
@@ -421,6 +459,41 @@ class MockAnalyzeLinkUsecase extends _i1.Mock
       ) as _i11.Future<_i5.Schedule>);
 }
 
+/// A class which mocks [AnalyzeImageUsecase].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAnalyzeImageUsecase extends _i1.Mock
+    implements _i6.AnalyzeImageUsecase {
+  MockAnalyzeImageUsecase() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.ScheduleRepository get repository => (super.noSuchMethod(
+        Invocation.getter(#repository),
+        returnValue: _FakeScheduleRepository_2(
+          this,
+          Invocation.getter(#repository),
+        ),
+      ) as _i4.ScheduleRepository);
+
+  @override
+  _i11.Future<_i5.Schedule> execute(_i15.InvitationImage? image) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #execute,
+          [image],
+        ),
+        returnValue: _i11.Future<_i5.Schedule>.value(_FakeSchedule_3(
+          this,
+          Invocation.method(
+            #execute,
+            [image],
+          ),
+        )),
+      ) as _i11.Future<_i5.Schedule>);
+}
+
 /// A class which mocks [SaveScheduleUsecase].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -496,9 +569,18 @@ class MockCreateCubit extends _i1.Mock implements _i9.CreateCubit {
       ) as _i6.AnalyzeLinkUsecase);
 
   @override
+  _i6.AnalyzeImageUsecase get analyzeImageUseCase => (super.noSuchMethod(
+        Invocation.getter(#analyzeImageUseCase),
+        returnValue: _FakeAnalyzeImageUsecase_5(
+          this,
+          Invocation.getter(#analyzeImageUseCase),
+        ),
+      ) as _i6.AnalyzeImageUsecase);
+
+  @override
   _i6.SaveScheduleUsecase get saveScheduleUseCase => (super.noSuchMethod(
         Invocation.getter(#saveScheduleUseCase),
-        returnValue: _FakeSaveScheduleUsecase_5(
+        returnValue: _FakeSaveScheduleUsecase_6(
           this,
           Invocation.getter(#saveScheduleUseCase),
         ),
@@ -507,7 +589,7 @@ class MockCreateCubit extends _i1.Mock implements _i9.CreateCubit {
   @override
   _i7.NotificationService get notificationService => (super.noSuchMethod(
         Invocation.getter(#notificationService),
-        returnValue: _FakeNotificationService_6(
+        returnValue: _FakeNotificationService_7(
           this,
           Invocation.getter(#notificationService),
         ),
@@ -517,7 +599,7 @@ class MockCreateCubit extends _i1.Mock implements _i9.CreateCubit {
   _i6.WatchAllSchedulesUsecase get watchAllSchedulesUseCase =>
       (super.noSuchMethod(
         Invocation.getter(#watchAllSchedulesUseCase),
-        returnValue: _FakeWatchAllSchedulesUsecase_7(
+        returnValue: _FakeWatchAllSchedulesUsecase_8(
           this,
           Invocation.getter(#watchAllSchedulesUseCase),
         ),
@@ -526,7 +608,7 @@ class MockCreateCubit extends _i1.Mock implements _i9.CreateCubit {
   @override
   _i8.AnalyticsService get analytics => (super.noSuchMethod(
         Invocation.getter(#analytics),
-        returnValue: _FakeAnalyticsService_8(
+        returnValue: _FakeAnalyticsService_9(
           this,
           Invocation.getter(#analytics),
         ),
@@ -536,6 +618,15 @@ class MockCreateCubit extends _i1.Mock implements _i9.CreateCubit {
   set analyzeLinkUseCase(_i6.AnalyzeLinkUsecase? value) => super.noSuchMethod(
         Invocation.setter(
           #analyzeLinkUseCase,
+          value,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set analyzeImageUseCase(_i6.AnalyzeImageUsecase? value) => super.noSuchMethod(
+        Invocation.setter(
+          #analyzeImageUseCase,
           value,
         ),
         returnValueForMissingStub: null,
@@ -581,7 +672,7 @@ class MockCreateCubit extends _i1.Mock implements _i9.CreateCubit {
   @override
   _i9.CreateState get state => (super.noSuchMethod(
         Invocation.getter(#state),
-        returnValue: _FakeCreateState_9(
+        returnValue: _FakeCreateState_10(
           this,
           Invocation.getter(#state),
         ),
@@ -634,6 +725,21 @@ class MockCreateCubit extends _i1.Mock implements _i9.CreateCubit {
       ) as _i11.Future<void>);
 
   @override
+  _i11.Future<void> analyzeImage(
+    _i15.InvitationImage? image, {
+    String? source = 'gallery',
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #analyzeImage,
+          [image],
+          {#source: source},
+        ),
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
+
+  @override
   void resetState() => super.noSuchMethod(
         Invocation.method(
           #resetState,
@@ -662,7 +768,7 @@ class MockCreateCubit extends _i1.Mock implements _i9.CreateCubit {
       );
 
   @override
-  void onChange(_i14.Change<_i9.CreateState>? change) => super.noSuchMethod(
+  void onChange(_i16.Change<_i9.CreateState>? change) => super.noSuchMethod(
         Invocation.method(
           #onChange,
           [change],
