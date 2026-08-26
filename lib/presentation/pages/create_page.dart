@@ -7,10 +7,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/di/di.dart';
+import '../../domain/entities/invitation_image.dart';
 import '../../core/navigation/app_navigation.dart';
 import '../../core/services/preferences_checker.dart';
 import '../../core/services/tutorial_manager.dart';
@@ -31,6 +33,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
   late final CreateCubit cubit;
   final PreferencesChecker preferencesChecker = getIt<PreferencesChecker>();
   final TextEditingController _textEditingController = TextEditingController();
+  final ImagePicker _imagePicker = ImagePicker();
 
   late TutorialManager tutorialManager;
   final GlobalKey linkInputKey = GlobalKey(debugLabel: 'link-input');
@@ -81,6 +84,70 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
     if (userInput.isNotEmpty) {
       cubit.analyzeLink(userInput);
       _textEditingController.clear();
+    }
+  }
+
+  /// Lets the user attach an invitation image from the gallery or camera.
+  void _onAttachImage() {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined),
+              title: const Text('갤러리에서 선택'),
+              onTap: () {
+                Navigator.of(sheetContext).pop();
+                _pickAndAnalyze(ImageSource.gallery);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_camera_outlined),
+              title: const Text('카메라로 촬영'),
+              onTap: () {
+                Navigator.of(sheetContext).pop();
+                _pickAndAnalyze(ImageSource.camera);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickAndAnalyze(ImageSource source) async {
+    try {
+      // Downscale before upload; invitations stay readable well below 1600px.
+      final XFile? picked = await _imagePicker.pickImage(
+          source: source, maxWidth: 1600, imageQuality: 85);
+      if (picked == null) return;
+      final bytes = await picked.readAsBytes();
+      cubit.analyzeImage(
+        InvitationImage(bytes: bytes, mimeType: _mimeTypeOf(picked.path)),
+        source: source == ImageSource.camera ? 'camera' : 'gallery',
+      );
+    } on PlatformException {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('이미지를 불러오지 못했어요. 다시 시도해주세요.')),
+      );
+    }
+  }
+
+  /// Maps the picked file's extension onto a Gemini-supported image mime type.
+  String _mimeTypeOf(String path) {
+    switch (path.split('.').last.toLowerCase()) {
+      case 'png':
+        return 'image/png';
+      case 'webp':
+        return 'image/webp';
+      case 'heic':
+        return 'image/heic';
+      case 'heif':
+        return 'image/heif';
+      default:
+        return 'image/jpeg';
     }
   }
 
@@ -226,7 +293,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                           }),
                         ),
                         const SizedBox(height: 16),
-                        const Text('링크 분석 중...',
+                        const Text('청첩장 분석 중...',
                             style: TextStyle(fontSize: 16)),
                       ],
                     );
@@ -386,6 +453,12 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
+                          ),
+                          prefixIcon: IconButton(
+                            tooltip: '청첩장 이미지 첨부',
+                            icon: const Icon(Icons.add_photo_alternate_outlined,
+                                size: 20),
+                            onPressed: _onAttachImage,
                           ),
                           suffixIcon: IconButton(
                             icon: const Icon(Icons.send, size: 20),

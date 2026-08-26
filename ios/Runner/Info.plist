@@ -52,5 +52,9 @@
 			<string>UIInterfaceOrientationLandscapeLeft</string>
 			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
+		<key>NSCameraUsageDescription</key>
+		<string>종이 청첩장을 촬영해 일정을 자동으로 등록하기 위해 카메라 권한이 필요합니다.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>저장된 청첩장 이미지를 분석해 일정을 자동으로 등록하기 위해 사진 접근 권한이 필요합니다.</string>
 	</dict>
 </plist>
