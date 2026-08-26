@@ -205,15 +205,16 @@ Call sites:
 | # | Task | Status |
 | --- | --- | --- |
 | 1 | Analytics facade, event constants, no-op implementation | Done |
-| 2 | Add `firebase_analytics` and `firebase_crashlytics` dependencies | Pending |
-| 3 | Firebase-backed `AnalyticsService` implementation | Pending |
-| 4 | Crashlytics init and global error handlers in `main` | Pending |
-| 5 | `FirebaseAnalyticsObserver` for screen views | Pending |
-| 6 | Instrument the activation funnel in `CreateCubit` | Pending |
-| 7 | Instrument engagement events (detail, calendar, notifications) | Pending |
-| 8 | Native setup (Android Crashlytics Gradle plugin, iOS dSYM upload) | Pending |
-| 9 | Enable Analytics and Crashlytics in the Firebase console | Pending |
-| 10 | Verify events in DebugView and a test crash in Crashlytics | Pending |
+| 2 | Add `firebase_analytics` and `firebase_crashlytics` dependencies | Done |
+| 3 | Firebase-backed `AnalyticsService` implementation | Done |
+| 4 | Crashlytics init and global error handlers in `main` | Done |
+| 5 | `FirebaseAnalyticsObserver` for screen views | Done |
+| 6 | Instrument the activation funnel in `CreateCubit` | Done |
+| 7 | Instrument engagement events (detail, calendar, notifications) | Done |
+| 8 | Native setup (Android Crashlytics Gradle plugin) | Done |
+| 9 | iOS dSYM upload build phase for symbolicated crashes | Pending |
+| 10 | Enable Analytics and Crashlytics in the Firebase console | Pending |
+| 11 | Verify events in DebugView and a test crash in Crashlytics | Pending |
 
 ---
 

@@ -1,13 +1,10 @@
-import 'package:injectable/injectable.dart';
-
 import 'analytics_service.dart';
 
-/// Default no-op [AnalyticsService].
+/// No-op [AnalyticsService] for tests and any build without analytics wired in.
 ///
-/// Registered until the Firebase-backed implementation is wired in, and used in
-/// tests. Every call is a safe no-op, so instrumentation can be added across the
-/// app without a runtime dependency on Firebase Analytics or Crashlytics.
-@LazySingleton(as: AnalyticsService)
+/// Every call is a safe no-op, so code under test can depend on
+/// [AnalyticsService] without touching Firebase. The app itself is wired to
+/// [FirebaseAnalyticsService] via DI.
 class NoopAnalyticsService implements AnalyticsService {
   const NoopAnalyticsService();
 

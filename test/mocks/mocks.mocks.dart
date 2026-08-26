@@ -3,22 +3,23 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i10;
+import 'dart:async' as _i11;
 
+import 'package:chungmo/core/analytics/analytics_service.dart' as _i8;
 import 'package:chungmo/core/services/notification_service.dart' as _i7;
 import 'package:chungmo/data/models/schedule/schedule_model.dart' as _i2;
-import 'package:chungmo/data/sources/local/schedule_local_source.dart' as _i9;
+import 'package:chungmo/data/sources/local/schedule_local_source.dart' as _i10;
 import 'package:chungmo/data/sources/remote/schedule_remote_source.dart'
-    as _i11;
+    as _i12;
 import 'package:chungmo/domain/entities/schedule.dart' as _i5;
 import 'package:chungmo/domain/repositories/schedule_repository.dart' as _i4;
 import 'package:chungmo/domain/usecases/usecases.dart' as _i6;
-import 'package:chungmo/presentation/bloc/create/create_cubit.dart' as _i8;
-import 'package:flutter_bloc/flutter_bloc.dart' as _i13;
+import 'package:chungmo/presentation/bloc/create/create_cubit.dart' as _i9;
+import 'package:flutter_bloc/flutter_bloc.dart' as _i14;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     as _i3;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:timezone/timezone.dart' as _i12;
+import 'package:timezone/timezone.dart' as _i13;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -121,8 +122,19 @@ class _FakeWatchAllSchedulesUsecase_7 extends _i1.SmartFake
         );
 }
 
-class _FakeCreateState_8 extends _i1.SmartFake implements _i8.CreateState {
-  _FakeCreateState_8(
+class _FakeAnalyticsService_8 extends _i1.SmartFake
+    implements _i8.AnalyticsService {
+  _FakeAnalyticsService_8(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeCreateState_9 extends _i1.SmartFake implements _i9.CreateState {
+  _FakeCreateState_9(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -135,115 +147,115 @@ class _FakeCreateState_8 extends _i1.SmartFake implements _i8.CreateState {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockScheduleLocalSource extends _i1.Mock
-    implements _i9.ScheduleLocalSource {
+    implements _i10.ScheduleLocalSource {
   MockScheduleLocalSource() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i10.Stream<List<_i2.ScheduleModel>> get allSchedulesStream =>
+  _i11.Stream<List<_i2.ScheduleModel>> get allSchedulesStream =>
       (super.noSuchMethod(
         Invocation.getter(#allSchedulesStream),
-        returnValue: _i10.Stream<List<_i2.ScheduleModel>>.empty(),
-      ) as _i10.Stream<List<_i2.ScheduleModel>>);
+        returnValue: _i11.Stream<List<_i2.ScheduleModel>>.empty(),
+      ) as _i11.Stream<List<_i2.ScheduleModel>>);
 
   @override
-  _i10.Stream<List<_i2.ScheduleModel>> watchAllSchedules() =>
+  _i11.Stream<List<_i2.ScheduleModel>> watchAllSchedules() =>
       (super.noSuchMethod(
         Invocation.method(
           #watchAllSchedules,
           [],
         ),
-        returnValue: _i10.Stream<List<_i2.ScheduleModel>>.empty(),
-      ) as _i10.Stream<List<_i2.ScheduleModel>>);
+        returnValue: _i11.Stream<List<_i2.ScheduleModel>>.empty(),
+      ) as _i11.Stream<List<_i2.ScheduleModel>>);
 
   @override
-  _i10.Future<void> emitAllSchedules() => (super.noSuchMethod(
+  _i11.Future<void> emitAllSchedules() => (super.noSuchMethod(
         Invocation.method(
           #emitAllSchedules,
           [],
         ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> saveSchedule(_i2.ScheduleModel? schedule) =>
+  _i11.Future<void> saveSchedule(_i2.ScheduleModel? schedule) =>
       (super.noSuchMethod(
         Invocation.method(
           #saveSchedule,
           [schedule],
         ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> editSchedule(_i2.ScheduleModel? schedule) =>
+  _i11.Future<void> editSchedule(_i2.ScheduleModel? schedule) =>
       (super.noSuchMethod(
         Invocation.method(
           #editSchedule,
           [schedule],
         ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> deleteScheduleByLink(String? link) => (super.noSuchMethod(
+  _i11.Future<void> deleteScheduleByLink(String? link) => (super.noSuchMethod(
         Invocation.method(
           #deleteScheduleByLink,
           [link],
         ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 
   @override
-  _i10.Future<_i2.ScheduleModel?> getScheduleByLink(String? link) =>
+  _i11.Future<_i2.ScheduleModel?> getScheduleByLink(String? link) =>
       (super.noSuchMethod(
         Invocation.method(
           #getScheduleByLink,
           [link],
         ),
-        returnValue: _i10.Future<_i2.ScheduleModel?>.value(),
-      ) as _i10.Future<_i2.ScheduleModel?>);
+        returnValue: _i11.Future<_i2.ScheduleModel?>.value(),
+      ) as _i11.Future<_i2.ScheduleModel?>);
 
   @override
-  _i10.Future<void> refresh() => (super.noSuchMethod(
+  _i11.Future<void> refresh() => (super.noSuchMethod(
         Invocation.method(
           #refresh,
           [],
         ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 }
 
 /// A class which mocks [ScheduleRemoteSource].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockScheduleRemoteSource extends _i1.Mock
-    implements _i11.ScheduleRemoteSource {
+    implements _i12.ScheduleRemoteSource {
   MockScheduleRemoteSource() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i10.Future<_i2.ScheduleModel> fetchScheduleFromServer(String? url) =>
+  _i11.Future<_i2.ScheduleModel> fetchScheduleFromServer(String? url) =>
       (super.noSuchMethod(
         Invocation.method(
           #fetchScheduleFromServer,
           [url],
         ),
-        returnValue: _i10.Future<_i2.ScheduleModel>.value(_FakeScheduleModel_0(
+        returnValue: _i11.Future<_i2.ScheduleModel>.value(_FakeScheduleModel_0(
           this,
           Invocation.method(
             #fetchScheduleFromServer,
             [url],
           ),
         )),
-      ) as _i10.Future<_i2.ScheduleModel>);
+      ) as _i11.Future<_i2.ScheduleModel>);
 }
 
 /// A class which mocks [NotificationService].
@@ -272,39 +284,39 @@ class MockNotificationService extends _i1.Mock
       ) as _i3.FlutterLocalNotificationsPlugin);
 
   @override
-  _i10.Future<void> getPermissions() => (super.noSuchMethod(
+  _i11.Future<void> getPermissions() => (super.noSuchMethod(
         Invocation.method(
           #getPermissions,
           [],
         ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> init() => (super.noSuchMethod(
+  _i11.Future<void> init() => (super.noSuchMethod(
         Invocation.method(
           #init,
           [],
         ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> onDidReceiveNotificationResponse({required String? link}) =>
+  _i11.Future<void> onDidReceiveNotificationResponse({required String? link}) =>
       (super.noSuchMethod(
         Invocation.method(
           #onDidReceiveNotificationResponse,
           [],
           {#link: link},
         ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> checkPreviousDayForNotify(
+  _i11.Future<void> checkPreviousDayForNotify(
           {required _i5.Schedule? schedule}) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -312,16 +324,16 @@ class MockNotificationService extends _i1.Mock
           [],
           {#schedule: schedule},
         ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> addNotifySchedule({
+  _i11.Future<void> addNotifySchedule({
     required int? id,
     required String? appName,
     required String? title,
-    required _i12.TZDateTime? scheduleDate,
+    required _i13.TZDateTime? scheduleDate,
     required String? payload,
   }) =>
       (super.noSuchMethod(
@@ -336,43 +348,43 @@ class MockNotificationService extends _i1.Mock
             #payload: payload,
           },
         ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> cancelNotifySchedule({required String? link}) =>
+  _i11.Future<void> cancelNotifySchedule({required String? link}) =>
       (super.noSuchMethod(
         Invocation.method(
           #cancelNotifySchedule,
           [],
           {#link: link},
         ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> checkScheduledNotifications() => (super.noSuchMethod(
+  _i11.Future<void> checkScheduledNotifications() => (super.noSuchMethod(
         Invocation.method(
           #checkScheduledNotifications,
           [],
         ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> addTestNotifySchedule({required int? id}) =>
+  _i11.Future<void> addTestNotifySchedule({required int? id}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addTestNotifySchedule,
           [],
           {#id: id},
         ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 }
 
 /// A class which mocks [AnalyzeLinkUsecase].
@@ -394,19 +406,19 @@ class MockAnalyzeLinkUsecase extends _i1.Mock
       ) as _i4.ScheduleRepository);
 
   @override
-  _i10.Future<_i5.Schedule> execute(String? link) => (super.noSuchMethod(
+  _i11.Future<_i5.Schedule> execute(String? link) => (super.noSuchMethod(
         Invocation.method(
           #execute,
           [link],
         ),
-        returnValue: _i10.Future<_i5.Schedule>.value(_FakeSchedule_3(
+        returnValue: _i11.Future<_i5.Schedule>.value(_FakeSchedule_3(
           this,
           Invocation.method(
             #execute,
             [link],
           ),
         )),
-      ) as _i10.Future<_i5.Schedule>);
+      ) as _i11.Future<_i5.Schedule>);
 }
 
 /// A class which mocks [SaveScheduleUsecase].
@@ -428,14 +440,14 @@ class MockSaveScheduleUsecase extends _i1.Mock
       ) as _i4.ScheduleRepository);
 
   @override
-  _i10.Future<void> execute(_i5.Schedule? schedule) => (super.noSuchMethod(
+  _i11.Future<void> execute(_i5.Schedule? schedule) => (super.noSuchMethod(
         Invocation.method(
           #execute,
           [schedule],
         ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 }
 
 /// A class which mocks [WatchAllSchedulesUsecase].
@@ -457,19 +469,19 @@ class MockWatchAllSchedulesUsecase extends _i1.Mock
       ) as _i4.ScheduleRepository);
 
   @override
-  _i10.Stream<List<_i5.Schedule>> execute() => (super.noSuchMethod(
+  _i11.Stream<List<_i5.Schedule>> execute() => (super.noSuchMethod(
         Invocation.method(
           #execute,
           [],
         ),
-        returnValue: _i10.Stream<List<_i5.Schedule>>.empty(),
-      ) as _i10.Stream<List<_i5.Schedule>>);
+        returnValue: _i11.Stream<List<_i5.Schedule>>.empty(),
+      ) as _i11.Stream<List<_i5.Schedule>>);
 }
 
 /// A class which mocks [CreateCubit].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockCreateCubit extends _i1.Mock implements _i8.CreateCubit {
+class MockCreateCubit extends _i1.Mock implements _i9.CreateCubit {
   MockCreateCubit() {
     _i1.throwOnMissingStub(this);
   }
@@ -512,6 +524,15 @@ class MockCreateCubit extends _i1.Mock implements _i8.CreateCubit {
       ) as _i6.WatchAllSchedulesUsecase);
 
   @override
+  _i8.AnalyticsService get analytics => (super.noSuchMethod(
+        Invocation.getter(#analytics),
+        returnValue: _FakeAnalyticsService_8(
+          this,
+          Invocation.getter(#analytics),
+        ),
+      ) as _i8.AnalyticsService);
+
+  @override
   set analyzeLinkUseCase(_i6.AnalyzeLinkUsecase? value) => super.noSuchMethod(
         Invocation.setter(
           #analyzeLinkUseCase,
@@ -549,19 +570,28 @@ class MockCreateCubit extends _i1.Mock implements _i8.CreateCubit {
       );
 
   @override
-  _i8.CreateState get state => (super.noSuchMethod(
+  set analytics(_i8.AnalyticsService? value) => super.noSuchMethod(
+        Invocation.setter(
+          #analytics,
+          value,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i9.CreateState get state => (super.noSuchMethod(
         Invocation.getter(#state),
-        returnValue: _FakeCreateState_8(
+        returnValue: _FakeCreateState_9(
           this,
           Invocation.getter(#state),
         ),
-      ) as _i8.CreateState);
+      ) as _i9.CreateState);
 
   @override
-  _i10.Stream<_i8.CreateState> get stream => (super.noSuchMethod(
+  _i11.Stream<_i9.CreateState> get stream => (super.noSuchMethod(
         Invocation.getter(#stream),
-        returnValue: _i10.Stream<_i8.CreateState>.empty(),
-      ) as _i10.Stream<_i8.CreateState>);
+        returnValue: _i11.Stream<_i9.CreateState>.empty(),
+      ) as _i11.Stream<_i9.CreateState>);
 
   @override
   bool get isClosed => (super.noSuchMethod(
@@ -579,24 +609,29 @@ class MockCreateCubit extends _i1.Mock implements _i8.CreateCubit {
       );
 
   @override
-  _i10.Future<void> close() => (super.noSuchMethod(
+  _i11.Future<void> close() => (super.noSuchMethod(
         Invocation.method(
           #close,
           [],
         ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 
   @override
-  _i10.Future<void> analyzeLink(String? url) => (super.noSuchMethod(
+  _i11.Future<void> analyzeLink(
+    String? url, {
+    String? source = 'manual',
+  }) =>
+      (super.noSuchMethod(
         Invocation.method(
           #analyzeLink,
           [url],
+          {#source: source},
         ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 
   @override
   void resetState() => super.noSuchMethod(
@@ -608,17 +643,17 @@ class MockCreateCubit extends _i1.Mock implements _i8.CreateCubit {
       );
 
   @override
-  _i10.Future<void> checkIfNotification() => (super.noSuchMethod(
+  _i11.Future<void> checkIfNotification() => (super.noSuchMethod(
         Invocation.method(
           #checkIfNotification,
           [],
         ),
-        returnValue: _i10.Future<void>.value(),
-        returnValueForMissingStub: _i10.Future<void>.value(),
-      ) as _i10.Future<void>);
+        returnValue: _i11.Future<void>.value(),
+        returnValueForMissingStub: _i11.Future<void>.value(),
+      ) as _i11.Future<void>);
 
   @override
-  void emit(_i8.CreateState? state) => super.noSuchMethod(
+  void emit(_i9.CreateState? state) => super.noSuchMethod(
         Invocation.method(
           #emit,
           [state],
@@ -627,7 +662,7 @@ class MockCreateCubit extends _i1.Mock implements _i8.CreateCubit {
       );
 
   @override
-  void onChange(_i13.Change<_i8.CreateState>? change) => super.noSuchMethod(
+  void onChange(_i14.Change<_i9.CreateState>? change) => super.noSuchMethod(
         Invocation.method(
           #onChange,
           [change],
