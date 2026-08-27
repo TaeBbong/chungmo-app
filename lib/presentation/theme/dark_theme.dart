@@ -1,3 +1,5 @@
+// CupertinoPageTransitionsBuilder moved out of material in Flutter 3.47.
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'app_typography.dart';
