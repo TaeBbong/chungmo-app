@@ -11,6 +11,7 @@ import 'package:chungmo/core/services/notification_service.dart';
   NotificationService,
   AnalyzeLinkUsecase,
   AnalyzeImageUsecase,
+  AnalyzeTextUsecase,
   SaveScheduleUsecase,
   WatchAllSchedulesUsecase,
   CreateCubit,
