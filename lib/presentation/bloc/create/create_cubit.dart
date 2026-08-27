@@ -118,7 +118,11 @@ class CreateCubit extends Cubit<CreateState> {
       analytics.recordError(error, stack,
           reason: AnalyticsEvents.parseFailed,
           keys: {AnalyticsParams.reason: reason});
-      emit(state.copyWith(isLoading: false, isError: true, schedule: null));
+      emit(state.copyWith(
+          isLoading: false,
+          isError: true,
+          errorReason: reason,
+          schedule: null));
     }
   }
 

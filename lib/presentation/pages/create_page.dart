@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/analytics/analytics_events.dart';
 import '../../core/di/di.dart';
 import '../../domain/entities/invitation_image.dart';
 import '../../core/navigation/app_navigation.dart';
@@ -299,98 +300,100 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                       ],
                     );
                   }
-                  return state.isError
-                      ? const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                  if (state.isError) {
+                    // A format failure means the AI answered but found no
+                    // usable schedule — retrying the same input won't help,
+                    // so guide the user instead of blaming the server.
+                    final bool notReadable =
+                        state.errorReason == ParseFailureReason.format;
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          notReadable ? '청첩장 정보를 찾지 못했어요.' : '다시 시도해주세요.',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          notReadable
+                              ? '날짜가 보이는 선명한 청첩장 사진인지 확인해주세요.'
+                              : '잠시 서버에 문제가 생겼어요.',
+                          style: const TextStyle(fontSize: 14),
+                        )
+                      ],
+                    );
+                  }
+                  return state.schedule != null
+                      ? ScheduleDetailColumn(
+                          schedule: state.schedule!,
+                          extraChildren: [
+                            const SizedBox(height: 12),
                             Text(
-                              '다시 시도해주세요.',
+                              '분석 결과를 일정에 추가할게요.',
                               style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Palette.burgundy),
                             ),
-                            Text(
-                              '잠시 서버에 문제가 생겼어요.',
-                              style: TextStyle(fontSize: 14),
-                            )
                           ],
                         )
-                      : state.schedule != null
-                          ? ScheduleDetailColumn(
-                              schedule: state.schedule!,
-                              extraChildren: [
-                                const SizedBox(height: 12),
-                                Text(
-                                  '분석 결과를 일정에 추가할게요.',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                      color: Palette.burgundy),
-                                ),
-                              ],
-                            )
-                          : Column(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        key: resultBodyKey,
-                                        '모바일 청첩장을 첨부해주세요.',
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const Text(
-                                        'AI가 자동으로 일정을 분석해드릴게요.',
-                                        style: TextStyle(fontSize: 14),
-                                      ),
-                                      _clipboardContent.isNotEmpty &&
-                                              _textEditingController
-                                                  .text.isEmpty
-                                          ? Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 20),
-                                              child: FilledButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    _textEditingController
-                                                            .text =
-                                                        _clipboardContent;
-                                                    _clipboardContent = '';
-                                                  });
-                                                },
-                                                style: FilledButton.styleFrom(
-                                                  backgroundColor:
-                                                      Palette.beige,
-                                                  foregroundColor:
-                                                      Colors.black54,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                ),
-                                                child: Text(
-                                                    '$_showClipboardContent 붙여넣기'),
+                      : Column(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    key: resultBodyKey,
+                                    '모바일 청첩장을 첨부해주세요.',
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const Text(
+                                    'AI가 자동으로 일정을 분석해드릴게요.',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                  _clipboardContent.isNotEmpty &&
+                                          _textEditingController.text.isEmpty
+                                      ? Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: FilledButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                _textEditingController.text =
+                                                    _clipboardContent;
+                                                _clipboardContent = '';
+                                              });
+                                            },
+                                            style: FilledButton.styleFrom(
+                                              backgroundColor: Palette.beige,
+                                              foregroundColor: Colors.black54,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
                                               ),
-                                            )
-                                          : Container(),
-                                    ],
-                                  ),
-                                ),
+                                            ),
+                                            child: Text(
+                                                '$_showClipboardContent 붙여넣기'),
+                                          ),
+                                        )
+                                      : Container(),
+                                ],
+                              ),
+                            ),
 
-                                // The saved schedules, so the empty home screen
-                                // still says something while it waits for a link.
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(16, 0, 16, 90),
-                                  child: UpcomingPreview(
-                                    schedules: state.upcomingSchedules,
-                                  ),
-                                ),
-                              ],
-                            );
+                            // The saved schedules, so the empty home screen
+                            // still says something while it waits for a link.
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 90),
+                              child: UpcomingPreview(
+                                schedules: state.upcomingSchedules,
+                              ),
+                            ),
+                          ],
+                        );
                 }),
               ),
             ],
