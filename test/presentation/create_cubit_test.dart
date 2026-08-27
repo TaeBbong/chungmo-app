@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:chungmo/core/analytics/analytics_events.dart';
 import 'package:chungmo/core/analytics/noop_analytics_service.dart';
 import 'package:chungmo/domain/entities/invitation_image.dart';
 import 'package:chungmo/domain/entities/schedule.dart';
@@ -98,12 +99,33 @@ void main() {
       act: (cubit) => cubit.analyzeImage(tImage),
       expect: () => [
         CreateState.initial().copyWith(isLoading: true, isError: false),
-        CreateState.initial()
-            .copyWith(isLoading: false, isError: true, schedule: null),
+        CreateState.initial().copyWith(
+            isLoading: false,
+            isError: true,
+            errorReason: ParseFailureReason.unknown,
+            schedule: null),
       ],
       verify: (_) {
         verifyNever(save.execute(any));
       },
+    );
+
+    blocTest<CreateCubit, CreateState>(
+      'classifies a missing-datetime failure as format',
+      build: () {
+        when(analyzeImage.execute(tImage))
+            .thenThrow(const FormatException('no datetime'));
+        return cubit;
+      },
+      act: (cubit) => cubit.analyzeImage(tImage),
+      expect: () => [
+        CreateState.initial().copyWith(isLoading: true, isError: false),
+        CreateState.initial().copyWith(
+            isLoading: false,
+            isError: true,
+            errorReason: ParseFailureReason.format,
+            schedule: null),
+      ],
     );
   });
 }
