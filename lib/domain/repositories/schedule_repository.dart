@@ -3,6 +3,7 @@
 ///
 /// Only announce spec of methods that repository will implement.
 
+import '../entities/invitation_image.dart';
 import '../entities/schedule.dart';
 
 abstract class ScheduleRepository {
@@ -10,6 +11,11 @@ abstract class ScheduleRepository {
   ///
   /// Response `schedule` json data.
   Future<Schedule> analyzeLink(String url);
+
+  /// Request to remote server with an invitation `image`,
+  ///
+  /// Response `schedule` json data keyed by a synthetic `image://` link.
+  Future<Schedule> analyzeImage(InvitationImage image);
 
   /// Save Schedule `schedule` into local sqflite db by type ScheduleModel.
   ///

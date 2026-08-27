@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:chungmo/data/mapper/schedule_mapper.dart';
 import 'package:chungmo/data/models/schedule/schedule_model.dart';
 import 'package:chungmo/data/repositories/schedule_repository.dart';
+import 'package:chungmo/domain/entities/invitation_image.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -62,6 +65,43 @@ void main() {
 
       // Then
       verify(mockRemoteSource.fetchScheduleFromServer(tUrl)).called(1);
+    });
+  });
+
+  group('analyzeImage', () {
+    final tImage = InvitationImage(bytes: Uint8List.fromList([1, 2, 3]));
+    final tImageScheduleModel =
+        tScheduleModel.copyWith(link: 'image://12345');
+    final tImageSchedule = ScheduleMapper.toEntity(tImageScheduleModel);
+
+    test('should return Schedule when remote source call is successful',
+        () async {
+      // Given
+      when(mockRemoteSource.fetchScheduleFromImage(any, any))
+          .thenAnswer((_) async => tImageScheduleModel);
+
+      // When
+      final result = await repository.analyzeImage(tImage);
+
+      // Then
+      expect(result, tImageSchedule);
+      verify(mockRemoteSource.fetchScheduleFromImage(
+              tImage.bytes, tImage.mimeType))
+          .called(1);
+    });
+
+    test('should throw Exception when remote source fails', () async {
+      // Given
+      when(mockRemoteSource.fetchScheduleFromImage(any, any))
+          .thenThrow(Exception("Server Error"));
+
+      // When
+      expect(() => repository.analyzeImage(tImage), throwsException);
+
+      // Then
+      verify(mockRemoteSource.fetchScheduleFromImage(
+              tImage.bytes, tImage.mimeType))
+          .called(1);
     });
   });
 

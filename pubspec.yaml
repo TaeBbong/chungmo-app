@@ -14,6 +14,7 @@ dependencies:
   equatable: ^2.0.7
   firebase_ai: ^3.6.0
   firebase_analytics: ^12.5.0
+  firebase_app_check: ^0.4.7
   firebase_core: ^4.2.1
   firebase_crashlytics: ^5.3.0
   flutter:
@@ -27,6 +28,7 @@ dependencies:
   get_it: ^8.0.3
   html: ^0.15.6
   http: ^1.6.0
+  image_picker: ^1.2.1
   injectable: ^2.6.0
   injectable_generator: ^2.7.0
   intl: ^0.20.2

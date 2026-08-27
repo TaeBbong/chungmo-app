@@ -10,6 +10,7 @@ import 'package:chungmo/core/services/notification_service.dart';
   ScheduleRemoteSource,
   NotificationService,
   AnalyzeLinkUsecase,
+  AnalyzeImageUsecase,
   SaveScheduleUsecase,
   WatchAllSchedulesUsecase,
   CreateCubit,

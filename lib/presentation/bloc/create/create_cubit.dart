@@ -10,6 +10,7 @@ import '../../../core/di/di.dart';
 import '../../../core/utils/date_extension.dart';
 import '../../../core/navigation/app_navigation.dart';
 import '../../../core/services/notification_service.dart';
+import '../../../domain/entities/invitation_image.dart';
 import '../../../domain/entities/schedule.dart';
 import '../../../domain/usecases/usecases.dart';
 
@@ -17,6 +18,7 @@ part 'create_state.dart';
 
 class CreateCubit extends Cubit<CreateState> {
   AnalyzeLinkUsecase analyzeLinkUseCase;
+  AnalyzeImageUsecase analyzeImageUseCase;
   SaveScheduleUsecase saveScheduleUseCase;
   NotificationService notificationService;
   WatchAllSchedulesUsecase watchAllSchedulesUseCase;
@@ -26,11 +28,14 @@ class CreateCubit extends Cubit<CreateState> {
 
   CreateCubit({
     AnalyzeLinkUsecase? analyzeLinkUsecase,
+    AnalyzeImageUsecase? analyzeImageUsecase,
     SaveScheduleUsecase? saveScheduleUsecase,
     NotificationService? notificationSvc,
     WatchAllSchedulesUsecase? watchAllSchedulesUsecase,
     AnalyticsService? analyticsService,
   })  : analyzeLinkUseCase = analyzeLinkUsecase ?? getIt<AnalyzeLinkUsecase>(),
+        analyzeImageUseCase =
+            analyzeImageUsecase ?? getIt<AnalyzeImageUsecase>(),
         saveScheduleUseCase =
             saveScheduleUsecase ?? getIt<SaveScheduleUsecase>(),
         notificationService = notificationSvc ?? getIt<NotificationService>(),
@@ -61,15 +66,36 @@ class CreateCubit extends Cubit<CreateState> {
   Future<void> analyzeLink(String url, {String source = 'manual'}) async {
     analytics.logEvent(AnalyticsEvents.invitationLinkSubmitted,
         parameters: {AnalyticsParams.source: source});
+    await _runParse(
+        inputType: 'link', parse: () => analyzeLinkUseCase.execute(url));
+  }
+
+  /// Parses an invitation image (gallery pick or camera shot) through the
+  /// same pipeline as [analyzeLink].
+  Future<void> analyzeImage(InvitationImage image,
+      {String source = 'gallery'}) async {
+    analytics.logEvent(AnalyticsEvents.invitationImageSubmitted,
+        parameters: {AnalyticsParams.source: source});
+    await _runParse(
+        inputType: 'image', parse: () => analyzeImageUseCase.execute(image));
+  }
+
+  /// Shared parse pipeline: analytics, loading state, save on success.
+  Future<void> _runParse({
+    required String inputType,
+    required Future<Schedule> Function() parse,
+  }) async {
     emit(state.copyWith(isLoading: true, isError: false));
-    analytics.logEvent(AnalyticsEvents.parseStarted);
+    analytics.logEvent(AnalyticsEvents.parseStarted,
+        parameters: {AnalyticsParams.inputType: inputType});
     final Stopwatch stopwatch = Stopwatch()..start();
     try {
-      final scheduleFromRemote = await analyzeLinkUseCase.execute(url);
+      final scheduleFromRemote = await parse();
       stopwatch.stop();
       final int accountCount = scheduleFromRemote.groomAccounts.length +
           scheduleFromRemote.brideAccounts.length;
       analytics.logEvent(AnalyticsEvents.parseSucceeded, parameters: {
+        AnalyticsParams.inputType: inputType,
         AnalyticsParams.durationMs: stopwatch.elapsedMilliseconds,
         AnalyticsParams.hasAccounts: accountCount > 0,
         AnalyticsParams.accountCount: accountCount,
@@ -85,13 +111,18 @@ class CreateCubit extends Cubit<CreateState> {
       stopwatch.stop();
       final String reason = _classifyFailure(error);
       analytics.logEvent(AnalyticsEvents.parseFailed, parameters: {
+        AnalyticsParams.inputType: inputType,
         AnalyticsParams.reason: reason,
         AnalyticsParams.durationMs: stopwatch.elapsedMilliseconds,
       });
       analytics.recordError(error, stack,
           reason: AnalyticsEvents.parseFailed,
           keys: {AnalyticsParams.reason: reason});
-      emit(state.copyWith(isLoading: false, isError: true, schedule: null));
+      emit(state.copyWith(
+          isLoading: false,
+          isError: true,
+          errorReason: reason,
+          schedule: null));
     }
   }
 

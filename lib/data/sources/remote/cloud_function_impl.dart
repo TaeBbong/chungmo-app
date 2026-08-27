@@ -4,6 +4,7 @@
 /// CRUD based data source implement with remote/local source
 
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
@@ -41,5 +42,14 @@ class CloudFunctionImpl implements ScheduleRemoteSource {
     } catch (e) {
       throw Exception('[-] Failed to fetch data from server');
     }
+  }
+
+  @override
+  Future<ScheduleModel> fetchScheduleFromImage(
+      Uint8List bytes, String mimeType) {
+    // The cloud-function backend only accepts links; image parsing is served
+    // by the Firebase AI Logic source.
+    throw UnsupportedError(
+        '[-] Image parsing is not supported by the cloud backend');
   }
 }

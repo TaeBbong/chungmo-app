@@ -7,10 +7,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/analytics/analytics_events.dart';
 import '../../core/di/di.dart';
+import '../../domain/entities/invitation_image.dart';
 import '../../core/navigation/app_navigation.dart';
 import '../../core/services/preferences_checker.dart';
 import '../../core/services/tutorial_manager.dart';
@@ -31,6 +34,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
   late final CreateCubit cubit;
   final PreferencesChecker preferencesChecker = getIt<PreferencesChecker>();
   final TextEditingController _textEditingController = TextEditingController();
+  final ImagePicker _imagePicker = ImagePicker();
 
   late TutorialManager tutorialManager;
   final GlobalKey linkInputKey = GlobalKey(debugLabel: 'link-input');
@@ -63,6 +67,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
 
   Future<void> _initTutorial() async {
     final bool isFirst = !(await preferencesChecker.hasKey('is_first'));
+    if (!mounted) return;
     if (isFirst) {
       tutorialManager = TutorialManager(
         context: context,
@@ -81,6 +86,70 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
     if (userInput.isNotEmpty) {
       cubit.analyzeLink(userInput);
       _textEditingController.clear();
+    }
+  }
+
+  /// Lets the user attach an invitation image from the gallery or camera.
+  void _onAttachImage() {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined),
+              title: const Text('갤러리에서 선택'),
+              onTap: () {
+                Navigator.of(sheetContext).pop();
+                _pickAndAnalyze(ImageSource.gallery);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_camera_outlined),
+              title: const Text('카메라로 촬영'),
+              onTap: () {
+                Navigator.of(sheetContext).pop();
+                _pickAndAnalyze(ImageSource.camera);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickAndAnalyze(ImageSource source) async {
+    try {
+      // Downscale before upload; invitations stay readable well below 1600px.
+      final XFile? picked = await _imagePicker.pickImage(
+          source: source, maxWidth: 1600, imageQuality: 85);
+      if (picked == null) return;
+      final bytes = await picked.readAsBytes();
+      cubit.analyzeImage(
+        InvitationImage(bytes: bytes, mimeType: _mimeTypeOf(picked.path)),
+        source: source == ImageSource.camera ? 'camera' : 'gallery',
+      );
+    } on PlatformException {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('이미지를 불러오지 못했어요. 다시 시도해주세요.')),
+      );
+    }
+  }
+
+  /// Maps the picked file's extension onto a Gemini-supported image mime type.
+  String _mimeTypeOf(String path) {
+    switch (path.split('.').last.toLowerCase()) {
+      case 'png':
+        return 'image/png';
+      case 'webp':
+        return 'image/webp';
+      case 'heic':
+        return 'image/heic';
+      case 'heif':
+        return 'image/heif';
+      default:
+        return 'image/jpeg';
     }
   }
 
@@ -226,103 +295,105 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                           }),
                         ),
                         const SizedBox(height: 16),
-                        const Text('링크 분석 중...',
+                        const Text('청첩장 분석 중...',
                             style: TextStyle(fontSize: 16)),
                       ],
                     );
                   }
-                  return state.isError
-                      ? const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                  if (state.isError) {
+                    // A format failure means the AI answered but found no
+                    // usable schedule — retrying the same input won't help,
+                    // so guide the user instead of blaming the server.
+                    final bool notReadable =
+                        state.errorReason == ParseFailureReason.format;
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          notReadable ? '청첩장 정보를 찾지 못했어요.' : '다시 시도해주세요.',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          notReadable
+                              ? '날짜가 보이는 선명한 청첩장 사진인지 확인해주세요.'
+                              : '잠시 서버에 문제가 생겼어요.',
+                          style: const TextStyle(fontSize: 14),
+                        )
+                      ],
+                    );
+                  }
+                  return state.schedule != null
+                      ? ScheduleDetailColumn(
+                          schedule: state.schedule!,
+                          extraChildren: [
+                            const SizedBox(height: 12),
                             Text(
-                              '다시 시도해주세요.',
+                              '분석 결과를 일정에 추가할게요.',
                               style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Palette.burgundy),
                             ),
-                            Text(
-                              '잠시 서버에 문제가 생겼어요.',
-                              style: TextStyle(fontSize: 14),
-                            )
                           ],
                         )
-                      : state.schedule != null
-                          ? ScheduleDetailColumn(
-                              schedule: state.schedule!,
-                              extraChildren: [
-                                const SizedBox(height: 12),
-                                Text(
-                                  '분석 결과를 일정에 추가할게요.',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                      color: Palette.burgundy),
-                                ),
-                              ],
-                            )
-                          : Column(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        key: resultBodyKey,
-                                        '모바일 청첩장을 첨부해주세요.',
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const Text(
-                                        'AI가 자동으로 일정을 분석해드릴게요.',
-                                        style: TextStyle(fontSize: 14),
-                                      ),
-                                      _clipboardContent.isNotEmpty &&
-                                              _textEditingController
-                                                  .text.isEmpty
-                                          ? Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 20),
-                                              child: FilledButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    _textEditingController
-                                                            .text =
-                                                        _clipboardContent;
-                                                    _clipboardContent = '';
-                                                  });
-                                                },
-                                                style: FilledButton.styleFrom(
-                                                  backgroundColor:
-                                                      Palette.beige,
-                                                  foregroundColor:
-                                                      Colors.black54,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                ),
-                                                child: Text(
-                                                    '$_showClipboardContent 붙여넣기'),
+                      : Column(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    key: resultBodyKey,
+                                    '모바일 청첩장을 첨부해주세요.',
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const Text(
+                                    'AI가 자동으로 일정을 분석해드릴게요.',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                  _clipboardContent.isNotEmpty &&
+                                          _textEditingController.text.isEmpty
+                                      ? Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: FilledButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                _textEditingController.text =
+                                                    _clipboardContent;
+                                                _clipboardContent = '';
+                                              });
+                                            },
+                                            style: FilledButton.styleFrom(
+                                              backgroundColor: Palette.beige,
+                                              foregroundColor: Colors.black54,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
                                               ),
-                                            )
-                                          : Container(),
-                                    ],
-                                  ),
-                                ),
+                                            ),
+                                            child: Text(
+                                                '$_showClipboardContent 붙여넣기'),
+                                          ),
+                                        )
+                                      : Container(),
+                                ],
+                              ),
+                            ),
 
-                                // The saved schedules, so the empty home screen
-                                // still says something while it waits for a link.
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(16, 0, 16, 90),
-                                  child: UpcomingPreview(
-                                    schedules: state.upcomingSchedules,
-                                  ),
-                                ),
-                              ],
-                            );
+                            // The saved schedules, so the empty home screen
+                            // still says something while it waits for a link.
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 90),
+                              child: UpcomingPreview(
+                                schedules: state.upcomingSchedules,
+                              ),
+                            ),
+                          ],
+                        );
                 }),
               ),
             ],
@@ -386,6 +457,12 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
+                          ),
+                          prefixIcon: IconButton(
+                            tooltip: '청첩장 이미지 첨부',
+                            icon: const Icon(Icons.add_photo_alternate_outlined,
+                                size: 20),
+                            onPressed: _onAttachImage,
                           ),
                           suffixIcon: IconButton(
                             icon: const Icon(Icons.send, size: 20),
