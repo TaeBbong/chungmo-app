@@ -5,7 +5,6 @@ import '../../core/analytics/analytics_events.dart';
 import '../../core/analytics/analytics_service.dart';
 import '../../core/di/di.dart';
 import '../../domain/entities/account.dart';
-import '../theme/palette.dart';
 import 'info_row.dart';
 
 /// The '계좌' row of the detail card.
@@ -62,7 +61,8 @@ class _AccountGroup extends StatelessWidget {
       children: [
         Text(
           title,
-          style: InfoRowMetrics.labelStyle.copyWith(color: Palette.grey600),
+          style: InfoRowMetrics.labelStyle
+              .copyWith(color: InfoRowMetrics.mutedColor(context)),
         ),
         ...accounts.map((account) => _AccountTile(account: account, side: side)),
         const SizedBox(height: 8),
@@ -114,14 +114,15 @@ class _AccountTile extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 2),
                       child: Text(
                         _holder,
-                        style: InfoRowMetrics.hintStyle
-                            .copyWith(color: Palette.grey500),
+                        style: InfoRowMetrics.hintStyle.copyWith(
+                            color: InfoRowMetrics.faintColor(context)),
                       ),
                     ),
                 ],
               ),
             ),
-            Icon(Icons.copy, size: 16, color: Palette.grey500),
+            Icon(Icons.copy,
+                size: 16, color: InfoRowMetrics.faintColor(context)),
           ],
         ),
       ),

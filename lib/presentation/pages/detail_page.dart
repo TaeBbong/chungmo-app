@@ -198,31 +198,25 @@ class _DetailPageState extends State<DetailPage> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.warning_amber_rounded, color: Colors.red),
-            SizedBox(width: 8),
-            Text("삭제 확인"),
+            Icon(Icons.warning_amber_rounded, color: Palette.error),
+            const SizedBox(width: 8),
+            const Text("삭제 확인"),
           ],
         ),
-        content: const Text(
-          "일정을 삭제하시겠습니까?",
-          style: TextStyle(fontSize: 16),
-        ),
+        content: const Text("일정을 삭제하시겠습니까?"),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text("취소", style: TextStyle(color: Colors.grey)),
+            child: const Text("취소"),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
+              backgroundColor: Palette.error,
+              // The theme's full-width button doesn't fit dialog actions.
+              minimumSize: const Size(0, 44),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
             ),
             onPressed: () {
               cubit.deleteSchedule(cubit.state.schedule!.link);
@@ -231,7 +225,7 @@ class _DetailPageState extends State<DetailPage> {
               );
               _leaveDetail();
             },
-            child: const Text("삭제", style: TextStyle(color: Colors.white)),
+            child: const Text("삭제"),
           ),
         ],
       ),
@@ -311,7 +305,7 @@ class _DetailPageState extends State<DetailPage> {
           icon: Icons.link,
           label: '청첩장',
           value: '링크 열기',
-          valueColor: Colors.blue,
+          valueColor: Palette.burgundy,
           onTap: _openLink,
         ),
         const _RowDivider(),

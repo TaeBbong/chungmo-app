@@ -23,6 +23,19 @@ abstract class InfoRowMetrics {
   static const TextStyle valueStyle =
       TextStyle(fontSize: 14, fontWeight: FontWeight.w500);
   static const TextStyle hintStyle = TextStyle(fontSize: 12);
+
+  /// Labels and icons: grey600 washes out on the dark card surface,
+  /// so the dark theme brightens it a step.
+  static Color mutedColor(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.light
+          ? Palette.grey600
+          : Palette.grey400;
+
+  /// Hints, one step fainter than [mutedColor].
+  static Color faintColor(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.light
+          ? Palette.grey500
+          : Palette.grey500;
 }
 
 /// A row of the detail card: `[icon] label   value`.
@@ -77,9 +90,9 @@ class InfoRow extends StatelessWidget {
             bottom: 12,
           ),
           expandedCrossAxisAlignment: CrossAxisAlignment.start,
-          iconColor: Palette.grey600,
-          collapsedIconColor: Palette.grey600,
-          title: _content(),
+          iconColor: InfoRowMetrics.mutedColor(context),
+          collapsedIconColor: InfoRowMetrics.mutedColor(context),
+          title: _content(context),
           children: expandedChildren!,
         ),
       );
@@ -89,12 +102,12 @@ class InfoRow extends StatelessWidget {
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 14),
-        child: _content(),
+        child: _content(context),
       ),
     );
   }
 
-  Widget _content() {
+  Widget _content(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -105,7 +118,7 @@ class InfoRow extends StatelessWidget {
           child: Icon(
             icon,
             size: InfoRowMetrics.iconSize,
-            color: Palette.grey600,
+            color: InfoRowMetrics.mutedColor(context),
           ),
         ),
         const SizedBox(width: InfoRowMetrics.iconGap),
@@ -119,7 +132,7 @@ class InfoRow extends StatelessWidget {
                 child: Text(
                   label,
                   style: InfoRowMetrics.labelStyle
-                      .copyWith(color: Palette.grey600),
+                      .copyWith(color: InfoRowMetrics.mutedColor(context)),
                 ),
               ),
               Expanded(
@@ -137,7 +150,7 @@ class InfoRow extends StatelessWidget {
                         child: Text(
                           hint!,
                           style: InfoRowMetrics.hintStyle
-                              .copyWith(color: Palette.grey500),
+                              .copyWith(color: InfoRowMetrics.faintColor(context)),
                         ),
                       ),
                   ],
