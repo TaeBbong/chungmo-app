@@ -66,10 +66,10 @@ class _SectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: Text(
         title,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
       ),
     );
   }
@@ -84,20 +84,26 @@ class _YearlyTotal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isLight = Theme.of(context).brightness == Brightness.light;
     return Container(
-      margin: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: Palette.beige100,
-        borderRadius: BorderRadius.circular(12),
+        color: isLight ? Palette.burgundy50 : Palette.burgundy600,
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         children: [
-          Icon(Icons.payments_outlined, size: 20, color: Palette.grey600),
+          Icon(Icons.payments_outlined,
+              size: 20,
+              color: isLight ? Palette.burgundy : Palette.burgundy100),
           const SizedBox(width: 12),
           Text(
             '$year년에 낸 축의금',
-            style: TextStyle(fontSize: 13, color: Palette.grey600),
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(fontSize: 13),
           ),
           const Spacer(),
           Text(
@@ -105,7 +111,7 @@ class _YearlyTotal extends StatelessWidget {
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
-              color: Palette.burgundy,
+              color: isLight ? Palette.burgundy : Palette.burgundy100,
             ),
           ),
         ],

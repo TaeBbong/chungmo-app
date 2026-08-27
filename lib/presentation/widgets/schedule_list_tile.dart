@@ -21,10 +21,12 @@ class ScheduleListTile extends StatelessWidget {
         navigatorKey.currentState?.pushNamed('/detail', arguments: schedule);
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Palette.beige, width: 2),
+          borderRadius: BorderRadius.circular(16),
+          color: Theme.of(context).brightness == Brightness.light
+              ? Palette.surfaceMuted
+              : Palette.grey850,
         ),
         child: ListTile(
           contentPadding:
@@ -33,13 +35,19 @@ class ScheduleListTile extends StatelessWidget {
             backgroundImage: CachedNetworkImageProvider(schedule.thumbnail),
             backgroundColor: Colors.transparent,
           ),
-          title: Text('${schedule.groom} & ${schedule.bride}'),
+          title: Text(
+            '${schedule.groom} & ${schedule.bride}',
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+          ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 formatDate,
-                style: const TextStyle(fontSize: 12),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(fontSize: 12),
               ),
             ],
           ),

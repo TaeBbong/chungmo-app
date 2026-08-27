@@ -46,18 +46,18 @@ class CalendarView extends StatelessWidget {
             calendarStyle: CalendarStyle(
               outsideDaysVisible: false,
               todayDecoration: BoxDecoration(
-                color: Palette.beige100,
+                color: Palette.burgundy50,
                 shape: BoxShape.circle,
               ),
               selectedDecoration: BoxDecoration(
-                color: Palette.beige,
+                color: Palette.burgundy,
                 shape: BoxShape.circle,
               ),
               defaultTextStyle: const TextStyle(fontSize: 16),
               selectedTextStyle:
-                  const TextStyle(fontSize: 16, color: Colors.black),
+                  TextStyle(fontSize: 16, color: Palette.white),
               todayTextStyle:
-                  const TextStyle(fontSize: 16, color: Colors.black),
+                  TextStyle(fontSize: 16, color: Palette.burgundy),
             ),
             calendarBuilders: CalendarBuilders(
               defaultBuilder: (context, date, events) {
