@@ -1,5 +1,6 @@
 import 'package:chungmo/firebase_options.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -30,6 +31,18 @@ void main() async {
   }
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+  // Firebase AI Logic calls carry an App Check token. Play Integrity only
+  // attests store/CI-signed builds, so debug builds use the debug provider —
+  // its token (printed to the console on first run) must be registered in
+  // Firebase console > App Check > Apps > Manage debug tokens.
+  await FirebaseAppCheck.instance.activate(
+    providerAndroid: kDebugMode
+        ? const AndroidDebugProvider()
+        : const AndroidPlayIntegrityProvider(),
+    providerApple: kDebugMode
+        ? const AppleDebugProvider()
+        : const AppleDeviceCheckProvider(),
   );
   // Route Flutter and uncaught async errors to Crashlytics; skip in debug so
   // development noise does not pollute the release crash reports.
