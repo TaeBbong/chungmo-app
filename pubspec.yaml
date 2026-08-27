@@ -62,6 +62,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/analyze.lottie
+    - assets/images/icon_trans_960.png
   fonts:
     - family: Pretendard
       fonts:
