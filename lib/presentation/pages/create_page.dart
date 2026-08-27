@@ -75,8 +75,15 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
         calendarPageKey: calendarPageKey,
       );
       tutorialManager.initTargets();
-      tutorialManager.showTutorial();
-      await preferencesChecker.setKey('is_first');
+      // Home is pushed from onboarding; wait for the route transition so
+      // the coach mark can locate its target widgets, otherwise it fails
+      // silently before they are laid out.
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await Future.delayed(const Duration(milliseconds: 500));
+        if (!mounted) return;
+        tutorialManager.showTutorial();
+        await preferencesChecker.setKey('is_first');
+      });
     }
   }
 
