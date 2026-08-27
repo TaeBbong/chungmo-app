@@ -443,16 +443,19 @@ class _DetailPageState extends State<DetailPage> {
     required bool selected,
     required VoidCallback onSelected,
   }) {
+    final bool isLight = Theme.of(context).brightness == Brightness.light;
     return ChoiceChip(
       label: Text(label),
       selected: selected,
       showCheckmark: false,
       // The default selected color comes from the theme's secondaryContainer,
-      // which is purple and off-palette.
-      selectedColor: Palette.beige,
+      // which is off-palette.
+      selectedColor: isLight ? Palette.burgundy50 : Palette.burgundy600,
       labelStyle: TextStyle(
         fontSize: 13,
-        color: selected ? Palette.burgundy : Palette.grey700,
+        color: selected
+            ? (isLight ? Palette.burgundy : Palette.burgundy100)
+            : (isLight ? Palette.grey700 : Palette.grey400),
         fontWeight: selected ? FontWeight.bold : FontWeight.normal,
       ),
       labelPadding: const EdgeInsets.symmetric(horizontal: 4),
@@ -498,7 +501,7 @@ class _HeroHeader extends StatelessWidget {
           CachedNetworkImage(
             imageUrl: schedule.thumbnail,
             fit: BoxFit.cover,
-            errorWidget: (_, __, ___) => Container(color: Palette.beige),
+            errorWidget: (_, __, ___) => Container(color: Palette.burgundy50),
           ),
 
           // Darken the bottom only, so the names stay readable over the photo.
@@ -554,9 +557,10 @@ class _Card extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: Theme.of(context).brightness == Brightness.light
+            ? Palette.surfaceMuted
+            : Palette.grey850,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Palette.beige, width: 2),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

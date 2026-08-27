@@ -27,6 +27,11 @@ abstract class LightTheme {
       primaryColor: Palette.burgundy,
       scaffoldBackgroundColor: Palette.surface,
       splashFactory: InkSparkle.splashFactory,
+      // iOS-style horizontal slide on both platforms, Toss-like.
+      pageTransitionsTheme: const PageTransitionsTheme(builders: {
+        TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+      }),
       textTheme: TextTheme(
         headlineMedium: AppTypography.display.copyWith(color: Palette.textPrimary),
         headlineSmall: AppTypography.headline.copyWith(color: Palette.textPrimary),
