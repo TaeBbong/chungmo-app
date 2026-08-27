@@ -83,10 +83,23 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
 
   void _onSubmit() {
     String userInput = _textEditingController.text.trim();
-    if (userInput.isNotEmpty) {
+    if (userInput.isEmpty) return;
+    // One input for both: an http(s) URL is crawled as a link, anything
+    // else is treated as pasted invitation text (SMS, 카톡 message).
+    if (_isHttpUrl(userInput)) {
       cubit.analyzeLink(userInput);
-      _textEditingController.clear();
+    } else {
+      cubit.analyzeText(userInput);
     }
+    _textEditingController.clear();
+  }
+
+  bool _isHttpUrl(String input) {
+    final uri = Uri.tryParse(input);
+    return uri != null &&
+        (uri.scheme == 'http' || uri.scheme == 'https') &&
+        uri.host.isNotEmpty &&
+        !input.contains(RegExp(r'\s'));
   }
 
   /// Lets the user attach an invitation image from the gallery or camera.
@@ -316,7 +329,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                         ),
                         Text(
                           notReadable
-                              ? '날짜가 보이는 선명한 청첩장 사진인지 확인해주세요.'
+                              ? '예식 날짜가 담긴 청첩장인지 확인하고 다시 시도해주세요.'
                               : '잠시 서버에 문제가 생겼어요.',
                           style: const TextStyle(fontSize: 14),
                         )
@@ -447,9 +460,13 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                       child: TextField(
                         controller: _textEditingController,
                         onSubmitted: (value) => _onSubmit(),
+                        // Invitation SMS pastes span multiple lines.
+                        keyboardType: TextInputType.multiline,
+                        minLines: 1,
+                        maxLines: 4,
                         style: const TextStyle(fontSize: 14),
                         decoration: InputDecoration(
-                          hintText: '링크 입력...',
+                          hintText: '링크 또는 청첩장 문자 붙여넣기...',
                           hintStyle:
                               TextStyle(fontSize: 14, color: Palette.grey500),
                           contentPadding: const EdgeInsets.symmetric(

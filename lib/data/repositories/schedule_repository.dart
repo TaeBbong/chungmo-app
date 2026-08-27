@@ -59,6 +59,21 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
   }
 
   @override
+  Future<Schedule> analyzeText(String text) async {
+    try {
+      final schedule = await remoteSource.fetchScheduleFromText(text);
+      Schedule entitySchedule = ScheduleMapper.toEntity(schedule);
+      return entitySchedule;
+    } on FormatException {
+      rethrow;
+    } on TimeoutException {
+      rethrow;
+    } catch (e) {
+      throw Exception('[-] Error while fetching from server: $e');
+    }
+  }
+
+  @override
   Future<void> saveSchedule(Schedule schedule) async {
     ScheduleModel scheduleModel = ScheduleMapper.toModel(schedule);
     await localSource.saveSchedule(scheduleModel);

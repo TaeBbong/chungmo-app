@@ -15,6 +15,7 @@ void main() {
   group('CreateCubit', () {
     late MockAnalyzeLinkUsecase analyze;
     late MockAnalyzeImageUsecase analyzeImage;
+    late MockAnalyzeTextUsecase analyzeText;
     late MockSaveScheduleUsecase save;
     late MockNotificationService notify;
     late MockWatchAllSchedulesUsecase watch;
@@ -24,6 +25,7 @@ void main() {
     setUp(() {
       analyze = MockAnalyzeLinkUsecase();
       analyzeImage = MockAnalyzeImageUsecase();
+      analyzeText = MockAnalyzeTextUsecase();
       save = MockSaveScheduleUsecase();
       notify = MockNotificationService();
       watch = MockWatchAllSchedulesUsecase();
@@ -31,6 +33,7 @@ void main() {
       cubit = CreateCubit(
         analyzeLinkUsecase: analyze,
         analyzeImageUsecase: analyzeImage,
+        analyzeTextUsecase: analyzeText,
         saveScheduleUsecase: save,
         notificationSvc: notify,
         watchAllSchedulesUsecase: watch,
@@ -107,6 +110,29 @@ void main() {
       ],
       verify: (_) {
         verifyNever(save.execute(any));
+      },
+    );
+
+    const tText = '10월 24일 토요일 오후 1시 그랜드홀에서 결혼합니다';
+    final tTextSchedule = tSchedule.copyWith(link: 'text://67890');
+
+    blocTest<CreateCubit, CreateState>(
+      'emits loading and success when text analyze succeeds',
+      build: () {
+        when(analyzeText.execute(tText))
+            .thenAnswer((_) async => tTextSchedule);
+        when(save.execute(tTextSchedule)).thenAnswer((_) async {});
+        return cubit;
+      },
+      act: (cubit) => cubit.analyzeText(tText),
+      expect: () => [
+        CreateState.initial().copyWith(isLoading: true, isError: false),
+        CreateState.initial().copyWith(
+            isLoading: false, schedule: tTextSchedule, isError: false),
+      ],
+      verify: (_) {
+        verify(analyzeText.execute(tText)).called(1);
+        verify(save.execute(tTextSchedule)).called(1);
       },
     );
 

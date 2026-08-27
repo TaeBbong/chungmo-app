@@ -52,4 +52,12 @@ class CloudFunctionImpl implements ScheduleRemoteSource {
     throw UnsupportedError(
         '[-] Image parsing is not supported by the cloud backend');
   }
+
+  @override
+  Future<ScheduleModel> fetchScheduleFromText(String text) {
+    // The cloud-function backend only accepts links; text parsing is served
+    // by the Firebase AI Logic source.
+    throw UnsupportedError(
+        '[-] Text parsing is not supported by the cloud backend');
+  }
 }

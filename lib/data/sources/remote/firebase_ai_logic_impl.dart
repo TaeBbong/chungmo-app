@@ -161,6 +161,36 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
     }
   }
 
+  /// Parse invitation text the user pasted directly (SMS, 카톡 message).
+  ///
+  /// Same extraction as the link parser, minus the crawling step. The stored
+  /// `link` is a content-addressed `text://<hash>` id, so re-submitting the
+  /// same text maps to the same schedule.
+  @override
+  Future<ScheduleModel> fetchScheduleFromText(String text) async {
+    try {
+      final String syntheticLink = 'text://${await text.hashUrl}';
+      final prompt = [
+        Content.text(
+            '''Extract the required wedding data from the given text and return it in pure JSON format, without any additional text or snippet tags.
+          The text is usually an SMS or messenger invitation written in Korean.
+          $_extractionGuidelines
+          Put an empty string for thumbnail; pasted text has no thumbnail URL.
+
+          Given text:
+          $text
+          ''')
+      ];
+      return await _generate(prompt, syntheticLink);
+    } on FormatException {
+      rethrow;
+    } on TimeoutException {
+      rethrow;
+    } catch (e) {
+      throw Exception('[-] Failed to fetch data from server: $e');
+    }
+  }
+
   /// Runs the model and adapts the response into a [ScheduleModel] keyed
   /// by [link], falling back to the default thumbnail.
   Future<ScheduleModel> _generate(List<Content> prompt, String link) async {

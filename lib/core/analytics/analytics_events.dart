@@ -9,6 +9,7 @@ class AnalyticsEvents {
   // Activation funnel.
   static const String invitationLinkSubmitted = 'invitation_link_submitted';
   static const String invitationImageSubmitted = 'invitation_image_submitted';
+  static const String invitationTextSubmitted = 'invitation_text_submitted';
   static const String parseStarted = 'parse_started';
   static const String parseSucceeded = 'parse_succeeded';
   static const String parseFailed = 'parse_failed';

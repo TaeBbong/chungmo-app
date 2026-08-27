@@ -17,6 +17,11 @@ abstract class ScheduleRepository {
   /// Response `schedule` json data keyed by a synthetic `image://` link.
   Future<Schedule> analyzeImage(InvitationImage image);
 
+  /// Request to remote server with pasted invitation `text`,
+  ///
+  /// Response `schedule` json data keyed by a synthetic `text://` link.
+  Future<Schedule> analyzeText(String text);
+
   /// Save Schedule `schedule` into local sqflite db by type ScheduleModel.
   ///
   /// Add notify schedule if `date` is after today.

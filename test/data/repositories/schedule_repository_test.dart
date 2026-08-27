@@ -105,6 +105,36 @@ void main() {
     });
   });
 
+  group('analyzeText', () {
+    const tText = '10월 24일 결혼합니다';
+    final tTextScheduleModel = tScheduleModel.copyWith(link: 'text://67890');
+    final tTextSchedule = ScheduleMapper.toEntity(tTextScheduleModel);
+
+    test('should return Schedule when remote source call is successful',
+        () async {
+      // Given
+      when(mockRemoteSource.fetchScheduleFromText(any))
+          .thenAnswer((_) async => tTextScheduleModel);
+
+      // When
+      final result = await repository.analyzeText(tText);
+
+      // Then
+      expect(result, tTextSchedule);
+      verify(mockRemoteSource.fetchScheduleFromText(tText)).called(1);
+    });
+
+    test('should rethrow FormatException from the remote source', () async {
+      // Given
+      when(mockRemoteSource.fetchScheduleFromText(any))
+          .thenThrow(const FormatException('no datetime'));
+
+      // When & Then
+      expect(() => repository.analyzeText(tText),
+          throwsA(isA<FormatException>()));
+    });
+  });
+
   group('saveSchedule', () {
     test('should save schedule to local storage and trigger notification',
         () async {

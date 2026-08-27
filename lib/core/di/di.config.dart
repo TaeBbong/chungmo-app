@@ -27,6 +27,7 @@ import 'package:chungmo/data/sources/remote/schedule_remote_source.dart'
 import 'package:chungmo/domain/repositories/schedule_repository.dart' as _i561;
 import 'package:chungmo/domain/usecases/analyze_image_usecase.dart' as _i338;
 import 'package:chungmo/domain/usecases/analyze_link_usecase.dart' as _i596;
+import 'package:chungmo/domain/usecases/analyze_text_usecase.dart' as _i451;
 import 'package:chungmo/domain/usecases/delete_schedule_usecase.dart' as _i993;
 import 'package:chungmo/domain/usecases/edit_schedule_usecase.dart' as _i15;
 import 'package:chungmo/domain/usecases/get_schedule_by_link_usecase.dart'
@@ -79,6 +80,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i338.AnalyzeImageUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i596.AnalyzeLinkUsecase>(
         () => _i596.AnalyzeLinkUsecase(gh<_i561.ScheduleRepository>()));
+    gh.factory<_i451.AnalyzeTextUsecase>(
+        () => _i451.AnalyzeTextUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i993.DeleteScheduleUsecase>(
         () => _i993.DeleteScheduleUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i15.EditScheduleUsecase>(

@@ -19,6 +19,7 @@ part 'create_state.dart';
 class CreateCubit extends Cubit<CreateState> {
   AnalyzeLinkUsecase analyzeLinkUseCase;
   AnalyzeImageUsecase analyzeImageUseCase;
+  AnalyzeTextUsecase analyzeTextUseCase;
   SaveScheduleUsecase saveScheduleUseCase;
   NotificationService notificationService;
   WatchAllSchedulesUsecase watchAllSchedulesUseCase;
@@ -29,6 +30,7 @@ class CreateCubit extends Cubit<CreateState> {
   CreateCubit({
     AnalyzeLinkUsecase? analyzeLinkUsecase,
     AnalyzeImageUsecase? analyzeImageUsecase,
+    AnalyzeTextUsecase? analyzeTextUsecase,
     SaveScheduleUsecase? saveScheduleUsecase,
     NotificationService? notificationSvc,
     WatchAllSchedulesUsecase? watchAllSchedulesUsecase,
@@ -36,6 +38,7 @@ class CreateCubit extends Cubit<CreateState> {
   })  : analyzeLinkUseCase = analyzeLinkUsecase ?? getIt<AnalyzeLinkUsecase>(),
         analyzeImageUseCase =
             analyzeImageUsecase ?? getIt<AnalyzeImageUsecase>(),
+        analyzeTextUseCase = analyzeTextUsecase ?? getIt<AnalyzeTextUsecase>(),
         saveScheduleUseCase =
             saveScheduleUsecase ?? getIt<SaveScheduleUsecase>(),
         notificationService = notificationSvc ?? getIt<NotificationService>(),
@@ -78,6 +81,15 @@ class CreateCubit extends Cubit<CreateState> {
         parameters: {AnalyticsParams.source: source});
     await _runParse(
         inputType: 'image', parse: () => analyzeImageUseCase.execute(image));
+  }
+
+  /// Parses pasted invitation text (SMS, 카톡 message) through the same
+  /// pipeline as [analyzeLink].
+  Future<void> analyzeText(String text, {String source = 'manual'}) async {
+    analytics.logEvent(AnalyticsEvents.invitationTextSubmitted,
+        parameters: {AnalyticsParams.source: source});
+    await _runParse(
+        inputType: 'text', parse: () => analyzeTextUseCase.execute(text));
   }
 
   /// Shared parse pipeline: analytics, loading state, save on success.
