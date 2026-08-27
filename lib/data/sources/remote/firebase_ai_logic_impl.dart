@@ -3,6 +3,7 @@
 ///
 /// CRUD based data source implement with remote/local source
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -75,8 +76,7 @@ const Map<String, Object> _responseJsonSchema = {
 };
 
 /// Field guidelines shared by the link and image extraction prompts.
-const String _extractionGuidelines =
-    '''Required data's are:
+const String _extractionGuidelines = '''Required data's are:
 thumbnail, groom, bride, location, datetime, groomAccounts, brideAccounts
 If you can't find proper data, just put empty string for that field.
 
@@ -120,8 +120,12 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
           ''')
       ];
       return await _generate(prompt, link);
+    } on FormatException {
+      rethrow;
+    } on TimeoutException {
+      rethrow;
     } catch (e) {
-      throw Exception('[-] Failed to fetch data from server');
+      throw Exception('[-] Failed to fetch data from server: $e');
     }
   }
 
@@ -148,8 +152,12 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
         ])
       ];
       return await _generate(prompt, syntheticLink);
+    } on FormatException {
+      rethrow;
+    } on TimeoutException {
+      rethrow;
     } catch (e) {
-      throw Exception('[-] Failed to fetch data from server');
+      throw Exception('[-] Failed to fetch data from server: $e');
     }
   }
 
@@ -160,6 +168,14 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
     if (response.text != null) {
       ScheduleModel model =
           ScheduleModel.fromJson(_toModelJson(response.text!, link));
+      // The prompt asks for empty strings on missing fields; a schedule
+      // without a parseable datetime cannot be saved, so fail as a
+      // FormatException the presentation layer can tell apart from
+      // server errors.
+      if (DateTime.tryParse(model.date) == null) {
+        throw const FormatException(
+            '[-] No parseable datetime found in the invitation');
+      }
       if (model.thumbnail.isEmpty) {
         model = model.copyWith(thumbnail: Constants.defaultThumbnail);
       }

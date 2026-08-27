@@ -4,6 +4,8 @@
 /// Implementation of repository from domain layer
 /// Implement each features of repository with data sources
 
+import 'dart:async';
+
 import 'package:injectable/injectable.dart';
 
 import '../../core/services/notification_service.dart';
@@ -31,20 +33,28 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
       final schedule = await remoteSource.fetchScheduleFromServer(url);
       Schedule entitySchedule = ScheduleMapper.toEntity(schedule);
       return entitySchedule;
+    } on FormatException {
+      rethrow;
+    } on TimeoutException {
+      rethrow;
     } catch (e) {
-      throw Exception('[-] Error while fetching from server');
+      throw Exception('[-] Error while fetching from server: $e');
     }
   }
 
   @override
   Future<Schedule> analyzeImage(InvitationImage image) async {
     try {
-      final schedule =
-          await remoteSource.fetchScheduleFromImage(image.bytes, image.mimeType);
+      final schedule = await remoteSource.fetchScheduleFromImage(
+          image.bytes, image.mimeType);
       Schedule entitySchedule = ScheduleMapper.toEntity(schedule);
       return entitySchedule;
+    } on FormatException {
+      rethrow;
+    } on TimeoutException {
+      rethrow;
     } catch (e) {
-      throw Exception('[-] Error while fetching from server');
+      throw Exception('[-] Error while fetching from server: $e');
     }
   }
 
