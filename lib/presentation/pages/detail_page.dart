@@ -305,7 +305,9 @@ class _DetailPageState extends State<DetailPage> {
           icon: Icons.link,
           label: '청첩장',
           value: '링크 열기',
-          valueColor: Palette.burgundy,
+          valueColor: Theme.of(context).brightness == Brightness.light
+              ? Palette.burgundy
+              : Palette.burgundy100,
           onTap: _openLink,
         ),
         const _RowDivider(),

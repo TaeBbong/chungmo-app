@@ -73,6 +73,11 @@ class CalendarView extends StatelessWidget {
                 final normalizedDate =
                     DateTime(date.year, date.month, date.day);
                 final eventCount = eventCounts[normalizedDate]?.length ?? 0;
+                // Burgundy dots vanish if they overlap the burgundy
+                // selection circle, so selected days get a contrasting dot.
+                final Color markerColor = isSameDay(state.selectedDay, date)
+                    ? Palette.white
+                    : Palette.burgundy;
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: eventCount > 0
@@ -83,7 +88,7 @@ class CalendarView extends StatelessWidget {
                             height: 6,
                             margin: const EdgeInsets.symmetric(horizontal: 2),
                             decoration: BoxDecoration(
-                              color: Palette.burgundy,
+                              color: markerColor,
                               shape: BoxShape.circle,
                             ),
                           ),

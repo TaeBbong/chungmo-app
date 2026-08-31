@@ -143,7 +143,7 @@ abstract class DarkTheme {
           borderRadius: BorderRadius.circular(Dimens.radiusMd),
           borderSide: BorderSide(color: Palette.burgundy200, width: 1.5),
         ),
-        hintStyle: AppTypography.bodySmall.copyWith(color: Palette.grey600),
+        hintStyle: AppTypography.bodySmall.copyWith(color: Palette.grey500),
       ),
     );
   }

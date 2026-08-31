@@ -20,7 +20,7 @@ class DDayBadge extends StatelessWidget {
         ? (isLight ? Palette.grey200 : Palette.grey800)
         : (isLight ? Palette.burgundy50 : Palette.burgundy600);
     final Color foreground = isPast
-        ? (isLight ? Palette.grey600 : Palette.grey500)
+        ? (isLight ? Palette.grey700 : Palette.grey500)
         : (isLight ? Palette.burgundy : Palette.burgundy100);
 
     return Container(

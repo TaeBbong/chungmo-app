@@ -184,9 +184,21 @@ class DeveloperInfoPage extends StatelessWidget {
   static const String _email = 'mok05289@naver.com';
   static const String _githubUrl = 'https://github.com/TaeBbong';
 
-  Future<void> _launch(Uri uri) async {
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
+  /// `canLaunchUrl` is skipped on purpose: it reports false for schemes
+  /// missing from the platform query allowlists (e.g. mailto on Android),
+  /// even when an app could handle them. Launch directly and surface the
+  /// failure instead.
+  Future<void> _launch(BuildContext context, Uri uri) async {
+    bool launched = false;
+    try {
+      launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } on PlatformException {
+      launched = false;
+    }
+    if (!launched && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('연결할 앱을 찾지 못했어요.')),
+      );
     }
   }
 
@@ -197,48 +209,61 @@ class DeveloperInfoPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('개발자 정보')),
-      body: Column(
-        children: [
-          const SizedBox(height: Dimens.lg),
-          CircleAvatar(
-            radius: 40,
-            backgroundColor: colorScheme.primaryContainer,
-            child: Text(
-              '태',
-              style: textTheme.headlineSmall
-                  ?.copyWith(color: colorScheme.onPrimaryContainer),
+      // Scrolls when the viewport is short (landscape, large system text),
+      // while the copyright stays pinned to the bottom otherwise.
+      body: LayoutBuilder(builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: IntrinsicHeight(
+              child: Column(
+                children: [
+                  const SizedBox(height: Dimens.lg),
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundColor: colorScheme.primaryContainer,
+                    child: Text(
+                      '태',
+                      style: textTheme.headlineSmall
+                          ?.copyWith(color: colorScheme.onPrimaryContainer),
+                    ),
+                  ),
+                  const SizedBox(height: Dimens.md),
+                  Text('권태형', style: textTheme.headlineSmall),
+                  const SizedBox(height: Dimens.xs),
+                  Text('청모를 만들고 있는 개발자예요.', style: textTheme.bodyMedium),
+                  const SizedBox(height: Dimens.lg),
+                  _SectionCard(
+                    children: [
+                      _MenuRow(
+                        icon: Icons.mail_outline,
+                        title: '이메일 보내기',
+                        trailing: Text(_email, style: textTheme.bodyMedium),
+                        onTap: () => _launch(
+                            context, Uri(scheme: 'mailto', path: _email)),
+                      ),
+                      _MenuRow(
+                        icon: Icons.code,
+                        title: 'GitHub',
+                        onTap: () => _launch(context, Uri.parse(_githubUrl)),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: Dimens.lg, bottom: Dimens.lg),
+                    child: Text(
+                      'Copyright 2025. TaeBbong All rights reserved.',
+                      style: textTheme.bodySmall,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: Dimens.md),
-          Text('권태형', style: textTheme.headlineSmall),
-          const SizedBox(height: Dimens.xs),
-          Text('청모를 만들고 있는 개발자예요.', style: textTheme.bodyMedium),
-          const SizedBox(height: Dimens.lg),
-          _SectionCard(
-            children: [
-              _MenuRow(
-                icon: Icons.mail_outline,
-                title: '이메일 보내기',
-                trailing: Text(_email, style: textTheme.bodyMedium),
-                onTap: () => _launch(Uri(scheme: 'mailto', path: _email)),
-              ),
-              _MenuRow(
-                icon: Icons.code,
-                title: 'GitHub',
-                onTap: () => _launch(Uri.parse(_githubUrl)),
-              ),
-            ],
-          ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.only(bottom: Dimens.lg),
-            child: Text(
-              'Copyright 2025. TaeBbong All rights reserved.',
-              style: textTheme.bodySmall,
-            ),
-          ),
-        ],
-      ),
+        );
+      }),
     );
   }
 }

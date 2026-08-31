@@ -138,7 +138,7 @@ abstract class LightTheme {
           borderRadius: BorderRadius.circular(Dimens.radiusMd),
           borderSide: BorderSide(color: Palette.burgundy, width: 1.5),
         ),
-        hintStyle: AppTypography.bodySmall.copyWith(color: Palette.grey500),
+        hintStyle: AppTypography.bodySmall.copyWith(color: Palette.grey600),
       ),
     );
   }
