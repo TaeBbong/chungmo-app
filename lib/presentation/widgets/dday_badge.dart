@@ -12,11 +12,21 @@ class DDayBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isPast = date.daysLeft < 0;
+    final bool isLight = Theme.of(context).brightness == Brightness.light;
+
+    // Tonal chip: tinted background with an accent label reads lighter than
+    // a solid badge, and stays legible in both themes.
+    final Color background = isPast
+        ? (isLight ? Palette.grey200 : Palette.grey800)
+        : (isLight ? Palette.burgundy50 : Palette.burgundy600);
+    final Color foreground = isPast
+        ? (isLight ? Palette.grey700 : Palette.grey500)
+        : (isLight ? Palette.burgundy : Palette.burgundy100);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: isPast ? Palette.grey500 : Palette.burgundy,
+        color: background,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
@@ -24,7 +34,7 @@ class DDayBadge extends StatelessWidget {
         style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.bold,
-          color: Palette.white,
+          color: foreground,
         ),
       ),
     );

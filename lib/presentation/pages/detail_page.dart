@@ -198,31 +198,25 @@ class _DetailPageState extends State<DetailPage> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.warning_amber_rounded, color: Colors.red),
-            SizedBox(width: 8),
-            Text("삭제 확인"),
+            Icon(Icons.warning_amber_rounded, color: Palette.error),
+            const SizedBox(width: 8),
+            const Text("삭제 확인"),
           ],
         ),
-        content: const Text(
-          "일정을 삭제하시겠습니까?",
-          style: TextStyle(fontSize: 16),
-        ),
+        content: const Text("일정을 삭제하시겠습니까?"),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text("취소", style: TextStyle(color: Colors.grey)),
+            child: const Text("취소"),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
+              backgroundColor: Palette.error,
+              // The theme's full-width button doesn't fit dialog actions.
+              minimumSize: const Size(0, 44),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
             ),
             onPressed: () {
               cubit.deleteSchedule(cubit.state.schedule!.link);
@@ -231,7 +225,7 @@ class _DetailPageState extends State<DetailPage> {
               );
               _leaveDetail();
             },
-            child: const Text("삭제", style: TextStyle(color: Colors.white)),
+            child: const Text("삭제"),
           ),
         ],
       ),
@@ -311,7 +305,9 @@ class _DetailPageState extends State<DetailPage> {
           icon: Icons.link,
           label: '청첩장',
           value: '링크 열기',
-          valueColor: Colors.blue,
+          valueColor: Theme.of(context).brightness == Brightness.light
+              ? Palette.burgundy
+              : Palette.burgundy100,
           onTap: _openLink,
         ),
         const _RowDivider(),
@@ -443,16 +439,19 @@ class _DetailPageState extends State<DetailPage> {
     required bool selected,
     required VoidCallback onSelected,
   }) {
+    final bool isLight = Theme.of(context).brightness == Brightness.light;
     return ChoiceChip(
       label: Text(label),
       selected: selected,
       showCheckmark: false,
       // The default selected color comes from the theme's secondaryContainer,
-      // which is purple and off-palette.
-      selectedColor: Palette.beige,
+      // which is off-palette.
+      selectedColor: isLight ? Palette.burgundy50 : Palette.burgundy600,
       labelStyle: TextStyle(
         fontSize: 13,
-        color: selected ? Palette.burgundy : Palette.grey700,
+        color: selected
+            ? (isLight ? Palette.burgundy : Palette.burgundy100)
+            : (isLight ? Palette.grey700 : Palette.grey400),
         fontWeight: selected ? FontWeight.bold : FontWeight.normal,
       ),
       labelPadding: const EdgeInsets.symmetric(horizontal: 4),
@@ -498,7 +497,7 @@ class _HeroHeader extends StatelessWidget {
           CachedNetworkImage(
             imageUrl: schedule.thumbnail,
             fit: BoxFit.cover,
-            errorWidget: (_, __, ___) => Container(color: Palette.beige),
+            errorWidget: (_, __, ___) => Container(color: Palette.burgundy50),
           ),
 
           // Darken the bottom only, so the names stay readable over the photo.
@@ -554,9 +553,10 @@ class _Card extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: Theme.of(context).brightness == Brightness.light
+            ? Palette.surfaceMuted
+            : Palette.grey850,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Palette.beige, width: 2),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

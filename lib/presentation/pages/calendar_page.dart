@@ -7,7 +7,6 @@ import '../../core/di/di.dart';
 import '../bloc/calendar/calendar_bloc.dart';
 import '../bloc/calendar/calendar_event.dart';
 import '../bloc/calendar/calendar_state.dart';
-import '../theme/palette.dart';
 import '../widgets/calendar_list_view.dart';
 import '../widgets/calendar_view.dart';
 
@@ -45,13 +44,7 @@ class _CalendarPageState extends State<CalendarPage> {
         top: false,
         child: Scaffold(
           appBar: AppBar(
-            title: Text(
-              '일정',
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Palette.black),
-            ),
+            title: const Text('일정'),
             actions: [
               IconButton(
                 tooltip: _isCalendarView ? '목록으로 보기' : '달력으로 보기',

@@ -46,18 +46,18 @@ class CalendarView extends StatelessWidget {
             calendarStyle: CalendarStyle(
               outsideDaysVisible: false,
               todayDecoration: BoxDecoration(
-                color: Palette.beige100,
+                color: Palette.burgundy50,
                 shape: BoxShape.circle,
               ),
               selectedDecoration: BoxDecoration(
-                color: Palette.beige,
+                color: Palette.burgundy,
                 shape: BoxShape.circle,
               ),
               defaultTextStyle: const TextStyle(fontSize: 16),
               selectedTextStyle:
-                  const TextStyle(fontSize: 16, color: Colors.black),
+                  TextStyle(fontSize: 16, color: Palette.white),
               todayTextStyle:
-                  const TextStyle(fontSize: 16, color: Colors.black),
+                  TextStyle(fontSize: 16, color: Palette.burgundy),
             ),
             calendarBuilders: CalendarBuilders(
               defaultBuilder: (context, date, events) {
@@ -73,6 +73,11 @@ class CalendarView extends StatelessWidget {
                 final normalizedDate =
                     DateTime(date.year, date.month, date.day);
                 final eventCount = eventCounts[normalizedDate]?.length ?? 0;
+                // Burgundy dots vanish if they overlap the burgundy
+                // selection circle, so selected days get a contrasting dot.
+                final Color markerColor = isSameDay(state.selectedDay, date)
+                    ? Palette.white
+                    : Palette.burgundy;
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: eventCount > 0
@@ -83,7 +88,7 @@ class CalendarView extends StatelessWidget {
                             height: 6,
                             margin: const EdgeInsets.symmetric(horizontal: 2),
                             decoration: BoxDecoration(
-                              color: Palette.burgundy,
+                              color: markerColor,
                               shape: BoxShape.circle,
                             ),
                           ),

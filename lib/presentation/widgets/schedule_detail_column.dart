@@ -16,6 +16,8 @@ class ScheduleDetailColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -32,18 +34,19 @@ class ScheduleDetailColumn extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
 
         // 👰‍♀️ & 🤵‍♂️ 신랑 & 신부
         Text(
           '🤵‍♂️ ${schedule.groom} & 👰‍♀️ ${schedule.bride}',
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: textTheme.titleMedium,
         ),
+        const SizedBox(height: 4),
 
         // 📅 날짜
         Text(
           '📅 ${schedule.date.krDate}',
-          style: const TextStyle(fontSize: 14, color: Colors.grey),
+          style: textTheme.bodyMedium,
         ),
 
         // 🏡 장소
@@ -52,7 +55,7 @@ class ScheduleDetailColumn extends StatelessWidget {
           child: Text(
             '🏡 ${schedule.location}',
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 14),
+            style: textTheme.bodyMedium,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),

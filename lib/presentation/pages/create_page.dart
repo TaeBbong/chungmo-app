@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/analytics/analytics_events.dart';
 import '../../core/di/di.dart';
@@ -17,8 +16,8 @@ import '../../domain/entities/invitation_image.dart';
 import '../../core/navigation/app_navigation.dart';
 import '../../core/services/preferences_checker.dart';
 import '../../core/services/tutorial_manager.dart';
-import '../../core/utils/constants.dart';
 import '../bloc/create/create_cubit.dart';
+import '../theme/dimens.dart';
 import '../theme/palette.dart';
 import '../widgets/schedule_detail_column.dart';
 import '../widgets/upcoming_preview.dart';
@@ -76,8 +75,15 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
         calendarPageKey: calendarPageKey,
       );
       tutorialManager.initTargets();
-      tutorialManager.showTutorial();
-      await preferencesChecker.setKey('is_first');
+      // Home is pushed from onboarding; wait for the route transition so
+      // the coach mark can locate its target widgets, otherwise it fails
+      // silently before they are laid out.
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await Future.delayed(const Duration(milliseconds: 500));
+        if (!mounted) return;
+        tutorialManager.showTutorial();
+        await preferencesChecker.setKey('is_first');
+      });
     }
   }
 
@@ -205,10 +211,11 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
         top: false,
         child: Scaffold(
           appBar: AppBar(
+            title: const Text('청모'),
             leading: IconButton(
               key: calendarPageKey,
               tooltip: '일정 보기',
-              icon: const Icon(Icons.calendar_today),
+              icon: const Icon(Icons.calendar_month_outlined),
               onPressed: () {
                 navigatorKey.currentState?.pushNamed('/calendar');
               },
@@ -237,55 +244,18 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                       },
                     )
                   : Container(),
-              PopupMenuButton<String>(
-                icon: const Icon(Icons.more_vert),
-                onSelected: (value) async {
-                  switch (value) {
-                    case 'terms':
-                      final Uri url = Uri.parse(Constants.termsUrl);
-                      if (await canLaunchUrl(url)) {
-                        await launchUrl(url,
-                            mode: LaunchMode.externalApplication);
-                      }
-                      break;
-                    case 'privacy':
-                      final Uri url = Uri.parse(Constants.privacyUrl);
-                      if (await canLaunchUrl(url)) {
-                        await launchUrl(url,
-                            mode: LaunchMode.externalApplication);
-                      }
-                      break;
-                    case 'about':
-                      navigatorKey.currentState?.pushNamed('/about');
-                      break;
-                  }
+              // Terms/privacy moved into the about page; one entry point.
+              IconButton(
+                tooltip: '앱 정보',
+                icon: const Icon(Icons.settings_outlined),
+                onPressed: () {
+                  navigatorKey.currentState?.pushNamed('/about');
                 },
-                itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    value: 'terms',
-                    child: Text('이용 약관'),
-                  ),
-                  const PopupMenuItem(
-                    value: 'privacy',
-                    child: Text('개인정보 처리방침'),
-                  ),
-                  const PopupMenuItem(
-                    value: 'about',
-                    child: Text('앱 정보'),
-                  ),
-                ],
               ),
             ],
           ),
           body: Stack(
             children: [
-              const Positioned(
-                top: 10,
-                left: 30,
-                child: Text('홈',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ),
               Center(
                 child: BlocBuilder<CreateCubit, CreateState>(
                     builder: (context, state) {
@@ -322,16 +292,22 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        Icon(Icons.search_off_rounded,
+                            size: 44,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant),
+                        const SizedBox(height: Dimens.md),
                         Text(
                           notReadable ? '청첩장 정보를 찾지 못했어요.' : '다시 시도해주세요.',
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
+                        const SizedBox(height: Dimens.xs),
                         Text(
                           notReadable
                               ? '예식 날짜가 담긴 청첩장인지 확인하고 다시 시도해주세요.'
                               : '잠시 서버에 문제가 생겼어요.',
-                          style: const TextStyle(fontSize: 14),
+                          style: Theme.of(context).textTheme.bodyMedium,
                         )
                       ],
                     );
@@ -340,12 +316,12 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                       ? ScheduleDetailColumn(
                           schedule: state.schedule!,
                           extraChildren: [
-                            const SizedBox(height: 12),
+                            const SizedBox(height: Dimens.md),
                             Text(
                               '분석 결과를 일정에 추가할게요.',
                               style: TextStyle(
                                   fontSize: 16,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
                                   color: Palette.burgundy),
                             ),
                           ],
@@ -356,23 +332,41 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  Container(
+                                    width: 96,
+                                    height: 96,
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(Icons.auto_awesome,
+                                        size: 40,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimaryContainer),
+                                  ),
+                                  const SizedBox(height: Dimens.lg),
                                   Text(
                                     key: resultBodyKey,
                                     '모바일 청첩장을 첨부해주세요.',
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium,
                                   ),
-                                  const Text(
-                                    'AI가 자동으로 일정을 분석해드릴게요.',
-                                    style: TextStyle(fontSize: 14),
+                                  const SizedBox(height: Dimens.xs),
+                                  Text(
+                                    '링크·문자·사진 무엇이든 AI가 분석해드려요.',
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
                                   _clipboardContent.isNotEmpty &&
                                           _textEditingController.text.isEmpty
                                       ? Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 20),
-                                          child: FilledButton(
+                                          padding: const EdgeInsets.only(
+                                              top: Dimens.lg),
+                                          child: FilledButton.icon(
                                             onPressed: () {
                                               setState(() {
                                                 _textEditingController.text =
@@ -380,15 +374,10 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                                                 _clipboardContent = '';
                                               });
                                             },
-                                            style: FilledButton.styleFrom(
-                                              backgroundColor: Palette.beige,
-                                              foregroundColor: Colors.black54,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                            ),
-                                            child: Text(
+                                            icon: const Icon(
+                                                Icons.content_paste_rounded,
+                                                size: 18),
+                                            label: Text(
                                                 '$_showClipboardContent 붙여넣기'),
                                           ),
                                         )
@@ -415,76 +404,44 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
               BlocBuilder<CreateCubit, CreateState>(builder: (context, state) {
             return state.schedule != null
                 ? Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          cubit.resetState();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('일정을 캘린더에 저장했습니다.')),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Palette.burgundy,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: const Text(
-                          "확인",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                      ),
+                    padding: const EdgeInsets.fromLTRB(Dimens.screenPadding,
+                        Dimens.md, Dimens.screenPadding, Dimens.md),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        cubit.resetState();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('일정을 캘린더에 저장했습니다.')),
+                        );
+                      },
+                      child: const Text('확인'),
                     ),
                   )
                 : Padding(
                     key: linkInputKey,
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 10),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(
-                                red: 0, blue: 0, green: 0, alpha: 0.1),
-                            blurRadius: 10,
-                            spreadRadius: 1,
-                          ),
-                        ],
-                      ),
-                      child: TextField(
-                        controller: _textEditingController,
-                        onSubmitted: (value) => _onSubmit(),
-                        // Invitation SMS pastes span multiple lines.
-                        keyboardType: TextInputType.multiline,
-                        minLines: 1,
-                        maxLines: 4,
-                        style: const TextStyle(fontSize: 14),
-                        decoration: InputDecoration(
-                          hintText: '링크 또는 청첩장 문자 붙여넣기...',
-                          hintStyle:
-                              TextStyle(fontSize: 14, color: Palette.grey500),
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 16),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide.none,
-                          ),
-                          prefixIcon: IconButton(
-                            tooltip: '청첩장 이미지 첨부',
-                            icon: const Icon(Icons.add_photo_alternate_outlined,
-                                size: 20),
-                            onPressed: _onAttachImage,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.send, size: 20),
-                            onPressed: _onSubmit,
-                          ),
+                        horizontal: Dimens.md, vertical: Dimens.sm + 2),
+                    // The input surface comes from the theme's
+                    // InputDecorationTheme, so it adapts to dark mode.
+                    child: TextField(
+                      controller: _textEditingController,
+                      onSubmitted: (value) => _onSubmit(),
+                      // Invitation SMS pastes span multiple lines.
+                      keyboardType: TextInputType.multiline,
+                      minLines: 1,
+                      maxLines: 4,
+                      style: const TextStyle(fontSize: 14),
+                      decoration: InputDecoration(
+                        hintText: '링크 또는 청첩장 문자 붙여넣기...',
+                        prefixIcon: IconButton(
+                          tooltip: '청첩장 이미지 첨부',
+                          icon: const Icon(Icons.add_photo_alternate_outlined,
+                              size: 22),
+                          onPressed: _onAttachImage,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.arrow_upward_rounded,
+                              size: 22, color: Palette.burgundy),
+                          onPressed: _onSubmit,
                         ),
                       ),
                     ),

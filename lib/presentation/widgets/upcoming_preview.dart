@@ -30,7 +30,10 @@ class UpcomingPreview extends StatelessWidget {
           padding: const EdgeInsets.only(left: 4, bottom: 8),
           child: Text(
             '다가오는 일정',
-            style: TextStyle(fontSize: 13, color: Palette.grey600),
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(fontSize: 13, fontWeight: FontWeight.w500),
           ),
         ),
         ...preview.map((schedule) => _PreviewTile(schedule: schedule)),
@@ -52,10 +55,12 @@ class _PreviewTile extends StatelessWidget {
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: Palette.beige100,
-          borderRadius: BorderRadius.circular(12),
+          color: Theme.of(context).brightness == Brightness.light
+              ? Palette.surfaceMuted
+              : Palette.grey850,
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
           children: [
@@ -72,13 +77,16 @@ class _PreviewTile extends StatelessWidget {
                   Text(
                     '${schedule.groom} & ${schedule.bride}',
                     style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w500),
+                        fontSize: 14, fontWeight: FontWeight.w600),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     schedule.date.krDate,
-                    style: TextStyle(fontSize: 12, color: Palette.grey600),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(fontSize: 12),
                   ),
                 ],
               ),

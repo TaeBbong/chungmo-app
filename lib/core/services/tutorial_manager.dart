@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
+import '../../presentation/theme/app_typography.dart';
+import '../../presentation/theme/dimens.dart';
+import '../../presentation/theme/palette.dart';
+
+/// Coach mark tour over the home screen, shown once after onboarding.
 class TutorialManager {
   final BuildContext context;
   final GlobalKey linkInputKey;
@@ -24,58 +29,17 @@ class TutorialManager {
         identify: "link-input",
         keyTarget: linkInputKey,
         shape: ShapeLightFocus.RRect,
-        radius: 8,
+        radius: Dimens.radiusMd,
         contents: [
           TargetContent(
             align: ContentAlign.top,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  "Step 1 : 링크 입력",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  "지인에게 받은 모바일 청첩장 링크를\n여기에 붙여넣으세요!",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        _tutorialCoachMark.next();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepPurple,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text(
-                        "다음 (1/3)",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        _tutorialCoachMark.skip();
-                      },
-                      child: const Text(
-                        '건너뛰기',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+            builder: (context, controller) => _TooltipCard(
+              step: 0,
+              title: '청첩장을 붙여넣으세요',
+              body: '링크나 문자를 붙여넣거나,\n사진 버튼으로 청첩장 이미지를 첨부해도 돼요.',
+              ctaLabel: '다음',
+              onNext: controller.next,
+              onSkip: controller.skip,
             ),
           ),
         ],
@@ -84,58 +48,17 @@ class TutorialManager {
         identify: "result-body",
         keyTarget: resultBodyKey,
         shape: ShapeLightFocus.RRect,
-        radius: 8,
+        radius: Dimens.radiusMd,
         contents: [
           TargetContent(
             align: ContentAlign.bottom,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  "Step 2 : 분석 결과 확인",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  "AI가 분석한 결과를 여기서 확인할 수 있어요!",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        _tutorialCoachMark.next();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepPurple,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text(
-                        "다음 (2/3)",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        _tutorialCoachMark.skip();
-                      },
-                      child: const Text(
-                        '건너뛰기',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+            builder: (context, controller) => _TooltipCard(
+              step: 1,
+              title: 'AI가 알아서 정리해요',
+              body: '날짜·장소·축의금 계좌까지\n분석 결과를 여기서 확인할 수 있어요.',
+              ctaLabel: '다음',
+              onNext: controller.next,
+              onSkip: controller.skip,
             ),
           ),
         ],
@@ -143,61 +66,19 @@ class TutorialManager {
       TargetFocus(
         identify: "calendar-page",
         keyTarget: calendarPageKey,
-        shape: ShapeLightFocus.RRect,
-        radius: 8,
+        shape: ShapeLightFocus.Circle,
         contents: [
           TargetContent(
-            padding: const EdgeInsets.fromLTRB(16, 48, 0, 0),
+            padding: const EdgeInsets.fromLTRB(Dimens.md, Dimens.xxl, 0, 0),
             align: ContentAlign.right,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Step 3 : 캘린더로 이동",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  "등록된 일정을 확인하려면\n여기를 눌러 캘린더로 이동해요.",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                  textAlign: TextAlign.left,
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        _tutorialCoachMark.finish();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepPurple,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text(
-                        "완료 (3/3)",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        _tutorialCoachMark.skip();
-                      },
-                      child: const Text(
-                        '건너뛰기',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+            builder: (context, controller) => _TooltipCard(
+              step: 2,
+              title: '캘린더에서 한눈에',
+              body: '등록된 일정은 여기를 눌러\n캘린더에서 확인해요.',
+              ctaLabel: '시작하기',
+              alignment: CrossAxisAlignment.start,
+              onNext: () => _tutorialCoachMark.finish(),
+              onSkip: controller.skip,
             ),
           ),
         ],
@@ -208,8 +89,8 @@ class TutorialManager {
   void showTutorial() {
     _tutorialCoachMark = TutorialCoachMark(
       targets: _targets,
-      colorShadow: Colors.black,
-      opacityShadow: 0.8,
+      colorShadow: Palette.black,
+      opacityShadow: 0.75,
       paddingFocus: 10,
       hideSkip: true,
       onSkip: () {
@@ -217,5 +98,97 @@ class TutorialManager {
       },
     );
     _tutorialCoachMark.show(context: context);
+  }
+}
+
+/// White rounded tooltip card with step dots, matching the app's card style.
+class _TooltipCard extends StatelessWidget {
+  static const int _totalSteps = 3;
+
+  final int step;
+  final String title;
+  final String body;
+  final String ctaLabel;
+  final CrossAxisAlignment alignment;
+  final VoidCallback onNext;
+  final VoidCallback onSkip;
+
+  const _TooltipCard({
+    required this.step,
+    required this.title,
+    required this.body,
+    required this.ctaLabel,
+    this.alignment = CrossAxisAlignment.center,
+    required this.onNext,
+    required this.onSkip,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 320),
+      padding: const EdgeInsets.all(Dimens.lg),
+      decoration: BoxDecoration(
+        color: Palette.white,
+        borderRadius: BorderRadius.circular(Dimens.radiusXl),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: alignment,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(_totalSteps, (i) {
+              final bool active = i == step;
+              return Container(
+                margin: const EdgeInsets.only(right: 4),
+                width: active ? 20 : 6,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: active ? Palette.burgundy : Palette.grey250,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              );
+            }),
+          ),
+          const SizedBox(height: Dimens.md),
+          Text(
+            title,
+            style: AppTypography.title.copyWith(color: Palette.grey900),
+            textAlign: alignment == CrossAxisAlignment.center
+                ? TextAlign.center
+                : TextAlign.left,
+          ),
+          const SizedBox(height: Dimens.sm),
+          Text(
+            body,
+            style: AppTypography.bodySmall.copyWith(color: Palette.grey600),
+            textAlign: alignment == CrossAxisAlignment.center
+                ? TextAlign.center
+                : TextAlign.left,
+          ),
+          const SizedBox(height: Dimens.md),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton(
+                onPressed: onNext,
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(0, 44),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: Dimens.lg),
+                ),
+                child: Text(ctaLabel),
+              ),
+              const SizedBox(width: Dimens.sm),
+              TextButton(
+                onPressed: onSkip,
+                child: const Text('건너뛰기'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -12,6 +12,7 @@ import 'core/di/di.dart';
 import 'core/env.dart';
 import 'core/navigation/app_navigation.dart';
 import 'core/services/notification_service.dart';
+import 'core/services/preferences_checker.dart';
 import 'presentation/pages/pages.dart';
 import 'presentation/theme/dark_theme.dart';
 import 'presentation/theme/light_theme.dart';
@@ -57,15 +58,19 @@ void main() async {
   final NotificationService notificationService = getIt<NotificationService>();
   await notificationService.getPermissions();
   await notificationService.init();
+  final bool onboarded =
+      await getIt<PreferencesChecker>().hasKey(kOnboardingDoneKey);
   // await initializeDateFormatting('ko_KR', 'null');
   Future.delayed(const Duration(seconds: 1), () {
     FlutterNativeSplash.remove();
   });
-  runApp(const MainApp());
+  runApp(MainApp(showOnboarding: !onboarded));
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  final bool showOnboarding;
+
+  const MainApp({super.key, this.showOnboarding = false});
 
   @override
   Widget build(BuildContext context) {
@@ -87,9 +92,10 @@ class MainApp extends StatelessWidget {
         Locale('ko', 'KR'),
         Locale('en', 'US'),
       ],
-      initialRoute: '/',
+      initialRoute: showOnboarding ? '/onboarding' : '/',
       routes: {
         '/': (context) => const CreatePage(),
+        '/onboarding': (context) => const OnboardingPage(),
         // ignore: prefer_const_constructors
         '/calendar': (context) => CalendarPage(),
         '/detail': (context) {
