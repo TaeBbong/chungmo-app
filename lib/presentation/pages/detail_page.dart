@@ -281,6 +281,15 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
+  /// True for real invitation URLs, false for synthetic keys
+  /// (image://, text://, manual://) and malformed values.
+  static bool _isHttpLink(String link) {
+    final Uri? uri = Uri.tryParse(link);
+    return uri != null &&
+        (uri.scheme == 'http' || uri.scheme == 'https') &&
+        uri.host.isNotEmpty;
+  }
+
   Widget _buildInfoCard() {
     final Schedule schedule = cubit.state.schedule!;
 
@@ -300,16 +309,20 @@ class _DetailPageState extends State<DetailPage> {
           hint: '탭하면 지도로 열려요',
           onTap: _openMap,
         ),
-        const _RowDivider(),
-        InfoRow(
-          icon: Icons.link,
-          label: '청첩장',
-          value: '링크 열기',
-          valueColor: Theme.of(context).brightness == Brightness.light
-              ? Palette.burgundy
-              : Palette.burgundy100,
-          onTap: _openLink,
-        ),
+        // Image/text/manual schedules carry a synthetic (non-http) link
+        // that cannot be opened, so the row only shows for real URLs.
+        if (_isHttpLink(schedule.link)) ...[
+          const _RowDivider(),
+          InfoRow(
+            icon: Icons.link,
+            label: '청첩장',
+            value: '링크 열기',
+            valueColor: Theme.of(context).brightness == Brightness.light
+                ? Palette.burgundy
+                : Palette.burgundy100,
+            onTap: _openLink,
+          ),
+        ],
         const _RowDivider(),
         InfoRow(
           icon: Icons.how_to_reg_outlined,
