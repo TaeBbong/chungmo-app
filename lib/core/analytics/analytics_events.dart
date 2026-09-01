@@ -10,6 +10,7 @@ class AnalyticsEvents {
   static const String invitationLinkSubmitted = 'invitation_link_submitted';
   static const String invitationImageSubmitted = 'invitation_image_submitted';
   static const String invitationTextSubmitted = 'invitation_text_submitted';
+  static const String manualScheduleSubmitted = 'manual_schedule_submitted';
   static const String parseStarted = 'parse_started';
   static const String parseSucceeded = 'parse_succeeded';
   static const String parseFailed = 'parse_failed';
@@ -65,6 +66,10 @@ class ParseFailureReason {
 
   /// The model returned a non-JSON or otherwise unparseable payload.
   static const String format = 'format';
+
+  /// The model answered, but without a usable datetime; a partial draft
+  /// was offered for manual completion.
+  static const String incomplete = 'incomplete';
 
   /// The JSON did not match the expected schema.
   static const String schema = 'schema';

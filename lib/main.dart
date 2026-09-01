@@ -17,6 +17,7 @@ import 'presentation/pages/pages.dart';
 import 'presentation/theme/dark_theme.dart';
 import 'presentation/theme/light_theme.dart';
 import 'domain/entities/schedule.dart';
+import 'domain/entities/schedule_draft.dart';
 
 @pragma('vm:entry-point')
 void main() async {
@@ -102,6 +103,11 @@ class MainApp extends StatelessWidget {
           final schedule =
               ModalRoute.of(context)!.settings.arguments as Schedule;
           return DetailPage(schedule: schedule);
+        },
+        '/schedule/form': (context) {
+          final draft =
+              ModalRoute.of(context)!.settings.arguments as ScheduleDraft?;
+          return ScheduleFormPage(draft: draft);
         },
         '/about': (context) => const AboutPage(),
         '/about/developer_info': (context) => const DeveloperInfoPage(),
