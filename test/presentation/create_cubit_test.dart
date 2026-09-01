@@ -5,6 +5,7 @@ import 'package:chungmo/core/analytics/analytics_events.dart';
 import 'package:chungmo/core/analytics/noop_analytics_service.dart';
 import 'package:chungmo/domain/entities/invitation_image.dart';
 import 'package:chungmo/domain/entities/schedule.dart';
+import 'package:chungmo/domain/entities/schedule_draft.dart';
 import 'package:chungmo/presentation/bloc/create/create_cubit.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -152,6 +153,65 @@ void main() {
             errorReason: ParseFailureReason.format,
             schedule: null),
       ],
+    );
+
+    const tDraft = ScheduleDraft(
+        link: 'text://12345', groom: 'g', bride: 'b', location: 'l');
+
+    blocTest<CreateCubit, CreateState>(
+      'keeps the partial extraction when a parse is incomplete',
+      build: () {
+        when(analyzeText.execute(tText))
+            .thenThrow(const IncompleteScheduleException(tDraft));
+        return cubit;
+      },
+      act: (cubit) => cubit.analyzeText(tText),
+      expect: () => [
+        CreateState.initial().copyWith(isLoading: true, isError: false),
+        CreateState.initial().copyWith(
+            isLoading: false,
+            isError: true,
+            errorReason: ParseFailureReason.incomplete,
+            draft: tDraft,
+            schedule: null),
+      ],
+    );
+
+    blocTest<CreateCubit, CreateState>(
+      'resetState clears the result but keeps the upcoming schedules',
+      build: () {
+        when(analyze.execute(tUrl)).thenAnswer((_) async => tSchedule);
+        when(save.execute(tSchedule)).thenAnswer((_) async {});
+        return cubit;
+      },
+      seed: () => CreateState.initial()
+          .copyWith(schedule: tSchedule, upcomingSchedules: [tSchedule]),
+      act: (cubit) => cubit.resetState(),
+      expect: () => [
+        CreateState.initial().copyWith(upcomingSchedules: [tSchedule]),
+      ],
+      verify: (cubit) {
+        expect(cubit.state.schedule, isNull);
+        expect(cubit.state.upcomingSchedules, [tSchedule]);
+      },
+    );
+
+    blocTest<CreateCubit, CreateState>(
+      'does not leak a stale draft into an unrelated failure',
+      build: () {
+        when(analyzeText.execute(tText))
+            .thenThrow(const IncompleteScheduleException(tDraft));
+        when(analyze.execute(tUrl)).thenThrow(Exception('server down'));
+        return cubit;
+      },
+      act: (cubit) async {
+        await cubit.analyzeText(tText);
+        await cubit.analyzeLink(tUrl);
+      },
+      verify: (cubit) {
+        expect(cubit.state.draft, isNull);
+        expect(cubit.state.errorReason, ParseFailureReason.unknown);
+      },
     );
   });
 }
