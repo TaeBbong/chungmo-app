@@ -5,6 +5,7 @@ import '../models/schedule/schedule_model.dart';
 import '../../domain/entities/account.dart';
 import '../../domain/entities/attendance.dart';
 import '../../domain/entities/schedule.dart';
+import '../../domain/entities/schedule_draft.dart';
 
 /// ScheduleMapper class converts Schedule(entity, domain) <-> ScheduleModel(model, data)
 class ScheduleMapper {
@@ -37,6 +38,21 @@ class ScheduleMapper {
       brideAccounts: decodeAccounts(model.brideAccounts),
       attendance: Attendance.fromName(model.attendance),
       pay: model.pay,
+    );
+  }
+
+  /// Converts a model whose date is missing or unusable into a
+  /// [ScheduleDraft], keeping every extracted field except the date.
+  static ScheduleDraft toDraft(ScheduleModel model) {
+    return ScheduleDraft(
+      link: model.link,
+      thumbnail: model.thumbnail,
+      groom: model.groom,
+      bride: model.bride,
+      date: null,
+      location: model.location,
+      groomAccounts: decodeAccounts(model.groomAccounts),
+      brideAccounts: decodeAccounts(model.brideAccounts),
     );
   }
 

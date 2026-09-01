@@ -108,7 +108,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
         !input.contains(RegExp(r'\s'));
   }
 
-  /// Lets the user attach an invitation image from the gallery or camera.
+  /// Lets the user attach an invitation image, or add a schedule by hand.
   void _onAttachImage() {
     showModalBottomSheet<void>(
       context: context,
@@ -129,6 +129,14 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
               onTap: () {
                 Navigator.of(sheetContext).pop();
                 _pickAndAnalyze(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.edit_calendar_outlined),
+              title: const Text('직접 입력하기'),
+              onTap: () {
+                Navigator.of(sheetContext).pop();
+                navigatorKey.currentState?.pushNamed('/schedule/form');
               },
             ),
           ],
@@ -284,11 +292,13 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                     );
                   }
                   if (state.isError) {
-                    // A format failure means the AI answered but found no
-                    // usable schedule — retrying the same input won't help,
-                    // so guide the user instead of blaming the server.
+                    // A format/incomplete failure means the AI answered but
+                    // found no usable schedule — retrying the same input
+                    // won't help, so guide the user instead of blaming the
+                    // server.
                     final bool notReadable =
-                        state.errorReason == ParseFailureReason.format;
+                        state.errorReason == ParseFailureReason.format ||
+                            state.errorReason == ParseFailureReason.incomplete;
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -308,7 +318,25 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                               ? '예식 날짜가 담긴 청첩장인지 확인하고 다시 시도해주세요.'
                               : '잠시 서버에 문제가 생겼어요.',
                           style: Theme.of(context).textTheme.bodyMedium,
-                        )
+                        ),
+                        // Partial extraction kept from the failed parse:
+                        // let the user finish it instead of retrying.
+                        if (state.draft != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: Dimens.lg),
+                            child: FilledButton.icon(
+                              onPressed: () {
+                                final draft = state.draft;
+                                cubit.resetState();
+                                navigatorKey.currentState?.pushNamed(
+                                    '/schedule/form',
+                                    arguments: draft);
+                              },
+                              icon: const Icon(Icons.edit_calendar_outlined,
+                                  size: 18),
+                              label: const Text('읽은 내용으로 직접 완성하기'),
+                            ),
+                          ),
                       ],
                     );
                   }

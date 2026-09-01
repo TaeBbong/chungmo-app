@@ -12,6 +12,7 @@ import '../../../core/navigation/app_navigation.dart';
 import '../../../core/services/notification_service.dart';
 import '../../../domain/entities/invitation_image.dart';
 import '../../../domain/entities/schedule.dart';
+import '../../../domain/entities/schedule_draft.dart';
 import '../../../domain/usecases/usecases.dart';
 
 part 'create_state.dart';
@@ -117,8 +118,16 @@ class CreateCubit extends Cubit<CreateState> {
         AnalyticsParams.daysUntil: scheduleFromRemote.date.daysLeft,
         AnalyticsParams.hasAccounts: accountCount > 0,
       });
-      emit(state.copyWith(
-          isLoading: false, schedule: scheduleFromRemote, isError: false));
+      // Built explicitly for symmetry with the error emit below: success
+      // must not carry over a draft from an earlier incomplete parse.
+      emit(CreateState(
+        isLoading: false,
+        isError: false,
+        errorReason: null,
+        draft: null,
+        schedule: scheduleFromRemote,
+        upcomingSchedules: state.upcomingSchedules,
+      ));
     } catch (error, stack) {
       stopwatch.stop();
       final String reason = _classifyFailure(error);
@@ -130,23 +139,42 @@ class CreateCubit extends Cubit<CreateState> {
       analytics.recordError(error, stack,
           reason: AnalyticsEvents.parseFailed,
           keys: {AnalyticsParams.reason: reason});
-      emit(state.copyWith(
-          isLoading: false,
-          isError: true,
-          errorReason: reason,
-          schedule: null));
+      // Built explicitly (not copyWith) so a draft from a previous
+      // incomplete parse cannot leak into an unrelated failure.
+      emit(CreateState(
+        isLoading: false,
+        isError: true,
+        errorReason: reason,
+        draft: error is IncompleteScheduleException ? error.draft : null,
+        schedule: null,
+        upcomingSchedules: state.upcomingSchedules,
+      ));
     }
   }
 
   /// Best-effort classification of a parse failure for the `reason` parameter.
   String _classifyFailure(Object error) {
+    // Before FormatException: an incomplete parse extends it, and the two
+    // must stay distinguishable (draft offered vs nothing readable).
+    if (error is IncompleteScheduleException) {
+      return ParseFailureReason.incomplete;
+    }
     if (error is TimeoutException) return ParseFailureReason.timeout;
     if (error is FormatException) return ParseFailureReason.format;
     return ParseFailureReason.unknown;
   }
 
   void resetState() {
-    emit(CreateState.initial());
+    // The schedules stream is a broadcast without replay, so a plain
+    // initial() would leave the home preview empty until the next DB write.
+    emit(CreateState(
+      isLoading: false,
+      isError: false,
+      errorReason: null,
+      draft: null,
+      schedule: null,
+      upcomingSchedules: state.upcomingSchedules,
+    ));
   }
 
   Future<void> checkIfNotification() async {

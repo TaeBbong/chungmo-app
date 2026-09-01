@@ -128,6 +128,7 @@ Event and parameter names use `lower_snake_case` and stay within Firebase limits
 | `invitation_link_submitted` | User submits an invitation link | `source` |
 | `invitation_image_submitted` | User attaches an invitation image | `source` |
 | `invitation_text_submitted` | User pastes invitation text | `source` |
+| `manual_schedule_submitted` | User saves a hand-entered schedule | `source` |
 | `parse_started` | Parsing begins | `input_type` |
 | `parse_succeeded` | Parsing returns a schedule | `input_type`, `duration_ms`, `has_accounts`, `account_count` |
 | `parse_failed` | Parsing throws | `input_type`, `reason`, `duration_ms` |
@@ -148,9 +149,9 @@ automatically by Firebase Analytics.
 
 | Parameter | Values |
 | --- | --- |
-| `source` | `paste`, `manual`, `clipboard`, `home`, `calendar`, `notification`, `gallery`, `camera` |
+| `source` | `paste`, `manual`, `clipboard`, `home`, `calendar`, `notification`, `gallery`, `camera`, `blank`, `fallback` |
 | `input_type` | `link`, `image`, `text` |
-| `reason` | `crawl`, `format`, `schema`, `timeout`, `unknown` |
+| `reason` | `crawl`, `format`, `incomplete`, `schema`, `timeout`, `unknown` |
 | `status` | `attending`, `absent` |
 | `side` | `groom`, `bride` |
 | `view` | `calendar`, `list` |

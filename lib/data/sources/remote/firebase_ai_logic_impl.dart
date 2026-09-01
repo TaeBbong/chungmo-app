@@ -13,6 +13,8 @@ import 'package:injectable/injectable.dart';
 
 import '../../../core/utils/constants.dart';
 import '../../../core/utils/string_extension.dart';
+import '../../../domain/entities/schedule_draft.dart';
+import '../../mapper/schedule_mapper.dart';
 import '../../models/schedule/schedule_model.dart';
 import 'schedule_remote_source.dart';
 
@@ -57,10 +59,10 @@ const Map<String, Object> _responseJsonSchema = {
       "description": "Event location from response",
     },
     "datetime": {
-      "type": "string",
-      "format": "date-time",
+      "type": ["string", "null"],
       "description":
-          "ISO 8601 date-time, in UTC+9(kst), e.g. 2025-12-02T10:30:00+09:00"
+          "ISO 8601 date-time, in UTC+9(kst), e.g. 2025-12-02T10:30:00+09:00. "
+              "null when the invitation has no date — never invent one."
     },
     "groomAccounts": {
       "type": "array",
@@ -79,6 +81,8 @@ const Map<String, Object> _responseJsonSchema = {
 const String _extractionGuidelines = '''Required data's are:
 thumbnail, groom, bride, location, datetime, groomAccounts, brideAccounts
 If you can't find proper data, just put empty string for that field.
+For datetime, put null when the wedding date is not stated; never guess or
+invent a date.
 
 groomAccounts/brideAccounts are the gift money(축의금) accounts, usually
 written under a section like "마음 전하실 곳" or "축의금 계좌".
@@ -198,16 +202,30 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
     if (response.text != null) {
       ScheduleModel model =
           ScheduleModel.fromJson(_toModelJson(response.text!, link));
-      // The prompt asks for empty strings on missing fields; a schedule
-      // without a parseable datetime cannot be saved, so fail as a
-      // FormatException the presentation layer can tell apart from
-      // server errors.
-      if (DateTime.tryParse(model.date) == null) {
-        throw const FormatException(
-            '[-] No parseable datetime found in the invitation');
-      }
       if (model.thumbnail.isEmpty) {
         model = model.copyWith(thumbnail: Constants.defaultThumbnail);
+      }
+      // A schedule without a usable datetime cannot be saved as-is, so hand
+      // the partial extraction to the presentation layer for manual
+      // completion. Dates before 2000 count as missing: models fall back to
+      // epoch-like values when an invitation has no date. Compared in local
+      // time — parse converts offset strings to UTC, which would misread
+      // e.g. 2000-01-01T00:30+09:00 as 1999.
+      final DateTime? parsedDate = DateTime.tryParse(model.date);
+      if (parsedDate == null || parsedDate.toLocal().year < 2000) {
+        final ScheduleDraft draft = ScheduleMapper.toDraft(model);
+        final bool hasContent = draft.groom.isNotEmpty ||
+            draft.bride.isNotEmpty ||
+            draft.location.isNotEmpty ||
+            draft.groomAccounts.isNotEmpty ||
+            draft.brideAccounts.isNotEmpty;
+        // An all-empty draft would prefill nothing; fail plainly instead
+        // of promising the user "what was read".
+        if (!hasContent) {
+          throw const FormatException(
+              '[-] Nothing usable found in the invitation');
+        }
+        throw IncompleteScheduleException(draft);
       }
       return model;
     } else {
@@ -223,6 +241,9 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
     return {
       ...json,
       'link': link,
+      // The schema allows null for an unknown datetime; the model column
+      // is a non-null string.
+      'datetime': json['datetime'] ?? '',
       'groom_accounts': jsonEncode(json['groomAccounts'] ?? []),
       'bride_accounts': jsonEncode(json['brideAccounts'] ?? []),
     };

@@ -4,6 +4,7 @@ import 'package:chungmo/data/mapper/schedule_mapper.dart';
 import 'package:chungmo/data/models/schedule/schedule_model.dart';
 import 'package:chungmo/data/repositories/schedule_repository.dart';
 import 'package:chungmo/domain/entities/invitation_image.dart';
+import 'package:chungmo/domain/entities/schedule_draft.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -132,6 +133,21 @@ void main() {
       // When & Then
       expect(() => repository.analyzeText(tText),
           throwsA(isA<FormatException>()));
+    });
+
+    test('should rethrow IncompleteScheduleException with its draft intact',
+        () async {
+      // Given
+      const draft = ScheduleDraft(link: 'text://12345', groom: 'John');
+      when(mockRemoteSource.fetchScheduleFromText(any))
+          .thenThrow(const IncompleteScheduleException(draft));
+
+      // When & Then
+      expect(
+        () => repository.analyzeText(tText),
+        throwsA(isA<IncompleteScheduleException>()
+            .having((e) => e.draft.groom, 'draft.groom', 'John')),
+      );
     });
   });
 

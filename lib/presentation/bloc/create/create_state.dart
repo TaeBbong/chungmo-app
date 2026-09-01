@@ -7,6 +7,10 @@ class CreateState extends Equatable {
   /// Why the last parse failed, one of [ParseFailureReason].
   /// Only meaningful while [isError] is true.
   final String? errorReason;
+
+  /// Partial extraction kept from an incomplete parse, so the user can
+  /// finish it by hand. Only meaningful while [isError] is true.
+  final ScheduleDraft? draft;
   final Schedule? schedule;
 
   /// Saved schedules that have not happened yet, nearest first.
@@ -16,6 +20,7 @@ class CreateState extends Equatable {
     required this.isLoading,
     required this.isError,
     this.errorReason,
+    this.draft,
     required this.schedule,
     required this.upcomingSchedules,
   });
@@ -25,6 +30,7 @@ class CreateState extends Equatable {
       isLoading: false,
       isError: false,
       errorReason: null,
+      draft: null,
       schedule: null,
       upcomingSchedules: [],
     );
@@ -34,6 +40,7 @@ class CreateState extends Equatable {
     bool? isLoading,
     bool? isError,
     String? errorReason,
+    ScheduleDraft? draft,
     Schedule? schedule,
     List<Schedule>? upcomingSchedules,
   }) {
@@ -41,6 +48,7 @@ class CreateState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       isError: isError ?? this.isError,
       errorReason: errorReason ?? this.errorReason,
+      draft: draft ?? this.draft,
       schedule: schedule ?? this.schedule,
       upcomingSchedules: upcomingSchedules ?? this.upcomingSchedules,
     );
@@ -51,6 +59,7 @@ class CreateState extends Equatable {
         isLoading,
         isError,
         errorReason,
+        draft,
         schedule,
         const DeepCollectionEquality().hash(upcomingSchedules),
       ];
