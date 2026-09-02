@@ -7,6 +7,7 @@ import '../../domain/entities/schedule.dart';
 import '../../core/analytics/analytics_events.dart';
 import '../../core/analytics/analytics_service.dart';
 import '../../core/di/di.dart';
+import '../../core/services/calendar_service.dart';
 import '../../core/utils/date_extension.dart';
 import '../../core/utils/int_extension.dart';
 import '../../core/utils/map_link.dart';
@@ -178,6 +179,17 @@ class _DetailPageState extends State<DetailPage> {
     }
   }
 
+  Future<void> _addToCalendar() async {
+    getIt<AnalyticsService>().logEvent(AnalyticsEvents.calendarExportTapped);
+    final bool opened =
+        await getIt<CalendarService>().addToCalendar(cubit.state.schedule!);
+    if (!opened && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('캘린더 앱을 열 수 없어요.')),
+      );
+    }
+  }
+
   /// Maps a gift amount onto the `amount_bucket` analytics value.
   static String _amountBucket(int pay) {
     switch (pay) {
@@ -300,6 +312,14 @@ class _DetailPageState extends State<DetailPage> {
           label: '날짜',
           value: schedule.date.krDate,
           hint: schedule.date.ddayDescription,
+        ),
+        const _RowDivider(),
+        InfoRow(
+          icon: Icons.event_available_outlined,
+          label: '캘린더',
+          value: '내 캘린더에 추가',
+          hint: '기기 캘린더 앱으로 열려요',
+          onTap: _addToCalendar,
         ),
         const _RowDivider(),
         InfoRow(

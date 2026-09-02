@@ -24,6 +24,7 @@ class AnalyticsEvents {
   static const String accountCopied = 'account_copied';
   static const String scheduleDeleted = 'schedule_deleted';
   static const String calendarViewed = 'calendar_viewed';
+  static const String calendarExportTapped = 'calendar_export_tapped';
   static const String notificationOpened = 'notification_opened';
 }
 
