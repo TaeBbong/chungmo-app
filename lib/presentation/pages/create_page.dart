@@ -43,8 +43,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
   final GlobalKey linkInputKey = GlobalKey(debugLabel: 'link-input');
   final GlobalKey resultBodyKey = GlobalKey(debugLabel: 'result-body');
   final GlobalKey calendarPageKey = GlobalKey(debugLabel: 'calendar-page');
-  String _clipboardContent = '';
-  String _showClipboardContent = '';
+  bool _clipboardHasText = false;
   StreamSubscription<SharedInvitation>? _shareSub;
 
   @override
@@ -56,7 +55,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
     _initTutorial();
     _listenForShares();
     WidgetsBinding.instance.addObserver(this);
-    _getClipboardContent();
+    _checkClipboard();
   }
 
   /// Starts parsing right away when an invitation is shared from another
@@ -109,7 +108,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
-        _getClipboardContent();
+        _checkClipboard();
         break;
       default:
         break;
@@ -232,26 +231,37 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _getClipboardContent() async {
+  /// Peeks whether the clipboard holds any text without reading it.
+  ///
+  /// `Clipboard.hasStrings` (UIPasteboard.hasStrings) does not trigger the
+  /// iOS 16+ paste-permission prompt, unlike `Clipboard.getData` — reading on
+  /// launch/resume used to pop the system dialog before the user did
+  /// anything. The content is read only in [_pasteFromClipboard], where the
+  /// prompt appears in response to the user's own tap.
+  Future<void> _checkClipboard() async {
     try {
-      final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-      if (clipboardData != null && clipboardData.text != null) {
-        final uri = Uri.tryParse(clipboardData.text!);
-        if (uri != null &&
-            uri.hasScheme &&
-            (uri.scheme == 'http' || uri.scheme == 'https')) {
-          setState(() {
-            _clipboardContent = clipboardData.text!;
-            _showClipboardContent = _clipboardContent.length > 35
-                ? '${_clipboardContent.substring(0, 35)}...'
-                : _clipboardContent;
-          });
-        }
-      }
-    } on PlatformException catch (e) {
-      if (kDebugMode) {
-        throw ("Failed to get clipboard data: '$e'.");
-      }
+      final bool hasText = await Clipboard.hasStrings();
+      if (!mounted) return;
+      setState(() => _clipboardHasText = hasText);
+    } on PlatformException {
+      // An unreadable clipboard counts as empty; the button stays hidden.
+    }
+  }
+
+  Future<void> _pasteFromClipboard() async {
+    try {
+      final ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
+      if (!mounted) return;
+      setState(() {
+        // One-shot: hide the suggestion until the next launch/resume,
+        // whether or not the read produced text (e.g. permission denied).
+        _clipboardHasText = false;
+        final String text = data?.text?.trim() ?? '';
+        if (text.isNotEmpty) _textEditingController.text = text;
+      });
+    } on PlatformException {
+      if (!mounted) return;
+      setState(() => _clipboardHasText = false);
     }
   }
 
@@ -442,24 +452,21 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                   ),
-                                  _clipboardContent.isNotEmpty &&
+                                  // No content preview: the clipboard is
+                                  // only peeked (hasStrings), not read, so
+                                  // launch stays free of the iOS paste
+                                  // prompt. Tapping reads and pastes.
+                                  _clipboardHasText &&
                                           _textEditingController.text.isEmpty
                                       ? Padding(
                                           padding: const EdgeInsets.only(
                                               top: Dimens.lg),
                                           child: FilledButton.icon(
-                                            onPressed: () {
-                                              setState(() {
-                                                _textEditingController.text =
-                                                    _clipboardContent;
-                                                _clipboardContent = '';
-                                              });
-                                            },
+                                            onPressed: _pasteFromClipboard,
                                             icon: const Icon(
                                                 Icons.content_paste_rounded,
                                                 size: 18),
-                                            label: Text(
-                                                '$_showClipboardContent 붙여넣기'),
+                                            label: const Text('복사한 내용 붙여넣기'),
                                           ),
                                         )
                                       : Container(),
