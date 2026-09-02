@@ -36,6 +36,10 @@ target 'Runner' do
   end
 end
 
+# NOTE: the 'Share Extension' target deliberately has no pods. It vendors
+# RSIShareViewController (see ios/Share Extension/RSIShareViewController.swift)
+# to stay free of Flutter engine dependencies.
+
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)

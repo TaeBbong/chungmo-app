@@ -13,6 +13,22 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+// receive_sharing_intent 1.8.1 compiles Java at 1.8 while its Kotlin task
+// targets the toolchain default (21), which newer Gradle rejects as an
+// inconsistent JVM target. Align both on the module until the plugin fixes it.
+subprojects {
+    if (name == "receive_sharing_intent") {
+        afterEvaluate {
+            android {
+                compileOptions {
+                    sourceCompatibility = JavaVersion.VERSION_21
+                    targetCompatibility = JavaVersion.VERSION_21
+                }
+            }
+        }
+    }
+}
+
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }

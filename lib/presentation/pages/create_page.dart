@@ -2,6 +2,9 @@
 /// Pages(widget)
 ///
 /// Presentation layer connected with controller
+import 'dart:async';
+import 'dart:io';
+
 import 'package:dotlottie_loader/dotlottie_loader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +18,7 @@ import '../../core/di/di.dart';
 import '../../domain/entities/invitation_image.dart';
 import '../../core/navigation/app_navigation.dart';
 import '../../core/services/preferences_checker.dart';
+import '../../core/services/share_intent_service.dart';
 import '../../core/services/tutorial_manager.dart';
 import '../bloc/create/create_cubit.dart';
 import '../theme/dimens.dart';
@@ -41,6 +45,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
   final GlobalKey calendarPageKey = GlobalKey(debugLabel: 'calendar-page');
   String _clipboardContent = '';
   String _showClipboardContent = '';
+  StreamSubscription<SharedInvitation>? _shareSub;
 
   @override
   void initState() {
@@ -49,8 +54,55 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
     cubit.checkIfNotification();
     cubit.watchUpcomingSchedules();
     _initTutorial();
+    _listenForShares();
     WidgetsBinding.instance.addObserver(this);
     _getClipboardContent();
+  }
+
+  /// Starts parsing right away when an invitation is shared from another
+  /// app, whether the share launched the app or arrived while it ran.
+  void _listenForShares() {
+    final ShareIntentService shareIntent = getIt<ShareIntentService>();
+    _shareSub = shareIntent.shares.listen(_analyzeShared);
+    shareIntent.consumeInitialShare().then((share) {
+      // The future can complete after dispose() closed the cubit.
+      if (!mounted || share == null) return;
+      _analyzeShared(share);
+    });
+  }
+
+  Future<void> _analyzeShared(SharedInvitation share) async {
+    // A share can arrive while another page is on top; the parse result
+    // renders on this home screen, so come back to it first.
+    navigatorKey.currentState?.popUntil((route) => route.isFirst);
+    switch (share.type) {
+      case SharedInvitationType.link:
+        cubit.analyzeLink(share.value, source: 'share');
+        break;
+      case SharedInvitationType.text:
+        cubit.analyzeText(share.value, source: 'share');
+        break;
+      case SharedInvitationType.image:
+        try {
+          // The OS copies the shared image into the app cache; read it from
+          // there like a gallery pick.
+          final Uint8List bytes = await File(share.value).readAsBytes();
+          if (!mounted) return;
+          cubit.analyzeImage(
+            InvitationImage(
+              bytes: bytes,
+              mimeType: share.mimeType ?? _mimeTypeOf(share.value),
+            ),
+            source: 'share',
+          );
+        } on FileSystemException {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('공유된 이미지를 불러오지 못했어요. 다시 시도해주세요.')),
+          );
+        }
+        break;
+    }
   }
 
   @override
@@ -205,6 +257,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    _shareSub?.cancel();
     cubit.close();
     _textEditingController.dispose();
     WidgetsBinding.instance.removeObserver(this);
