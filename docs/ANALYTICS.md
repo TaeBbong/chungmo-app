@@ -140,6 +140,7 @@ Event and parameter names use `lower_snake_case` and stay within Firebase limits
 | `account_copied` | Account number copied | `side` |
 | `schedule_deleted` | Schedule deleted | — |
 | `calendar_viewed` | Calendar opened | `view` |
+| `calendar_export_tapped` | Schedule handed off to the device calendar | — |
 | `notification_opened` | App opened from a notification | — |
 
 `first_open`, `session_start`, `app_open`, and `screen_view` are collected
@@ -149,7 +150,7 @@ automatically by Firebase Analytics.
 
 | Parameter | Values |
 | --- | --- |
-| `source` | `paste`, `manual`, `clipboard`, `home`, `calendar`, `notification`, `gallery`, `camera`, `blank`, `fallback` |
+| `source` | `paste`, `manual`, `clipboard`, `home`, `calendar`, `notification`, `gallery`, `camera`, `blank`, `fallback`, `share` |
 | `input_type` | `link`, `image`, `text` |
 | `reason` | `crawl`, `format`, `incomplete`, `schema`, `timeout`, `unknown` |
 | `status` | `attending`, `absent` |
