@@ -26,6 +26,8 @@ class AnalyticsEvents {
   static const String calendarViewed = 'calendar_viewed';
   static const String calendarExportTapped = 'calendar_export_tapped';
   static const String notificationOpened = 'notification_opened';
+  static const String payRecommendationRequested = 'pay_reco_requested';
+  static const String payRecommendationApplied = 'pay_reco_applied';
 }
 
 /// Parameter keys attached to [AnalyticsEvents].
@@ -45,6 +47,13 @@ class AnalyticsParams {
   static const String amountBucket = 'amount_bucket';
   static const String side = 'side';
   static const String view = 'view';
+
+  /// `Relation.name` of the schedule a recommendation was asked for.
+  static const String relation = 'relation';
+
+  /// Whether the shown recommendation came from the model or the
+  /// rule-based fallback: 'model' or 'fallback'.
+  static const String recommendationSource = 'reco_source';
 }
 
 /// Durable user property names.
