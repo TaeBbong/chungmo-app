@@ -2,6 +2,7 @@ import 'package:chungmo/data/mapper/schedule_mapper.dart';
 import 'package:chungmo/data/models/schedule/schedule_model.dart';
 import 'package:chungmo/domain/entities/account.dart';
 import 'package:chungmo/domain/entities/attendance.dart';
+import 'package:chungmo/domain/entities/relation.dart';
 import 'package:chungmo/domain/entities/schedule.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -22,6 +23,8 @@ void main() {
     ],
     attendance: Attendance.attending,
     pay: 100000,
+    relation: Relation.friend,
+    relationNote: '한참 연락 안하던 중학교 동창',
   );
 
   group('accounts serialization', () {
@@ -52,6 +55,8 @@ void main() {
         'bride_accounts': null,
         'attendance': null,
         'pay': null,
+        'relation': null,
+        'relation_note': null,
       });
 
       final result = ScheduleMapper.toEntity(model);
@@ -60,6 +65,8 @@ void main() {
       expect(result.brideAccounts, isEmpty);
       expect(result.attendance, Attendance.undecided);
       expect(result.pay, 0);
+      expect(result.relation, Relation.unset);
+      expect(result.relationNote, isEmpty);
     });
 
     test('should decode malformed payload into empty list', () {
