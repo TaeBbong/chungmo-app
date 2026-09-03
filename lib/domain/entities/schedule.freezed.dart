@@ -33,6 +33,13 @@ mixin _$Schedule {
   /// 축의금 the user gave, in KRW. 0 means not recorded.
   int get pay;
 
+  /// Relationship to the couple. Defaults to [Relation.unset].
+  Relation get relation;
+
+  /// Free-form nuance of the relationship the enum can't carry
+  /// (e.g. "한참 연락 안하던 중학교 동창"). Empty when not written.
+  String get relationNote;
+
   /// Create a copy of Schedule
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -59,7 +66,11 @@ mixin _$Schedule {
                 .equals(other.brideAccounts, brideAccounts) &&
             (identical(other.attendance, attendance) ||
                 other.attendance == attendance) &&
-            (identical(other.pay, pay) || other.pay == pay));
+            (identical(other.pay, pay) || other.pay == pay) &&
+            (identical(other.relation, relation) ||
+                other.relation == relation) &&
+            (identical(other.relationNote, relationNote) ||
+                other.relationNote == relationNote));
   }
 
   @override
@@ -74,11 +85,13 @@ mixin _$Schedule {
       const DeepCollectionEquality().hash(groomAccounts),
       const DeepCollectionEquality().hash(brideAccounts),
       attendance,
-      pay);
+      pay,
+      relation,
+      relationNote);
 
   @override
   String toString() {
-    return 'Schedule(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay)';
+    return 'Schedule(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay, relation: $relation, relationNote: $relationNote)';
   }
 }
 
@@ -97,7 +110,9 @@ abstract mixin class $ScheduleCopyWith<$Res> {
       List<Account> groomAccounts,
       List<Account> brideAccounts,
       Attendance attendance,
-      int pay});
+      int pay,
+      Relation relation,
+      String relationNote});
 }
 
 /// @nodoc
@@ -122,6 +137,8 @@ class _$ScheduleCopyWithImpl<$Res> implements $ScheduleCopyWith<$Res> {
     Object? brideAccounts = null,
     Object? attendance = null,
     Object? pay = null,
+    Object? relation = null,
+    Object? relationNote = null,
   }) {
     return _then(_self.copyWith(
       link: null == link
@@ -164,6 +181,14 @@ class _$ScheduleCopyWithImpl<$Res> implements $ScheduleCopyWith<$Res> {
           ? _self.pay
           : pay // ignore: cast_nullable_to_non_nullable
               as int,
+      relation: null == relation
+          ? _self.relation
+          : relation // ignore: cast_nullable_to_non_nullable
+              as Relation,
+      relationNote: null == relationNote
+          ? _self.relationNote
+          : relationNote // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -271,7 +296,9 @@ extension SchedulePatterns on Schedule {
             List<Account> groomAccounts,
             List<Account> brideAccounts,
             Attendance attendance,
-            int pay)?
+            int pay,
+            Relation relation,
+            String relationNote)?
         $default, {
     required TResult orElse(),
   }) {
@@ -288,7 +315,9 @@ extension SchedulePatterns on Schedule {
             _that.groomAccounts,
             _that.brideAccounts,
             _that.attendance,
-            _that.pay);
+            _that.pay,
+            _that.relation,
+            _that.relationNote);
       case _:
         return orElse();
     }
@@ -319,7 +348,9 @@ extension SchedulePatterns on Schedule {
             List<Account> groomAccounts,
             List<Account> brideAccounts,
             Attendance attendance,
-            int pay)
+            int pay,
+            Relation relation,
+            String relationNote)
         $default,
   ) {
     final _that = this;
@@ -335,7 +366,9 @@ extension SchedulePatterns on Schedule {
             _that.groomAccounts,
             _that.brideAccounts,
             _that.attendance,
-            _that.pay);
+            _that.pay,
+            _that.relation,
+            _that.relationNote);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -365,7 +398,9 @@ extension SchedulePatterns on Schedule {
             List<Account> groomAccounts,
             List<Account> brideAccounts,
             Attendance attendance,
-            int pay)?
+            int pay,
+            Relation relation,
+            String relationNote)?
         $default,
   ) {
     final _that = this;
@@ -381,7 +416,9 @@ extension SchedulePatterns on Schedule {
             _that.groomAccounts,
             _that.brideAccounts,
             _that.attendance,
-            _that.pay);
+            _that.pay,
+            _that.relation,
+            _that.relationNote);
       case _:
         return null;
     }
@@ -401,7 +438,9 @@ class _Schedule implements Schedule {
       final List<Account> groomAccounts = const <Account>[],
       final List<Account> brideAccounts = const <Account>[],
       this.attendance = Attendance.undecided,
-      this.pay = 0})
+      this.pay = 0,
+      this.relation = Relation.unset,
+      this.relationNote = ''})
       : _groomAccounts = groomAccounts,
         _brideAccounts = brideAccounts;
 
@@ -452,6 +491,17 @@ class _Schedule implements Schedule {
   @JsonKey()
   final int pay;
 
+  /// Relationship to the couple. Defaults to [Relation.unset].
+  @override
+  @JsonKey()
+  final Relation relation;
+
+  /// Free-form nuance of the relationship the enum can't carry
+  /// (e.g. "한참 연락 안하던 중학교 동창"). Empty when not written.
+  @override
+  @JsonKey()
+  final String relationNote;
+
   /// Create a copy of Schedule
   /// with the given fields replaced by the non-null parameter values.
   @override
@@ -479,7 +529,11 @@ class _Schedule implements Schedule {
                 .equals(other._brideAccounts, _brideAccounts) &&
             (identical(other.attendance, attendance) ||
                 other.attendance == attendance) &&
-            (identical(other.pay, pay) || other.pay == pay));
+            (identical(other.pay, pay) || other.pay == pay) &&
+            (identical(other.relation, relation) ||
+                other.relation == relation) &&
+            (identical(other.relationNote, relationNote) ||
+                other.relationNote == relationNote));
   }
 
   @override
@@ -494,11 +548,13 @@ class _Schedule implements Schedule {
       const DeepCollectionEquality().hash(_groomAccounts),
       const DeepCollectionEquality().hash(_brideAccounts),
       attendance,
-      pay);
+      pay,
+      relation,
+      relationNote);
 
   @override
   String toString() {
-    return 'Schedule(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay)';
+    return 'Schedule(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay, relation: $relation, relationNote: $relationNote)';
   }
 }
 
@@ -519,7 +575,9 @@ abstract mixin class _$ScheduleCopyWith<$Res>
       List<Account> groomAccounts,
       List<Account> brideAccounts,
       Attendance attendance,
-      int pay});
+      int pay,
+      Relation relation,
+      String relationNote});
 }
 
 /// @nodoc
@@ -544,6 +602,8 @@ class __$ScheduleCopyWithImpl<$Res> implements _$ScheduleCopyWith<$Res> {
     Object? brideAccounts = null,
     Object? attendance = null,
     Object? pay = null,
+    Object? relation = null,
+    Object? relationNote = null,
   }) {
     return _then(_Schedule(
       link: null == link
@@ -586,6 +646,14 @@ class __$ScheduleCopyWithImpl<$Res> implements _$ScheduleCopyWith<$Res> {
           ? _self.pay
           : pay // ignore: cast_nullable_to_non_nullable
               as int,
+      relation: null == relation
+          ? _self.relation
+          : relation // ignore: cast_nullable_to_non_nullable
+              as Relation,
+      relationNote: null == relationNote
+          ? _self.relationNote
+          : relationNote // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }

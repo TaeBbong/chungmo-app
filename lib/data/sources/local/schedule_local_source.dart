@@ -28,6 +28,10 @@ abstract class ScheduleLocalSource {
 
   Future<ScheduleModel?> getScheduleByLink(String link);
 
+  /// One-shot read of every schedule, for aggregations that don't need
+  /// the reactive stream (e.g. gift-amount statistics).
+  Future<List<ScheduleModel>> getAllSchedulesOnce();
+
   Future<void> refresh();
 }
 
@@ -54,7 +58,7 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     final path = join(await getDatabasesPath(), 'schedule_database.db');
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE schedules (
@@ -67,7 +71,9 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
             groom_accounts TEXT,
             bride_accounts TEXT,
             attendance TEXT,
-            pay INTEGER
+            pay INTEGER,
+            relation TEXT,
+            relation_note TEXT
           )
         ''');
       },
@@ -86,16 +92,20 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
           await db.execute('ALTER TABLE schedules ADD COLUMN attendance TEXT;');
           await db.execute('ALTER TABLE schedules ADD COLUMN pay INTEGER;');
         }
+        if (oldVersion < 4) {
+          // UPDATE: relationship to the couple ('relation', 'relation_note').
+          // Existing rows keep NULL, read back as `unset` / ''.
+          await db.execute('ALTER TABLE schedules ADD COLUMN relation TEXT;');
+          await db
+              .execute('ALTER TABLE schedules ADD COLUMN relation_note TEXT;');
+        }
       },
     );
   }
 
   @override
   Future<void> emitAllSchedules() async {
-    final db = await database;
-    final maps = await db.query('schedules');
-    final list = maps.map((e) => ScheduleModel.fromJson(e)).toList();
-    _controller.add(list);
+    _controller.add(await getAllSchedulesOnce());
   }
 
   @override
@@ -158,6 +168,13 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
       return null;
     }
     return ScheduleModel.fromJson(maps.first);
+  }
+
+  @override
+  Future<List<ScheduleModel>> getAllSchedulesOnce() async {
+    final db = await database;
+    final maps = await db.query('schedules');
+    return maps.map((e) => ScheduleModel.fromJson(e)).toList();
   }
 
   @override

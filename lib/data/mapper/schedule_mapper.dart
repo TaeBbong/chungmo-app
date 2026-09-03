@@ -4,6 +4,7 @@ import '../models/account/account_model.dart';
 import '../models/schedule/schedule_model.dart';
 import '../../domain/entities/account.dart';
 import '../../domain/entities/attendance.dart';
+import '../../domain/entities/relation.dart';
 import '../../domain/entities/schedule.dart';
 import '../../domain/entities/schedule_draft.dart';
 
@@ -22,6 +23,8 @@ class ScheduleMapper {
       brideAccounts: encodeAccounts(entity.brideAccounts),
       attendance: entity.attendance.name,
       pay: entity.pay,
+      relation: entity.relation.name,
+      relationNote: entity.relationNote,
     );
   }
 
@@ -38,6 +41,8 @@ class ScheduleMapper {
       brideAccounts: decodeAccounts(model.brideAccounts),
       attendance: Attendance.fromName(model.attendance),
       pay: model.pay,
+      relation: Relation.fromName(model.relation),
+      relationNote: model.relationNote,
     );
   }
 

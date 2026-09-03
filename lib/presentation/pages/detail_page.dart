@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../domain/entities/attendance.dart';
+import '../../domain/entities/relation.dart';
 import '../../domain/entities/schedule.dart';
 import '../../core/analytics/analytics_events.dart';
 import '../../core/analytics/analytics_service.dart';
@@ -35,17 +35,16 @@ class _DetailPageState extends State<DetailPage> {
   final TextEditingController brideController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
   final TextEditingController linkController = TextEditingController();
-  final TextEditingController payController = TextEditingController();
   DateTime? selectedDate;
-  late Attendance selectedAttendance;
 
-  /// The amounts people actually give, offered as one-tap presets that fill
-  /// [payController].
-  static const List<int> payPresets = [50000, 100000, 200000, 300000];
+  /// Expanded height of the hero header behind the sliver app bar.
+  static const double _heroHeight = 280;
 
-  /// True once '직접 입력' is picked; until then the amount field is read-only
-  /// and only the presets can fill it.
-  late bool customPay;
+  final ScrollController _scrollController = ScrollController();
+
+  /// True once the hero header has collapsed under the toolbar; drives the
+  /// title fade-in and the toolbar color switch.
+  bool _collapsed = false;
 
   @override
   void initState() {
@@ -58,11 +57,7 @@ class _DetailPageState extends State<DetailPage> {
     locationController.text = widget.schedule.location;
     linkController.text = widget.schedule.link;
     selectedDate = widget.schedule.date;
-    selectedAttendance = widget.schedule.attendance;
-
-    final int pay = widget.schedule.pay;
-    customPay = pay > 0 && !payPresets.contains(pay);
-    payController.text = pay > 0 ? pay.toString() : '';
+    _scrollController.addListener(_onScroll);
   }
 
   @override
@@ -71,9 +66,20 @@ class _DetailPageState extends State<DetailPage> {
     brideController.dispose();
     locationController.dispose();
     linkController.dispose();
-    payController.dispose();
+    _scrollController.dispose();
     cubit.close();
     super.dispose();
+  }
+
+  void _onScroll() {
+    // The header counts as collapsed once only the toolbar strip remains.
+    final double threshold = _heroHeight -
+        kToolbarHeight -
+        MediaQuery.of(context).padding.top;
+    final bool collapsed = _scrollController.offset >= threshold;
+    if (collapsed != _collapsed) {
+      setState(() => _collapsed = collapsed);
+    }
   }
 
   void toggleEditMode() {
@@ -89,23 +95,27 @@ class _DetailPageState extends State<DetailPage> {
         bride: brideController.text,
         date: selectedDate!,
         location: locationController.text,
-        attendance: selectedAttendance,
-        // The field is the single source of truth: presets write into it.
-        pay: int.tryParse(payController.text.trim()) ?? 0,
       );
       cubit.editSchedule(editedSchedule);
-      final AnalyticsService analytics = getIt<AnalyticsService>();
-      analytics.logEvent(AnalyticsEvents.attendanceRecorded,
-          parameters: {AnalyticsParams.status: editedSchedule.attendance.name});
-      if (editedSchedule.pay > 0) {
-        analytics.logEvent(AnalyticsEvents.giftRecorded,
-            parameters: {AnalyticsParams.amountBucket: _amountBucket(editedSchedule.pay)});
-      }
       editMode = false;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('일정이 변경되었습니다.')),
       );
     });
+  }
+
+  /// Opens the attendance/gift record page and reflects its result.
+  Future<void> _openRecordPage() async {
+    final Object? result = await navigatorKey.currentState
+        ?.pushNamed('/schedule/record', arguments: cubit.state.schedule!);
+    if (result is Schedule && mounted) {
+      // The record page already persisted the change; only the local
+      // state needs to catch up.
+      setState(() => cubit.setSchedule(result));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('기록했어요.')),
+      );
+    }
   }
 
   InputDecoration customInputDecoration({String? labelText}) {
@@ -190,22 +200,6 @@ class _DetailPageState extends State<DetailPage> {
     }
   }
 
-  /// Maps a gift amount onto the `amount_bucket` analytics value.
-  static String _amountBucket(int pay) {
-    switch (pay) {
-      case 50000:
-        return '50k';
-      case 100000:
-        return '100k';
-      case 200000:
-        return '200k';
-      case 300000:
-        return '300k';
-      default:
-        return 'custom';
-    }
-  }
-
   void _showDeleteDialog() {
     showDialog(
       context: context,
@@ -247,6 +241,10 @@ class _DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
     final Schedule schedule = cubit.state.schedule!;
+    // While the hero is expanded the toolbar sits on the photo, so its
+    // icons and title render white; both return to theme colors once the
+    // bar collapses onto a solid background.
+    final Color? overlayColor = _collapsed ? null : Palette.white;
 
     return BlocProvider<DetailCubit>.value(
       value: cubit,
@@ -259,33 +257,67 @@ class _DetailPageState extends State<DetailPage> {
         child: SafeArea(
           top: false,
           child: Scaffold(
-            appBar: AppBar(
-              actions: [
-                IconButton(
-                  tooltip: editMode ? '저장' : '수정',
-                  icon: Icon(editMode ? Icons.save : Icons.edit),
-                  onPressed: editMode ? saveChanges : toggleEditMode,
+            body: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                SliverAppBar(
+                  pinned: true,
+                  expandedHeight: _heroHeight,
+                  foregroundColor: overlayColor,
+                  // The couple already headlines the expanded photo, so the
+                  // toolbar title only fades in as the header collapses —
+                  // the standard content-led detail pattern.
+                  title: editMode
+                      ? const Text('일정 수정')
+                      : AnimatedOpacity(
+                          duration: const Duration(milliseconds: 150),
+                          opacity: _collapsed ? 1 : 0,
+                          child: Text(
+                            '${schedule.groom} & ${schedule.bride}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                  actions: editMode
+                      ? [
+                          // A labeled action reads clearer than the old
+                          // floppy icon, which was easy to miss.
+                          TextButton(
+                            onPressed: saveChanges,
+                            child: Text(
+                              '저장',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: overlayColor,
+                              ),
+                            ),
+                          ),
+                        ]
+                      : [
+                          IconButton(
+                            tooltip: '수정',
+                            icon: const Icon(Icons.edit),
+                            onPressed: toggleEditMode,
+                          ),
+                          IconButton(
+                            tooltip: '삭제',
+                            icon: const Icon(Icons.delete),
+                            onPressed: _showDeleteDialog,
+                          ),
+                        ],
+                  flexibleSpace: FlexibleSpaceBar(
+                    background:
+                        _HeroHeader(schedule: schedule, showCouple: !editMode),
+                  ),
                 ),
-                editMode
-                    ? Container()
-                    : IconButton(
-                        tooltip: '삭제',
-                        icon: const Icon(Icons.delete),
-                        onPressed: _showDeleteDialog,
-                      ),
-              ],
-            ),
-            body: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _HeroHeader(schedule: schedule, showCouple: !editMode),
-                  Padding(
+                SliverToBoxAdapter(
+                  child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
                     child: editMode ? _buildEditForm() : _buildInfoCard(),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -348,13 +380,27 @@ class _DetailPageState extends State<DetailPage> {
           icon: Icons.how_to_reg_outlined,
           label: '참석',
           value: schedule.attendance.label,
+          onTap: _openRecordPage,
         ),
+        // Relation row; hidden until the user records one.
+        if (schedule.relation != Relation.unset) ...[
+          const _RowDivider(),
+          InfoRow(
+            icon: Icons.people_outline,
+            label: '관계',
+            value: schedule.relation.label,
+            hint: schedule.relationNote.isEmpty ? null : schedule.relationNote,
+            onTap: _openRecordPage,
+          ),
+        ],
         const _RowDivider(),
         InfoRow(
           icon: Icons.payments_outlined,
           label: '축의금',
           value: schedule.pay > 0 ? schedule.pay.krCurrency : '아직 기록하지 않았어요',
           valueColor: schedule.pay > 0 ? null : Palette.grey500,
+          hint: '탭해서 기록하고 AI 추천도 받아보세요',
+          onTap: _openRecordPage,
         ),
 
         // Accounts row; renders nothing when none were parsed.
@@ -406,109 +452,7 @@ class _DetailPageState extends State<DetailPage> {
           decoration: customInputDecoration(labelText: '장소'),
           style: const TextStyle(fontSize: 16),
         ),
-        const SizedBox(height: 16),
-        const _FieldLabel('참석 여부'),
-        Wrap(
-          spacing: 8,
-          children: Attendance.values
-              .map(
-                (attendance) => _choiceChip(
-                  label: attendance.label,
-                  selected: selectedAttendance == attendance,
-                  onSelected: () =>
-                      setState(() => selectedAttendance = attendance),
-                ),
-              )
-              .toList(),
-        ),
-        const SizedBox(height: 16),
-        const _FieldLabel('축의금'),
-        TextField(
-          key: const ValueKey('pay-field'),
-          controller: payController,
-          keyboardType: TextInputType.number,
-          // Right-aligned so the amount sits next to the '원' suffix.
-          textAlign: TextAlign.right,
-          // Presets fill this field; typing into it needs '직접 입력' first.
-          enabled: customPay,
-          // The '축의금' label already sits above, so the field only needs a hint.
-          decoration: customInputDecoration().copyWith(
-            hintText: '0',
-            suffixText: '원',
-          ),
-          style: const TextStyle(fontSize: 16),
-        ),
-        const SizedBox(height: 8),
-
-        // Shortcuts under the field, deliberately small: they feed the field
-        // above rather than being the primary control.
-        Wrap(
-          spacing: 6,
-          children: [
-            ...payPresets.map(
-              (amount) => _choiceChip(
-                label: '${amount ~/ 10000}만원',
-                selected: !customPay &&
-                    int.tryParse(payController.text.trim()) == amount,
-                onSelected: () => setState(() {
-                  customPay = false;
-                  payController.text = amount.toString();
-                }),
-              ),
-            ),
-            _choiceChip(
-              label: '직접 입력',
-              selected: customPay,
-              onSelected: () => setState(() => customPay = true),
-            ),
-          ],
-        ),
       ],
-    );
-  }
-
-  Widget _choiceChip({
-    required String label,
-    required bool selected,
-    required VoidCallback onSelected,
-  }) {
-    final bool isLight = Theme.of(context).brightness == Brightness.light;
-    return ChoiceChip(
-      label: Text(label),
-      selected: selected,
-      showCheckmark: false,
-      // The default selected color comes from the theme's secondaryContainer,
-      // which is off-palette.
-      selectedColor: isLight ? Palette.burgundy50 : Palette.burgundy600,
-      labelStyle: TextStyle(
-        fontSize: 13,
-        color: selected
-            ? (isLight ? Palette.burgundy : Palette.burgundy100)
-            : (isLight ? Palette.grey700 : Palette.grey400),
-        fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-      ),
-      labelPadding: const EdgeInsets.symmetric(horizontal: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      visualDensity: VisualDensity.compact,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      onSelected: (_) => onSelected(),
-    );
-  }
-}
-
-class _FieldLabel extends StatelessWidget {
-  final String text;
-
-  const _FieldLabel(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(
-        text,
-        style: TextStyle(fontSize: 13, color: Palette.grey600),
-      ),
     );
   }
 }
@@ -522,56 +466,70 @@ class _HeroHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 280,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          CachedNetworkImage(
-            imageUrl: schedule.thumbnail,
-            fit: BoxFit.cover,
-            errorWidget: (_, __, ___) => Container(color: Palette.burgundy50),
-          ),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        CachedNetworkImage(
+          imageUrl: schedule.thumbnail,
+          fit: BoxFit.cover,
+          errorWidget: (_, __, ___) => Container(color: Palette.burgundy50),
+        ),
 
-          // Darken the bottom only, so the names stay readable over the photo.
-          if (showCouple)
-            DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.center,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withValues(alpha: 0.6),
-                  ],
-                ),
+        // The toolbar now floats over the photo, so darken the top a step
+        // to keep its white icons readable over bright skies.
+        DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.center,
+              colors: [
+                Colors.black.withValues(alpha: 0.35),
+                Colors.transparent,
+              ],
+            ),
+          ),
+        ),
+
+        // Darken the bottom only, so the names stay readable over the photo.
+        if (showCouple)
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.center,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.black.withValues(alpha: 0.6),
+                ],
               ),
             ),
+          ),
 
+        // Bottom corner, clear of the toolbar actions above.
+        Positioned(
+          bottom: 20,
+          right: 16,
+          child: DDayBadge(date: schedule.date),
+        ),
+
+        if (showCouple)
           Positioned(
-            top: 16,
-            right: 16,
-            child: DDayBadge(date: schedule.date),
-          ),
-
-          if (showCouple)
-            Positioned(
-              left: 20,
-              right: 20,
-              bottom: 20,
-              child: Text(
-                '🤵‍♂️ ${schedule.groom} & 👰‍♀️ ${schedule.bride}',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Palette.white,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+            left: 20,
+            // Leave room for the D-day badge in the corner.
+            right: 100,
+            bottom: 20,
+            child: Text(
+              '🤵‍♂️ ${schedule.groom} & 👰‍♀️ ${schedule.bride}',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Palette.white,
               ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }

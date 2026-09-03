@@ -98,7 +98,7 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
 
   GenerativeModel _buildModel() {
     return FirebaseAI.googleAI().generativeModel(
-      model: 'gemini-2.5-flash',
+      model: Constants.geminiModel,
       generationConfig: GenerationConfig(
           responseJsonSchema: _responseJsonSchema,
           responseMimeType: "application/json"),

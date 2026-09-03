@@ -142,6 +142,8 @@ Event and parameter names use `lower_snake_case` and stay within Firebase limits
 | `calendar_viewed` | Calendar opened | `view` |
 | `calendar_export_tapped` | Schedule handed off to the device calendar | — |
 | `notification_opened` | App opened from a notification | — |
+| `pay_reco_requested` | AI gift-amount recommendation requested | `relation` |
+| `pay_reco_applied` | Recommended amount applied to the pay field | `relation`, `reco_source` |
 
 `first_open`, `session_start`, `app_open`, and `screen_view` are collected
 automatically by Firebase Analytics.
@@ -157,6 +159,8 @@ automatically by Firebase Analytics.
 | `side` | `groom`, `bride` |
 | `view` | `calendar`, `list` |
 | `amount_bucket` | `50k`, `100k`, `200k`, `300k`, `custom` |
+| `relation` | `family`, `friend`, `coworker`, `acquaintance`, `unset` |
+| `reco_source` | `model`, `fallback` |
 
 ---
 
@@ -199,7 +203,7 @@ Call sites:
 | Where | Events |
 | --- | --- |
 | `CreateCubit.analyzeLink` | funnel: submitted → started → succeeded / failed → saved |
-| Detail page / cubit | `schedule_opened`, `location_map_opened`, `attendance_recorded`, `gift_recorded`, `account_copied`, `schedule_deleted` |
+| Detail page / cubit | `schedule_opened`, `location_map_opened`, `attendance_recorded`, `gift_recorded`, `account_copied`, `schedule_deleted`, `pay_reco_requested`, `pay_reco_applied` |
 | Calendar page | `calendar_viewed` |
 | Notification handler | `notification_opened` |
 
