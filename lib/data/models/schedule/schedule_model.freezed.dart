@@ -35,6 +35,14 @@ mixin _$ScheduleModel {
   /// 축의금 in KRW; 0 means not recorded.
   int get pay;
 
+  /// `Relation.name`; unknown/NULL values fall back to `unset`.
+  String get relation;
+
+  /// Free-form relationship note; NULL from pre-v4 rows reads as ''.
+// ignore: invalid_annotation_target
+  @JsonKey(name: 'relation_note')
+  String get relationNote;
+
   /// Create a copy of ScheduleModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -65,17 +73,33 @@ mixin _$ScheduleModel {
                 other.brideAccounts == brideAccounts) &&
             (identical(other.attendance, attendance) ||
                 other.attendance == attendance) &&
-            (identical(other.pay, pay) || other.pay == pay));
+            (identical(other.pay, pay) || other.pay == pay) &&
+            (identical(other.relation, relation) ||
+                other.relation == relation) &&
+            (identical(other.relationNote, relationNote) ||
+                other.relationNote == relationNote));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, link, thumbnail, groom, bride,
-      date, location, groomAccounts, brideAccounts, attendance, pay);
+  int get hashCode => Object.hash(
+      runtimeType,
+      link,
+      thumbnail,
+      groom,
+      bride,
+      date,
+      location,
+      groomAccounts,
+      brideAccounts,
+      attendance,
+      pay,
+      relation,
+      relationNote);
 
   @override
   String toString() {
-    return 'ScheduleModel(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay)';
+    return 'ScheduleModel(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay, relation: $relation, relationNote: $relationNote)';
   }
 }
 
@@ -95,7 +119,9 @@ abstract mixin class $ScheduleModelCopyWith<$Res> {
       @JsonKey(name: 'groom_accounts') String groomAccounts,
       @JsonKey(name: 'bride_accounts') String brideAccounts,
       String attendance,
-      int pay});
+      int pay,
+      String relation,
+      @JsonKey(name: 'relation_note') String relationNote});
 }
 
 /// @nodoc
@@ -121,6 +147,8 @@ class _$ScheduleModelCopyWithImpl<$Res>
     Object? brideAccounts = null,
     Object? attendance = null,
     Object? pay = null,
+    Object? relation = null,
+    Object? relationNote = null,
   }) {
     return _then(_self.copyWith(
       link: null == link
@@ -163,6 +191,14 @@ class _$ScheduleModelCopyWithImpl<$Res>
           ? _self.pay
           : pay // ignore: cast_nullable_to_non_nullable
               as int,
+      relation: null == relation
+          ? _self.relation
+          : relation // ignore: cast_nullable_to_non_nullable
+              as String,
+      relationNote: null == relationNote
+          ? _self.relationNote
+          : relationNote // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -270,7 +306,9 @@ extension ScheduleModelPatterns on ScheduleModel {
             @JsonKey(name: 'groom_accounts') String groomAccounts,
             @JsonKey(name: 'bride_accounts') String brideAccounts,
             String attendance,
-            int pay)?
+            int pay,
+            String relation,
+            @JsonKey(name: 'relation_note') String relationNote)?
         $default, {
     required TResult orElse(),
   }) {
@@ -287,7 +325,9 @@ extension ScheduleModelPatterns on ScheduleModel {
             _that.groomAccounts,
             _that.brideAccounts,
             _that.attendance,
-            _that.pay);
+            _that.pay,
+            _that.relation,
+            _that.relationNote);
       case _:
         return orElse();
     }
@@ -318,7 +358,9 @@ extension ScheduleModelPatterns on ScheduleModel {
             @JsonKey(name: 'groom_accounts') String groomAccounts,
             @JsonKey(name: 'bride_accounts') String brideAccounts,
             String attendance,
-            int pay)
+            int pay,
+            String relation,
+            @JsonKey(name: 'relation_note') String relationNote)
         $default,
   ) {
     final _that = this;
@@ -334,7 +376,9 @@ extension ScheduleModelPatterns on ScheduleModel {
             _that.groomAccounts,
             _that.brideAccounts,
             _that.attendance,
-            _that.pay);
+            _that.pay,
+            _that.relation,
+            _that.relationNote);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -364,7 +408,9 @@ extension ScheduleModelPatterns on ScheduleModel {
             @JsonKey(name: 'groom_accounts') String groomAccounts,
             @JsonKey(name: 'bride_accounts') String brideAccounts,
             String attendance,
-            int pay)?
+            int pay,
+            String relation,
+            @JsonKey(name: 'relation_note') String relationNote)?
         $default,
   ) {
     final _that = this;
@@ -380,7 +426,9 @@ extension ScheduleModelPatterns on ScheduleModel {
             _that.groomAccounts,
             _that.brideAccounts,
             _that.attendance,
-            _that.pay);
+            _that.pay,
+            _that.relation,
+            _that.relationNote);
       case _:
         return null;
     }
@@ -400,7 +448,9 @@ class _ScheduleModel implements ScheduleModel {
       @JsonKey(name: 'groom_accounts') this.groomAccounts = '[]',
       @JsonKey(name: 'bride_accounts') this.brideAccounts = '[]',
       this.attendance = 'undecided',
-      this.pay = 0});
+      this.pay = 0,
+      this.relation = 'unset',
+      @JsonKey(name: 'relation_note') this.relationNote = ''});
   factory _ScheduleModel.fromJson(Map<String, dynamic> json) =>
       _$ScheduleModelFromJson(json);
 
@@ -439,6 +489,17 @@ class _ScheduleModel implements ScheduleModel {
   @JsonKey()
   final int pay;
 
+  /// `Relation.name`; unknown/NULL values fall back to `unset`.
+  @override
+  @JsonKey()
+  final String relation;
+
+  /// Free-form relationship note; NULL from pre-v4 rows reads as ''.
+// ignore: invalid_annotation_target
+  @override
+  @JsonKey(name: 'relation_note')
+  final String relationNote;
+
   /// Create a copy of ScheduleModel
   /// with the given fields replaced by the non-null parameter values.
   @override
@@ -473,17 +534,33 @@ class _ScheduleModel implements ScheduleModel {
                 other.brideAccounts == brideAccounts) &&
             (identical(other.attendance, attendance) ||
                 other.attendance == attendance) &&
-            (identical(other.pay, pay) || other.pay == pay));
+            (identical(other.pay, pay) || other.pay == pay) &&
+            (identical(other.relation, relation) ||
+                other.relation == relation) &&
+            (identical(other.relationNote, relationNote) ||
+                other.relationNote == relationNote));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, link, thumbnail, groom, bride,
-      date, location, groomAccounts, brideAccounts, attendance, pay);
+  int get hashCode => Object.hash(
+      runtimeType,
+      link,
+      thumbnail,
+      groom,
+      bride,
+      date,
+      location,
+      groomAccounts,
+      brideAccounts,
+      attendance,
+      pay,
+      relation,
+      relationNote);
 
   @override
   String toString() {
-    return 'ScheduleModel(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay)';
+    return 'ScheduleModel(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay, relation: $relation, relationNote: $relationNote)';
   }
 }
 
@@ -505,7 +582,9 @@ abstract mixin class _$ScheduleModelCopyWith<$Res>
       @JsonKey(name: 'groom_accounts') String groomAccounts,
       @JsonKey(name: 'bride_accounts') String brideAccounts,
       String attendance,
-      int pay});
+      int pay,
+      String relation,
+      @JsonKey(name: 'relation_note') String relationNote});
 }
 
 /// @nodoc
@@ -531,6 +610,8 @@ class __$ScheduleModelCopyWithImpl<$Res>
     Object? brideAccounts = null,
     Object? attendance = null,
     Object? pay = null,
+    Object? relation = null,
+    Object? relationNote = null,
   }) {
     return _then(_ScheduleModel(
       link: null == link
@@ -573,6 +654,14 @@ class __$ScheduleModelCopyWithImpl<$Res>
           ? _self.pay
           : pay // ignore: cast_nullable_to_non_nullable
               as int,
+      relation: null == relation
+          ? _self.relation
+          : relation // ignore: cast_nullable_to_non_nullable
+              as String,
+      relationNote: null == relationNote
+          ? _self.relationNote
+          : relationNote // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }

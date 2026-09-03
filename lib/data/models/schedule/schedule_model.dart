@@ -34,6 +34,13 @@ abstract class ScheduleModel with _$ScheduleModel {
 
     /// 축의금 in KRW; 0 means not recorded.
     @Default(0) int pay,
+
+    /// `Relation.name`; unknown/NULL values fall back to `unset`.
+    @Default('unset') String relation,
+
+    /// Free-form relationship note; NULL from pre-v4 rows reads as ''.
+    // ignore: invalid_annotation_target
+    @JsonKey(name: 'relation_note') @Default('') String relationNote,
   }) = _ScheduleModel;
 
   factory ScheduleModel.fromJson(Map<String, dynamic> json) =>

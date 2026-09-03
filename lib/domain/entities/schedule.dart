@@ -8,6 +8,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'account.dart';
 import 'attendance.dart';
+import 'relation.dart';
 
 part 'schedule.freezed.dart';
 
@@ -35,5 +36,12 @@ abstract class Schedule with _$Schedule {
 
     /// 축의금 the user gave, in KRW. 0 means not recorded.
     @Default(0) int pay,
+
+    /// Relationship to the couple. Defaults to [Relation.unset].
+    @Default(Relation.unset) Relation relation,
+
+    /// Free-form nuance of the relationship the enum can't carry
+    /// (e.g. "한참 연락 안하던 중학교 동창"). Empty when not written.
+    @Default('') String relationNote,
   }) = _Schedule;
 }
