@@ -2,11 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../domain/entities/attendance.dart';
-import '../../domain/entities/pay_recommendation.dart';
 import '../../domain/entities/relation.dart';
 import '../../domain/entities/schedule.dart';
-import '../../domain/usecases/usecases.dart';
 import '../../core/analytics/analytics_events.dart';
 import '../../core/analytics/analytics_service.dart';
 import '../../core/di/di.dart';
@@ -38,40 +35,7 @@ class _DetailPageState extends State<DetailPage> {
   final TextEditingController brideController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
   final TextEditingController linkController = TextEditingController();
-  final TextEditingController payController = TextEditingController();
-  final TextEditingController relationNoteController = TextEditingController();
   DateTime? selectedDate;
-  late Attendance selectedAttendance;
-  late Relation selectedRelation;
-
-  /// Latest AI suggestion shown in the edit form; null until requested.
-  PayRecommendation? recommendation;
-
-  /// True while a recommendation request is in flight.
-  bool recommending = false;
-
-  /// True when [recommendation] is the rule-based fallback, shown when the
-  /// model call failed.
-  bool recommendationFromFallback = false;
-
-  /// Rotating examples for the relation note, doubling as a nudge about the
-  /// kind of nuance worth writing down.
-  static const List<String> relationNoteHints = [
-    '예) 한참 연락 안하던 중학교 동창',
-    '예) 인사만 해본 옆팀 동료',
-    '예) 매주 보는 절친',
-    '예) 1년에 한 번 보는 대학 동기',
-    '예) 옆자리 상사',
-    '예) 대학교 때 만났던 전애인',
-  ];
-
-  /// The amounts people actually give, offered as one-tap presets that fill
-  /// [payController].
-  static const List<int> payPresets = [50000, 100000, 200000, 300000];
-
-  /// True once '직접 입력' is picked; until then the amount field is read-only
-  /// and only the presets can fill it.
-  late bool customPay;
 
   @override
   void initState() {
@@ -84,13 +48,6 @@ class _DetailPageState extends State<DetailPage> {
     locationController.text = widget.schedule.location;
     linkController.text = widget.schedule.link;
     selectedDate = widget.schedule.date;
-    selectedAttendance = widget.schedule.attendance;
-    selectedRelation = widget.schedule.relation;
-    relationNoteController.text = widget.schedule.relationNote;
-
-    final int pay = widget.schedule.pay;
-    customPay = pay > 0 && !payPresets.contains(pay);
-    payController.text = pay > 0 ? pay.toString() : '';
   }
 
   @override
@@ -99,8 +56,6 @@ class _DetailPageState extends State<DetailPage> {
     brideController.dispose();
     locationController.dispose();
     linkController.dispose();
-    payController.dispose();
-    relationNoteController.dispose();
     cubit.close();
     super.dispose();
   }
@@ -118,25 +73,27 @@ class _DetailPageState extends State<DetailPage> {
         bride: brideController.text,
         date: selectedDate!,
         location: locationController.text,
-        attendance: selectedAttendance,
-        // The field is the single source of truth: presets write into it.
-        pay: int.tryParse(payController.text.trim()) ?? 0,
-        relation: selectedRelation,
-        relationNote: relationNoteController.text.trim(),
       );
       cubit.editSchedule(editedSchedule);
-      final AnalyticsService analytics = getIt<AnalyticsService>();
-      analytics.logEvent(AnalyticsEvents.attendanceRecorded,
-          parameters: {AnalyticsParams.status: editedSchedule.attendance.name});
-      if (editedSchedule.pay > 0) {
-        analytics.logEvent(AnalyticsEvents.giftRecorded,
-            parameters: {AnalyticsParams.amountBucket: _amountBucket(editedSchedule.pay)});
-      }
       editMode = false;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('일정이 변경되었습니다.')),
       );
     });
+  }
+
+  /// Opens the attendance/gift record page and reflects its result.
+  Future<void> _openRecordPage() async {
+    final Object? result = await navigatorKey.currentState
+        ?.pushNamed('/schedule/record', arguments: cubit.state.schedule!);
+    if (result is Schedule && mounted) {
+      // The record page already persisted the change; only the local
+      // state needs to catch up.
+      setState(() => cubit.setSchedule(result));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('기록했어요.')),
+      );
+    }
   }
 
   InputDecoration customInputDecoration({String? labelText}) {
@@ -221,76 +178,6 @@ class _DetailPageState extends State<DetailPage> {
     }
   }
 
-  /// The relation-note hint, stable per schedule so it doesn't flicker on
-  /// rebuilds but still varies across schedules.
-  String get _relationNoteHint =>
-      relationNoteHints[widget.schedule.link.hashCode.abs() %
-          relationNoteHints.length];
-
-  /// Asks the model for an amount using the form's current values; a failed
-  /// call degrades to the rule-based fallback instead of an error state.
-  Future<void> _requestRecommendation() async {
-    getIt<AnalyticsService>().logEvent(
-      AnalyticsEvents.payRecommendationRequested,
-      parameters: {AnalyticsParams.relation: selectedRelation.name},
-    );
-    setState(() => recommending = true);
-
-    final Schedule request = cubit.state.schedule!.copyWith(
-      location: locationController.text,
-      attendance: selectedAttendance,
-      relation: selectedRelation,
-      relationNote: relationNoteController.text.trim(),
-    );
-    PayRecommendation result;
-    bool fromFallback = false;
-    try {
-      result = await getIt<RecommendPayUsecase>().execute(request);
-    } catch (_) {
-      result = PayRecommendation.fallback(selectedRelation);
-      fromFallback = true;
-    }
-    if (!mounted) return;
-    setState(() {
-      recommendation = result;
-      recommendationFromFallback = fromFallback;
-      recommending = false;
-    });
-  }
-
-  void _applyRecommendation() {
-    final PayRecommendation applied = recommendation!;
-    getIt<AnalyticsService>().logEvent(
-      AnalyticsEvents.payRecommendationApplied,
-      parameters: {
-        AnalyticsParams.relation: selectedRelation.name,
-        AnalyticsParams.recommendationSource:
-            recommendationFromFallback ? 'fallback' : 'model',
-      },
-    );
-    setState(() {
-      // The amount usually isn't a preset, so unlock the field.
-      customPay = !payPresets.contains(applied.amount);
-      payController.text = applied.amount.toString();
-    });
-  }
-
-  /// Maps a gift amount onto the `amount_bucket` analytics value.
-  static String _amountBucket(int pay) {
-    switch (pay) {
-      case 50000:
-        return '50k';
-      case 100000:
-        return '100k';
-      case 200000:
-        return '200k';
-      case 300000:
-        return '300k';
-      default:
-        return 'custom';
-    }
-  }
-
   void _showDeleteDialog() {
     showDialog(
       context: context,
@@ -345,20 +232,32 @@ class _DetailPageState extends State<DetailPage> {
           top: false,
           child: Scaffold(
             appBar: AppBar(
-              actions: [
-                IconButton(
-                  tooltip: editMode ? '저장' : '수정',
-                  icon: Icon(editMode ? Icons.save : Icons.edit),
-                  onPressed: editMode ? saveChanges : toggleEditMode,
-                ),
-                editMode
-                    ? Container()
-                    : IconButton(
+              title: editMode ? const Text('일정 수정') : null,
+              actions: editMode
+                  ? [
+                      // A labeled action reads clearer than the old floppy
+                      // icon, which was easy to miss.
+                      TextButton(
+                        onPressed: saveChanges,
+                        child: const Text(
+                          '저장',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ]
+                  : [
+                      IconButton(
+                        tooltip: '수정',
+                        icon: const Icon(Icons.edit),
+                        onPressed: toggleEditMode,
+                      ),
+                      IconButton(
                         tooltip: '삭제',
                         icon: const Icon(Icons.delete),
                         onPressed: _showDeleteDialog,
                       ),
-              ],
+                    ],
             ),
             body: SingleChildScrollView(
               child: Column(
@@ -433,6 +332,7 @@ class _DetailPageState extends State<DetailPage> {
           icon: Icons.how_to_reg_outlined,
           label: '참석',
           value: schedule.attendance.label,
+          onTap: _openRecordPage,
         ),
         // Relation row; hidden until the user records one.
         if (schedule.relation != Relation.unset) ...[
@@ -442,6 +342,7 @@ class _DetailPageState extends State<DetailPage> {
             label: '관계',
             value: schedule.relation.label,
             hint: schedule.relationNote.isEmpty ? null : schedule.relationNote,
+            onTap: _openRecordPage,
           ),
         ],
         const _RowDivider(),
@@ -450,6 +351,8 @@ class _DetailPageState extends State<DetailPage> {
           label: '축의금',
           value: schedule.pay > 0 ? schedule.pay.krCurrency : '아직 기록하지 않았어요',
           valueColor: schedule.pay > 0 ? null : Palette.grey500,
+          hint: '탭해서 기록하고 AI 추천도 받아보세요',
+          onTap: _openRecordPage,
         ),
 
         // Accounts row; renders nothing when none were parsed.
@@ -501,227 +404,7 @@ class _DetailPageState extends State<DetailPage> {
           decoration: customInputDecoration(labelText: '장소'),
           style: const TextStyle(fontSize: 16),
         ),
-        const SizedBox(height: 16),
-        const _FieldLabel('참석 여부'),
-        Wrap(
-          spacing: 8,
-          children: Attendance.values
-              .map(
-                (attendance) => _choiceChip(
-                  label: attendance.label,
-                  selected: selectedAttendance == attendance,
-                  onSelected: () =>
-                      setState(() => selectedAttendance = attendance),
-                ),
-              )
-              .toList(),
-        ),
-        const SizedBox(height: 16),
-        const _FieldLabel('신랑·신부와의 관계'),
-        Wrap(
-          spacing: 8,
-          children: Relation.values
-              .where((relation) => relation != Relation.unset)
-              .map(
-                (relation) => _choiceChip(
-                  label: relation.label,
-                  selected: selectedRelation == relation,
-                  onSelected: () =>
-                      setState(() => selectedRelation = relation),
-                ),
-              )
-              .toList(),
-        ),
-        const SizedBox(height: 8),
-        TextField(
-          key: const ValueKey('relation-note-field'),
-          controller: relationNoteController,
-          decoration: customInputDecoration().copyWith(
-            hintText: _relationNoteHint,
-            helperText: '어떤 사이인지 적어주시면 AI 추천이 더 정확해져요 (선택)',
-          ),
-          style: const TextStyle(fontSize: 16),
-        ),
-        const SizedBox(height: 16),
-        const _FieldLabel('축의금'),
-        TextField(
-          key: const ValueKey('pay-field'),
-          controller: payController,
-          keyboardType: TextInputType.number,
-          // Right-aligned so the amount sits next to the '원' suffix.
-          textAlign: TextAlign.right,
-          // Presets fill this field; typing into it needs '직접 입력' first.
-          enabled: customPay,
-          // The '축의금' label already sits above, so the field only needs a hint.
-          decoration: customInputDecoration().copyWith(
-            hintText: '0',
-            suffixText: '원',
-          ),
-          style: const TextStyle(fontSize: 16),
-        ),
-        const SizedBox(height: 8),
-
-        // Shortcuts under the field, deliberately small: they feed the field
-        // above rather than being the primary control.
-        Wrap(
-          spacing: 6,
-          children: [
-            ...payPresets.map(
-              (amount) => _choiceChip(
-                label: '${amount ~/ 10000}만원',
-                selected: !customPay &&
-                    int.tryParse(payController.text.trim()) == amount,
-                onSelected: () => setState(() {
-                  customPay = false;
-                  payController.text = amount.toString();
-                }),
-              ),
-            ),
-            _choiceChip(
-              label: '직접 입력',
-              selected: customPay,
-              onSelected: () => setState(() => customPay = true),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        _buildRecommendationSection(),
       ],
-    );
-  }
-
-  /// The AI-recommendation area of the edit form: a request button until a
-  /// suggestion exists, then a card with the amount, range and rationale.
-  Widget _buildRecommendationSection() {
-    final bool isLight = Theme.of(context).brightness == Brightness.light;
-    final Color accent = isLight ? Palette.burgundy : Palette.burgundy100;
-
-    if (recommendation == null) {
-      return OutlinedButton.icon(
-        key: const ValueKey('recommend-button'),
-        onPressed: recommending ? null : _requestRecommendation,
-        icon: recommending
-            ? const SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : const Icon(Icons.auto_awesome, size: 18),
-        label: Text(recommending ? '얼마가 좋을지 고민하는 중...' : 'AI에게 축의금 추천받기'),
-      );
-    }
-
-    final PayRecommendation shown = recommendation!;
-    return Container(
-      key: const ValueKey('recommendation-card'),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isLight ? Palette.burgundy50 : Palette.grey800,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.auto_awesome, size: 16, color: accent),
-              const SizedBox(width: 6),
-              Text(
-                recommendationFromFallback ? '기본 가이드' : 'AI 추천',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  color: accent,
-                ),
-              ),
-              const Spacer(),
-              Text(
-                '${shown.minAmount.krCurrency}~${shown.maxAmount.krCurrency}',
-                style: TextStyle(fontSize: 12, color: Palette.grey500),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text(
-            shown.amount.krCurrency,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            shown.reason,
-            style: TextStyle(
-              fontSize: 13,
-              height: 1.4,
-              color: isLight ? Palette.grey700 : Palette.grey400,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed: recommending ? null : _requestRecommendation,
-                child: const Text('다시 추천'),
-              ),
-              const SizedBox(width: 4),
-              FilledButton(
-                key: const ValueKey('apply-recommendation'),
-                style: FilledButton.styleFrom(
-                  minimumSize: const Size(0, 40),
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                ),
-                onPressed: _applyRecommendation,
-                child: const Text('이 금액 적용'),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _choiceChip({
-    required String label,
-    required bool selected,
-    required VoidCallback onSelected,
-  }) {
-    final bool isLight = Theme.of(context).brightness == Brightness.light;
-    return ChoiceChip(
-      label: Text(label),
-      selected: selected,
-      showCheckmark: false,
-      // The default selected color comes from the theme's secondaryContainer,
-      // which is off-palette.
-      selectedColor: isLight ? Palette.burgundy50 : Palette.burgundy600,
-      labelStyle: TextStyle(
-        fontSize: 13,
-        color: selected
-            ? (isLight ? Palette.burgundy : Palette.burgundy100)
-            : (isLight ? Palette.grey700 : Palette.grey400),
-        fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-      ),
-      labelPadding: const EdgeInsets.symmetric(horizontal: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      visualDensity: VisualDensity.compact,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      onSelected: (_) => onSelected(),
-    );
-  }
-}
-
-class _FieldLabel extends StatelessWidget {
-  final String text;
-
-  const _FieldLabel(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(
-        text,
-        style: TextStyle(fontSize: 13, color: Palette.grey600),
-      ),
     );
   }
 }
