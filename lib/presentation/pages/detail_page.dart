@@ -37,6 +37,15 @@ class _DetailPageState extends State<DetailPage> {
   final TextEditingController linkController = TextEditingController();
   DateTime? selectedDate;
 
+  /// Expanded height of the hero header behind the sliver app bar.
+  static const double _heroHeight = 280;
+
+  final ScrollController _scrollController = ScrollController();
+
+  /// True once the hero header has collapsed under the toolbar; drives the
+  /// title fade-in and the toolbar color switch.
+  bool _collapsed = false;
+
   @override
   void initState() {
     super.initState();
@@ -48,6 +57,7 @@ class _DetailPageState extends State<DetailPage> {
     locationController.text = widget.schedule.location;
     linkController.text = widget.schedule.link;
     selectedDate = widget.schedule.date;
+    _scrollController.addListener(_onScroll);
   }
 
   @override
@@ -56,8 +66,20 @@ class _DetailPageState extends State<DetailPage> {
     brideController.dispose();
     locationController.dispose();
     linkController.dispose();
+    _scrollController.dispose();
     cubit.close();
     super.dispose();
+  }
+
+  void _onScroll() {
+    // The header counts as collapsed once only the toolbar strip remains.
+    final double threshold = _heroHeight -
+        kToolbarHeight -
+        MediaQuery.of(context).padding.top;
+    final bool collapsed = _scrollController.offset >= threshold;
+    if (collapsed != _collapsed) {
+      setState(() => _collapsed = collapsed);
+    }
   }
 
   void toggleEditMode() {
@@ -219,6 +241,10 @@ class _DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
     final Schedule schedule = cubit.state.schedule!;
+    // While the hero is expanded the toolbar sits on the photo, so its
+    // icons and title render white; both return to theme colors once the
+    // bar collapses onto a solid background.
+    final Color? overlayColor = _collapsed ? null : Palette.white;
 
     return BlocProvider<DetailCubit>.value(
       value: cubit,
@@ -231,45 +257,67 @@ class _DetailPageState extends State<DetailPage> {
         child: SafeArea(
           top: false,
           child: Scaffold(
-            appBar: AppBar(
-              title: editMode ? const Text('일정 수정') : null,
-              actions: editMode
-                  ? [
-                      // A labeled action reads clearer than the old floppy
-                      // icon, which was easy to miss.
-                      TextButton(
-                        onPressed: saveChanges,
-                        child: const Text(
-                          '저장',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+            body: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                SliverAppBar(
+                  pinned: true,
+                  expandedHeight: _heroHeight,
+                  foregroundColor: overlayColor,
+                  // The couple already headlines the expanded photo, so the
+                  // toolbar title only fades in as the header collapses —
+                  // the standard content-led detail pattern.
+                  title: editMode
+                      ? const Text('일정 수정')
+                      : AnimatedOpacity(
+                          duration: const Duration(milliseconds: 150),
+                          opacity: _collapsed ? 1 : 0,
+                          child: Text(
+                            '${schedule.groom} & ${schedule.bride}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                      ),
-                    ]
-                  : [
-                      IconButton(
-                        tooltip: '수정',
-                        icon: const Icon(Icons.edit),
-                        onPressed: toggleEditMode,
-                      ),
-                      IconButton(
-                        tooltip: '삭제',
-                        icon: const Icon(Icons.delete),
-                        onPressed: _showDeleteDialog,
-                      ),
-                    ],
-            ),
-            body: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _HeroHeader(schedule: schedule, showCouple: !editMode),
-                  Padding(
+                  actions: editMode
+                      ? [
+                          // A labeled action reads clearer than the old
+                          // floppy icon, which was easy to miss.
+                          TextButton(
+                            onPressed: saveChanges,
+                            child: Text(
+                              '저장',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: overlayColor,
+                              ),
+                            ),
+                          ),
+                        ]
+                      : [
+                          IconButton(
+                            tooltip: '수정',
+                            icon: const Icon(Icons.edit),
+                            onPressed: toggleEditMode,
+                          ),
+                          IconButton(
+                            tooltip: '삭제',
+                            icon: const Icon(Icons.delete),
+                            onPressed: _showDeleteDialog,
+                          ),
+                        ],
+                  flexibleSpace: FlexibleSpaceBar(
+                    background:
+                        _HeroHeader(schedule: schedule, showCouple: !editMode),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
                     child: editMode ? _buildEditForm() : _buildInfoCard(),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -418,56 +466,70 @@ class _HeroHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 280,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          CachedNetworkImage(
-            imageUrl: schedule.thumbnail,
-            fit: BoxFit.cover,
-            errorWidget: (_, __, ___) => Container(color: Palette.burgundy50),
-          ),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        CachedNetworkImage(
+          imageUrl: schedule.thumbnail,
+          fit: BoxFit.cover,
+          errorWidget: (_, __, ___) => Container(color: Palette.burgundy50),
+        ),
 
-          // Darken the bottom only, so the names stay readable over the photo.
-          if (showCouple)
-            DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.center,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withValues(alpha: 0.6),
-                  ],
-                ),
+        // The toolbar now floats over the photo, so darken the top a step
+        // to keep its white icons readable over bright skies.
+        DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.center,
+              colors: [
+                Colors.black.withValues(alpha: 0.35),
+                Colors.transparent,
+              ],
+            ),
+          ),
+        ),
+
+        // Darken the bottom only, so the names stay readable over the photo.
+        if (showCouple)
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.center,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.black.withValues(alpha: 0.6),
+                ],
               ),
             ),
+          ),
 
+        // Bottom corner, clear of the toolbar actions above.
+        Positioned(
+          bottom: 20,
+          right: 16,
+          child: DDayBadge(date: schedule.date),
+        ),
+
+        if (showCouple)
           Positioned(
-            top: 16,
-            right: 16,
-            child: DDayBadge(date: schedule.date),
-          ),
-
-          if (showCouple)
-            Positioned(
-              left: 20,
-              right: 20,
-              bottom: 20,
-              child: Text(
-                '🤵‍♂️ ${schedule.groom} & 👰‍♀️ ${schedule.bride}',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Palette.white,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+            left: 20,
+            // Leave room for the D-day badge in the corner.
+            right: 100,
+            bottom: 20,
+            child: Text(
+              '🤵‍♂️ ${schedule.groom} & 👰‍♀️ ${schedule.bride}',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Palette.white,
               ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
