@@ -114,6 +114,7 @@ class MainApp extends StatelessWidget {
               ModalRoute.of(context)!.settings.arguments as Schedule;
           return RecordPage(schedule: schedule);
         },
+        '/stats': (context) => const StatsPage(),
         '/about': (context) => const AboutPage(),
         '/about/developer_info': (context) => const DeveloperInfoPage(),
       },

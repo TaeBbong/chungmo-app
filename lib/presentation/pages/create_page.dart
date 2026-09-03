@@ -315,6 +315,13 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                       },
                     )
                   : Container(),
+              IconButton(
+                tooltip: '축의금 통계',
+                icon: const Icon(Icons.insights_outlined),
+                onPressed: () {
+                  navigatorKey.currentState?.pushNamed('/stats');
+                },
+              ),
               // Terms/privacy moved into the about page; one entry point.
               IconButton(
                 tooltip: '앱 정보',

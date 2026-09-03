@@ -144,6 +144,7 @@ Event and parameter names use `lower_snake_case` and stay within Firebase limits
 | `notification_opened` | App opened from a notification | — |
 | `pay_reco_requested` | AI gift-amount recommendation requested | `relation` |
 | `pay_reco_applied` | Recommended amount applied to the pay field | `relation`, `reco_source` |
+| `stats_viewed` | Gift-money statistics dashboard opened | — |
 
 `first_open`, `session_start`, `app_open`, and `screen_view` are collected
 automatically by Firebase Analytics.
@@ -205,6 +206,7 @@ Call sites:
 | `CreateCubit.analyzeLink` | funnel: submitted → started → succeeded / failed → saved |
 | Detail page / cubit | `schedule_opened`, `location_map_opened`, `attendance_recorded`, `gift_recorded`, `account_copied`, `schedule_deleted`, `pay_reco_requested`, `pay_reco_applied` |
 | Calendar page | `calendar_viewed` |
+| Stats page | `stats_viewed` |
 | Notification handler | `notification_opened` |
 
 ---

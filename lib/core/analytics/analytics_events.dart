@@ -28,6 +28,7 @@ class AnalyticsEvents {
   static const String notificationOpened = 'notification_opened';
   static const String payRecommendationRequested = 'pay_reco_requested';
   static const String payRecommendationApplied = 'pay_reco_applied';
+  static const String statsViewed = 'stats_viewed';
 }
 
 /// Parameter keys attached to [AnalyticsEvents].
