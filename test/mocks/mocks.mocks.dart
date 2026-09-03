@@ -246,6 +246,17 @@ class MockScheduleLocalSource extends _i1.Mock
       ) as _i11.Future<_i2.ScheduleModel?>);
 
   @override
+  _i11.Future<List<_i2.ScheduleModel>> getAllSchedulesOnce() =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getAllSchedulesOnce,
+          [],
+        ),
+        returnValue:
+            _i11.Future<List<_i2.ScheduleModel>>.value(<_i2.ScheduleModel>[]),
+      ) as _i11.Future<List<_i2.ScheduleModel>>);
+
+  @override
   _i11.Future<void> refresh() => (super.noSuchMethod(
         Invocation.method(
           #refresh,

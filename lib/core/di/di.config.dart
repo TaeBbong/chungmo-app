@@ -16,6 +16,8 @@ import 'package:chungmo/core/services/calendar_service.dart' as _i213;
 import 'package:chungmo/core/services/notification_service.dart' as _i109;
 import 'package:chungmo/core/services/preferences_checker.dart' as _i391;
 import 'package:chungmo/core/services/share_intent_service.dart' as _i774;
+import 'package:chungmo/data/repositories/pay_recommendation_repository.dart'
+    as _i700;
 import 'package:chungmo/data/repositories/schedule_repository.dart' as _i798;
 import 'package:chungmo/data/sources/local/app_preferences_local_source.dart'
     as _i98;
@@ -24,8 +26,14 @@ import 'package:chungmo/data/sources/local/schedule_local_source.dart'
 import 'package:chungmo/data/sources/remote/cloud_function_impl.dart' as _i409;
 import 'package:chungmo/data/sources/remote/firebase_ai_logic_impl.dart'
     as _i695;
+import 'package:chungmo/data/sources/remote/firebase_ai_pay_recommendation_impl.dart'
+    as _i452;
+import 'package:chungmo/data/sources/remote/pay_recommendation_source.dart'
+    as _i182;
 import 'package:chungmo/data/sources/remote/schedule_remote_source.dart'
     as _i153;
+import 'package:chungmo/domain/repositories/pay_recommendation_repository.dart'
+    as _i610;
 import 'package:chungmo/domain/repositories/schedule_repository.dart' as _i561;
 import 'package:chungmo/domain/usecases/analyze_image_usecase.dart' as _i338;
 import 'package:chungmo/domain/usecases/analyze_link_usecase.dart' as _i596;
@@ -34,14 +42,15 @@ import 'package:chungmo/domain/usecases/delete_schedule_usecase.dart' as _i993;
 import 'package:chungmo/domain/usecases/edit_schedule_usecase.dart' as _i15;
 import 'package:chungmo/domain/usecases/get_schedule_by_link_usecase.dart'
     as _i634;
+import 'package:chungmo/domain/usecases/recommend_pay_usecase.dart' as _i1010;
 import 'package:chungmo/domain/usecases/save_schedule_usecase.dart' as _i485;
 import 'package:chungmo/domain/usecases/watch_all_schedules_usecase.dart'
     as _i389;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
-const String _cloud = 'cloud';
 const String _firebase = 'firebase';
+const String _cloud = 'cloud';
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -53,6 +62,10 @@ extension GetItInjectableX on _i174.GetIt {
       this,
       environment,
       environmentFilter,
+    );
+    gh.lazySingleton<_i182.PayRecommendationSource>(
+      () => _i452.FirebaseAiPayRecommendationImpl(),
+      registerFor: {_firebase},
     );
     gh.lazySingleton<_i109.NotificationService>(
         () => _i109.NotificationServiceImpl());
@@ -71,10 +84,17 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i774.ShareIntentServiceImpl());
     gh.factory<_i391.PreferencesChecker>(
         () => _i391.PreferencesChecker(gh<_i98.AppPreferencesLocalSource>()));
+    gh.lazySingleton<_i610.PayRecommendationRepository>(
+        () => _i700.PayRecommendationRepositoryImpl(
+              gh<_i182.PayRecommendationSource>(),
+              gh<_i1014.ScheduleLocalSource>(),
+            ));
     gh.lazySingleton<_i153.ScheduleRemoteSource>(
       () => _i695.FirebaseAiLogicImpl(),
       registerFor: {_firebase},
     );
+    gh.factory<_i1010.RecommendPayUsecase>(() =>
+        _i1010.RecommendPayUsecase(gh<_i610.PayRecommendationRepository>()));
     gh.lazySingleton<_i561.ScheduleRepository>(
         () => _i798.ScheduleRepositoryImpl(
               gh<_i153.ScheduleRemoteSource>(),
