@@ -95,6 +95,17 @@ class MainApp extends StatelessWidget {
         Locale('en', 'US'),
       ],
       initialRoute: showOnboarding ? '/onboarding' : '/',
+      // The default generator expands '/onboarding' into '/' plus
+      // '/onboarding', instantiating a hidden home underneath whose coach
+      // mark tour fails offscreen; build exactly one initial route instead.
+      onGenerateInitialRoutes: (String initialRoute) => [
+        MaterialPageRoute<void>(
+          settings: RouteSettings(name: initialRoute),
+          builder: (_) => initialRoute == '/onboarding'
+              ? const OnboardingPage()
+              : const CreatePage(),
+        ),
+      ],
       routes: {
         '/': (context) => const CreatePage(),
         '/onboarding': (context) => const OnboardingPage(),

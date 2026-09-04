@@ -118,13 +118,13 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
   }
 
   Future<void> _initTutorial() async {
-    if (await preferencesChecker.hasKey(Constants.tourDoneKey)) return;
-    // The legacy key marks a user who saw the original tour before this
-    // version; show them only the steps that are new since then.
-    final bool sawOriginalTour =
-        await preferencesChecker.hasKey(Constants.legacyTourDoneKey);
-    if (!mounted) return;
-    _showTour(newFeaturesOnly: sawOriginalTour);
+    final TourMode? mode = TutorialManager.resolveTourMode(
+      sawVersionedTour: await preferencesChecker.hasKey(Constants.tourDoneKey),
+      sawLegacyTour:
+          await preferencesChecker.hasKey(Constants.legacyTourDoneKey),
+    );
+    if (mode == null || !mounted) return;
+    _showTour(newFeaturesOnly: mode == TourMode.newFeaturesOnly);
   }
 
   void _showTour({required bool newFeaturesOnly}) {
@@ -136,15 +136,62 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
       calendarPageKey: calendarPageKey,
     );
     tutorialManager.initTargets(newFeaturesOnly: newFeaturesOnly);
-    // Home is pushed from onboarding; wait for the route transition so
-    // the coach mark can locate its target widgets, otherwise it fails
-    // silently before they are laid out.
+    // Home replaces the onboarding route; the coach mark reads target
+    // positions eagerly and aborts silently while the entrance transition
+    // is still animating, so wait for the route to settle first.
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future.delayed(const Duration(milliseconds: 500));
+      // Only the replay flow waits out a covering route's pop (settings
+      // closing); the automatic flow must instead defer to a later launch
+      // when something covers home, checked right below.
+      await _waitForRouteSettled(waitForCoveringRoute: replay);
       if (!mounted) return;
-      tutorialManager.showTutorial();
-      await preferencesChecker.setKey(Constants.tourDoneKey);
+      // A route pushed on top at launch (e.g. a notification deep link)
+      // covers the targets; skip without marking done so the tour can
+      // still show on a later launch.
+      if (ModalRoute.of(context)?.isCurrent == false) return;
+      // A launch-time share swaps home into its loading branch and
+      // unmounts tour targets; showing now would abort yet still fire
+      // the done callback, so bail out and let a later launch retry.
+      if (!tutorialManager.targetsReady) return;
+      // Persist only on real completion (finish or explicit skip), not
+      // merely because the overlay was requested.
+      tutorialManager.showTutorial(
+        onDone: () => preferencesChecker.setKey(Constants.tourDoneKey),
+      );
     });
+  }
+
+  /// Waits until this route stops moving: its entrance animation has
+  /// completed and, with [waitForCoveringRoute], any covering route has
+  /// fully popped. The pop matters for the tutorial replay — pushNamed's
+  /// future resolves before the pop transition starts, and the Cupertino
+  /// transition shifts this page while it runs, which would skew the coach
+  /// mark positions read at focus time.
+  Future<void> _waitForRouteSettled(
+      {required bool waitForCoveringRoute}) async {
+    final ModalRoute<Object?>? route = ModalRoute.of(context);
+    await _waitForStatus(route?.animation, AnimationStatus.completed);
+    if (waitForCoveringRoute) {
+      await _waitForStatus(
+          route?.secondaryAnimation, AnimationStatus.dismissed);
+    }
+    // One more frame so the settled positions are laid out and readable.
+    await WidgetsBinding.instance.endOfFrame;
+  }
+
+  Future<void> _waitForStatus(
+      Animation<double>? animation, AnimationStatus target) async {
+    if (animation == null || animation.status == target) return;
+    final Completer<void> settled = Completer<void>();
+    void onStatus(AnimationStatus status) {
+      if (status == target) {
+        animation.removeStatusListener(onStatus);
+        settled.complete();
+      }
+    }
+
+    animation.addStatusListener(onStatus);
+    await settled.future;
   }
 
   void _onSubmit() {

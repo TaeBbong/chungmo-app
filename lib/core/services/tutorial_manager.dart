@@ -5,6 +5,9 @@ import '../../presentation/theme/app_typography.dart';
 import '../../presentation/theme/dimens.dart';
 import '../../presentation/theme/palette.dart';
 
+/// Which variant of the home coach mark tour a user should see.
+enum TourMode { full, newFeaturesOnly }
+
 /// Coach mark tour over the home screen, shown once after onboarding.
 ///
 /// [initTargets] builds either the full tour or, with `newFeaturesOnly`,
@@ -27,6 +30,17 @@ class TutorialManager {
     required this.statsPageKey,
     required this.calendarPageKey,
   });
+
+  /// Resolves which tour to show from the stored completion keys: none
+  /// once the versioned key is recorded, only the new steps for a user
+  /// who saw the legacy tour, and the full tour for a first-timer.
+  static TourMode? resolveTourMode({
+    required bool sawVersionedTour,
+    required bool sawLegacyTour,
+  }) {
+    if (sawVersionedTour) return null;
+    return sawLegacyTour ? TourMode.newFeaturesOnly : TourMode.full;
+  }
 
   @visibleForTesting
   int get targetCount => _targets.length;
@@ -109,14 +123,24 @@ class TutorialManager {
     }
   }
 
-  void showTutorial() {
+  /// Whether every built target's widget is currently mounted. Check this
+  /// before [showTutorial]: on a missing target the package aborts and still
+  /// fires its finish/skip callbacks, indistinguishable from a real run.
+  bool get targetsReady =>
+      _targets.every((t) => t.keyTarget?.currentContext != null);
+
+  /// Shows the tour. [onDone] fires when the user finishes the last step or
+  /// skips — the only signals the package exposes for completion.
+  void showTutorial({VoidCallback? onDone}) {
     _tutorialCoachMark = TutorialCoachMark(
       targets: _targets,
       colorShadow: Palette.black,
       opacityShadow: 0.75,
       paddingFocus: 10,
       hideSkip: true,
+      onFinish: onDone,
       onSkip: () {
+        onDone?.call();
         return true;
       },
     );
