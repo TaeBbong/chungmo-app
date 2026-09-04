@@ -43,6 +43,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
   late TutorialManager tutorialManager;
   final GlobalKey linkInputKey = GlobalKey(debugLabel: 'link-input');
   final GlobalKey resultBodyKey = GlobalKey(debugLabel: 'result-body');
+  final GlobalKey statsPageKey = GlobalKey(debugLabel: 'stats-page');
   final GlobalKey calendarPageKey = GlobalKey(debugLabel: 'calendar-page');
   bool _clipboardHasText = false;
   StreamSubscription<SharedInvitation>? _shareSub;
@@ -117,27 +118,33 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
   }
 
   Future<void> _initTutorial() async {
-    final bool isFirst =
-        !(await preferencesChecker.hasKey(Constants.legacyTourDoneKey));
+    if (await preferencesChecker.hasKey(Constants.tourDoneKey)) return;
+    // The legacy key marks a user who saw the original tour before this
+    // version; show them only the steps that are new since then.
+    final bool sawOriginalTour =
+        await preferencesChecker.hasKey(Constants.legacyTourDoneKey);
     if (!mounted) return;
-    if (isFirst) {
-      tutorialManager = TutorialManager(
-        context: context,
-        linkInputKey: linkInputKey,
-        resultBodyKey: resultBodyKey,
-        calendarPageKey: calendarPageKey,
-      );
-      tutorialManager.initTargets();
-      // Home is pushed from onboarding; wait for the route transition so
-      // the coach mark can locate its target widgets, otherwise it fails
-      // silently before they are laid out.
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await Future.delayed(const Duration(milliseconds: 500));
-        if (!mounted) return;
-        tutorialManager.showTutorial();
-        await preferencesChecker.setKey(Constants.legacyTourDoneKey);
-      });
-    }
+    _showTour(newFeaturesOnly: sawOriginalTour);
+  }
+
+  void _showTour({required bool newFeaturesOnly}) {
+    tutorialManager = TutorialManager(
+      context: context,
+      linkInputKey: linkInputKey,
+      resultBodyKey: resultBodyKey,
+      statsPageKey: statsPageKey,
+      calendarPageKey: calendarPageKey,
+    );
+    tutorialManager.initTargets(newFeaturesOnly: newFeaturesOnly);
+    // Home is pushed from onboarding; wait for the route transition so
+    // the coach mark can locate its target widgets, otherwise it fails
+    // silently before they are laid out.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (!mounted) return;
+      tutorialManager.showTutorial();
+      await preferencesChecker.setKey(Constants.tourDoneKey);
+    });
   }
 
   void _onSubmit() {
@@ -318,6 +325,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                     )
                   : Container(),
               IconButton(
+                key: statsPageKey,
                 tooltip: '축의금 통계',
                 icon: const Icon(Icons.insights_outlined),
                 onPressed: () {
