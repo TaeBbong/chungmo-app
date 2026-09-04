@@ -13,6 +13,7 @@ import 'core/env.dart';
 import 'core/navigation/app_navigation.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/preferences_checker.dart';
+import 'core/utils/constants.dart';
 import 'presentation/pages/pages.dart';
 import 'presentation/theme/dark_theme.dart';
 import 'presentation/theme/light_theme.dart';
@@ -60,7 +61,7 @@ void main() async {
   await notificationService.getPermissions();
   await notificationService.init();
   final bool onboarded =
-      await getIt<PreferencesChecker>().hasKey(kOnboardingDoneKey);
+      await getIt<PreferencesChecker>().hasKey(Constants.onboardingDoneKey);
   // await initializeDateFormatting('ko_KR', 'null');
   Future.delayed(const Duration(seconds: 1), () {
     FlutterNativeSplash.remove();
@@ -72,6 +73,33 @@ class MainApp extends StatelessWidget {
   final bool showOnboarding;
 
   const MainApp({super.key, this.showOnboarding = false});
+
+  /// Single route table shared by [MaterialApp.routes] and the initial
+  /// route generator so the two mappings can never drift apart.
+  static final Map<String, WidgetBuilder> _routes = {
+    '/': (context) => const CreatePage(),
+    '/onboarding': (context) => OnboardingPage(
+          review: ModalRoute.of(context)!.settings.arguments == true,
+        ),
+    // ignore: prefer_const_constructors
+    '/calendar': (context) => CalendarPage(),
+    '/detail': (context) {
+      final schedule = ModalRoute.of(context)!.settings.arguments as Schedule;
+      return DetailPage(schedule: schedule);
+    },
+    '/schedule/form': (context) {
+      final draft =
+          ModalRoute.of(context)!.settings.arguments as ScheduleDraft?;
+      return ScheduleFormPage(draft: draft);
+    },
+    '/schedule/record': (context) {
+      final schedule = ModalRoute.of(context)!.settings.arguments as Schedule;
+      return RecordPage(schedule: schedule);
+    },
+    '/stats': (context) => const StatsPage(),
+    '/about': (context) => const AboutPage(),
+    '/about/developer_info': (context) => const DeveloperInfoPage(),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -94,30 +122,16 @@ class MainApp extends StatelessWidget {
         Locale('en', 'US'),
       ],
       initialRoute: showOnboarding ? '/onboarding' : '/',
-      routes: {
-        '/': (context) => const CreatePage(),
-        '/onboarding': (context) => const OnboardingPage(),
-        // ignore: prefer_const_constructors
-        '/calendar': (context) => CalendarPage(),
-        '/detail': (context) {
-          final schedule =
-              ModalRoute.of(context)!.settings.arguments as Schedule;
-          return DetailPage(schedule: schedule);
-        },
-        '/schedule/form': (context) {
-          final draft =
-              ModalRoute.of(context)!.settings.arguments as ScheduleDraft?;
-          return ScheduleFormPage(draft: draft);
-        },
-        '/schedule/record': (context) {
-          final schedule =
-              ModalRoute.of(context)!.settings.arguments as Schedule;
-          return RecordPage(schedule: schedule);
-        },
-        '/stats': (context) => const StatsPage(),
-        '/about': (context) => const AboutPage(),
-        '/about/developer_info': (context) => const DeveloperInfoPage(),
-      },
+      // The default generator expands '/onboarding' into '/' plus
+      // '/onboarding', instantiating a hidden home underneath whose coach
+      // mark tour fails offscreen; build exactly one initial route instead.
+      onGenerateInitialRoutes: (String initialRoute) => [
+        MaterialPageRoute<void>(
+          settings: RouteSettings(name: initialRoute),
+          builder: _routes[initialRoute]!,
+        ),
+      ],
+      routes: _routes,
     );
   }
 }

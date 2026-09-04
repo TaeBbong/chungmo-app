@@ -6,6 +6,10 @@
 class AnalyticsEvents {
   AnalyticsEvents._();
 
+  // First-run experience, ahead of the activation funnel.
+  static const String onboardingFinished = 'onboarding_finished';
+  static const String tutorialFinished = 'tutorial_finished';
+
   // Activation funnel.
   static const String invitationLinkSubmitted = 'invitation_link_submitted';
   static const String invitationImageSubmitted = 'invitation_image_submitted';
@@ -55,6 +59,12 @@ class AnalyticsParams {
   /// Whether the shown recommendation came from the model or the
   /// rule-based fallback: 'model' or 'fallback'.
   static const String recommendationSource = 'reco_source';
+
+  /// How a first-run step ended: 'done' or 'skip'.
+  static const String method = 'method';
+
+  /// Which tour variant ran: 'full', 'new_features' or 'replay'.
+  static const String tourMode = 'tour_mode';
 }
 
 /// Durable user property names.

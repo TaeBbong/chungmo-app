@@ -49,6 +49,19 @@ class AboutPage extends StatelessWidget {
                       },
                     ),
                     _MenuRow(
+                      icon: Icons.auto_awesome_outlined,
+                      title: '앱 소개 다시 보기',
+                      onTap: () => navigatorKey.currentState
+                          ?.pushNamed('/onboarding', arguments: true),
+                    ),
+                    _MenuRow(
+                      icon: Icons.tour_outlined,
+                      title: '튜토리얼 다시 보기',
+                      // Home owns the coach mark targets, so pop back with a
+                      // result asking it to replay the tour.
+                      onTap: () => navigatorKey.currentState?.pop(true),
+                    ),
+                    _MenuRow(
                       icon: Icons.person_outline,
                       title: '개발자 정보',
                       onTap: () => navigatorKey.currentState

@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 
+import '../../core/analytics/analytics_events.dart';
+import '../../core/analytics/analytics_service.dart';
 import '../../core/di/di.dart';
 import '../../core/navigation/app_navigation.dart';
 import '../../core/services/preferences_checker.dart';
+import '../../core/utils/constants.dart';
 import '../theme/dimens.dart';
-
-/// SharedPreferences key marking the intro carousel as seen.
-const String kOnboardingDoneKey = 'onboarding_done';
 
 /// First-run intro carousel shown before the home screen.
 ///
-/// Finishing (or skipping) marks [kOnboardingDoneKey] and replaces the
-/// route with home, where the coach mark tour takes over.
+/// Finishing (or skipping) marks [Constants.onboardingDoneKey] and replaces
+/// the route with home, where the coach mark tour takes over. In [review]
+/// mode (opened from settings) finishing simply pops back instead.
 class OnboardingPage extends StatefulWidget {
-  const OnboardingPage({super.key});
+  final bool review;
+
+  const OnboardingPage({super.key, this.review = false});
 
   @override
   State<OnboardingPage> createState() => _OnboardingPageState();
@@ -30,9 +33,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
       body: '링크·문자·사진 어떤 청첩장이든\nAI가 읽고 일정을 자동으로 등록해요.',
     ),
     _Slide(
-      icon: Icons.calendar_month_outlined,
-      title: '일정과 축의금을 한곳에서',
-      body: '다가오는 예식은 D-day로,\n낸 축의금은 연간 합계로 한눈에 확인해요.',
+      icon: Icons.savings_outlined,
+      title: '축의금, 얼마가 적당할까요?',
+      body: '상대와의 관계를 알려주시면\n내 기록과 통계를 근거로 AI가 추천해요.',
+    ),
+    _Slide(
+      icon: Icons.insights_outlined,
+      title: '일정도 지출도 한눈에',
+      body: '다가오는 예식은 D-day로,\n낸 축의금은 연도별·관계별 통계로 확인해요.',
     ),
     _Slide(
       icon: Icons.notifications_active_outlined,
@@ -43,8 +51,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   bool get _isLast => _page == _slides.length - 1;
 
-  Future<void> _finish() async {
-    await getIt<PreferencesChecker>().setKey(kOnboardingDoneKey);
+  Future<void> _finish({bool skipped = false}) async {
+    if (widget.review) {
+      navigatorKey.currentState?.pop();
+      return;
+    }
+    getIt<AnalyticsService>().logEvent(
+      AnalyticsEvents.onboardingFinished,
+      parameters: {AnalyticsParams.method: skipped ? 'skip' : 'done'},
+    );
+    await getIt<PreferencesChecker>().setKey(Constants.onboardingDoneKey);
     navigatorKey.currentState?.pushReplacementNamed('/');
   }
 
@@ -79,7 +95,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 child: _isLast
                     ? const SizedBox(height: Dimens.xxl)
                     : TextButton(
-                        onPressed: _finish,
+                        onPressed: () => _finish(skipped: true),
                         child: const Text('건너뛰기'),
                       ),
               ),
@@ -98,7 +114,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   Dimens.screenPadding, Dimens.lg, Dimens.screenPadding, Dimens.md),
               child: ElevatedButton(
                 onPressed: _next,
-                child: Text(_isLast ? '시작하기' : '다음'),
+                child: Text(
+                    _isLast ? (widget.review ? '닫기' : '시작하기') : '다음'),
               ),
             ),
           ],

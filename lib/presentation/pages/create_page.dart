@@ -14,12 +14,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../core/analytics/analytics_events.dart';
+import '../../core/analytics/analytics_service.dart';
 import '../../core/di/di.dart';
 import '../../domain/entities/invitation_image.dart';
 import '../../core/navigation/app_navigation.dart';
 import '../../core/services/preferences_checker.dart';
 import '../../core/services/share_intent_service.dart';
 import '../../core/services/tutorial_manager.dart';
+import '../../core/utils/constants.dart';
 import '../bloc/create/create_cubit.dart';
 import '../theme/dimens.dart';
 import '../theme/palette.dart';
@@ -42,6 +44,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
   late TutorialManager tutorialManager;
   final GlobalKey linkInputKey = GlobalKey(debugLabel: 'link-input');
   final GlobalKey resultBodyKey = GlobalKey(debugLabel: 'result-body');
+  final GlobalKey statsPageKey = GlobalKey(debugLabel: 'stats-page');
   final GlobalKey calendarPageKey = GlobalKey(debugLabel: 'calendar-page');
   bool _clipboardHasText = false;
   StreamSubscription<SharedInvitation>? _shareSub;
@@ -116,26 +119,91 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
   }
 
   Future<void> _initTutorial() async {
-    final bool isFirst = !(await preferencesChecker.hasKey('is_first'));
-    if (!mounted) return;
-    if (isFirst) {
-      tutorialManager = TutorialManager(
-        context: context,
-        linkInputKey: linkInputKey,
-        resultBodyKey: resultBodyKey,
-        calendarPageKey: calendarPageKey,
+    final TourMode? mode = TutorialManager.resolveTourMode(
+      sawVersionedTour: await preferencesChecker.hasKey(Constants.tourDoneKey),
+      sawLegacyTour:
+          await preferencesChecker.hasKey(Constants.legacyTourDoneKey),
+    );
+    if (mode == null || !mounted) return;
+    _showTour(newFeaturesOnly: mode == TourMode.newFeaturesOnly);
+  }
+
+  void _showTour({required bool newFeaturesOnly, bool replay = false}) {
+    final String tourMode =
+        replay ? 'replay' : (newFeaturesOnly ? 'new_features' : 'full');
+    tutorialManager = TutorialManager(
+      context: context,
+      linkInputKey: linkInputKey,
+      resultBodyKey: resultBodyKey,
+      statsPageKey: statsPageKey,
+      calendarPageKey: calendarPageKey,
+    );
+    tutorialManager.initTargets(newFeaturesOnly: newFeaturesOnly);
+    // Home replaces the onboarding route; the coach mark reads target
+    // positions eagerly and aborts silently while the entrance transition
+    // is still animating, so wait for the route to settle first.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // Only the replay flow waits out a covering route's pop (settings
+      // closing); the automatic flow must instead defer to a later launch
+      // when something covers home, checked right below.
+      await _waitForRouteSettled(waitForCoveringRoute: replay);
+      if (!mounted) return;
+      // A route pushed on top at launch (e.g. a notification deep link)
+      // covers the targets; skip without marking done so the tour can
+      // still show on a later launch.
+      if (ModalRoute.of(context)?.isCurrent == false) return;
+      // A launch-time share swaps home into its loading branch and
+      // unmounts tour targets; showing now would abort yet still fire
+      // the done callback, so bail out and let a later launch retry.
+      if (!tutorialManager.targetsReady) return;
+      // Persist only on real completion (finish or explicit skip), not
+      // merely because the overlay was requested.
+      tutorialManager.showTutorial(
+        onDone: ({required bool skipped}) {
+          preferencesChecker.setKey(Constants.tourDoneKey);
+          getIt<AnalyticsService>().logEvent(
+            AnalyticsEvents.tutorialFinished,
+            parameters: {
+              AnalyticsParams.method: skipped ? 'skip' : 'done',
+              AnalyticsParams.tourMode: tourMode,
+            },
+          );
+        },
       );
-      tutorialManager.initTargets();
-      // Home is pushed from onboarding; wait for the route transition so
-      // the coach mark can locate its target widgets, otherwise it fails
-      // silently before they are laid out.
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await Future.delayed(const Duration(milliseconds: 500));
-        if (!mounted) return;
-        tutorialManager.showTutorial();
-        await preferencesChecker.setKey('is_first');
-      });
+    });
+  }
+
+  /// Waits until this route stops moving: its entrance animation has
+  /// completed and, with [waitForCoveringRoute], any covering route has
+  /// fully popped. The pop matters for the tutorial replay — pushNamed's
+  /// future resolves before the pop transition starts, and the Cupertino
+  /// transition shifts this page while it runs, which would skew the coach
+  /// mark positions read at focus time.
+  Future<void> _waitForRouteSettled(
+      {required bool waitForCoveringRoute}) async {
+    final ModalRoute<Object?>? route = ModalRoute.of(context);
+    await _waitForStatus(route?.animation, AnimationStatus.completed);
+    if (waitForCoveringRoute) {
+      await _waitForStatus(
+          route?.secondaryAnimation, AnimationStatus.dismissed);
     }
+    // One more frame so the settled positions are laid out and readable.
+    await WidgetsBinding.instance.endOfFrame;
+  }
+
+  Future<void> _waitForStatus(
+      Animation<double>? animation, AnimationStatus target) async {
+    if (animation == null || animation.status == target) return;
+    final Completer<void> settled = Completer<void>();
+    void onStatus(AnimationStatus status) {
+      if (status == target) {
+        animation.removeStatusListener(onStatus);
+        settled.complete();
+      }
+    }
+
+    animation.addStatusListener(onStatus);
+    await settled.future;
   }
 
   void _onSubmit() {
@@ -316,6 +384,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                     )
                   : Container(),
               IconButton(
+                key: statsPageKey,
                 tooltip: '축의금 통계',
                 icon: const Icon(Icons.insights_outlined),
                 onPressed: () {
@@ -326,8 +395,14 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
               IconButton(
                 tooltip: '앱 정보',
                 icon: const Icon(Icons.settings_outlined),
-                onPressed: () {
-                  navigatorKey.currentState?.pushNamed('/about');
+                onPressed: () async {
+                  // The about page pops with true when the user asks to
+                  // replay the tutorial; the targets live on this screen.
+                  final Object? result =
+                      await navigatorKey.currentState?.pushNamed('/about');
+                  if (result == true && mounted) {
+                    _showTour(newFeaturesOnly: false, replay: true);
+                  }
                 },
               ),
             ],

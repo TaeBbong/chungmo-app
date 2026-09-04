@@ -1,6 +1,18 @@
 abstract class Constants {
   static const List<String> weekdays = ['월', '화', '수', '목', '금', '토', '일'];
 
+  /// Preference key marking the intro carousel as seen.
+  static const String onboardingDoneKey = 'onboarding_done';
+
+  /// Preference key marking the home coach mark tour as seen. Versioned:
+  /// bump the suffix when the tour gains steps so users who already saw an
+  /// older tour get the new steps once after updating.
+  static const String tourDoneKey = 'tutorial_done_v2';
+
+  /// Pre-versioning tour key; its presence identifies a user who saw the
+  /// original 3-step tour before [tourDoneKey] existed.
+  static const String legacyTourDoneKey = 'is_first';
+
   /// Gemini model used by every Firebase AI Logic call (invitation parsing
   /// and the pay recommendation).
   static const String geminiModel = 'gemini-2.5-flash';
