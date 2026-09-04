@@ -383,8 +383,14 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
               IconButton(
                 tooltip: '앱 정보',
                 icon: const Icon(Icons.settings_outlined),
-                onPressed: () {
-                  navigatorKey.currentState?.pushNamed('/about');
+                onPressed: () async {
+                  // The about page pops with true when the user asks to
+                  // replay the tutorial; the targets live on this screen.
+                  final Object? result =
+                      await navigatorKey.currentState?.pushNamed('/about');
+                  if (result == true && mounted) {
+                    _showTour(newFeaturesOnly: false);
+                  }
                 },
               ),
             ],

@@ -1,3 +1,4 @@
+import 'package:chungmo/core/navigation/app_navigation.dart';
 import 'package:chungmo/presentation/pages/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -39,6 +40,40 @@ void main() {
       await tapNext(tester);
 
       expect(find.textContaining('AI가 추천해요'), findsOneWidget);
+    });
+
+    testWidgets('review mode closes instead of starting the app',
+        (tester) async {
+      await tester.pumpWidget(
+          const MaterialApp(home: OnboardingPage(review: true)));
+
+      await tapNext(tester);
+      await tapNext(tester);
+      await tapNext(tester);
+
+      expect(find.text('닫기'), findsOneWidget);
+      expect(find.text('시작하기'), findsNothing);
+    });
+
+    testWidgets('review mode pops back to the page underneath',
+        (tester) async {
+      // The page pops through the app's global navigator key.
+      await tester.pumpWidget(MaterialApp(
+        navigatorKey: navigatorKey,
+        home: const Scaffold(body: SizedBox()),
+      ));
+      navigatorKey.currentState!.push(MaterialPageRoute<void>(
+        builder: (_) => const OnboardingPage(review: true),
+      ));
+      await tester.pumpAndSettle();
+
+      await tapNext(tester);
+      await tapNext(tester);
+      await tapNext(tester);
+      await tester.tap(find.text('닫기'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(OnboardingPage), findsNothing);
     });
   });
 }

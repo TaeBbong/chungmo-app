@@ -9,9 +9,12 @@ import '../theme/dimens.dart';
 /// First-run intro carousel shown before the home screen.
 ///
 /// Finishing (or skipping) marks [Constants.onboardingDoneKey] and replaces
-/// the route with home, where the coach mark tour takes over.
+/// the route with home, where the coach mark tour takes over. In [review]
+/// mode (opened from settings) finishing simply pops back instead.
 class OnboardingPage extends StatefulWidget {
-  const OnboardingPage({super.key});
+  final bool review;
+
+  const OnboardingPage({super.key, this.review = false});
 
   @override
   State<OnboardingPage> createState() => _OnboardingPageState();
@@ -47,6 +50,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
   bool get _isLast => _page == _slides.length - 1;
 
   Future<void> _finish() async {
+    if (widget.review) {
+      navigatorKey.currentState?.pop();
+      return;
+    }
     await getIt<PreferencesChecker>().setKey(Constants.onboardingDoneKey);
     navigatorKey.currentState?.pushReplacementNamed('/');
   }
@@ -101,7 +108,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   Dimens.screenPadding, Dimens.lg, Dimens.screenPadding, Dimens.md),
               child: ElevatedButton(
                 onPressed: _next,
-                child: Text(_isLast ? '시작하기' : '다음'),
+                child: Text(
+                    _isLast ? (widget.review ? '닫기' : '시작하기') : '다음'),
               ),
             ),
           ],

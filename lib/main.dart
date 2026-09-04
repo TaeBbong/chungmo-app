@@ -108,7 +108,9 @@ class MainApp extends StatelessWidget {
       ],
       routes: {
         '/': (context) => const CreatePage(),
-        '/onboarding': (context) => const OnboardingPage(),
+        '/onboarding': (context) => OnboardingPage(
+              review: ModalRoute.of(context)!.settings.arguments == true,
+            ),
         // ignore: prefer_const_constructors
         '/calendar': (context) => CalendarPage(),
         '/detail': (context) {
