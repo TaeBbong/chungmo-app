@@ -28,9 +28,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
       body: '링크·문자·사진 어떤 청첩장이든\nAI가 읽고 일정을 자동으로 등록해요.',
     ),
     _Slide(
-      icon: Icons.calendar_month_outlined,
-      title: '일정과 축의금을 한곳에서',
-      body: '다가오는 예식은 D-day로,\n낸 축의금은 연간 합계로 한눈에 확인해요.',
+      icon: Icons.savings_outlined,
+      title: '축의금, 얼마가 적당할까요?',
+      body: '상대와의 관계를 알려주시면\n내 기록과 통계를 근거로 AI가 추천해요.',
+    ),
+    _Slide(
+      icon: Icons.insights_outlined,
+      title: '일정도 지출도 한눈에',
+      body: '다가오는 예식은 D-day로,\n낸 축의금은 연도별·관계별 통계로 확인해요.',
     ),
     _Slide(
       icon: Icons.notifications_active_outlined,
