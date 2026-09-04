@@ -168,7 +168,7 @@ class _StepSpec {
     required this.shape,
     this.radius,
     required this.align,
-    this.padding = const EdgeInsets.all(20.0),
+    this.padding = const EdgeInsets.all(Dimens.screenPadding),
     this.alignment = CrossAxisAlignment.center,
     required this.title,
     required this.body,

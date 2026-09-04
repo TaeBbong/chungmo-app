@@ -74,6 +74,33 @@ class MainApp extends StatelessWidget {
 
   const MainApp({super.key, this.showOnboarding = false});
 
+  /// Single route table shared by [MaterialApp.routes] and the initial
+  /// route generator so the two mappings can never drift apart.
+  static final Map<String, WidgetBuilder> _routes = {
+    '/': (context) => const CreatePage(),
+    '/onboarding': (context) => OnboardingPage(
+          review: ModalRoute.of(context)!.settings.arguments == true,
+        ),
+    // ignore: prefer_const_constructors
+    '/calendar': (context) => CalendarPage(),
+    '/detail': (context) {
+      final schedule = ModalRoute.of(context)!.settings.arguments as Schedule;
+      return DetailPage(schedule: schedule);
+    },
+    '/schedule/form': (context) {
+      final draft =
+          ModalRoute.of(context)!.settings.arguments as ScheduleDraft?;
+      return ScheduleFormPage(draft: draft);
+    },
+    '/schedule/record': (context) {
+      final schedule = ModalRoute.of(context)!.settings.arguments as Schedule;
+      return RecordPage(schedule: schedule);
+    },
+    '/stats': (context) => const StatsPage(),
+    '/about': (context) => const AboutPage(),
+    '/about/developer_info': (context) => const DeveloperInfoPage(),
+  };
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -101,37 +128,10 @@ class MainApp extends StatelessWidget {
       onGenerateInitialRoutes: (String initialRoute) => [
         MaterialPageRoute<void>(
           settings: RouteSettings(name: initialRoute),
-          builder: (_) => initialRoute == '/onboarding'
-              ? const OnboardingPage()
-              : const CreatePage(),
+          builder: _routes[initialRoute]!,
         ),
       ],
-      routes: {
-        '/': (context) => const CreatePage(),
-        '/onboarding': (context) => OnboardingPage(
-              review: ModalRoute.of(context)!.settings.arguments == true,
-            ),
-        // ignore: prefer_const_constructors
-        '/calendar': (context) => CalendarPage(),
-        '/detail': (context) {
-          final schedule =
-              ModalRoute.of(context)!.settings.arguments as Schedule;
-          return DetailPage(schedule: schedule);
-        },
-        '/schedule/form': (context) {
-          final draft =
-              ModalRoute.of(context)!.settings.arguments as ScheduleDraft?;
-          return ScheduleFormPage(draft: draft);
-        },
-        '/schedule/record': (context) {
-          final schedule =
-              ModalRoute.of(context)!.settings.arguments as Schedule;
-          return RecordPage(schedule: schedule);
-        },
-        '/stats': (context) => const StatsPage(),
-        '/about': (context) => const AboutPage(),
-        '/about/developer_info': (context) => const DeveloperInfoPage(),
-      },
+      routes: _routes,
     );
   }
 }
