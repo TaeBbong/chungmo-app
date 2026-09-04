@@ -129,18 +129,19 @@ class TutorialManager {
   bool get targetsReady =>
       _targets.every((t) => t.keyTarget?.currentContext != null);
 
-  /// Shows the tour. [onDone] fires when the user finishes the last step or
-  /// skips — the only signals the package exposes for completion.
-  void showTutorial({VoidCallback? onDone}) {
+  /// Shows the tour. [onDone] fires when the user finishes the last step
+  /// (`skipped: false`) or skips out (`skipped: true`) — the only signals
+  /// the package exposes for completion.
+  void showTutorial({void Function({required bool skipped})? onDone}) {
     _tutorialCoachMark = TutorialCoachMark(
       targets: _targets,
       colorShadow: Palette.black,
       opacityShadow: 0.75,
       paddingFocus: 10,
       hideSkip: true,
-      onFinish: onDone,
+      onFinish: () => onDone?.call(skipped: false),
       onSkip: () {
-        onDone?.call();
+        onDone?.call(skipped: true);
         return true;
       },
     );

@@ -145,6 +145,8 @@ Event and parameter names use `lower_snake_case` and stay within Firebase limits
 | `pay_reco_requested` | AI gift-amount recommendation requested | `relation` |
 | `pay_reco_applied` | Recommended amount applied to the pay field | `relation`, `reco_source` |
 | `stats_viewed` | Gift-money statistics dashboard opened | — |
+| `onboarding_finished` | Intro carousel completed or skipped (first run only) | `method` |
+| `tutorial_finished` | Home coach mark tour completed or skipped | `method`, `tour_mode` |
 
 `first_open`, `session_start`, `app_open`, and `screen_view` are collected
 automatically by Firebase Analytics.
@@ -162,6 +164,8 @@ automatically by Firebase Analytics.
 | `amount_bucket` | `50k`, `100k`, `200k`, `300k`, `custom` |
 | `relation` | `family`, `friend`, `coworker`, `acquaintance`, `unset` |
 | `reco_source` | `model`, `fallback` |
+| `method` | `done`, `skip` |
+| `tour_mode` | `full`, `new_features`, `replay` |
 
 ---
 
@@ -203,6 +207,8 @@ Call sites:
 
 | Where | Events |
 | --- | --- |
+| Onboarding page | `onboarding_finished` |
+| Home page (coach mark tour) | `tutorial_finished` |
 | `CreateCubit.analyzeLink` | funnel: submitted → started → succeeded / failed → saved |
 | Detail page / cubit | `schedule_opened`, `location_map_opened`, `attendance_recorded`, `gift_recorded`, `account_copied`, `schedule_deleted`, `pay_reco_requested`, `pay_reco_applied` |
 | Calendar page | `calendar_viewed` |

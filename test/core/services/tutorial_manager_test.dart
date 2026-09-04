@@ -112,7 +112,11 @@ void main() {
       expect(attached.targetsReady, isTrue);
 
       bool done = false;
-      attached.showTutorial(onDone: () => done = true);
+      bool? skippedFlag;
+      attached.showTutorial(onDone: ({required bool skipped}) {
+        done = true;
+        skippedFlag = skipped;
+      });
       // The overlay is inserted post-frame and reveals its content only
       // after the focus animation completes; pump it frame by frame.
       for (int i = 0; i < 8; i++) {
@@ -126,6 +130,7 @@ void main() {
       await tester.pump();
 
       expect(done, isTrue);
+      expect(skippedFlag, isTrue);
     });
   });
 }

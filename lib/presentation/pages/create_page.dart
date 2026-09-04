@@ -14,6 +14,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../core/analytics/analytics_events.dart';
+import '../../core/analytics/analytics_service.dart';
 import '../../core/di/di.dart';
 import '../../domain/entities/invitation_image.dart';
 import '../../core/navigation/app_navigation.dart';
@@ -127,7 +128,9 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
     _showTour(newFeaturesOnly: mode == TourMode.newFeaturesOnly);
   }
 
-  void _showTour({required bool newFeaturesOnly}) {
+  void _showTour({required bool newFeaturesOnly, bool replay = false}) {
+    final String tourMode =
+        replay ? 'replay' : (newFeaturesOnly ? 'new_features' : 'full');
     tutorialManager = TutorialManager(
       context: context,
       linkInputKey: linkInputKey,
@@ -156,7 +159,16 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
       // Persist only on real completion (finish or explicit skip), not
       // merely because the overlay was requested.
       tutorialManager.showTutorial(
-        onDone: () => preferencesChecker.setKey(Constants.tourDoneKey),
+        onDone: ({required bool skipped}) {
+          preferencesChecker.setKey(Constants.tourDoneKey);
+          getIt<AnalyticsService>().logEvent(
+            AnalyticsEvents.tutorialFinished,
+            parameters: {
+              AnalyticsParams.method: skipped ? 'skip' : 'done',
+              AnalyticsParams.tourMode: tourMode,
+            },
+          );
+        },
       );
     });
   }
@@ -389,7 +401,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                   final Object? result =
                       await navigatorKey.currentState?.pushNamed('/about');
                   if (result == true && mounted) {
-                    _showTour(newFeaturesOnly: false);
+                    _showTour(newFeaturesOnly: false, replay: true);
                   }
                 },
               ),

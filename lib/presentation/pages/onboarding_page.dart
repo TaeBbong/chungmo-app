@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/analytics/analytics_events.dart';
+import '../../core/analytics/analytics_service.dart';
 import '../../core/di/di.dart';
 import '../../core/navigation/app_navigation.dart';
 import '../../core/services/preferences_checker.dart';
@@ -49,11 +51,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   bool get _isLast => _page == _slides.length - 1;
 
-  Future<void> _finish() async {
+  Future<void> _finish({bool skipped = false}) async {
     if (widget.review) {
       navigatorKey.currentState?.pop();
       return;
     }
+    getIt<AnalyticsService>().logEvent(
+      AnalyticsEvents.onboardingFinished,
+      parameters: {AnalyticsParams.method: skipped ? 'skip' : 'done'},
+    );
     await getIt<PreferencesChecker>().setKey(Constants.onboardingDoneKey);
     navigatorKey.currentState?.pushReplacementNamed('/');
   }
@@ -89,7 +95,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 child: _isLast
                     ? const SizedBox(height: Dimens.xxl)
                     : TextButton(
-                        onPressed: _finish,
+                        onPressed: () => _finish(skipped: true),
                         child: const Text('건너뛰기'),
                       ),
               ),
