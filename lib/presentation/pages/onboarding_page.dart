@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 import '../../core/di/di.dart';
 import '../../core/navigation/app_navigation.dart';
 import '../../core/services/preferences_checker.dart';
+import '../../core/utils/constants.dart';
 import '../theme/dimens.dart';
-
-/// SharedPreferences key marking the intro carousel as seen.
-const String kOnboardingDoneKey = 'onboarding_done';
 
 /// First-run intro carousel shown before the home screen.
 ///
-/// Finishing (or skipping) marks [kOnboardingDoneKey] and replaces the
-/// route with home, where the coach mark tour takes over.
+/// Finishing (or skipping) marks [Constants.onboardingDoneKey] and replaces
+/// the route with home, where the coach mark tour takes over.
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
 
@@ -44,7 +42,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   bool get _isLast => _page == _slides.length - 1;
 
   Future<void> _finish() async {
-    await getIt<PreferencesChecker>().setKey(kOnboardingDoneKey);
+    await getIt<PreferencesChecker>().setKey(Constants.onboardingDoneKey);
     navigatorKey.currentState?.pushReplacementNamed('/');
   }
 

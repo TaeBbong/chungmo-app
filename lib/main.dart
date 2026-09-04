@@ -13,6 +13,7 @@ import 'core/env.dart';
 import 'core/navigation/app_navigation.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/preferences_checker.dart';
+import 'core/utils/constants.dart';
 import 'presentation/pages/pages.dart';
 import 'presentation/theme/dark_theme.dart';
 import 'presentation/theme/light_theme.dart';
@@ -60,7 +61,7 @@ void main() async {
   await notificationService.getPermissions();
   await notificationService.init();
   final bool onboarded =
-      await getIt<PreferencesChecker>().hasKey(kOnboardingDoneKey);
+      await getIt<PreferencesChecker>().hasKey(Constants.onboardingDoneKey);
   // await initializeDateFormatting('ko_KR', 'null');
   Future.delayed(const Duration(seconds: 1), () {
     FlutterNativeSplash.remove();

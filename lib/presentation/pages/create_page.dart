@@ -20,6 +20,7 @@ import '../../core/navigation/app_navigation.dart';
 import '../../core/services/preferences_checker.dart';
 import '../../core/services/share_intent_service.dart';
 import '../../core/services/tutorial_manager.dart';
+import '../../core/utils/constants.dart';
 import '../bloc/create/create_cubit.dart';
 import '../theme/dimens.dart';
 import '../theme/palette.dart';
@@ -116,7 +117,8 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
   }
 
   Future<void> _initTutorial() async {
-    final bool isFirst = !(await preferencesChecker.hasKey('is_first'));
+    final bool isFirst =
+        !(await preferencesChecker.hasKey(Constants.legacyTourDoneKey));
     if (!mounted) return;
     if (isFirst) {
       tutorialManager = TutorialManager(
@@ -133,7 +135,7 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
         await Future.delayed(const Duration(milliseconds: 500));
         if (!mounted) return;
         tutorialManager.showTutorial();
-        await preferencesChecker.setKey('is_first');
+        await preferencesChecker.setKey(Constants.legacyTourDoneKey);
       });
     }
   }
