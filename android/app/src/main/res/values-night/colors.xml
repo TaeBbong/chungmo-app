@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Widget palette, mirroring the dark side of palette.dart; the accent
+     lightens to burgundy200 to keep contrast on the dark card. -->
+<resources>
+    <color name="widget_background">#1F1F1F</color>
+    <color name="widget_accent">#E0A8B2</color>
+    <color name="widget_text_primary">#FAFAFA</color>
+    <color name="widget_text_secondary">#B7B7B7</color>
+</resources>
