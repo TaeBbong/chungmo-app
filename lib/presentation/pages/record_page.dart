@@ -112,7 +112,8 @@ class _RecordPageState extends State<RecordPage> {
     });
   }
 
-  void _onSaveStateChanged(BuildContext context, RecordState state) {
+  void _onRecordStateChanged(BuildContext context, RecordState state) {
+    _autofillRecommendationIfEmpty(state);
     switch (state.saveStatus) {
       case RecordSaveStatus.success:
         // Physical confirmation as the page closes on a saved record.
@@ -125,6 +126,31 @@ class _RecordPageState extends State<RecordPage> {
       case RecordSaveStatus.idle || RecordSaveStatus.saving:
         break;
     }
+  }
+
+  /// The recommendation the autofill last reacted to, so it fires only on
+  /// arrival — not on every later emission. Without the edge check, the
+  /// save-status emissions would re-run the fill and resurrect an amount
+  /// the user deliberately cleared after the autofill.
+  PayRecommendation? _autofilledRecommendation;
+
+  /// Fills an empty amount field with a freshly arrived recommendation.
+  ///
+  /// Without this, a user who requests a suggestion on a blank form, sees
+  /// the amount and taps 저장 records 0원 — the card looks like part of the
+  /// form, so "shown but not applied" reads as a lost save. An amount the
+  /// user already entered is never overwritten; the explicit '이 금액 적용'
+  /// button stays the way to replace one.
+  void _autofillRecommendationIfEmpty(RecordState state) {
+    final PayRecommendation? recommendation = state.recommendation;
+    if (recommendation == null || state.recommending) return;
+    if (identical(recommendation, _autofilledRecommendation)) return;
+    _autofilledRecommendation = recommendation;
+    if (payController.text.trim().isNotEmpty) return;
+    setState(() {
+      customPay = !payPresets.contains(recommendation.amount);
+      payController.text = recommendation.amount.toString();
+    });
   }
 
   InputDecoration _inputDecoration() {
@@ -150,7 +176,7 @@ class _RecordPageState extends State<RecordPage> {
     return BlocProvider<RecordCubit>.value(
       value: cubit,
       child: BlocConsumer<RecordCubit, RecordState>(
-        listener: _onSaveStateChanged,
+        listener: _onRecordStateChanged,
         builder: (context, state) => SafeArea(
           top: false,
           child: Scaffold(
