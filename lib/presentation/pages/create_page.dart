@@ -5,13 +5,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:dotlottie_loader/dotlottie_loader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lottie/lottie.dart';
 
 import '../../core/analytics/analytics_events.dart';
 import '../../core/analytics/analytics_service.dart';
@@ -25,6 +23,7 @@ import '../../core/utils/constants.dart';
 import '../bloc/create/create_cubit.dart';
 import '../theme/dimens.dart';
 import '../theme/palette.dart';
+import '../widgets/analyze_animation.dart';
 import '../widgets/schedule_detail_column.dart';
 import '../widgets/upcoming_preview.dart';
 
@@ -53,6 +52,9 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     cubit = CreateCubit();
+    // Parse the analyze Lottie now, while the screen is idle, so entering
+    // the loading state later swaps the animation in without a parse hitch.
+    AnalyzeAnimation.preload();
     cubit.checkIfNotification();
     cubit.watchUpcomingSchedules();
     _initTutorial();
@@ -413,26 +415,16 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                 child: BlocBuilder<CreateCubit, CreateState>(
                     builder: (context, state) {
                   if (state.isLoading) {
-                    return Column(
+                    return const Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         SizedBox(
                           width: 250,
                           height: 250,
-                          child: DotLottieLoader.fromAsset(
-                              'assets/images/analyze.lottie', frameBuilder:
-                                  (BuildContext ctx, DotLottie? dotlottie) {
-                            if (dotlottie != null) {
-                              return Lottie.memory(
-                                  dotlottie.animations.values.single);
-                            } else {
-                              return const CircularProgressIndicator();
-                            }
-                          }),
+                          child: AnalyzeAnimation(),
                         ),
-                        const SizedBox(height: 16),
-                        const Text('청첩장 분석 중...',
-                            style: TextStyle(fontSize: 16)),
+                        SizedBox(height: 16),
+                        Text('청첩장 분석 중...', style: TextStyle(fontSize: 16)),
                       ],
                     );
                   }
