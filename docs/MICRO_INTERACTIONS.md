@@ -133,7 +133,8 @@ Widget _analyzeBranch(String branch, Widget child) {
         FadeTransition(
       opacity: animation,
       child: ScaleTransition(
-        scale: Tween<double>(begin: 0.98, end: 1).animate(animation),
+        scale: Tween<double>(begin: Motions.emergeScale, end: 1)
+            .animate(animation),
         child: child,
       ),
     ),
@@ -149,13 +150,12 @@ Widget _analyzeBranch(String branch, Widget child) {
 
 - `KeyedSubtree` attaches a key to an arbitrary child without wrapping it
   in a container that would affect layout.
-- The transition combines fade with a `0.98 → 1.0` scale. Full-size
-  cross-fades look like a video dissolve; the 2% scale adds just enough
-  depth to read as "new content arriving".
-- The same element-identity trick animates the clipboard chip: its
-  `AnimatedSwitcher` child flips between a keyed button and
-  `SizedBox.shrink()`, fading/sliding the chip in when a clipboard link is
-  detected instead of popping the layout.
+- The transition combines fade with a `Motions.emergeScale → 1.0` scale.
+  Full-size cross-fades look like a video dissolve; the 2% scale adds just
+  enough depth to read as "new content arriving".
+- The clipboard paste chip takes the simpler path: it is conditionally
+  mounted inside a `FadeSlideIn` (§4), so detection slides it in through
+  the shared entrance widget instead of a second bespoke slide.
 - The copy button in
   [`account_section.dart`](../lib/presentation/widgets/account_section.dart)
   is the smallest possible instance: two keyed `Icon`s (copy ⇄ check) under
@@ -216,7 +216,8 @@ final double local = Motions.easeOut.transform(
     ((t - delayFraction) / (1 - delayFraction)).clamp(0, 1));
 return Opacity(
   opacity: local,
-  child: Transform.translate(offset: Offset(0, 16 * (1 - local)), ...),
+  child: Transform.translate(
+      offset: Offset(0, Motions.slideOffset * (1 - local)), ...),
 );
 ```
 

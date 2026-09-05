@@ -127,20 +127,33 @@ abstract class ImagePreprocessor {
   static InvitationImage downscaleSync(InvitationImage image) {
     img.Image? decoded;
     try {
-      decoded = img.decodeImage(image.bytes);
+      final img.Decoder? decoder = img.findDecoderForData(image.bytes);
+      // Header-only parse: dimensions without allocating the raster. The
+      // bytes are external input, so a crafted or gigantic image must not
+      // OOM the process — isolates share memory, compute() is no shield.
+      final img.DecodeInfo? info = decoder?.startDecode(image.bytes);
+      if (decoder == null || info == null) return image;
+      if (info.width * info.height > maxDecodePixels) return image;
+      if (info.width <= maxDimension && info.height <= maxDimension) {
+        return image; // small: skip the decode entirely
+      }
+      decoded = decoder.decodeFrame(0);
+      // A portrait phone shot is a landscape frame + EXIF orientation;
+      // copyResize bakes that in first, so the long side must be judged
+      // on the baked frame.
+      if (decoded != null) decoded = img.bakeOrientation(decoded);
     } catch (_) {
       decoded = null; // truncated garbage: pass through, Gemini decides
     }
     if (decoded == null) return image;
-    if (decoded.width <= maxDimension && decoded.height <= maxDimension) {
-      return image; // re-encoding a small image only costs quality
-    }
     final bool wide = decoded.width >= decoded.height;
     final img.Image resized = img.copyResize(
       decoded,
       width: wide ? maxDimension : null,
       height: wide ? null : maxDimension,
-      interpolation: img.Interpolation.linear,
+      // Box filter: samples every source pixel on a 2-3x shrink, keeping
+      // the invitation's small text readable where linear would alias it.
+      interpolation: img.Interpolation.average,
     );
     return InvitationImage(
       bytes: img.encodeJpg(resized, quality: jpegQuality),
@@ -150,16 +163,17 @@ abstract class ImagePreprocessor {
 }
 ```
 
-And the single choke point in `AnalyzeImageUsecase` — the one entry point
-every image parse goes through, so all callers get the same preprocessing
-(the loading state is already showing by then: the cubit emits it before
-invoking the usecase):
+And the single choke point in `ScheduleRepositoryImpl.analyzeImage` — the
+one path every image parse goes through, so all callers get the same
+preprocessing. The repository (data layer) rather than the usecase, because
+`compute` is a Flutter API and `lib/domain` stays Flutter-free; the data
+layer already runs this flow's other isolate work (the image key hash). The
+loading state is showing by then: the cubit emits it before the call.
 
 ```dart
-@override
-Future<Schedule> execute(InvitationImage image) async {
-  return repository.analyzeImage(await ImagePreprocessor.downscale(image));
-}
+final InvitationImage prepared = await ImagePreprocessor.downscale(image);
+final schedule = await remoteSource.fetchScheduleFromImage(
+    prepared.bytes, prepared.mimeType);
 ```
 
 Why this shape:
