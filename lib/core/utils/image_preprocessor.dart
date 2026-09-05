@@ -52,6 +52,11 @@ abstract class ImagePreprocessor {
         return image;
       }
       decoded = decoder.decodeFrame(0);
+      // A phone photo stores its rotation as an EXIF tag (a portrait shot
+      // is a landscape frame + orientation 6). copyResize bakes that in
+      // before resizing, so the long side must be judged on the baked
+      // frame or the 1600px contract breaks for portrait photos.
+      if (decoded != null) decoded = img.bakeOrientation(decoded);
     } catch (_) {
       // The format probes throw on truncated garbage instead of returning
       // null; either way undecodable input passes through untouched and
@@ -64,7 +69,9 @@ abstract class ImagePreprocessor {
       decoded,
       width: wide ? maxDimension : null,
       height: wide ? null : maxDimension,
-      interpolation: img.Interpolation.linear,
+      // A box filter: 2-3x shrinks sample every source pixel, keeping the
+      // invitation's small text readable where linear would alias it.
+      interpolation: img.Interpolation.average,
     );
     return InvitationImage(
       bytes: img.encodeJpg(resized, quality: jpegQuality),

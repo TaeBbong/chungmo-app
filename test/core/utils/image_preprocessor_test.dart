@@ -82,6 +82,25 @@ void main() {
       expect(identical(result, input), isTrue);
     });
 
+    test('judges the long side after baking the EXIF orientation', () {
+      // A portrait phone shot is stored as a landscape frame plus
+      // orientation 6; copyResize bakes the rotation first, so the resize
+      // axis must be chosen on the baked frame.
+      final img.Image frame = img.Image(width: 3200, height: 1600);
+      frame.exif.imageIfd.orientation = 6;
+
+      final InvitationImage result = ImagePreprocessor.downscaleSync(
+        InvitationImage(
+          bytes: img.encodeJpg(frame),
+          mimeType: 'image/jpeg',
+        ),
+      );
+
+      final img.Image decoded = img.decodeImage(result.bytes)!;
+      expect(decoded.height, ImagePreprocessor.maxDimension);
+      expect(decoded.width, 800);
+    });
+
     test('refuses to decode an image whose header declares too many pixels',
         () {
       // A hand-built PNG header claiming 60000x60000 (~3.6 gigapixels).
