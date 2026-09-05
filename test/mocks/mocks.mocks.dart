@@ -11,22 +11,22 @@ import 'package:chungmo/core/services/notification_service.dart' as _i9;
 import 'package:chungmo/data/models/schedule/schedule_model.dart' as _i2;
 import 'package:chungmo/data/sources/local/schedule_local_source.dart' as _i12;
 import 'package:chungmo/data/sources/remote/pay_recommendation_source.dart'
-    as _i16;
+    as _i17;
 import 'package:chungmo/data/sources/remote/schedule_remote_source.dart'
     as _i14;
-import 'package:chungmo/domain/entities/invitation_image.dart' as _i18;
-import 'package:chungmo/domain/entities/pay_recommendation.dart' as _i3;
-import 'package:chungmo/domain/entities/schedule.dart' as _i6;
+import 'package:chungmo/domain/entities/invitation_image.dart' as _i16;
+import 'package:chungmo/domain/entities/pay_recommendation.dart' as _i4;
+import 'package:chungmo/domain/entities/schedule.dart' as _i3;
 import 'package:chungmo/domain/repositories/pay_recommendation_repository.dart'
     as _i7;
-import 'package:chungmo/domain/repositories/schedule_repository.dart' as _i5;
+import 'package:chungmo/domain/repositories/schedule_repository.dart' as _i6;
 import 'package:chungmo/domain/usecases/usecases.dart' as _i8;
 import 'package:chungmo/presentation/bloc/create/create_cubit.dart' as _i11;
 import 'package:flutter_bloc/flutter_bloc.dart' as _i19;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
-    as _i4;
+    as _i5;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:timezone/timezone.dart' as _i17;
+import 'package:timezone/timezone.dart' as _i18;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -53,9 +53,8 @@ class _FakeScheduleModel_0 extends _i1.SmartFake implements _i2.ScheduleModel {
         );
 }
 
-class _FakePayRecommendation_1 extends _i1.SmartFake
-    implements _i3.PayRecommendation {
-  _FakePayRecommendation_1(
+class _FakeSchedule_1 extends _i1.SmartFake implements _i3.Schedule {
+  _FakeSchedule_1(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -64,9 +63,9 @@ class _FakePayRecommendation_1 extends _i1.SmartFake
         );
 }
 
-class _FakeFlutterLocalNotificationsPlugin_2 extends _i1.SmartFake
-    implements _i4.FlutterLocalNotificationsPlugin {
-  _FakeFlutterLocalNotificationsPlugin_2(
+class _FakePayRecommendation_2 extends _i1.SmartFake
+    implements _i4.PayRecommendation {
+  _FakePayRecommendation_2(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -75,9 +74,9 @@ class _FakeFlutterLocalNotificationsPlugin_2 extends _i1.SmartFake
         );
 }
 
-class _FakeScheduleRepository_3 extends _i1.SmartFake
-    implements _i5.ScheduleRepository {
-  _FakeScheduleRepository_3(
+class _FakeFlutterLocalNotificationsPlugin_3 extends _i1.SmartFake
+    implements _i5.FlutterLocalNotificationsPlugin {
+  _FakeFlutterLocalNotificationsPlugin_3(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -86,8 +85,9 @@ class _FakeScheduleRepository_3 extends _i1.SmartFake
         );
 }
 
-class _FakeSchedule_4 extends _i1.SmartFake implements _i6.Schedule {
-  _FakeSchedule_4(
+class _FakeScheduleRepository_4 extends _i1.SmartFake
+    implements _i6.ScheduleRepository {
+  _FakeScheduleRepository_4(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -361,19 +361,124 @@ class MockScheduleRemoteSource extends _i1.Mock
       ) as _i13.Future<_i2.ScheduleModel>);
 }
 
+/// A class which mocks [ScheduleRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockScheduleRepository extends _i1.Mock
+    implements _i6.ScheduleRepository {
+  MockScheduleRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i13.Future<_i3.Schedule> analyzeLink(String? url) => (super.noSuchMethod(
+        Invocation.method(
+          #analyzeLink,
+          [url],
+        ),
+        returnValue: _i13.Future<_i3.Schedule>.value(_FakeSchedule_1(
+          this,
+          Invocation.method(
+            #analyzeLink,
+            [url],
+          ),
+        )),
+      ) as _i13.Future<_i3.Schedule>);
+
+  @override
+  _i13.Future<_i3.Schedule> analyzeImage(_i16.InvitationImage? image) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #analyzeImage,
+          [image],
+        ),
+        returnValue: _i13.Future<_i3.Schedule>.value(_FakeSchedule_1(
+          this,
+          Invocation.method(
+            #analyzeImage,
+            [image],
+          ),
+        )),
+      ) as _i13.Future<_i3.Schedule>);
+
+  @override
+  _i13.Future<_i3.Schedule> analyzeText(String? text) => (super.noSuchMethod(
+        Invocation.method(
+          #analyzeText,
+          [text],
+        ),
+        returnValue: _i13.Future<_i3.Schedule>.value(_FakeSchedule_1(
+          this,
+          Invocation.method(
+            #analyzeText,
+            [text],
+          ),
+        )),
+      ) as _i13.Future<_i3.Schedule>);
+
+  @override
+  _i13.Future<void> saveSchedule(_i3.Schedule? schedule) => (super.noSuchMethod(
+        Invocation.method(
+          #saveSchedule,
+          [schedule],
+        ),
+        returnValue: _i13.Future<void>.value(),
+        returnValueForMissingStub: _i13.Future<void>.value(),
+      ) as _i13.Future<void>);
+
+  @override
+  _i13.Stream<List<_i3.Schedule>> getAllSchedules() => (super.noSuchMethod(
+        Invocation.method(
+          #getAllSchedules,
+          [],
+        ),
+        returnValue: _i13.Stream<List<_i3.Schedule>>.empty(),
+      ) as _i13.Stream<List<_i3.Schedule>>);
+
+  @override
+  _i13.Future<_i3.Schedule?> getScheduleByLink(String? link) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getScheduleByLink,
+          [link],
+        ),
+        returnValue: _i13.Future<_i3.Schedule?>.value(),
+      ) as _i13.Future<_i3.Schedule?>);
+
+  @override
+  _i13.Future<void> editSchedule(_i3.Schedule? schedule) => (super.noSuchMethod(
+        Invocation.method(
+          #editSchedule,
+          [schedule],
+        ),
+        returnValue: _i13.Future<void>.value(),
+        returnValueForMissingStub: _i13.Future<void>.value(),
+      ) as _i13.Future<void>);
+
+  @override
+  _i13.Future<void> deleteSchedule(String? link) => (super.noSuchMethod(
+        Invocation.method(
+          #deleteSchedule,
+          [link],
+        ),
+        returnValue: _i13.Future<void>.value(),
+        returnValueForMissingStub: _i13.Future<void>.value(),
+      ) as _i13.Future<void>);
+}
+
 /// A class which mocks [PayRecommendationSource].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockPayRecommendationSource extends _i1.Mock
-    implements _i16.PayRecommendationSource {
+    implements _i17.PayRecommendationSource {
   MockPayRecommendationSource() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i13.Future<_i3.PayRecommendation> fetchRecommendation({
-    required _i6.Schedule? target,
-    required List<_i6.Schedule>? history,
+  _i13.Future<_i4.PayRecommendation> fetchRecommendation({
+    required _i3.Schedule? target,
+    required List<_i3.Schedule>? history,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -385,7 +490,7 @@ class MockPayRecommendationSource extends _i1.Mock
           },
         ),
         returnValue:
-            _i13.Future<_i3.PayRecommendation>.value(_FakePayRecommendation_1(
+            _i13.Future<_i4.PayRecommendation>.value(_FakePayRecommendation_2(
           this,
           Invocation.method(
             #fetchRecommendation,
@@ -396,7 +501,7 @@ class MockPayRecommendationSource extends _i1.Mock
             },
           ),
         )),
-      ) as _i13.Future<_i3.PayRecommendation>);
+      ) as _i13.Future<_i4.PayRecommendation>);
 }
 
 /// A class which mocks [NotificationService].
@@ -409,20 +514,20 @@ class MockNotificationService extends _i1.Mock
   }
 
   @override
-  _i4.FlutterLocalNotificationsPlugin getLocalNotificationPlugin() =>
+  _i5.FlutterLocalNotificationsPlugin getLocalNotificationPlugin() =>
       (super.noSuchMethod(
         Invocation.method(
           #getLocalNotificationPlugin,
           [],
         ),
-        returnValue: _FakeFlutterLocalNotificationsPlugin_2(
+        returnValue: _FakeFlutterLocalNotificationsPlugin_3(
           this,
           Invocation.method(
             #getLocalNotificationPlugin,
             [],
           ),
         ),
-      ) as _i4.FlutterLocalNotificationsPlugin);
+      ) as _i5.FlutterLocalNotificationsPlugin);
 
   @override
   _i13.Future<void> getPermissions() => (super.noSuchMethod(
@@ -458,7 +563,7 @@ class MockNotificationService extends _i1.Mock
 
   @override
   _i13.Future<void> checkPreviousDayForNotify(
-          {required _i6.Schedule? schedule}) =>
+          {required _i3.Schedule? schedule}) =>
       (super.noSuchMethod(
         Invocation.method(
           #checkPreviousDayForNotify,
@@ -474,7 +579,7 @@ class MockNotificationService extends _i1.Mock
     required int? id,
     required String? appName,
     required String? title,
-    required _i17.TZDateTime? scheduleDate,
+    required _i18.TZDateTime? scheduleDate,
     required String? payload,
   }) =>
       (super.noSuchMethod(
@@ -538,28 +643,28 @@ class MockAnalyzeLinkUsecase extends _i1.Mock
   }
 
   @override
-  _i5.ScheduleRepository get repository => (super.noSuchMethod(
+  _i6.ScheduleRepository get repository => (super.noSuchMethod(
         Invocation.getter(#repository),
-        returnValue: _FakeScheduleRepository_3(
+        returnValue: _FakeScheduleRepository_4(
           this,
           Invocation.getter(#repository),
         ),
-      ) as _i5.ScheduleRepository);
+      ) as _i6.ScheduleRepository);
 
   @override
-  _i13.Future<_i6.Schedule> execute(String? link) => (super.noSuchMethod(
+  _i13.Future<_i3.Schedule> execute(String? link) => (super.noSuchMethod(
         Invocation.method(
           #execute,
           [link],
         ),
-        returnValue: _i13.Future<_i6.Schedule>.value(_FakeSchedule_4(
+        returnValue: _i13.Future<_i3.Schedule>.value(_FakeSchedule_1(
           this,
           Invocation.method(
             #execute,
             [link],
           ),
         )),
-      ) as _i13.Future<_i6.Schedule>);
+      ) as _i13.Future<_i3.Schedule>);
 }
 
 /// A class which mocks [AnalyzeImageUsecase].
@@ -572,29 +677,29 @@ class MockAnalyzeImageUsecase extends _i1.Mock
   }
 
   @override
-  _i5.ScheduleRepository get repository => (super.noSuchMethod(
+  _i6.ScheduleRepository get repository => (super.noSuchMethod(
         Invocation.getter(#repository),
-        returnValue: _FakeScheduleRepository_3(
+        returnValue: _FakeScheduleRepository_4(
           this,
           Invocation.getter(#repository),
         ),
-      ) as _i5.ScheduleRepository);
+      ) as _i6.ScheduleRepository);
 
   @override
-  _i13.Future<_i6.Schedule> execute(_i18.InvitationImage? image) =>
+  _i13.Future<_i3.Schedule> execute(_i16.InvitationImage? image) =>
       (super.noSuchMethod(
         Invocation.method(
           #execute,
           [image],
         ),
-        returnValue: _i13.Future<_i6.Schedule>.value(_FakeSchedule_4(
+        returnValue: _i13.Future<_i3.Schedule>.value(_FakeSchedule_1(
           this,
           Invocation.method(
             #execute,
             [image],
           ),
         )),
-      ) as _i13.Future<_i6.Schedule>);
+      ) as _i13.Future<_i3.Schedule>);
 }
 
 /// A class which mocks [AnalyzeTextUsecase].
@@ -607,28 +712,28 @@ class MockAnalyzeTextUsecase extends _i1.Mock
   }
 
   @override
-  _i5.ScheduleRepository get repository => (super.noSuchMethod(
+  _i6.ScheduleRepository get repository => (super.noSuchMethod(
         Invocation.getter(#repository),
-        returnValue: _FakeScheduleRepository_3(
+        returnValue: _FakeScheduleRepository_4(
           this,
           Invocation.getter(#repository),
         ),
-      ) as _i5.ScheduleRepository);
+      ) as _i6.ScheduleRepository);
 
   @override
-  _i13.Future<_i6.Schedule> execute(String? text) => (super.noSuchMethod(
+  _i13.Future<_i3.Schedule> execute(String? text) => (super.noSuchMethod(
         Invocation.method(
           #execute,
           [text],
         ),
-        returnValue: _i13.Future<_i6.Schedule>.value(_FakeSchedule_4(
+        returnValue: _i13.Future<_i3.Schedule>.value(_FakeSchedule_1(
           this,
           Invocation.method(
             #execute,
             [text],
           ),
         )),
-      ) as _i13.Future<_i6.Schedule>);
+      ) as _i13.Future<_i3.Schedule>);
 }
 
 /// A class which mocks [EditScheduleUsecase].
@@ -641,16 +746,16 @@ class MockEditScheduleUsecase extends _i1.Mock
   }
 
   @override
-  _i5.ScheduleRepository get repository => (super.noSuchMethod(
+  _i6.ScheduleRepository get repository => (super.noSuchMethod(
         Invocation.getter(#repository),
-        returnValue: _FakeScheduleRepository_3(
+        returnValue: _FakeScheduleRepository_4(
           this,
           Invocation.getter(#repository),
         ),
-      ) as _i5.ScheduleRepository);
+      ) as _i6.ScheduleRepository);
 
   @override
-  _i13.Future<void> execute(_i6.Schedule? schedule) => (super.noSuchMethod(
+  _i13.Future<void> execute(_i3.Schedule? schedule) => (super.noSuchMethod(
         Invocation.method(
           #execute,
           [schedule],
@@ -679,21 +784,21 @@ class MockRecommendPayUsecase extends _i1.Mock
       ) as _i7.PayRecommendationRepository);
 
   @override
-  _i13.Future<_i3.PayRecommendation> execute(_i6.Schedule? schedule) =>
+  _i13.Future<_i4.PayRecommendation> execute(_i3.Schedule? schedule) =>
       (super.noSuchMethod(
         Invocation.method(
           #execute,
           [schedule],
         ),
         returnValue:
-            _i13.Future<_i3.PayRecommendation>.value(_FakePayRecommendation_1(
+            _i13.Future<_i4.PayRecommendation>.value(_FakePayRecommendation_2(
           this,
           Invocation.method(
             #execute,
             [schedule],
           ),
         )),
-      ) as _i13.Future<_i3.PayRecommendation>);
+      ) as _i13.Future<_i4.PayRecommendation>);
 }
 
 /// A class which mocks [SaveScheduleUsecase].
@@ -706,16 +811,16 @@ class MockSaveScheduleUsecase extends _i1.Mock
   }
 
   @override
-  _i5.ScheduleRepository get repository => (super.noSuchMethod(
+  _i6.ScheduleRepository get repository => (super.noSuchMethod(
         Invocation.getter(#repository),
-        returnValue: _FakeScheduleRepository_3(
+        returnValue: _FakeScheduleRepository_4(
           this,
           Invocation.getter(#repository),
         ),
-      ) as _i5.ScheduleRepository);
+      ) as _i6.ScheduleRepository);
 
   @override
-  _i13.Future<void> execute(_i6.Schedule? schedule) => (super.noSuchMethod(
+  _i13.Future<void> execute(_i3.Schedule? schedule) => (super.noSuchMethod(
         Invocation.method(
           #execute,
           [schedule],
@@ -735,22 +840,22 @@ class MockWatchAllSchedulesUsecase extends _i1.Mock
   }
 
   @override
-  _i5.ScheduleRepository get repository => (super.noSuchMethod(
+  _i6.ScheduleRepository get repository => (super.noSuchMethod(
         Invocation.getter(#repository),
-        returnValue: _FakeScheduleRepository_3(
+        returnValue: _FakeScheduleRepository_4(
           this,
           Invocation.getter(#repository),
         ),
-      ) as _i5.ScheduleRepository);
+      ) as _i6.ScheduleRepository);
 
   @override
-  _i13.Stream<List<_i6.Schedule>> execute() => (super.noSuchMethod(
+  _i13.Stream<List<_i3.Schedule>> execute() => (super.noSuchMethod(
         Invocation.method(
           #execute,
           [],
         ),
-        returnValue: _i13.Stream<List<_i6.Schedule>>.empty(),
-      ) as _i13.Stream<List<_i6.Schedule>>);
+        returnValue: _i13.Stream<List<_i3.Schedule>>.empty(),
+      ) as _i13.Stream<List<_i3.Schedule>>);
 }
 
 /// A class which mocks [CreateCubit].
@@ -946,7 +1051,7 @@ class MockCreateCubit extends _i1.Mock implements _i11.CreateCubit {
 
   @override
   _i13.Future<void> analyzeImage(
-    _i18.InvitationImage? image, {
+    _i16.InvitationImage? image, {
     String? source = 'gallery',
   }) =>
       (super.noSuchMethod(

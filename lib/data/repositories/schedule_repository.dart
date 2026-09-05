@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:injectable/injectable.dart';
 
 import '../../core/services/notification_service.dart';
+import '../../core/utils/image_preprocessor.dart';
 import '../../domain/entities/invitation_image.dart';
 import '../../domain/entities/schedule.dart';
 import '../../domain/repositories/schedule_repository.dart';
@@ -45,8 +46,14 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
   @override
   Future<Schedule> analyzeImage(InvitationImage image) async {
     try {
+      // Downscaling lives here so every caller of the image parse gets the
+      // same preprocessing; the picker path is a cheap pass-through
+      // (already ≤ 1600px). The data layer already runs this flow's other
+      // isolate work (the image key hash), so the Flutter dependency stays
+      // out of the domain.
+      final InvitationImage prepared = await ImagePreprocessor.downscale(image);
       final schedule = await remoteSource.fetchScheduleFromImage(
-          image.bytes, image.mimeType);
+          prepared.bytes, prepared.mimeType);
       Schedule entitySchedule = ScheduleMapper.toEntity(schedule);
       return entitySchedule;
     } on FormatException {
