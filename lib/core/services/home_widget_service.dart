@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
@@ -10,6 +11,7 @@ import 'package:injectable/injectable.dart';
 import '../../domain/entities/schedule.dart';
 import '../../domain/usecases/usecases.dart';
 import '../utils/constants.dart';
+import '../utils/string_extension.dart';
 
 /// Abstract class for HomeWidgetService
 ///
@@ -43,7 +45,16 @@ class HomeWidgetServiceImpl implements HomeWidgetService {
   /// budget and RemoteViews bitmaps are size-capped too.
   static const int _photoWidth = 600;
 
-  StreamSubscription<List<Schedule>>? _subscription;
+  StreamSubscription<void>? _subscription;
+
+  /// Builds the provider that fetches a thumbnail.
+  /// CachedNetworkImageProvider shares the disk cache the schedule lists
+  /// already fill, so an offline launch still has the photo. Overridable
+  /// because flutter_cache_manager needs platform channels host unit tests
+  /// do not have.
+  @visibleForTesting
+  ImageProvider Function(String url) thumbnailProvider =
+      (String url) => CachedNetworkImageProvider(url);
 
   /// Subscribes to the schedule stream; every change re-publishes the widget.
   ///
@@ -51,7 +62,12 @@ class HomeWidgetServiceImpl implements HomeWidgetService {
   @override
   Future<void> init() async {
     await HomeWidget.setAppGroupId(Constants.appGroupId);
-    _subscription ??= watchAllSchedulesUsecase.execute().listen(publish);
+    // asyncMap serializes the publishes: a photo fetch from an earlier
+    // emission can no longer finish after a later one and leave the store
+    // mixing two schedules. The stream emits the full list every time, so
+    // in order, the last publish is always the final state.
+    _subscription ??=
+        watchAllSchedulesUsecase.execute().asyncMap(publish).listen(null);
   }
 
   /// Writes the nearest upcoming wedding to the shared store and asks the
@@ -91,10 +107,12 @@ class HomeWidgetServiceImpl implements HomeWidgetService {
     try {
       await HomeWidget.saveImage(
         Constants.widgetImageKey,
-        ResizeImage(NetworkImage(thumbnail), width: _photoWidth),
+        ResizeImage(thumbnailProvider(thumbnail), width: _photoWidth),
       );
-    } catch (_) {
-      // Offline or a dead link.
+    } on Exception {
+      // Offline with a cold cache, or a dead link. Errors (a missing App
+      // Group, a bad key) stay unhandled on purpose: they are bugs, and the
+      // uncaught-error path main.dart wires reports them to Crashlytics.
       await HomeWidget.saveWidgetData<String>(Constants.widgetImageKey, null);
     }
   }
@@ -105,7 +123,7 @@ class HomeWidgetServiceImpl implements HomeWidgetService {
   /// thumbnails become photos.
   @visibleForTesting
   static bool hasRealThumbnail(String thumbnail) =>
-      thumbnail.startsWith('http') && thumbnail != Constants.defaultThumbnail;
+      thumbnail.isHttpUrl && thumbnail != Constants.defaultThumbnail;
 
   /// Arms one update alarm per local midnight so the Android widget re-renders
   /// its D-day right when the calendar day changes. The plugin re-arms these

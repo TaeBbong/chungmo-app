@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:chungmo/core/services/home_widget_service.dart';
 import 'package:chungmo/core/utils/constants.dart';
 import 'package:chungmo/domain/entities/schedule.dart';
-import 'package:chungmo/domain/repositories/schedule_repository.dart';
-import 'package:chungmo/domain/usecases/usecases.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+
+import '../../mocks/mocks.mocks.dart';
 
 Schedule buildSchedule({
   required String link,
@@ -23,18 +25,6 @@ Schedule buildSchedule({
     date: date,
     location: location,
   );
-}
-
-/// Feeds [publish] through the real subscription path of [init].
-class _FakeWatchAllSchedulesUsecase implements WatchAllSchedulesUsecase {
-  final StreamController<List<Schedule>> controller =
-      StreamController<List<Schedule>>.broadcast();
-
-  @override
-  ScheduleRepository get repository => throw UnimplementedError();
-
-  @override
-  Stream<List<Schedule>> execute() => controller.stream;
 }
 
 void main() {
@@ -144,26 +134,41 @@ void main() {
   });
 
   group('HomeWidgetServiceImpl.publish', () {
-    late _FakeWatchAllSchedulesUsecase usecase;
+    late MockWatchAllSchedulesUsecase usecase;
+    late StreamController<List<Schedule>> schedules;
     late HomeWidgetServiceImpl service;
     late List<MethodCall> calls;
 
-    setUp(() {
-      usecase = _FakeWatchAllSchedulesUsecase();
-      service = HomeWidgetServiceImpl(usecase);
-      calls = <MethodCall>[];
+    /// Completes once per updateWidget call — the marker that one publish
+    /// finished. Broadcast so tests can wait for several publishes.
+    late StreamController<void> updates;
+
+    void mockChannel({Duration delay = Duration.zero}) {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(const MethodChannel('home_widget'),
               (MethodCall call) async {
         calls.add(call);
+        if (delay != Duration.zero) await Future<void>.delayed(delay);
+        if (call.method == 'updateWidget') updates.add(null);
         return true;
       });
+    }
+
+    setUp(() {
+      usecase = MockWatchAllSchedulesUsecase();
+      schedules = StreamController<List<Schedule>>.broadcast();
+      when(usecase.execute()).thenAnswer((_) => schedules.stream);
+      service = HomeWidgetServiceImpl(usecase);
+      calls = <MethodCall>[];
+      updates = StreamController<void>.broadcast();
+      mockChannel();
     });
 
     tearDown(() {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(const MethodChannel('home_widget'), null);
-      usecase.controller.close();
+      schedules.close();
+      updates.close();
     });
 
     Map<String, Object?> savedData() {
@@ -219,8 +224,10 @@ void main() {
     });
 
     test('clears the photo when the thumbnail fetch fails', () async {
-      // flutter_test blocks real HTTP, so this genuine-looking URL exercises
-      // the fetch-failure fallback.
+      // The cached provider needs platform channels tests lack; a plain
+      // NetworkImage against flutter_test's blocked HTTP (every request
+      // returns 400) exercises the same fetch-failure fallback.
+      service.thumbnailProvider = NetworkImage.new;
       await service.publish([
         buildSchedule(
           link: 'a',
@@ -233,14 +240,38 @@ void main() {
     });
 
     test('init subscribes so a stream emission publishes', () async {
+      final Future<void> published = updates.stream.first;
       await service.init();
-      usecase.controller.add(const []);
-      await usecase.controller.stream.first.timeout(const Duration(seconds: 1),
-          onTimeout: () => const []);
-      // Let the listener's async publish run to completion.
-      await Future<void>.delayed(Duration.zero);
+      schedules.add(const []);
+      await published.timeout(const Duration(seconds: 5));
 
       expect(calls.any((MethodCall c) => c.method == 'updateWidget'), isTrue);
+    });
+
+    test('serializes publishes so the last emission is the final state',
+        () async {
+      // A slowed channel makes an unserialized second publish interleave
+      // with the first instead of waiting for it.
+      mockChannel(delay: const Duration(milliseconds: 5));
+      final Future<void> bothPublished = updates.stream.take(2).drain<void>();
+      await service.init();
+
+      final DateTime date = DateTime.now().add(const Duration(days: 7));
+      schedules.add([buildSchedule(link: 'a', date: date)]);
+      schedules.add([
+        buildSchedule(link: 'b', date: date, groom: '박준호', bride: '최지우'),
+      ]);
+      await bothPublished.timeout(const Duration(seconds: 5));
+
+      // The first publish finished (updateWidget) before the second wrote
+      // anything, and the store ends on the last emission's data.
+      final int firstUpdate =
+          calls.indexWhere((MethodCall c) => c.method == 'updateWidget');
+      final int firstSecondWrite = calls.indexWhere((MethodCall c) =>
+          c.method == 'saveWidgetData' &&
+          (c.arguments as Map)['data'] == '박준호 & 최지우');
+      expect(firstSecondWrite, greaterThan(firstUpdate));
+      expect(savedData()[Constants.widgetCoupleKey], '박준호 & 최지우');
     });
   });
 }
