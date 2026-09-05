@@ -115,6 +115,8 @@ class _RecordPageState extends State<RecordPage> {
   void _onSaveStateChanged(BuildContext context, RecordState state) {
     switch (state.saveStatus) {
       case RecordSaveStatus.success:
+        // Physical confirmation as the page closes on a saved record.
+        HapticFeedback.mediumImpact();
         Navigator.of(context).pop(_pendingSave);
       case RecordSaveStatus.failure:
         ScaffoldMessenger.of(context).showSnackBar(

@@ -6,6 +6,7 @@ import '../../core/utils/date_extension.dart';
 import '../../domain/entities/schedule.dart';
 import '../theme/palette.dart';
 import 'dday_badge.dart';
+import 'pressable.dart';
 
 class ScheduleListTile extends StatelessWidget {
   final Schedule schedule;
@@ -16,7 +17,7 @@ class ScheduleListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final String formatDate = schedule.date.krDate;
 
-    return GestureDetector(
+    return Pressable(
       onTap: () {
         navigatorKey.currentState?.pushNamed('/detail', arguments: schedule);
       },

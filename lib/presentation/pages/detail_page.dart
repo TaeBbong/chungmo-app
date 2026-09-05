@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../domain/entities/relation.dart';
@@ -16,7 +17,9 @@ import '../../core/navigation/app_navigation.dart';
 import '../theme/palette.dart';
 import '../widgets/account_section.dart';
 import '../widgets/info_row.dart';
+import '../../core/utils/string_extension.dart';
 import '../widgets/dday_badge.dart';
+import '../widgets/fade_slide_in.dart';
 
 class DetailPage extends StatefulWidget {
   final Schedule schedule;
@@ -225,6 +228,8 @@ class _DetailPageState extends State<DetailPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
             ),
             onPressed: () {
+              // Physical confirmation for a destructive action.
+              HapticFeedback.mediumImpact();
               cubit.deleteSchedule(cubit.state.schedule!.link);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('일정이 삭제되었습니다.')),
@@ -314,7 +319,12 @@ class _DetailPageState extends State<DetailPage> {
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
-                    child: editMode ? _buildEditForm() : _buildInfoCard(),
+                    // Enters slightly after the hero header lands, so the
+                    // flight has the stage to itself first.
+                    child: FadeSlideIn(
+                      delay: const Duration(milliseconds: 100),
+                      child: editMode ? _buildEditForm() : _buildInfoCard(),
+                    ),
                   ),
                 ),
               ],
@@ -323,15 +333,6 @@ class _DetailPageState extends State<DetailPage> {
         ),
       ),
     );
-  }
-
-  /// True for real invitation URLs, false for synthetic keys
-  /// (image://, text://, manual://) and malformed values.
-  static bool _isHttpLink(String link) {
-    final Uri? uri = Uri.tryParse(link);
-    return uri != null &&
-        (uri.scheme == 'http' || uri.scheme == 'https') &&
-        uri.host.isNotEmpty;
   }
 
   Widget _buildInfoCard() {
@@ -363,7 +364,9 @@ class _DetailPageState extends State<DetailPage> {
         ),
         // Image/text/manual schedules carry a synthetic (non-http) link
         // that cannot be opened, so the row only shows for real URLs.
-        if (_isHttpLink(schedule.link)) ...[
+        // Synthetic keys (image://, text://, manual://) are not links the
+        // user can open.
+        if (schedule.link.isHttpUrl) ...[
           const _RowDivider(),
           InfoRow(
             icon: Icons.link,
