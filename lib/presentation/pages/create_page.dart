@@ -22,6 +22,7 @@ import '../../core/services/tutorial_manager.dart';
 import '../../core/utils/constants.dart';
 import '../bloc/create/create_cubit.dart';
 import '../theme/dimens.dart';
+import '../theme/motions.dart';
 import '../theme/palette.dart';
 import '../widgets/analyze_animation.dart';
 import '../widgets/schedule_detail_column.dart';
@@ -344,6 +345,28 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
     super.dispose();
   }
 
+  /// Cross-fades between the analyze states (idle/loading/error/result)
+  /// instead of hard-swapping subtrees. Every branch returns this wrapper at
+  /// the same tree position, so the AnimatedSwitcher element persists across
+  /// builds and only its keyed child changes — which is what triggers the
+  /// transition.
+  Widget _analyzeBranch(String branch, Widget child) {
+    return AnimatedSwitcher(
+      duration: Motions.standard,
+      switchInCurve: Motions.easeOut,
+      switchOutCurve: Motions.easeOut,
+      transitionBuilder: (Widget child, Animation<double> animation) =>
+          FadeTransition(
+        opacity: animation,
+        child: ScaleTransition(
+          scale: Tween<double>(begin: 0.98, end: 1).animate(animation),
+          child: child,
+        ),
+      ),
+      child: KeyedSubtree(key: ValueKey<String>(branch), child: child),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<CreateCubit>.value(
@@ -415,18 +438,20 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                 child: BlocBuilder<CreateCubit, CreateState>(
                     builder: (context, state) {
                   if (state.isLoading) {
-                    return const Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 250,
-                          height: 250,
-                          child: AnalyzeAnimation(),
-                        ),
-                        SizedBox(height: 16),
-                        Text('청첩장 분석 중...', style: TextStyle(fontSize: 16)),
-                      ],
-                    );
+                    return _analyzeBranch(
+                        'loading',
+                        const Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              width: 250,
+                              height: 250,
+                              child: AnalyzeAnimation(),
+                            ),
+                            SizedBox(height: 16),
+                            Text('청첩장 분석 중...', style: TextStyle(fontSize: 16)),
+                          ],
+                        ));
                   }
                   if (state.isError) {
                     // A format/incomplete failure means the AI answered but
@@ -436,128 +461,160 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                     final bool notReadable =
                         state.errorReason == ParseFailureReason.format ||
                             state.errorReason == ParseFailureReason.incomplete;
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.search_off_rounded,
-                            size: 44,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurfaceVariant),
-                        const SizedBox(height: Dimens.md),
-                        Text(
-                          notReadable ? '청첩장 정보를 찾지 못했어요.' : '다시 시도해주세요.',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        const SizedBox(height: Dimens.xs),
-                        Text(
-                          notReadable
-                              ? '예식 날짜가 담긴 청첩장인지 확인하고 다시 시도해주세요.'
-                              : '잠시 서버에 문제가 생겼어요.',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        // Partial extraction kept from the failed parse:
-                        // let the user finish it instead of retrying.
-                        if (state.draft != null)
-                          Padding(
-                            padding: const EdgeInsets.only(top: Dimens.lg),
-                            child: FilledButton.icon(
-                              onPressed: () {
-                                final draft = state.draft;
-                                cubit.resetState();
-                                navigatorKey.currentState?.pushNamed(
-                                    '/schedule/form',
-                                    arguments: draft);
-                              },
-                              icon: const Icon(Icons.edit_calendar_outlined,
-                                  size: 18),
-                              label: const Text('읽은 내용으로 직접 완성하기'),
-                            ),
-                          ),
-                      ],
-                    );
-                  }
-                  return state.schedule != null
-                      ? ScheduleDetailColumn(
-                          schedule: state.schedule!,
-                          extraChildren: [
+                    return _analyzeBranch(
+                        'error',
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.search_off_rounded,
+                                size: 44,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant),
                             const SizedBox(height: Dimens.md),
                             Text(
-                              '분석 결과를 일정에 추가할게요.',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Palette.burgundy),
+                              notReadable ? '청첩장 정보를 찾지 못했어요.' : '다시 시도해주세요.',
+                              style: Theme.of(context).textTheme.titleMedium,
                             ),
+                            const SizedBox(height: Dimens.xs),
+                            Text(
+                              notReadable
+                                  ? '예식 날짜가 담긴 청첩장인지 확인하고 다시 시도해주세요.'
+                                  : '잠시 서버에 문제가 생겼어요.',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            // Partial extraction kept from the failed parse:
+                            // let the user finish it instead of retrying.
+                            if (state.draft != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: Dimens.lg),
+                                child: FilledButton.icon(
+                                  onPressed: () {
+                                    final draft = state.draft;
+                                    cubit.resetState();
+                                    navigatorKey.currentState?.pushNamed(
+                                        '/schedule/form',
+                                        arguments: draft);
+                                  },
+                                  icon: const Icon(Icons.edit_calendar_outlined,
+                                      size: 18),
+                                  label: const Text('읽은 내용으로 직접 완성하기'),
+                                ),
+                              ),
                           ],
-                        )
-                      : Column(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 96,
-                                    height: 96,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryContainer,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(Icons.auto_awesome,
-                                        size: 40,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimaryContainer),
-                                  ),
-                                  const SizedBox(height: Dimens.lg),
-                                  Text(
-                                    key: resultBodyKey,
-                                    '모바일 청첩장을 첨부해주세요.',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium,
-                                  ),
-                                  const SizedBox(height: Dimens.xs),
-                                  Text(
-                                    '링크·문자·사진 무엇이든 AI가 분석해드려요.',
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
-                                  ),
-                                  // No content preview: the clipboard is
-                                  // only peeked (hasStrings), not read, so
-                                  // launch stays free of the iOS paste
-                                  // prompt. Tapping reads and pastes.
-                                  _clipboardHasText &&
-                                          _textEditingController.text.isEmpty
-                                      ? Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: Dimens.lg),
-                                          child: FilledButton.icon(
-                                            onPressed: _pasteFromClipboard,
-                                            icon: const Icon(
-                                                Icons.content_paste_rounded,
-                                                size: 18),
-                                            label: const Text('복사한 내용 붙여넣기'),
+                        ));
+                  }
+                  return _analyzeBranch(
+                      state.schedule != null ? 'result' : 'idle',
+                      state.schedule != null
+                          ? ScheduleDetailColumn(
+                              schedule: state.schedule!,
+                              extraChildren: [
+                                const SizedBox(height: Dimens.md),
+                                Text(
+                                  '분석 결과를 일정에 추가할게요.',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Palette.burgundy),
+                                ),
+                              ],
+                            )
+                          : Column(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 96,
+                                        height: 96,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryContainer,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(Icons.auto_awesome,
+                                            size: 40,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onPrimaryContainer),
+                                      ),
+                                      const SizedBox(height: Dimens.lg),
+                                      Text(
+                                        key: resultBodyKey,
+                                        '모바일 청첩장을 첨부해주세요.',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      ),
+                                      const SizedBox(height: Dimens.xs),
+                                      Text(
+                                        '링크·문자·사진 무엇이든 AI가 분석해드려요.',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
+                                      ),
+                                      // No content preview: the clipboard is
+                                      // only peeked (hasStrings), not read, so
+                                      // launch stays free of the iOS paste
+                                      // prompt. Tapping reads and pastes.
+                                      // The chip fades/slides in when a
+                                      // clipboard link is detected instead of
+                                      // popping into the layout.
+                                      AnimatedSwitcher(
+                                        duration: Motions.standard,
+                                        switchInCurve: Motions.easeOut,
+                                        switchOutCurve: Motions.easeOut,
+                                        transitionBuilder: (Widget child,
+                                                Animation<double> animation) =>
+                                            FadeTransition(
+                                          opacity: animation,
+                                          child: SlideTransition(
+                                            position: Tween<Offset>(
+                                              begin: const Offset(0, 0.3),
+                                              end: Offset.zero,
+                                            ).animate(animation),
+                                            child: child,
                                           ),
-                                        )
-                                      : Container(),
-                                ],
-                              ),
-                            ),
+                                        ),
+                                        child: _clipboardHasText &&
+                                                _textEditingController
+                                                    .text.isEmpty
+                                            ? Padding(
+                                                key: const ValueKey<String>(
+                                                    'paste-chip'),
+                                                padding: const EdgeInsets.only(
+                                                    top: Dimens.lg),
+                                                child: FilledButton.icon(
+                                                  onPressed:
+                                                      _pasteFromClipboard,
+                                                  icon: const Icon(
+                                                      Icons
+                                                          .content_paste_rounded,
+                                                      size: 18),
+                                                  label:
+                                                      const Text('복사한 내용 붙여넣기'),
+                                                ),
+                                              )
+                                            : const SizedBox.shrink(),
+                                      ),
+                                    ],
+                                  ),
+                                ),
 
-                            // The saved schedules, so the empty home screen
-                            // still says something while it waits for a link.
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 90),
-                              child: UpcomingPreview(
-                                schedules: state.upcomingSchedules,
-                              ),
-                            ),
-                          ],
-                        );
+                                // The saved schedules, so the empty home screen
+                                // still says something while it waits for a link.
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(16, 0, 16, 90),
+                                  child: UpcomingPreview(
+                                    schedules: state.upcomingSchedules,
+                                  ),
+                                ),
+                              ],
+                            ));
                 }),
               ),
             ],
@@ -570,6 +627,8 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                         Dimens.md, Dimens.screenPadding, Dimens.md),
                     child: ElevatedButton(
                       onPressed: () {
+                        // Physical confirmation for the flow's terminal step.
+                        HapticFeedback.mediumImpact();
                         cubit.resetState();
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('일정을 캘린더에 저장했습니다.')),
