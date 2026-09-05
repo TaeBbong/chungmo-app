@@ -3,10 +3,18 @@ package com.taebbong.chungmo
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.BitmapShader
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Shader
 import android.view.View
 import android.widget.RemoteViews
 import es.antonborri.home_widget.HomeWidgetLaunchIntent
 import es.antonborri.home_widget.HomeWidgetProvider
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
@@ -16,6 +24,10 @@ import kotlin.math.roundToInt
  * updates (and the daily updatePeriodMillis backstop) keep it correct while
  * the app stays closed. A wedding whose calendar day has passed renders the
  * empty state until the app next prunes the store.
+ *
+ * When the store carries an invitation photo it becomes a full-bleed
+ * background under a scrim, with all text switched to white; otherwise the
+ * flat day/night card renders.
  */
 class ChungmoWidgetProvider : HomeWidgetProvider() {
 
@@ -53,9 +65,12 @@ class ChungmoWidgetProvider : HomeWidgetProvider() {
                     R.id.widget_location,
                     if (location.isEmpty()) View.GONE else View.VISIBLE,
                 )
+                applyPhoto(context, appWidgetManager, widgetId, widgetData, views)
             } else {
                 views.setViewVisibility(R.id.widget_content, View.GONE)
                 views.setViewVisibility(R.id.widget_empty, View.VISIBLE)
+                views.setViewVisibility(R.id.widget_photo, View.GONE)
+                views.setViewVisibility(R.id.widget_scrim, View.GONE)
             }
 
             views.setOnClickPendingIntent(
@@ -65,6 +80,87 @@ class ChungmoWidgetProvider : HomeWidgetProvider() {
 
             appWidgetManager.updateAppWidget(widgetId, views)
         }
+    }
+
+    /**
+     * Shows the invitation photo background when the store carries one,
+     * switching every text to white; keeps the flat card otherwise.
+     */
+    private fun applyPhoto(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        widgetId: Int,
+        widgetData: SharedPreferences,
+        views: RemoteViews,
+    ) {
+        val path = widgetData.getString("widget_image", null)
+        val photo = path?.let { roundedCover(context, appWidgetManager, widgetId, it) }
+        if (photo != null) {
+            views.setImageViewBitmap(R.id.widget_photo, photo)
+            views.setViewVisibility(R.id.widget_photo, View.VISIBLE)
+            views.setViewVisibility(R.id.widget_scrim, View.VISIBLE)
+            val white = 0xFFFFFFFF.toInt()
+            val whiteDim = 0xE6FFFFFF.toInt()
+            views.setTextColor(R.id.widget_dday, white)
+            views.setTextColor(R.id.widget_couple, white)
+            views.setTextColor(R.id.widget_date, whiteDim)
+            views.setTextColor(R.id.widget_location, whiteDim)
+        } else {
+            views.setViewVisibility(R.id.widget_photo, View.GONE)
+            views.setViewVisibility(R.id.widget_scrim, View.GONE)
+            // A freshly inflated RemoteViews carries the XML palette, so the
+            // flat-card colors need no reset here.
+        }
+    }
+
+    /**
+     * Decodes the stored photo, center-crops it to the widget's aspect ratio
+     * and rounds its corners, so `fitXY` shows exactly a cover crop whose
+     * corners match the card even on launchers that do not clip widgets.
+     */
+    private fun roundedCover(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        widgetId: Int,
+        path: String,
+    ): Bitmap? {
+        val source = BitmapFactory.decodeFile(path) ?: return null
+        val density = context.resources.displayMetrics.density
+        val options = appWidgetManager.getAppWidgetOptions(widgetId)
+        val widthDp = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+        val heightDp = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+        // Options can be empty right after adding; assume the 2x2 square.
+        val targetWidth = (max(widthDp, 110) * density).roundToInt()
+        val targetHeight = (max(heightDp, 110) * density).roundToInt()
+
+        val scale = max(
+            targetWidth.toFloat() / source.width,
+            targetHeight.toFloat() / source.height,
+        )
+        // Never upscale the source: the shader crop below stays sharp and the
+        // rounding radius is corrected by the actual output scale.
+        val outWidth = min(targetWidth, (source.width * scale).roundToInt())
+        val outHeight = min(targetHeight, (source.height * scale).roundToInt())
+
+        val output = Bitmap.createBitmap(outWidth, outHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(output)
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+        val shader = BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
+        val matrix = android.graphics.Matrix()
+        matrix.setScale(scale, scale)
+        matrix.postTranslate(
+            (outWidth - source.width * scale) / 2f,
+            (outHeight - source.height * scale) / 2f,
+        )
+        shader.setLocalMatrix(matrix)
+        paint.shader = shader
+        // 16dp corner radius in bitmap pixels, compensating for fitXY scaling
+        // the bitmap up to the widget's real size.
+        val radius = CORNER_RADIUS_DP * density * (outWidth.toFloat() / targetWidth)
+        canvas.drawRoundRect(
+            0f, 0f, outWidth.toFloat(), outHeight.toFloat(), radius, radius, paint,
+        )
+        return output
     }
 
     /**
@@ -92,5 +188,6 @@ class ChungmoWidgetProvider : HomeWidgetProvider() {
 
     companion object {
         private const val DAY_MILLIS = 24 * 60 * 60 * 1000L
+        private const val CORNER_RADIUS_DP = 16f
     }
 }

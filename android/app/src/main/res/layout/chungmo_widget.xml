@@ -5,14 +5,33 @@
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/chungmo_widget_background"
-    android:padding="14dp">
+    android:background="@drawable/chungmo_widget_background">
+
+    <!-- Invitation photo background; the provider pre-rounds the bitmap so
+         corners match the card on launchers that do not clip widgets. -->
+    <ImageView
+        android:id="@+id/widget_photo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        android:importantForAccessibility="no" />
+
+    <!-- Legibility scrim over the photo. A FrameLayout because RemoteViews
+         only inflates its view whitelist — a plain View is rejected. -->
+    <FrameLayout
+        android:id="@+id/widget_scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/chungmo_widget_scrim"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/widget_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="14dp">
 
         <TextView
             android:id="@+id/widget_dday"
@@ -23,11 +42,17 @@
             android:textStyle="bold"
             android:maxLines="1" />
 
+        <!-- Pushes the details to the bottom, over the darkest part of the
+             scrim, mirroring the iOS layout's Spacer. -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
         <TextView
             android:id="@+id/widget_couple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
             android:textColor="@color/widget_text_primary"
             android:textSize="14sp"
             android:textStyle="bold"
