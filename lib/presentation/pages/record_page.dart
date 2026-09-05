@@ -38,6 +38,19 @@ class _RecordPageState extends State<RecordPage> {
   /// page once the save succeeds.
   Schedule? _pendingSave;
 
+  /// The recommendation the autofill last reacted to, so it fires only on
+  /// arrival — not on every later emission. Without the edge check, the
+  /// save-status emissions would re-run the fill and resurrect an amount
+  /// the user deliberately cleared after the autofill. Reset when the
+  /// recommendation is invalidated: fallbacks are canonicalized consts, so
+  /// a re-request can hand back the identical instance.
+  PayRecommendation? _seenRecommendation;
+
+  /// The exact text the autofill last wrote. A field still holding it (or
+  /// empty) counts as untouched, so '다시 추천' may update it; anything the
+  /// user typed themselves is never overwritten.
+  String? _autofilledText;
+
   /// The amounts people actually give, offered as one-tap presets that fill
   /// [payController].
   static const List<int> payPresets = [50000, 100000, 200000, 300000];
@@ -112,9 +125,12 @@ class _RecordPageState extends State<RecordPage> {
     });
   }
 
-  void _onSaveStateChanged(BuildContext context, RecordState state) {
+  void _onRecordStateChanged(BuildContext context, RecordState state) {
+    _autofillRecommendationIfEmpty(state);
     switch (state.saveStatus) {
       case RecordSaveStatus.success:
+        // Physical confirmation as the page closes on a saved record.
+        HapticFeedback.mediumImpact();
         Navigator.of(context).pop(_pendingSave);
       case RecordSaveStatus.failure:
         ScaffoldMessenger.of(context).showSnackBar(
@@ -123,6 +139,32 @@ class _RecordPageState extends State<RecordPage> {
       case RecordSaveStatus.idle || RecordSaveStatus.saving:
         break;
     }
+  }
+
+  /// Fills an untouched amount field with a freshly arrived recommendation.
+  ///
+  /// Without this, a user who requests a suggestion on a blank form, sees
+  /// the amount and taps 저장 records 0원 — the card looks like part of the
+  /// form, so "shown but not applied" reads as a lost save. An amount the
+  /// user typed themselves is never overwritten; the explicit '이 금액 적용'
+  /// button stays the way to replace one.
+  void _autofillRecommendationIfEmpty(RecordState state) {
+    final PayRecommendation? recommendation = state.recommendation;
+    if (recommendation == null) {
+      _seenRecommendation = null;
+      return;
+    }
+    if (state.recommending) return;
+    if (identical(recommendation, _seenRecommendation)) return;
+    _seenRecommendation = recommendation;
+    final String text = payController.text.trim();
+    final bool untouched = text.isEmpty || text == _autofilledText;
+    if (!untouched) return;
+    _autofilledText = recommendation.amount.toString();
+    setState(() {
+      customPay = !payPresets.contains(recommendation.amount);
+      payController.text = _autofilledText!;
+    });
   }
 
   InputDecoration _inputDecoration() {
@@ -148,7 +190,7 @@ class _RecordPageState extends State<RecordPage> {
     return BlocProvider<RecordCubit>.value(
       value: cubit,
       child: BlocConsumer<RecordCubit, RecordState>(
-        listener: _onSaveStateChanged,
+        listener: _onRecordStateChanged,
         builder: (context, state) => SafeArea(
           top: false,
           child: Scaffold(

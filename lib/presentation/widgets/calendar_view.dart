@@ -19,8 +19,13 @@ class CalendarView extends StatelessWidget {
       final eventCounts = state.currentMonthSchedules;
       return Column(
         children: [
+          // No key on purpose: a per-emission ValueKey(eventCounts.hashCode)
+          // used to force marker refreshes, but every bloc emission builds a
+          // new map, so each month swipe/day tap REMOUNTED the calendar —
+          // its PageView state died mid-gesture and the settle animation
+          // snapped. Markers refresh through plain rebuilds anyway: the
+          // markerBuilder closure captures the fresh map each build.
           TableCalendar(
-            key: ValueKey(eventCounts.hashCode),
             locale: 'ko_KR',
             firstDay: DateTime(2000, 1, 1),
             lastDay: DateTime(2100, 12, 31),

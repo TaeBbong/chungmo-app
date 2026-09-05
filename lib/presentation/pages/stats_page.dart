@@ -9,6 +9,7 @@ import '../../core/utils/int_extension.dart';
 import '../../domain/entities/pay_statistics.dart';
 import '../../domain/entities/relation.dart';
 import '../bloc/stats/stats_cubit.dart';
+import '../theme/motions.dart';
 import '../theme/palette.dart';
 
 /// Gift-money statistics dashboard: headline totals, yearly spending and
@@ -100,16 +101,26 @@ class _Dashboard extends StatelessWidget {
       children: [
         Row(
           children: [
-            _SummaryTile(label: '총 축의금', value: statistics.totalAmount.krCurrency),
+            _SummaryTile(
+                label: '총 축의금',
+                value: statistics.totalAmount,
+                format: (int v) => v.krCurrency),
             const SizedBox(width: 8),
-            _SummaryTile(label: '기록 수', value: '${statistics.recordCount}건'),
+            _SummaryTile(
+                label: '기록 수',
+                value: statistics.recordCount,
+                format: (int v) => '$v건'),
             const SizedBox(width: 8),
-            _SummaryTile(label: '평균', value: statistics.averageAmount.krCurrency),
+            _SummaryTile(
+                label: '평균',
+                value: statistics.averageAmount,
+                format: (int v) => v.krCurrency),
           ],
         ),
         const SizedBox(height: 24),
         const _SectionLabel('연도별 지출'),
-        _ChartCard(child: _YearlyBarChart(yearlyTotals: statistics.yearlyTotals)),
+        _ChartCard(
+            child: _YearlyBarChart(yearlyTotals: statistics.yearlyTotals)),
         const SizedBox(height: 24),
         const _SectionLabel('관계별 지출'),
         _ChartCard(
@@ -120,11 +131,32 @@ class _Dashboard extends StatelessWidget {
   }
 }
 
+/// One-shot entrance driver for the dashboard: 0 → 1 with the emphasized
+/// curve, multiplied into count-ups, bar heights and fill fractions so the
+/// numbers and charts draw in together instead of appearing fully formed.
+class _Entrance extends StatelessWidget {
+  final Widget Function(BuildContext context, double t) builder;
+
+  const _Entrance({required this.builder});
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0, end: 1),
+      duration: Motions.emphasized,
+      curve: Motions.emphasizedEase,
+      builder: (BuildContext context, double t, _) => builder(context, t),
+    );
+  }
+}
+
 class _SummaryTile extends StatelessWidget {
   final String label;
-  final String value;
+  final int value;
+  final String Function(int) format;
 
-  const _SummaryTile({required this.label, required this.value});
+  const _SummaryTile(
+      {required this.label, required this.value, required this.format});
 
   @override
   Widget build(BuildContext context) {
@@ -139,17 +171,18 @@ class _SummaryTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label,
-                style: TextStyle(fontSize: 12, color: Palette.grey500)),
+            Text(label, style: TextStyle(fontSize: 12, color: Palette.grey500)),
             const SizedBox(height: 6),
             // Amounts can outgrow a third of the screen; scale down
-            // instead of wrapping.
+            // instead of wrapping. The number counts up on entrance.
             FittedBox(
               fit: BoxFit.scaleDown,
-              child: Text(
-                value,
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              child: _Entrance(
+                builder: (BuildContext context, double t) => Text(
+                  format((value * t).round()),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
           ],
@@ -209,65 +242,70 @@ class _YearlyBarChart extends StatelessWidget {
     final Color gridColor = isLight ? Palette.grey250 : Palette.grey800;
 
     final List<int> years = yearlyTotals.keys.toList()..sort();
-    final int maxTotal =
-        yearlyTotals.values.reduce((a, b) => a > b ? a : b);
+    final int maxTotal = yearlyTotals.values.reduce((a, b) => a > b ? a : b);
 
     return SizedBox(
       height: 200,
-      child: BarChart(
-        BarChartData(
-          alignment: BarChartAlignment.spaceAround,
-          maxY: maxTotal * 1.2,
-          barTouchData: BarTouchData(
-            touchTooltipData: BarTouchTooltipData(
-              getTooltipItem: (group, groupIndex, rod, rodIndex) =>
-                  BarTooltipItem(
-                rod.toY.toInt().krCurrency,
-                const TextStyle(fontWeight: FontWeight.bold),
+      child: _Entrance(
+        builder: (BuildContext context, double t) => BarChart(
+          // fl_chart lerps data changes itself (150ms, linear); zeroed so it
+          // doesn't smear the _Entrance curve driving toY every frame.
+          duration: Duration.zero,
+          BarChartData(
+            alignment: BarChartAlignment.spaceAround,
+            maxY: maxTotal * 1.2,
+            barTouchData: BarTouchData(
+              touchTooltipData: BarTouchTooltipData(
+                getTooltipItem: (group, groupIndex, rod, rodIndex) =>
+                    BarTooltipItem(
+                  rod.toY.toInt().krCurrency,
+                  const TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             ),
-          ),
-          titlesData: FlTitlesData(
-            leftTitles:
-                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles:
-                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles:
-                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (value, meta) => Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: Text(
-                    '${value.toInt()}년',
-                    style: TextStyle(fontSize: 12, color: Palette.grey500),
+            titlesData: FlTitlesData(
+              leftTitles:
+                  const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              topTitles:
+                  const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              rightTitles:
+                  const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  getTitlesWidget: (value, meta) => Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Text(
+                      '${value.toInt()}년',
+                      style: TextStyle(fontSize: 12, color: Palette.grey500),
+                    ),
                   ),
                 ),
               ),
             ),
+            gridData: FlGridData(
+              drawVerticalLine: false,
+              getDrawingHorizontalLine: (value) =>
+                  FlLine(color: gridColor, strokeWidth: 1),
+            ),
+            borderData: FlBorderData(show: false),
+            barGroups: [
+              for (final int year in years)
+                BarChartGroupData(
+                  x: year,
+                  barRods: [
+                    BarChartRodData(
+                      // Grows from the baseline on entrance.
+                      toY: yearlyTotals[year]!.toDouble() * t,
+                      color: barColor,
+                      width: 18,
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(4)),
+                    ),
+                  ],
+                ),
+            ],
           ),
-          gridData: FlGridData(
-            drawVerticalLine: false,
-            getDrawingHorizontalLine: (value) =>
-                FlLine(color: gridColor, strokeWidth: 1),
-          ),
-          borderData: FlBorderData(show: false),
-          barGroups: [
-            for (final int year in years)
-              BarChartGroupData(
-                x: year,
-                barRods: [
-                  BarChartRodData(
-                    toY: yearlyTotals[year]!.toDouble(),
-                    color: barColor,
-                    width: 18,
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(4)),
-                  ),
-                ],
-              ),
-          ],
         ),
       ),
     );
@@ -307,11 +345,15 @@ class _RelationBreakdown extends StatelessWidget {
               Expanded(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: entry.value / maxTotal,
-                    minHeight: 8,
-                    color: barColor,
-                    backgroundColor: trackColor,
+                  child: _Entrance(
+                    builder: (BuildContext context, double t) =>
+                        LinearProgressIndicator(
+                      // Fills to its share on entrance.
+                      value: entry.value / maxTotal * t,
+                      minHeight: 8,
+                      color: barColor,
+                      backgroundColor: trackColor,
+                    ),
                   ),
                 ),
               ),

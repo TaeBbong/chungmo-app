@@ -6,11 +6,14 @@ import 'package:chungmo/data/repositories/schedule_repository.dart';
 import 'package:chungmo/domain/entities/invitation_image.dart';
 import 'package:chungmo/domain/entities/schedule_draft.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image/image.dart' as img;
 import 'package:mockito/mockito.dart';
 
 import '../../mocks/mocks.mocks.dart'; // build_runner로 생성된 파일
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   late ScheduleRepositoryImpl repository;
   late MockScheduleRemoteSource mockRemoteSource;
   late MockScheduleLocalSource mockLocalSource;
@@ -96,13 +99,32 @@ void main() {
       when(mockRemoteSource.fetchScheduleFromImage(any, any))
           .thenThrow(Exception("Server Error"));
 
-      // When
-      expect(() => repository.analyzeImage(tImage), throwsException);
+      // When: awaited, since the preprocessing step runs before the remote
+      // call and verify must not race it.
+      await expectLater(repository.analyzeImage(tImage), throwsException);
 
       // Then
       verify(mockRemoteSource.fetchScheduleFromImage(
               tImage.bytes, tImage.mimeType))
           .called(1);
+    });
+
+    test('downscales an oversized capture before the remote call', () async {
+      // The repository is where every image parse passes through, so the
+      // preprocessing must apply here rather than per caller.
+      when(mockRemoteSource.fetchScheduleFromImage(any, any))
+          .thenAnswer((_) async => tImageScheduleModel);
+
+      await repository.analyzeImage(InvitationImage(
+        bytes: img.encodePng(img.Image(width: 3200, height: 1600)),
+        mimeType: 'image/png',
+      ));
+
+      final captured = verify(
+              mockRemoteSource.fetchScheduleFromImage(captureAny, captureAny))
+          .captured;
+      expect(img.decodeImage(captured.first as Uint8List)!.width, 1600);
+      expect(captured.last, 'image/jpeg');
     });
   });
 

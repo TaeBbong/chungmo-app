@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -5,6 +7,8 @@ import '../../core/analytics/analytics_events.dart';
 import '../../core/analytics/analytics_service.dart';
 import '../../core/di/di.dart';
 import '../../domain/entities/account.dart';
+import '../theme/motions.dart';
+import '../theme/palette.dart';
 import 'info_row.dart';
 
 /// The '계좌' row of the detail card.
@@ -64,18 +68,30 @@ class _AccountGroup extends StatelessWidget {
           style: InfoRowMetrics.labelStyle
               .copyWith(color: InfoRowMetrics.mutedColor(context)),
         ),
-        ...accounts.map((account) => _AccountTile(account: account, side: side)),
+        ...accounts
+            .map((account) => _AccountTile(account: account, side: side)),
         const SizedBox(height: 8),
       ],
     );
   }
 }
 
-class _AccountTile extends StatelessWidget {
+class _AccountTile extends StatefulWidget {
   final Account account;
   final String side;
 
   const _AccountTile({required this.account, required this.side});
+
+  @override
+  State<_AccountTile> createState() => _AccountTileState();
+}
+
+class _AccountTileState extends State<_AccountTile> {
+  Account get account => widget.account;
+
+  /// While set the trailing icon shows a confirming check instead of copy.
+  bool _copied = false;
+  Timer? _copiedReset;
 
   /// `국민 123-45-6789`
   String get _number =>
@@ -89,11 +105,37 @@ class _AccountTile extends StatelessWidget {
   void _copy(BuildContext context) {
     if (account.number.isEmpty) return;
     getIt<AnalyticsService>().logEvent(AnalyticsEvents.accountCopied,
-        parameters: {AnalyticsParams.side: side});
+        parameters: {AnalyticsParams.side: widget.side});
     Clipboard.setData(ClipboardData(text: account.number));
+    // Physical confirmation on top of the visual ones; copying is the one
+    // action here the user performs mid-motion, on their way to a bank app.
+    HapticFeedback.lightImpact();
+    setState(() => _copied = true);
+    _copiedReset?.cancel();
+    _copiedReset = Timer(Motions.hold, () {
+      if (mounted) setState(() => _copied = false);
+    });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('계좌번호를 복사했습니다.')),
     );
+  }
+
+  @override
+  void didUpdateWidget(_AccountTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Tiles are matched by position, so this State can be reused for a
+    // different account; the check icon and its reset timer must not
+    // carry over to it.
+    if (oldWidget.account != widget.account) {
+      _copiedReset?.cancel();
+      _copied = false;
+    }
+  }
+
+  @override
+  void dispose() {
+    _copiedReset?.cancel();
+    super.dispose();
   }
 
   @override
@@ -121,8 +163,21 @@ class _AccountTile extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(Icons.copy,
-                size: 16, color: InfoRowMetrics.faintColor(context)),
+            // Copy icon morphs into a check for a moment after copying.
+            AnimatedSwitcher(
+              duration: Motions.quick,
+              transitionBuilder: (Widget child, Animation<double> animation) =>
+                  ScaleTransition(scale: animation, child: child),
+              child: _copied
+                  ? Icon(Icons.check_rounded,
+                      key: const ValueKey<String>('copied'),
+                      size: 16,
+                      color: Palette.success)
+                  : Icon(Icons.copy,
+                      key: const ValueKey<String>('copy'),
+                      size: 16,
+                      color: InfoRowMetrics.faintColor(context)),
+            ),
           ],
         ),
       ),

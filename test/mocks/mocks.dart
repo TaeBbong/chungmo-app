@@ -1,4 +1,5 @@
 import 'package:chungmo/data/sources/remote/schedule_remote_source.dart';
+import 'package:chungmo/domain/repositories/schedule_repository.dart';
 import 'package:chungmo/domain/usecases/usecases.dart';
 import 'package:chungmo/presentation/bloc/create/create_cubit.dart';
 import 'package:mockito/annotations.dart';
@@ -9,6 +10,7 @@ import 'package:chungmo/core/services/notification_service.dart';
 @GenerateMocks([
   ScheduleLocalSource,
   ScheduleRemoteSource,
+  ScheduleRepository,
   PayRecommendationSource,
   NotificationService,
   AnalyzeLinkUsecase,

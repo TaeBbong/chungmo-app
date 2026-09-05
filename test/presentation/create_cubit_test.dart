@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:bloc_test/bloc_test.dart';
 import 'package:chungmo/core/analytics/analytics_events.dart';
 import 'package:chungmo/core/analytics/noop_analytics_service.dart';
@@ -7,8 +5,9 @@ import 'package:chungmo/domain/entities/invitation_image.dart';
 import 'package:chungmo/domain/entities/schedule.dart';
 import 'package:chungmo/domain/entities/schedule_draft.dart';
 import 'package:chungmo/presentation/bloc/create/create_cubit.dart';
-import 'package:mockito/mockito.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 
 import '../mocks/mocks.mocks.dart';
 
