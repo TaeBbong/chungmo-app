@@ -2,8 +2,8 @@
 <!-- updatePeriodMillis (daily) only backstops the exact midnight alarms
      HomeWidgetService keeps armed; the D-day is recomputed on every draw. -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="110dp"
-    android:minHeight="110dp"
+    android:minWidth="@dimen/chungmo_widget_min_size"
+    android:minHeight="@dimen/chungmo_widget_min_size"
     android:targetCellWidth="2"
     android:targetCellHeight="2"
     android:updatePeriodMillis="86400000"

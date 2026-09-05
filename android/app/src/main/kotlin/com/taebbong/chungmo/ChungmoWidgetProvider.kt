@@ -40,9 +40,9 @@ class ChungmoWidgetProvider : HomeWidgetProvider() {
         for (widgetId in appWidgetIds) {
             val views = RemoteViews(context.packageName, R.layout.chungmo_widget)
 
-            val hasSchedule = widgetData.getBoolean("widget_has_schedule", false)
+            val hasSchedule = widgetData.getBoolean(KEY_HAS_SCHEDULE, false)
             val dateMillis =
-                (widgetData.all["widget_date_millis"] as? Number)?.toLong() ?: 0L
+                (widgetData.all[KEY_DATE_MILLIS] as? Number)?.toLong() ?: 0L
             val daysLeft = daysUntil(dateMillis)
 
             if (hasSchedule && daysLeft >= 0) {
@@ -51,15 +51,15 @@ class ChungmoWidgetProvider : HomeWidgetProvider() {
                 views.setTextViewText(R.id.widget_dday, ddayLabel(daysLeft))
                 views.setTextViewText(
                     R.id.widget_couple,
-                    widgetData.getString("widget_couple", "") ?: "",
+                    widgetData.getString(KEY_COUPLE, "") ?: "",
                 )
                 views.setTextViewText(
                     R.id.widget_date,
-                    widgetData.getString("widget_date_text", "") ?: "",
+                    widgetData.getString(KEY_DATE_TEXT, "") ?: "",
                 )
                 // Parsing can leave the location blank; hide the line instead
                 // of rendering an empty row.
-                val location = widgetData.getString("widget_location", "") ?: ""
+                val location = widgetData.getString(KEY_LOCATION, "") ?: ""
                 views.setTextViewText(R.id.widget_location, location)
                 views.setViewVisibility(
                     R.id.widget_location,
@@ -93,7 +93,7 @@ class ChungmoWidgetProvider : HomeWidgetProvider() {
         widgetData: SharedPreferences,
         views: RemoteViews,
     ) {
-        val path = widgetData.getString("widget_image", null)
+        val path = widgetData.getString(KEY_IMAGE, null)
         val photo = path?.let { roundedCover(context, appWidgetManager, widgetId, it) }
         if (photo != null) {
             views.setImageViewBitmap(R.id.widget_photo, photo)
@@ -129,9 +129,11 @@ class ChungmoWidgetProvider : HomeWidgetProvider() {
         val options = appWidgetManager.getAppWidgetOptions(widgetId)
         val widthDp = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
         val heightDp = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
-        // Options can be empty right after adding; assume the 2x2 square.
-        val targetWidth = (max(widthDp, 110) * density).roundToInt()
-        val targetHeight = (max(heightDp, 110) * density).roundToInt()
+        // Options can be empty right after adding; assume the 2x2 square the
+        // widget info declares.
+        val minSize = context.resources.getDimensionPixelSize(R.dimen.chungmo_widget_min_size)
+        val targetWidth = max((widthDp * density).roundToInt(), minSize)
+        val targetHeight = max((heightDp * density).roundToInt(), minSize)
 
         val scale = max(
             targetWidth.toFloat() / source.width,
@@ -154,9 +156,10 @@ class ChungmoWidgetProvider : HomeWidgetProvider() {
         )
         shader.setLocalMatrix(matrix)
         paint.shader = shader
-        // 16dp corner radius in bitmap pixels, compensating for fitXY scaling
-        // the bitmap up to the widget's real size.
-        val radius = CORNER_RADIUS_DP * density * (outWidth.toFloat() / targetWidth)
+        // Corner radius in bitmap pixels, compensating for fitXY scaling the
+        // bitmap up to the widget's real size.
+        val radius = context.resources.getDimension(R.dimen.chungmo_widget_corner_radius) *
+            (outWidth.toFloat() / targetWidth)
         canvas.drawRoundRect(
             0f, 0f, outWidth.toFloat(), outHeight.toFloat(), radius, radius, paint,
         )
@@ -188,6 +191,14 @@ class ChungmoWidgetProvider : HomeWidgetProvider() {
 
     companion object {
         private const val DAY_MILLIS = 24 * 60 * 60 * 1000L
-        private const val CORNER_RADIUS_DP = 16f
+
+        // Store keys written by HomeWidgetService — keep in sync with
+        // lib/core/utils/constants.dart and ChungmoWidget.swift.
+        private const val KEY_HAS_SCHEDULE = "widget_has_schedule"
+        private const val KEY_COUPLE = "widget_couple"
+        private const val KEY_DATE_TEXT = "widget_date_text"
+        private const val KEY_LOCATION = "widget_location"
+        private const val KEY_DATE_MILLIS = "widget_date_millis"
+        private const val KEY_IMAGE = "widget_image"
     }
 }

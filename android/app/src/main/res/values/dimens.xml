@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 2x2 cell size the widget info declares; the provider also assumes it
+         when the host has not reported sizes yet. -->
+    <dimen name="chungmo_widget_min_size">110dp</dimen>
+    <!-- Shared by the card background, the scrim and the photo rounding. -->
+    <dimen name="chungmo_widget_corner_radius">16dp</dimen>
+</resources>
