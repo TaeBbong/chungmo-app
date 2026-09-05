@@ -109,6 +109,24 @@ void main() {
     });
   });
 
+  group('HomeWidgetServiceImpl.hasRealThumbnail', () {
+    test('accepts a genuine invitation thumbnail URL', () {
+      expect(
+        HomeWidgetServiceImpl.hasRealThumbnail('https://cdn.example.com/1.jpg'),
+        isTrue,
+      );
+    });
+
+    test('rejects the stock fallback illustration and non-URL values', () {
+      expect(
+        HomeWidgetServiceImpl.hasRealThumbnail(Constants.defaultThumbnail),
+        isFalse,
+      );
+      expect(HomeWidgetServiceImpl.hasRealThumbnail(''), isFalse);
+      expect(HomeWidgetServiceImpl.hasRealThumbnail('thumb'), isFalse);
+    });
+  });
+
   group('HomeWidgetServiceImpl.formatDateText', () {
     test('renders month, day, weekday and hour without the year', () {
       expect(
@@ -180,7 +198,37 @@ void main() {
     test('publishes only the empty flag when nothing is upcoming', () async {
       await service.publish(const []);
 
-      expect(savedData(), {Constants.widgetHasScheduleKey: false});
+      expect(savedData(), {
+        Constants.widgetHasScheduleKey: false,
+        // The background photo is cleared alongside so no stale image
+        // outlives its schedule.
+        Constants.widgetImageKey: null,
+      });
+      expect(calls.last.method, 'updateWidget');
+    });
+
+    test('clears the photo for the stock fallback thumbnail', () async {
+      await service.publish([
+        buildSchedule(
+          link: 'a',
+          date: DateTime.now().add(const Duration(days: 7)),
+        ).copyWith(thumbnail: Constants.defaultThumbnail),
+      ]);
+
+      expect(savedData()[Constants.widgetImageKey], isNull);
+    });
+
+    test('clears the photo when the thumbnail fetch fails', () async {
+      // flutter_test blocks real HTTP, so this genuine-looking URL exercises
+      // the fetch-failure fallback.
+      await service.publish([
+        buildSchedule(
+          link: 'a',
+          date: DateTime.now().add(const Duration(days: 7)),
+        ).copyWith(thumbnail: 'https://cdn.example.com/unreachable.jpg'),
+      ]);
+
+      expect(savedData()[Constants.widgetImageKey], isNull);
       expect(calls.last.method, 'updateWidget');
     });
 
