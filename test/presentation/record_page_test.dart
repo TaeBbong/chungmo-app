@@ -94,6 +94,33 @@ void main() {
     expect(payFieldText(tester), '');
   });
 
+  testWidgets('updates an untouched autofill when 다시 추천 changes the amount',
+      (tester) async {
+    // The field still holds exactly what the autofill wrote, so the new
+    // suggestion may replace it — otherwise the card and the field would
+    // disagree about what 저장 records.
+    const PayRecommendation second = PayRecommendation(
+      amount: 100000,
+      reason: '다시 계산했어요.',
+      minAmount: 50000,
+      maxAmount: 150000,
+    );
+    final List<PayRecommendation> answers = [recommendation, second];
+    when(recommend.execute(any)).thenAnswer((_) async => answers.removeAt(0));
+    await tester.pumpWidget(
+        MaterialApp(home: RecordPage(schedule: buildSchedule(pay: 0))));
+
+    await requestRecommendation(tester);
+    expect(payFieldText(tester), '130000');
+
+    await tester.ensureVisible(find.text('다시 추천'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('다시 추천'));
+    await tester.pumpAndSettle();
+
+    expect(payFieldText(tester), '100000');
+  });
+
   testWidgets('autofills again when the same instance returns after invalidation',
       (tester) async {
     // Fallback recommendations are canonicalized consts: a re-request can
