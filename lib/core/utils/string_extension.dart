@@ -15,4 +15,16 @@ extension StringExtension on String {
     final int hash32 = hash128.toSigned(32).toInt(); // Convert to 32-bit int
     return hash32.abs();
   }
+
+  /// True for a fetchable http(s) URL. Tells real links and thumbnails apart
+  /// from the synthetic schedule keys (image://, text://, manual://) and
+  /// from plain text — Uri.tryParse accepts almost anything, hence the
+  /// explicit scheme, host and whitespace checks.
+  bool get isHttpUrl {
+    final Uri? uri = Uri.tryParse(this);
+    return uri != null &&
+        (uri.scheme == 'http' || uri.scheme == 'https') &&
+        uri.host.isNotEmpty &&
+        !contains(RegExp(r'\s'));
+  }
 }

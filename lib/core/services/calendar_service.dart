@@ -2,6 +2,7 @@ import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../domain/entities/schedule.dart';
+import '../utils/string_extension.dart';
 
 /// Hands a saved [Schedule] off to the platform's default calendar app.
 ///
@@ -32,16 +33,9 @@ class CalendarServiceImpl implements CalendarService {
       location: schedule.location,
       startDate: schedule.date,
       endDate: schedule.date.add(eventDuration),
-      description: _isHttpLink(schedule.link) ? '청첩장: ${schedule.link}' : null,
+      // Synthetic keys (image://, text://, manual://) would be noise in a
+      // calendar note; only real invitation URLs are kept.
+      description: schedule.link.isHttpUrl ? '청첩장: ${schedule.link}' : null,
     );
-  }
-
-  /// True for real invitation URLs, false for the synthetic keys
-  /// (image://, text://, manual://) that would be noise in a calendar note.
-  static bool _isHttpLink(String link) {
-    final Uri? uri = Uri.tryParse(link);
-    return uri != null &&
-        (uri.scheme == 'http' || uri.scheme == 'https') &&
-        uri.host.isNotEmpty;
   }
 }

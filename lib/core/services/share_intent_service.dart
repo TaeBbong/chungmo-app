@@ -1,6 +1,8 @@
 import 'package:injectable/injectable.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
+import '../utils/string_extension.dart';
+
 /// The parser input a share resolves to.
 enum SharedInvitationType { link, text, image }
 
@@ -73,7 +75,7 @@ class ShareIntentServiceImpl implements ShareIntentService {
         // Android hands a bare shared URL over as plain text, so the
         // link-vs-text split is re-checked here, like the home input field.
         return SharedInvitation(
-          type: _isHttpUrl(file.path)
+          type: file.path.isHttpUrl
               ? SharedInvitationType.link
               : SharedInvitationType.text,
           value: file.path,
@@ -86,11 +88,4 @@ class ShareIntentServiceImpl implements ShareIntentService {
     }
   }
 
-  static bool _isHttpUrl(String input) {
-    final Uri? uri = Uri.tryParse(input);
-    return uri != null &&
-        (uri.scheme == 'http' || uri.scheme == 'https') &&
-        uri.host.isNotEmpty &&
-        !input.contains(RegExp(r'\s'));
-  }
 }
