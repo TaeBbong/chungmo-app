@@ -45,9 +45,13 @@ class ChungmoWidgetProvider : HomeWidgetProvider() {
                     R.id.widget_date,
                     widgetData.getString("widget_date_text", "") ?: "",
                 )
-                views.setTextViewText(
+                // Parsing can leave the location blank; hide the line instead
+                // of rendering an empty row.
+                val location = widgetData.getString("widget_location", "") ?: ""
+                views.setTextViewText(R.id.widget_location, location)
+                views.setViewVisibility(
                     R.id.widget_location,
-                    widgetData.getString("widget_location", "") ?: "",
+                    if (location.isEmpty()) View.GONE else View.VISIBLE,
                 )
             } else {
                 views.setViewVisibility(R.id.widget_content, View.GONE)

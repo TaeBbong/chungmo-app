@@ -133,10 +133,14 @@ struct ChungmoWidgetEntryView: View {
                 .font(.system(size: 12))
                 .foregroundColor(.widgetTextSecondary)
                 .lineLimit(1)
-            Text(snapshot.location)
-                .font(.system(size: 12))
-                .foregroundColor(.widgetTextSecondary)
-                .lineLimit(1)
+            // Parsing can leave the location blank; hide the line instead of
+            // rendering an empty row.
+            if !snapshot.location.isEmpty {
+                Text(snapshot.location)
+                    .font(.system(size: 12))
+                    .foregroundColor(.widgetTextSecondary)
+                    .lineLimit(1)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
     }
