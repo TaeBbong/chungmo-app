@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_label">청모 D-day</string>
+    <string name="widget_description">다가오는 예식의 D-day를 보여줘요</string>
+    <string name="widget_empty">다가오는 예식이 없어요</string>
+</resources>

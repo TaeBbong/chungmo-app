@@ -28,7 +28,7 @@
 
 - [x] 사용자가 직접 일정을 추가하는 기능 (링크 분석 없이) — `feat/manual-schedule-fallback`
 - [x] 온보딩 튜토리얼 개선 (인트로 캐러셀 4장 + `tutorial_coach_mark` 투어 버전 관리, 설정에서 다시 보기) — 신규 AI 기능 소개 포함 — `feat/onboarding-v2`
-- [ ] 홈스크린 위젯: 다가오는 예식 D-day 표시 (Android/iOS)
+- [x] 홈스크린 위젯: 다가오는 예식 D-day 표시 (Android/iOS) — 청첩장 사진 배경 포함 — `feat/home-widget`
 - [ ] 태블릿 및 넓은 화면을 위한 반응형 UI 개선
 - [ ] 앱 전반 마이크로 인터랙션/애니메이션 폴리싱 (심사·투표 시 첫인상)
 

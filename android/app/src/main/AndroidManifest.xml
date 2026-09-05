@@ -49,6 +49,30 @@
                 <data android:mimeType="image/*"/>
             </intent-filter>
         </activity>
+        <!-- Home screen widget showing the upcoming wedding's D-day. -->
+        <receiver
+            android:name=".ChungmoWidgetProvider"
+            android:exported="false"
+            android:label="@string/widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/chungmo_widget_info" />
+        </receiver>
+        <!-- Delivers the midnight update alarms armed via
+             HomeWidget.scheduleWidgetUpdates and re-arms them after reboots
+             and app updates; home_widget does not register it itself. -->
+        <receiver
+            android:name="es.antonborri.home_widget.HomeWidgetScheduledUpdateReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />

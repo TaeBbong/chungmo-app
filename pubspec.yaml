@@ -30,6 +30,7 @@ dependencies:
   flutter_native_splash: ^2.4.4
   freezed_annotation: ^3.0.0
   get_it: ^8.0.3
+  home_widget: ^0.9.4
   html: ^0.15.6
   http: ^1.6.0
   image_picker: ^1.2.1

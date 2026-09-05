@@ -13,6 +13,7 @@ import 'package:chungmo/core/analytics/analytics_service.dart' as _i413;
 import 'package:chungmo/core/analytics/firebase_analytics_service.dart'
     as _i1037;
 import 'package:chungmo/core/services/calendar_service.dart' as _i213;
+import 'package:chungmo/core/services/home_widget_service.dart' as _i25;
 import 'package:chungmo/core/services/notification_service.dart' as _i109;
 import 'package:chungmo/core/services/preferences_checker.dart' as _i391;
 import 'package:chungmo/core/services/share_intent_service.dart' as _i774;
@@ -44,6 +45,7 @@ import 'package:chungmo/domain/usecases/get_schedule_by_link_usecase.dart'
     as _i634;
 import 'package:chungmo/domain/usecases/recommend_pay_usecase.dart' as _i1010;
 import 'package:chungmo/domain/usecases/save_schedule_usecase.dart' as _i485;
+import 'package:chungmo/domain/usecases/usecases.dart' as _i87;
 import 'package:chungmo/domain/usecases/watch_all_schedules_usecase.dart'
     as _i389;
 import 'package:get_it/get_it.dart' as _i174;
@@ -117,6 +119,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i485.SaveScheduleUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i389.WatchAllSchedulesUsecase>(
         () => _i389.WatchAllSchedulesUsecase(gh<_i561.ScheduleRepository>()));
+    gh.lazySingleton<_i25.HomeWidgetService>(
+        () => _i25.HomeWidgetServiceImpl(gh<_i87.WatchAllSchedulesUsecase>()));
     return this;
   }
 }

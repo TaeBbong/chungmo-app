@@ -7,22 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0008F386DF102CB12A28E203 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB1E57CA173A27B037815DCC /* SwiftUI.framework */; };
 		11797892DC30B29BE7E5799A /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4F2467F5E421061A782FFBA /* Pods_Runner.framework */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		4A9CA019D2EA96A5FC83A958 /* ChungmoWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F0339572733B73329391218E /* ChungmoWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5BFBC0596FBCFD49F0B34D3B /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88991B9F23BB908FF076A7FC /* WidgetKit.framework */; };
 		5EAC00000000000000000011 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC00000000000000000001 /* ShareViewController.swift */; };
-		5EAC00000000000000000013 /* RSIShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC00000000000000000006 /* RSIShareViewController.swift */; };
 		5EAC00000000000000000012 /* Share Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5EAC00000000000000000003 /* Share Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5EAC00000000000000000013 /* RSIShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC00000000000000000006 /* RSIShareViewController.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		AF5B6DC440344B5DF6B9577F /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33187FCC0C7B079D9D88D2A2 /* Pods_RunnerTests.framework */; };
+		E9EB3760C7A60793E7947A85 /* ChungmoWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D2BD4FB53BE98C997C5E08A /* ChungmoWidget.swift */; };
 		F65AFC427F9B36899E329C22 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AA747B06D4AFC31A219C4F7F /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		2DF06000042CD93DAFD1FE4C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EF6D213D6194335B7BB7D957;
+			remoteInfo = ChungmoWidget;
+		};
 		331C8085294A63A400263BE5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
@@ -47,6 +58,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				5EAC00000000000000000012 /* Share Extension.appex in Embed Foundation Extensions */,
+				4A9CA019D2EA96A5FC83A958 /* ChungmoWidget.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -68,6 +80,7 @@
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		217F54B7C6EE45FC2722BC0C /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		21C280CD031C6189A535D0D5 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
+		2D2BD4FB53BE98C997C5E08A /* ChungmoWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChungmoWidget.swift; sourceTree = "<group>"; };
 		33187FCC0C7B079D9D88D2A2 /* Pods_RunnerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RunnerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -83,6 +96,8 @@
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
+		85F046B263D972443F2CA4CD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		88991B9F23BB908FF076A7FC /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 		97C146EE1CF9000F007C117D /* Runner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -90,9 +105,13 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A0400349AB450BCF92897A43 /* ChungmoWidget.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = ChungmoWidget.entitlements; sourceTree = "<group>"; };
 		AA747B06D4AFC31A219C4F7F /* GoogleService-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Runner/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BDF62948ED41FFF13D70767F /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
 		C4F2467F5E421061A782FFBA /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB1E57CA173A27B037815DCC /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		DBBF524039C44D24C04B6330 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F0339572733B73329391218E /* ChungmoWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ChungmoWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2E9EFE8090FD68E4392494A /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -112,6 +131,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A4262CF02225BF1174FF9BB5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5BFBC0596FBCFD49F0B34D3B /* WidgetKit.framework in Frameworks */,
+				0008F386DF102CB12A28E203 /* SwiftUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D9FC7B3E4F1460F4AF5C13D5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -123,6 +151,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		01ADB366901EC66137148584 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				85F046B263D972443F2CA4CD /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
 		331C8082294A63A400263BE5 /* RunnerTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -136,8 +172,22 @@
 			children = (
 				C4F2467F5E421061A782FFBA /* Pods_Runner.framework */,
 				33187FCC0C7B079D9D88D2A2 /* Pods_RunnerTests.framework */,
+				01ADB366901EC66137148584 /* iOS */,
+				88991B9F23BB908FF076A7FC /* WidgetKit.framework */,
+				DB1E57CA173A27B037815DCC /* SwiftUI.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5E4F9053776DDBCB8AC6B8E8 /* ChungmoWidget */ = {
+			isa = PBXGroup;
+			children = (
+				2D2BD4FB53BE98C997C5E08A /* ChungmoWidget.swift */,
+				DBBF524039C44D24C04B6330 /* Info.plist */,
+				A0400349AB450BCF92897A43 /* ChungmoWidget.entitlements */,
+			);
+			name = ChungmoWidget;
+			path = ChungmoWidget;
 			sourceTree = "<group>";
 		};
 		5EAC00000000000000000021 /* Share Extension */ = {
@@ -173,6 +223,7 @@
 				B7A59B7610517E848AE743A6 /* Pods */,
 				5BFD4EE007E2054931DED5E6 /* Frameworks */,
 				AA747B06D4AFC31A219C4F7F /* GoogleService-Info.plist */,
+				5E4F9053776DDBCB8AC6B8E8 /* ChungmoWidget */,
 			);
 			sourceTree = "<group>";
 		};
@@ -182,6 +233,7 @@
 				97C146EE1CF9000F007C117D /* Runner.app */,
 				331C8081294A63A400263BE5 /* RunnerTests.xctest */,
 				5EAC00000000000000000003 /* Share Extension.appex */,
+				F0339572733B73329391218E /* ChungmoWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -273,11 +325,29 @@
 			);
 			dependencies = (
 				5EAC00000000000000000052 /* PBXTargetDependency */,
+				28AF276BB6EA7CDFCF16EE50 /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
+		};
+		EF6D213D6194335B7BB7D957 /* ChungmoWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1BB27973964C1B6153346486 /* Build configuration list for PBXNativeTarget "ChungmoWidget" */;
+			buildPhases = (
+				5BAE085A4CF35A34E0C4226B /* Sources */,
+				A4262CF02225BF1174FF9BB5 /* Frameworks */,
+				9A55017BD836C3A6195608BF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ChungmoWidget;
+			productName = ChungmoWidget;
+			productReference = F0339572733B73329391218E /* ChungmoWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -318,6 +388,7 @@
 				97C146ED1CF9000F007C117D /* Runner */,
 				331C8080294A63A400263BE5 /* RunnerTests */,
 				5EAC00000000000000000031 /* Share Extension */,
+				EF6D213D6194335B7BB7D957 /* ChungmoWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -346,6 +417,13 @@
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 				F65AFC427F9B36899E329C22 /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9A55017BD836C3A6195608BF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -472,6 +550,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5BAE085A4CF35A34E0C4226B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E9EB3760C7A60793E7947A85 /* ChungmoWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5EAC00000000000000000041 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -493,6 +579,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		28AF276BB6EA7CDFCF16EE50 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ChungmoWidget;
+			target = EF6D213D6194335B7BB7D957 /* ChungmoWidget */;
+			targetProxy = 2DF06000042CD93DAFD1FE4C /* PBXContainerItemProxy */;
+		};
 		331C8086294A63A400263BE5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 97C146ED1CF9000F007C117D /* Runner */;
@@ -733,6 +825,64 @@
 			};
 			name = Profile;
 		};
+		68D87564E8B3966F871CEAF2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = ChungmoWidget/ChungmoWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 7;
+				DEVELOPMENT_TEAM = DDNARWNFS2;
+				INFOPLIST_FILE = ChungmoWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.3.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.taebbong.chungmoapp.ChungmoWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		7F7F49E9CE17797CECBFF6BB /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = ChungmoWidget/ChungmoWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 7;
+				DEVELOPMENT_TEAM = DDNARWNFS2;
+				INFOPLIST_FILE = ChungmoWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.3.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.taebbong.chungmoapp.ChungmoWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Profile;
+		};
 		97C147031CF9000F007C117D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -901,9 +1051,47 @@
 			};
 			name = Release;
 		};
+		B3245ECEE45A2DED8FBA933B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = ChungmoWidget/ChungmoWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 7;
+				DEVELOPMENT_TEAM = DDNARWNFS2;
+				INFOPLIST_FILE = ChungmoWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.3.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.taebbong.chungmoapp.ChungmoWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1BB27973964C1B6153346486 /* Build configuration list for PBXNativeTarget "ChungmoWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				68D87564E8B3966F871CEAF2 /* Release */,
+				B3245ECEE45A2DED8FBA933B /* Debug */,
+				7F7F49E9CE17797CECBFF6BB /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		331C8087294A63A400263BE5 /* Build configuration list for PBXNativeTarget "RunnerTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
