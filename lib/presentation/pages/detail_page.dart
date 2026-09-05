@@ -14,6 +14,7 @@ import '../../core/utils/int_extension.dart';
 import '../../core/utils/map_link.dart';
 import '../bloc/detail/detail_cubit.dart';
 import '../../core/navigation/app_navigation.dart';
+import '../theme/motions.dart';
 import '../theme/palette.dart';
 import '../widgets/account_section.dart';
 import '../widgets/info_row.dart';
@@ -319,10 +320,10 @@ class _DetailPageState extends State<DetailPage> {
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
-                    // Enters slightly after the hero header lands, so the
-                    // flight has the stage to itself first.
+                    // Enters one stagger step after the page transition, so
+                    // the header lands before the card follows.
                     child: FadeSlideIn(
-                      delay: const Duration(milliseconds: 100),
+                      delay: Motions.stagger,
                       child: editMode ? _buildEditForm() : _buildInfoCard(),
                     ),
                   ),

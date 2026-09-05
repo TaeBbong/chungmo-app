@@ -8,6 +8,7 @@ import '../../core/analytics/analytics_service.dart';
 import '../../core/di/di.dart';
 import '../../domain/entities/account.dart';
 import '../theme/motions.dart';
+import '../theme/palette.dart';
 import 'info_row.dart';
 
 /// The '계좌' row of the detail card.
@@ -111,7 +112,7 @@ class _AccountTileState extends State<_AccountTile> {
     HapticFeedback.lightImpact();
     setState(() => _copied = true);
     _copiedReset?.cancel();
-    _copiedReset = Timer(const Duration(seconds: 2), () {
+    _copiedReset = Timer(Motions.hold, () {
       if (mounted) setState(() => _copied = false);
     });
     ScaffoldMessenger.of(context).showSnackBar(
@@ -168,10 +169,10 @@ class _AccountTileState extends State<_AccountTile> {
               transitionBuilder: (Widget child, Animation<double> animation) =>
                   ScaleTransition(scale: animation, child: child),
               child: _copied
-                  ? const Icon(Icons.check_rounded,
-                      key: ValueKey<String>('copied'),
+                  ? Icon(Icons.check_rounded,
+                      key: const ValueKey<String>('copied'),
                       size: 16,
-                      color: Colors.green)
+                      color: Palette.success)
                   : Icon(Icons.copy,
                       key: const ValueKey<String>('copy'),
                       size: 16,

@@ -20,6 +20,7 @@ import '../../core/services/preferences_checker.dart';
 import '../../core/services/share_intent_service.dart';
 import '../../core/services/tutorial_manager.dart';
 import '../../core/utils/constants.dart';
+import '../../core/utils/string_extension.dart';
 import '../bloc/create/create_cubit.dart';
 import '../theme/dimens.dart';
 import '../theme/motions.dart';
@@ -214,20 +215,12 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
     if (userInput.isEmpty) return;
     // One input for both: an http(s) URL is crawled as a link, anything
     // else is treated as pasted invitation text (SMS, 카톡 message).
-    if (_isHttpUrl(userInput)) {
+    if (userInput.isHttpUrl) {
       cubit.analyzeLink(userInput);
     } else {
       cubit.analyzeText(userInput);
     }
     _textEditingController.clear();
-  }
-
-  bool _isHttpUrl(String input) {
-    final uri = Uri.tryParse(input);
-    return uri != null &&
-        (uri.scheme == 'http' || uri.scheme == 'https') &&
-        uri.host.isNotEmpty &&
-        !input.contains(RegExp(r'\s'));
   }
 
   /// Lets the user attach an invitation image, or add a schedule by hand.
@@ -359,7 +352,8 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
           FadeTransition(
         opacity: animation,
         child: ScaleTransition(
-          scale: Tween<double>(begin: 0.98, end: 1).animate(animation),
+          scale: Tween<double>(begin: Motions.emergeScale, end: 1)
+            .animate(animation),
           child: child,
         ),
       ),
