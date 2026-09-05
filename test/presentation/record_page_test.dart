@@ -94,6 +94,28 @@ void main() {
     expect(payFieldText(tester), '');
   });
 
+  testWidgets('autofills again when the same instance returns after invalidation',
+      (tester) async {
+    // Fallback recommendations are canonicalized consts: a re-request can
+    // hand back the identical object, which must still count as an arrival
+    // once an invalidation cleared the previous one.
+    when(recommend.execute(any)).thenAnswer((_) async => recommendation);
+    await tester.pumpWidget(
+        MaterialApp(home: RecordPage(schedule: buildSchedule(pay: 0))));
+
+    await requestRecommendation(tester);
+    expect(payFieldText(tester), '130000');
+
+    await tester.enterText(find.byKey(const ValueKey('pay-field')), '');
+    // Changing the relation invalidates the shown recommendation.
+    await tester.tap(find.text('직장'));
+    await tester.pumpAndSettle();
+
+    await requestRecommendation(tester);
+
+    expect(payFieldText(tester), '130000');
+  });
+
   testWidgets('never overwrites an amount the user already has',
       (tester) async {
     when(recommend.execute(any)).thenAnswer((_) async => recommendation);

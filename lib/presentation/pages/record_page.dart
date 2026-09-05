@@ -143,7 +143,14 @@ class _RecordPageState extends State<RecordPage> {
   /// button stays the way to replace one.
   void _autofillRecommendationIfEmpty(RecordState state) {
     final PayRecommendation? recommendation = state.recommendation;
-    if (recommendation == null || state.recommending) return;
+    if (recommendation == null) {
+      // Invalidation clears the marker too: fallback recommendations are
+      // canonicalized consts, so a re-request after invalidation can hand
+      // back the identical instance and must still count as an arrival.
+      _autofilledRecommendation = null;
+      return;
+    }
+    if (state.recommending) return;
     if (identical(recommendation, _autofilledRecommendation)) return;
     _autofilledRecommendation = recommendation;
     if (payController.text.trim().isNotEmpty) return;
