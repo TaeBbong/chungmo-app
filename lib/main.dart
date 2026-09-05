@@ -11,6 +11,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'core/di/di.dart';
 import 'core/env.dart';
 import 'core/navigation/app_navigation.dart';
+import 'core/services/home_widget_service.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/preferences_checker.dart';
 import 'core/utils/constants.dart';
@@ -60,6 +61,7 @@ void main() async {
   final NotificationService notificationService = getIt<NotificationService>();
   await notificationService.getPermissions();
   await notificationService.init();
+  await getIt<HomeWidgetService>().init();
   final bool onboarded =
       await getIt<PreferencesChecker>().hasKey(Constants.onboardingDoneKey);
   // await initializeDateFormatting('ko_KR', 'null');

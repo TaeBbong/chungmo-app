@@ -13,6 +13,19 @@ abstract class Constants {
   /// original 3-step tour before [tourDoneKey] existed.
   static const String legacyTourDoneKey = 'is_first';
 
+  /// App Group shared with the iOS Share Extension and the widget
+  /// extensions; the `home_widget` store lives under it on iOS.
+  static const String appGroupId = 'group.com.taebbong.chungmoapp';
+
+  /// Keys of the home screen widget's shared store. Written by
+  /// HomeWidgetService, read by the native widget renderers — keep them in
+  /// sync with ChungmoWidget.swift and ChungmoWidgetProvider.kt.
+  static const String widgetHasScheduleKey = 'widget_has_schedule';
+  static const String widgetCoupleKey = 'widget_couple';
+  static const String widgetDateTextKey = 'widget_date_text';
+  static const String widgetLocationKey = 'widget_location';
+  static const String widgetDateMillisKey = 'widget_date_millis';
+
   /// Gemini model used by every Firebase AI Logic call (invitation parsing
   /// and the pay recommendation).
   static const String geminiModel = 'gemini-2.5-flash';
