@@ -6,6 +6,7 @@ import '../../core/utils/date_extension.dart';
 import '../../domain/entities/schedule.dart';
 import '../theme/palette.dart';
 import 'dday_badge.dart';
+import 'pressable.dart';
 
 /// Preview of what is coming up, shown on the home screen while it waits for
 /// a link. Renders nothing when there is nothing upcoming.
@@ -49,7 +50,7 @@ class _PreviewTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Pressable(
       onTap: () {
         navigatorKey.currentState?.pushNamed('/detail', arguments: schedule);
       },
