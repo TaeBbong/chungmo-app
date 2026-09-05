@@ -26,6 +26,10 @@ abstract class Constants {
   static const String widgetLocationKey = 'widget_location';
   static const String widgetDateMillisKey = 'widget_date_millis';
 
+  /// Path of the widget's background photo, written by `HomeWidget.saveImage`
+  /// (absent when the schedule has no genuine thumbnail).
+  static const String widgetImageKey = 'widget_image';
+
   /// Gemini model used by every Firebase AI Logic call (invitation parsing
   /// and the pay recommendation).
   static const String geminiModel = 'gemini-2.5-flash';

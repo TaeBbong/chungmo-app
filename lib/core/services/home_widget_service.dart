@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/painting.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:injectable/injectable.dart';
 
@@ -37,6 +38,11 @@ class HomeWidgetServiceImpl implements HomeWidgetService {
   /// over at each midnight; iOS covers this with timeline entries instead.
   static const int _scheduledMidnights = 30;
 
+  /// Decode width of the background photo saved for the widget. Bounds the
+  /// PNG in the shared store — iOS widget extensions have a tight memory
+  /// budget and RemoteViews bitmaps are size-capped too.
+  static const int _photoWidth = 600;
+
   StreamSubscription<List<Schedule>>? _subscription;
 
   /// Subscribes to the schedule stream; every change re-publishes the widget.
@@ -65,12 +71,41 @@ class HomeWidgetServiceImpl implements HomeWidgetService {
       await HomeWidget.saveWidgetData<int>(
           Constants.widgetDateMillisKey, next.date.millisecondsSinceEpoch);
     }
+    await _savePhoto(next?.thumbnail);
     await HomeWidget.updateWidget(
       iOSName: _iOSWidgetName,
       qualifiedAndroidName: _qualifiedAndroidName,
     );
     await _scheduleAndroidMidnightUpdates(hasSchedule: next != null);
   }
+
+  /// Saves the invitation thumbnail as the widget's background photo, or
+  /// clears it (removing the stored file) so the native side falls back to
+  /// the flat card. Cleared rather than kept on a fetch failure: a stale
+  /// photo of the previous wedding is worse than no photo.
+  Future<void> _savePhoto(String? thumbnail) async {
+    if (thumbnail == null || !hasRealThumbnail(thumbnail)) {
+      await HomeWidget.saveWidgetData<String>(Constants.widgetImageKey, null);
+      return;
+    }
+    try {
+      await HomeWidget.saveImage(
+        Constants.widgetImageKey,
+        ResizeImage(NetworkImage(thumbnail), width: _photoWidth),
+      );
+    } catch (_) {
+      // Offline or a dead link.
+      await HomeWidget.saveWidgetData<String>(Constants.widgetImageKey, null);
+    }
+  }
+
+  /// Whether [thumbnail] is an actual invitation image. The parser falls
+  /// back to [Constants.defaultThumbnail] (a stock illustration) — as a
+  /// full-bleed widget background that reads as clutter, so only genuine
+  /// thumbnails become photos.
+  @visibleForTesting
+  static bool hasRealThumbnail(String thumbnail) =>
+      thumbnail.startsWith('http') && thumbnail != Constants.defaultThumbnail;
 
   /// Arms one update alarm per local midnight so the Android widget re-renders
   /// its D-day right when the calendar day changes. The plugin re-arms these
