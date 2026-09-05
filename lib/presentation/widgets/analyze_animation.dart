@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../core/analytics/analytics_service.dart';
+import '../../core/di/di.dart';
+
 /// The looping animation shown while an invitation parse is running.
 ///
 /// The composition (unzipping `analyze.lottie` and parsing its JSON) is
@@ -23,9 +26,12 @@ class AnalyzeAnimation extends StatelessWidget {
     // A failed load (missing asset, malformed archive) must not be cached
     // forever — that would pin the loading screen to its spinner. Observing
     // the failure here also keeps the eager initState call from surfacing
-    // an unhandled async error.
-    future.then<void>((_) {}, onError: (Object _, StackTrace __) {
+    // an unhandled async error; Crashlytics still learns why the animation
+    // never appeared.
+    future.then<void>((_) {}, onError: (Object error, StackTrace stack) {
       if (identical(_composition, future)) _composition = null;
+      getIt<AnalyticsService>()
+          .recordError(error, stack, reason: 'analyze_lottie_preload');
     });
     return future;
   }

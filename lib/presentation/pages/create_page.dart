@@ -26,6 +26,7 @@ import '../theme/dimens.dart';
 import '../theme/motions.dart';
 import '../theme/palette.dart';
 import '../widgets/analyze_animation.dart';
+import '../widgets/fade_slide_in.dart';
 import '../widgets/schedule_detail_column.dart';
 import '../widgets/upcoming_preview.dart';
 
@@ -554,46 +555,26 @@ class _CreatePageState extends State<CreatePage> with WidgetsBindingObserver {
                                       // only peeked (hasStrings), not read, so
                                       // launch stays free of the iOS paste
                                       // prompt. Tapping reads and pastes.
-                                      // The chip fades/slides in when a
-                                      // clipboard link is detected instead of
-                                      // popping into the layout.
-                                      AnimatedSwitcher(
-                                        duration: Motions.standard,
-                                        switchInCurve: Motions.easeOut,
-                                        switchOutCurve: Motions.easeOut,
-                                        transitionBuilder: (Widget child,
-                                                Animation<double> animation) =>
-                                            FadeTransition(
-                                          opacity: animation,
-                                          child: SlideTransition(
-                                            position: Tween<Offset>(
-                                              begin: const Offset(0, 0.3),
-                                              end: Offset.zero,
-                                            ).animate(animation),
-                                            child: child,
+                                      // The chip enters through the shared
+                                      // FadeSlideIn when a clipboard link is
+                                      // detected; consuming it unmounts the
+                                      // chip as the parse takes the screen.
+                                      if (_clipboardHasText &&
+                                          _textEditingController.text.isEmpty)
+                                        FadeSlideIn(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: Dimens.lg),
+                                            child: FilledButton.icon(
+                                              onPressed: _pasteFromClipboard,
+                                              icon: const Icon(
+                                                  Icons.content_paste_rounded,
+                                                  size: 18),
+                                              label:
+                                                  const Text('복사한 내용 붙여넣기'),
+                                            ),
                                           ),
                                         ),
-                                        child: _clipboardHasText &&
-                                                _textEditingController
-                                                    .text.isEmpty
-                                            ? Padding(
-                                                key: const ValueKey<String>(
-                                                    'paste-chip'),
-                                                padding: const EdgeInsets.only(
-                                                    top: Dimens.lg),
-                                                child: FilledButton.icon(
-                                                  onPressed:
-                                                      _pasteFromClipboard,
-                                                  icon: const Icon(
-                                                      Icons
-                                                          .content_paste_rounded,
-                                                      size: 18),
-                                                  label:
-                                                      const Text('복사한 내용 붙여넣기'),
-                                                ),
-                                              )
-                                            : const SizedBox.shrink(),
-                                      ),
                                     ],
                                   ),
                                 ),

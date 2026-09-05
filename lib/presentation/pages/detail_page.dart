@@ -12,15 +12,15 @@ import '../../core/services/calendar_service.dart';
 import '../../core/utils/date_extension.dart';
 import '../../core/utils/int_extension.dart';
 import '../../core/utils/map_link.dart';
+import '../../core/utils/string_extension.dart';
 import '../bloc/detail/detail_cubit.dart';
 import '../../core/navigation/app_navigation.dart';
 import '../theme/motions.dart';
 import '../theme/palette.dart';
 import '../widgets/account_section.dart';
-import '../widgets/info_row.dart';
-import '../../core/utils/string_extension.dart';
 import '../widgets/dday_badge.dart';
 import '../widgets/fade_slide_in.dart';
+import '../widgets/info_row.dart';
 
 class DetailPage extends StatefulWidget {
   final Schedule schedule;
@@ -276,7 +276,7 @@ class _DetailPageState extends State<DetailPage> {
                   title: editMode
                       ? const Text('일정 수정')
                       : AnimatedOpacity(
-                          duration: const Duration(milliseconds: 150),
+                          duration: Motions.quick,
                           opacity: _collapsed ? 1 : 0,
                           child: Text(
                             '${schedule.groom} & ${schedule.bride}',
