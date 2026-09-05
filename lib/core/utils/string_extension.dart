@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:murmur3/murmur3.dart';
 
 // class UrlHash {
@@ -27,4 +28,19 @@ extension StringExtension on String {
         uri.host.isNotEmpty &&
         !contains(RegExp(r'\s'));
   }
+}
+
+extension BytesHashExtension on Uint8List {
+  /// Content hash used for `image://` schedule keys, computed in a
+  /// background isolate: murmur3 over a multi-MB capture takes long enough
+  /// to drop frames right as the analyze animation starts.
+  ///
+  /// Hashes the raw bytes directly — the previous base64Encode step only
+  /// tripled the input size before hashing the same content.
+  Future<int> get hashBytes => compute(_murmurOfBytes, this);
+}
+
+Future<int> _murmurOfBytes(Uint8List bytes) async {
+  final BigInt hash128 = await murmur3f(bytes);
+  return hash128.toSigned(32).toInt().abs();
 }
