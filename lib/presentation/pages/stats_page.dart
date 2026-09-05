@@ -248,6 +248,9 @@ class _YearlyBarChart extends StatelessWidget {
       height: 200,
       child: _Entrance(
         builder: (BuildContext context, double t) => BarChart(
+          // fl_chart lerps data changes itself (150ms, linear); zeroed so it
+          // doesn't smear the _Entrance curve driving toY every frame.
+          duration: Duration.zero,
           BarChartData(
             alignment: BarChartAlignment.spaceAround,
             maxY: maxTotal * 1.2,

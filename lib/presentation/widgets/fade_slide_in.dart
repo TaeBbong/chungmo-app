@@ -30,7 +30,7 @@ class FadeSlideIn extends StatelessWidget {
         return Opacity(
           opacity: local,
           child: Transform.translate(
-            offset: Offset(0, 16 * (1 - local)),
+            offset: Offset(0, Motions.slideOffset * (1 - local)),
             child: child,
           ),
         );
