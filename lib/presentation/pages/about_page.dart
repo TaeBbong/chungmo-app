@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -45,7 +46,8 @@ class AboutPage extends StatelessWidget {
                           style: Theme.of(context).textTheme.bodyMedium),
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('이미 최신 버전을 사용하고 있어요.')));
+                            const SnackBar(
+                                content: Text('이미 최신 버전을 사용하고 있어요.')));
                       },
                     ),
                     _MenuRow(
@@ -132,8 +134,7 @@ class _SectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: Dimens.screenPadding),
+      padding: const EdgeInsets.symmetric(horizontal: Dimens.screenPadding),
       child: Material(
         color: Theme.of(context).brightness == Brightness.light
             ? Palette.surfaceMuted
@@ -170,15 +171,14 @@ class _MenuRow extends StatelessWidget {
               onTap!();
             },
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: Dimens.md, vertical: 14),
+        padding:
+            const EdgeInsets.symmetric(horizontal: Dimens.md, vertical: 14),
         child: Row(
           children: [
             Icon(icon, size: 22),
             const SizedBox(width: Dimens.md),
             Expanded(
-              child: Text(title,
-                  style: Theme.of(context).textTheme.bodyLarge),
+              child: Text(title, style: Theme.of(context).textTheme.bodyLarge),
             ),
             trailing ??
                 Icon(Icons.chevron_right,
@@ -194,8 +194,12 @@ class _MenuRow extends StatelessWidget {
 class DeveloperInfoPage extends StatelessWidget {
   const DeveloperInfoPage({super.key});
 
-  static const String _email = 'mok05289@naver.com';
+  static const String _email = 'mok05289@korea.ac.kr';
   static const String _githubUrl = 'https://github.com/TaeBbong';
+
+  /// GitHub's canonical avatar shorthand: always serves the account's
+  /// current profile image, so no asset ships with the app.
+  static const String _avatarUrl = '$_githubUrl.png';
 
   /// `canLaunchUrl` is skipped on purpose: it reports false for schemes
   /// missing from the platform query allowlists (e.g. mailto on Android),
@@ -235,16 +239,20 @@ class DeveloperInfoPage extends StatelessWidget {
                   CircleAvatar(
                     radius: 40,
                     backgroundColor: colorScheme.primaryContainer,
+                    // The photo paints over the monogram once cached; on a
+                    // cold offline start the '권' fallback stays visible.
+                    foregroundImage:
+                        const CachedNetworkImageProvider(_avatarUrl),
                     child: Text(
-                      '태',
+                      '권',
                       style: textTheme.headlineSmall
                           ?.copyWith(color: colorScheme.onPrimaryContainer),
                     ),
                   ),
                   const SizedBox(height: Dimens.md),
-                  Text('권태형', style: textTheme.headlineSmall),
+                  Text('TaeBbong', style: textTheme.headlineSmall),
                   const SizedBox(height: Dimens.xs),
-                  Text('청모를 만들고 있는 개발자예요.', style: textTheme.bodyMedium),
+                  Text('낮에는 RAG, 밤에는 Flutter 개발자', style: textTheme.bodyMedium),
                   const SizedBox(height: Dimens.lg),
                   _SectionCard(
                     children: [
