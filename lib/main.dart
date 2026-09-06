@@ -110,6 +110,7 @@ class MainApp extends StatelessWidget {
       navigatorKey: navigatorKey,
       navigatorObservers: [
         FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+        routeObserver,
       ],
       theme: LightTheme.theme,
       darkTheme: DarkTheme.theme,
