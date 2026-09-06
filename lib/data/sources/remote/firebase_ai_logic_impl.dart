@@ -141,8 +141,7 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
   Future<ScheduleModel> fetchScheduleFromImage(
       Uint8List bytes, String mimeType) async {
     try {
-      final String syntheticLink =
-          'image://${await base64Encode(bytes).hashUrl}';
+      final String syntheticLink = 'image://${await bytes.hashBytes}';
       final prompt = [
         Content.multi([
           const TextPart(
