@@ -15,7 +15,7 @@
 - [x] **공유 시트 연동**: 타 앱(카톡, 문자, 브라우저)에서 "공유 → 청모"로 바로 파싱 시작 (Android Share Intent / iOS Share Extension) — `feat/os-integrations`
 - [x] **구조화 출력 적용**: Gemini `responseJsonSchema` + JSON 응답 강제 — 링크/이미지/텍스트 파서가 공유 스키마 사용
 - [x] **파싱 실패 fallback UX**: 날짜 누락 시 부분 추출(이름·장소·계좌)을 draft로 보존, 폼에 프리필해 빈 필드만 보정 — `feat/manual-schedule-fallback`
-- [ ] **파싱 정확도 평가셋**: 실제 청첩장 샘플 30개 이상으로 eval 데이터셋 구축 + 자동 채점 스크립트 → 발표 자료에 정확도 수치 제시
+- [x] **파싱 정확도 평가셋**: Firebase Hosting에 40개의 가상 청첩장 픽스처(벤더별 마크업 스타일)를 호스팅하고 `eval/run_eval.dart`로 자동 채점 → `eval/results/latest.md`에 정확도 수치 — `feat/parsing-eval`
 
 ### 🧠 에이전틱/스마트 기능
 
@@ -37,6 +37,7 @@
 - [ ] `env.dart`의 환경 변수 관리 방식을 Flutter Flavor 또는 `dart-define` 방식으로 개선 (`lib/core/env.dart`의 TODO 참고)
 - [ ] `Stream` 기반 비동기 로직 테스트 재작성 + 주요 유스케이스/Bloc 테스트 커버리지 확대 (신규 AI 기능 포함)
 - [ ] 파싱 요청 로깅/모니터링: 실패율·응답 시간 수집 (Firebase Analytics/Crashlytics)
+- [ ] 크롤러 커버리지 개선: 평가셋이 드러낸 공백 — `<meta>` content(OG) 미추출, `<td>/<section>/<time>` 등 선택자 누락, EUC-KR 미지원, lazy `data-src` 썸네일, 상대 URL 미해석, iframe 미추적 (`docs/PARSING_EVAL.md` 참고)
 - [x] 성능 최적화를 위해 `Isolate` 활용 검토 (이미지 전처리, Lottie 등) — `feat/interaction-polish`, `docs/ISOLATES.md`
 
 ### 🎬 제출물/발표 자산
@@ -62,6 +63,9 @@
 ## ✔️ Done
 
 최근에 완료된 주요 작업 목록입니다.
+
+- [x] 파싱 평가셋: 16가지 벤더 마크업 스타일의 가상 청첩장 40개를 `chung-mo.web.app/eval/`에 호스팅, 앱과 동일한 크롤러·프롬프트로 채점하는 러너와 모델 독립적인 크롤 커버리지 지표 — `docs/PARSING_EVAL.md` 포함 (#47)
+- [x] 개인정보처리방침·이용약관을 Notion에서 Firebase Hosting(`chung-mo.web.app/privacy`, `/terms`)으로 이전 — `docs/FIREBASE_HOSTING.md` 포함 (#45)
 
 - [x] 성능: 이미지 해시·다운스케일을 isolate로 이동(업로드 487KB→65KB), Lottie 사전 파싱 — `docs/ISOLATES.md` 기술 문서 포함 (#42)
 - [x] 마이크로 인터랙션 폴리싱: 모션 토큰, 홈 상태 크로스페이드, 눌림 피드백, 통계 카운트업, 햅틱, 키보드 UX, 캘린더 리마운트 제거 — `docs/MICRO_INTERACTIONS.md` 포함 (#43)
