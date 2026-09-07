@@ -16,6 +16,9 @@
 - [x] **구조화 출력 적용**: Gemini `responseJsonSchema` + JSON 응답 강제 — 링크/이미지/텍스트 파서가 공유 스키마 사용
 - [x] **파싱 실패 fallback UX**: 날짜 누락 시 부분 추출(이름·장소·계좌)을 draft로 보존, 폼에 프리필해 빈 필드만 보정 — `feat/manual-schedule-fallback`
 - [x] **파싱 정확도 평가셋**: Firebase Hosting에 40개의 가상 청첩장 픽스처(벤더별 마크업 스타일)를 호스팅하고 `eval/run_eval.dart`로 자동 채점 → `eval/results/latest.md`에 정확도 수치 — `feat/parsing-eval`
+- [ ] **링크 파서 커버리지 1단계 (정적 HTML)**: 베이스라인 core 63%에서 hard 11건이 전부 크롤러에서 탈락 — `<meta>` OG content 추출, `<td>/<time>/<section>` 등 시맨틱·테이블 텍스트, EUC-KR 디코딩, 상대 URL·lazy `data-src` 해석, iframe 1단계 추적, 문서 순서 유지 → 평가셋으로 전후 비교
+- [ ] **링크 파서 프롬프트 보강**: 기준 날짜 제공(연도 없는 날짜는 다음 도래일로), 성을 포함한 전체 이름 요구, 첫 대표 사진을 썸네일로
+- [ ] **링크 파서 이미지 폴백 (모달리티 전환)**: 크롤 결과가 빈약하면 페이지의 주요 이미지를 내려받아 기존 멀티모달 이미지 파서로 재시도 — 이미지 전용·CSR 청첩장의 근본 대응
 
 ### 🧠 에이전틱/스마트 기능
 
@@ -37,7 +40,6 @@
 - [ ] `env.dart`의 환경 변수 관리 방식을 Flutter Flavor 또는 `dart-define` 방식으로 개선 (`lib/core/env.dart`의 TODO 참고)
 - [ ] `Stream` 기반 비동기 로직 테스트 재작성 + 주요 유스케이스/Bloc 테스트 커버리지 확대 (신규 AI 기능 포함)
 - [ ] 파싱 요청 로깅/모니터링: 실패율·응답 시간 수집 (Firebase Analytics/Crashlytics)
-- [ ] 크롤러 커버리지 개선: 평가셋이 드러낸 공백 — `<meta>` content(OG) 미추출, `<td>/<section>/<time>` 등 선택자 누락, EUC-KR 미지원, lazy `data-src` 썸네일, 상대 URL 미해석, iframe 미추적 (`docs/PARSING_EVAL.md` 참고)
 - [x] 성능 최적화를 위해 `Isolate` 활용 검토 (이미지 전처리, Lottie 등) — `feat/interaction-polish`, `docs/ISOLATES.md`
 
 ### 🎬 제출물/발표 자산
