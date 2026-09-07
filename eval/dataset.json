@@ -1,0 +1,1950 @@
+{
+  "version": 1,
+  "baseUrl": "https://chung-mo.web.app",
+  "generatedBy": "eval/generate_fixtures.py",
+  "cases": [
+    {
+      "id": "hanul-01",
+      "url": "https://chung-mo.web.app/eval/hanul-01/",
+      "template": "classic-jquery",
+      "vendor": "하늘카드",
+      "tags": [
+        "calendar-grid",
+        "classic-jquery",
+        "inline-js-korean"
+      ],
+      "difficulty": "easy",
+      "notes": "jQuery/slick PHP-era vendor page: div soup, <br>-heavy text, inline onclick handlers, Korean strings inside inline scripts, a month calendar grid full of distractor numbers.",
+      "expected": {
+        "groom": "전형준",
+        "bride": "신예은",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2026-10-04T11:00:00+09:00",
+        "dateText": "2026년 10월 4일 일요일 오전 11시",
+        "location": "호텔 라비앙 2층 크리스탈볼룸",
+        "locationKeywords": [
+          "호텔 라비앙"
+        ],
+        "address": "대구광역시 수성구 동대구로 111",
+        "groomAccounts": [
+          {
+            "bank": "수협은행",
+            "number": "645557-11-567673",
+            "holder": "전형준",
+            "relation": "신랑"
+          },
+          {
+            "bank": "신협",
+            "number": "470725-46-476647",
+            "holder": "전광수",
+            "relation": "아버지"
+          },
+          {
+            "bank": "부산은행",
+            "number": "936793-66-650576",
+            "holder": "황숙희",
+            "relation": "어머니"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "우체국",
+            "number": "94269-21-122154",
+            "holder": "신예은",
+            "relation": "신부"
+          },
+          {
+            "bank": "SC제일은행",
+            "number": "696842-58-862789",
+            "holder": "신태영",
+            "relation": "아버지"
+          },
+          {
+            "bank": "신협",
+            "number": "488652-25-242694",
+            "holder": "홍경자",
+            "relation": "어머니"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/hanul-01/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "hanul-02",
+      "url": "https://chung-mo.web.app/eval/hanul-02/",
+      "template": "classic-jquery",
+      "vendor": "하늘카드",
+      "tags": [
+        "calendar-grid",
+        "classic-jquery",
+        "gallery-captions"
+      ],
+      "difficulty": "easy",
+      "notes": "jQuery/slick PHP-era vendor page: div soup, <br>-heavy text, inline onclick handlers, Korean strings inside inline scripts, a month calendar grid full of distractor numbers.",
+      "expected": {
+        "groom": "남건우",
+        "bride": "배다은",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2026-10-10T11:30:00+09:00",
+        "dateText": "2026.10.10 (토) 11:30",
+        "location": "루미에르 웨딩 2층 루미에르홀",
+        "locationKeywords": [
+          "루미에르 웨딩"
+        ],
+        "address": "광주광역시 서구 상무중앙로 66",
+        "groomAccounts": [
+          {
+            "bank": "케이뱅크",
+            "number": "100-293-580522",
+            "holder": "남건우",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "새마을금고",
+            "number": "176975-69-700286",
+            "holder": "배다은",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/hanul-02/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "hanul-03",
+      "url": "https://chung-mo.web.app/eval/s/agfudwwt",
+      "template": "classic-jquery",
+      "vendor": "하늘카드",
+      "tags": [
+        "classic-jquery",
+        "short-link"
+      ],
+      "difficulty": "easy",
+      "notes": "jQuery/slick PHP-era vendor page: div soup, <br>-heavy text, inline onclick handlers, Korean strings inside inline scripts, a month calendar grid full of distractor numbers.",
+      "expected": {
+        "groom": "송도윤",
+        "bride": "전수빈",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2026-10-17T12:00:00+09:00",
+        "dateText": "2026년 10월 17일 토요일 낮 12시",
+        "location": "더파티움 안양 9층 파티움홀",
+        "locationKeywords": [
+          "더파티움 안양"
+        ],
+        "address": "경기도 안양시 동안구 시민대로 180",
+        "groomAccounts": [
+          {
+            "bank": "대구은행",
+            "number": "282430-64-338020",
+            "holder": "송용호",
+            "relation": "아버지"
+          },
+          {
+            "bank": "하나은행",
+            "number": "449932-41-730406",
+            "holder": "권미영",
+            "relation": "어머니"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "수협은행",
+            "number": "780544-81-337518",
+            "holder": "전진호",
+            "relation": "아버지"
+          },
+          {
+            "bank": "토스뱅크",
+            "number": "1000-7725-5960",
+            "holder": "홍숙희",
+            "relation": "어머니"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/hanul-03/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "hanul-04",
+      "url": "https://chung-mo.web.app/eval/hanul-04/",
+      "template": "classic-jquery",
+      "vendor": "하늘카드",
+      "tags": [
+        "classic-jquery",
+        "countdown",
+        "no-year"
+      ],
+      "difficulty": "medium",
+      "notes": "jQuery/slick PHP-era vendor page: div soup, <br>-heavy text, inline onclick handlers, Korean strings inside inline scripts, a month calendar grid full of distractor numbers.",
+      "expected": {
+        "groom": "심영훈",
+        "bride": "남민서",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2026-10-24T12:30:00+09:00",
+        "dateText": "10월 24일 토요일 오후 12시 30분",
+        "location": "아펠가모 광화문 4층 라포레홀",
+        "locationKeywords": [
+          "아펠가모 광화문"
+        ],
+        "address": "서울특별시 종로구 종로1길 50",
+        "groomAccounts": [
+          {
+            "bank": "대구은행",
+            "number": "468783-89-170270",
+            "holder": "심영훈",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "수협은행",
+            "number": "406956-82-505536",
+            "holder": "신영미",
+            "relation": "어머니"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/hanul-04/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "hanul-05",
+      "url": "https://chung-mo.web.app/eval/hanul-05/",
+      "template": "classic-jquery",
+      "vendor": "하늘카드",
+      "tags": [
+        "classic-jquery",
+        "no-date"
+      ],
+      "difficulty": "easy",
+      "notes": "jQuery/slick PHP-era vendor page: div soup, <br>-heavy text, inline onclick handlers, Korean strings inside inline scripts, a month calendar grid full of distractor numbers.",
+      "expected": {
+        "groom": "서지훈",
+        "bride": "권지우",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": null,
+        "dateText": "",
+        "location": "노블레스 웨딩 7층 노블홀",
+        "locationKeywords": [
+          "노블레스 웨딩"
+        ],
+        "address": "부산광역시 해운대구 센텀중앙로 55",
+        "groomAccounts": [
+          {
+            "bank": "대구은행",
+            "number": "586481-54-654157",
+            "holder": "서지훈",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "토스뱅크",
+            "number": "1000-1412-4409",
+            "holder": "권지우",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/hanul-05/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "euckr-01",
+      "url": "https://chung-mo.web.app/eval/euckr-01/",
+      "template": "euckr-asp",
+      "vendor": "예그린카드",
+      "tags": [
+        "euc-kr",
+        "euckr-asp",
+        "font-tags"
+      ],
+      "difficulty": "hard",
+      "notes": "ASP-era page encoded in EUC-KR and served with charset=euc-kr; <font> tags, align attributes, &nbsp; padding.",
+      "expected": {
+        "groom": "송태양",
+        "bride": "서유나",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2026-11-01T13:30:00+09:00",
+        "dateText": "2026년 11월 1일 일요일 오후 1시 30분",
+        "location": "더컨벤션 목동 8층 그레이스홀",
+        "locationKeywords": [
+          "더컨벤션 목동"
+        ],
+        "address": "서울특별시 양천구 목동동로 233",
+        "groomAccounts": [
+          {
+            "bank": "수협은행",
+            "number": "169730-90-290061",
+            "holder": "송태양",
+            "relation": "신랑"
+          },
+          {
+            "bank": "하나은행",
+            "number": "422288-71-329236",
+            "holder": "송경식",
+            "relation": "아버지"
+          },
+          {
+            "bank": "신협",
+            "number": "646315-45-984245",
+            "holder": "최미영",
+            "relation": "어머니"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "대구은행",
+            "number": "866426-50-570721",
+            "holder": "서유나",
+            "relation": "신부"
+          },
+          {
+            "bank": "신협",
+            "number": "756156-79-770931",
+            "holder": "서상철",
+            "relation": "아버지"
+          },
+          {
+            "bank": "신한은행",
+            "number": "110-949-645285",
+            "holder": "윤미영",
+            "relation": "어머니"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/euckr-01/main.jpg.svg"
+        ]
+      }
+    },
+    {
+      "id": "euckr-02",
+      "url": "https://chung-mo.web.app/eval/euckr-02/",
+      "template": "euckr-asp",
+      "vendor": "예그린카드",
+      "tags": [
+        "euc-kr",
+        "euckr-asp",
+        "nbsp"
+      ],
+      "difficulty": "hard",
+      "notes": "ASP-era page encoded in EUC-KR and served with charset=euc-kr; <font> tags, align attributes, &nbsp; padding.",
+      "expected": {
+        "groom": "이재현",
+        "bride": "전세영",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2026-11-14T14:00:00+09:00",
+        "dateText": "2026.11.14 (토) 14:00",
+        "location": "포레스트 가든 야외 가든홀",
+        "locationKeywords": [
+          "포레스트 가든"
+        ],
+        "address": "경기도 고양시 일산동구 호수로 596",
+        "groomAccounts": [
+          {
+            "bank": "하나은행",
+            "number": "860336-57-991073",
+            "holder": "이재현",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/euckr-02/main.jpg.svg"
+        ]
+      }
+    },
+    {
+      "id": "table-01",
+      "url": "https://chung-mo.web.app/eval/table-01/",
+      "template": "table-legacy",
+      "vendor": "행복한청첩장",
+      "tags": [
+        "table-legacy",
+        "table-only"
+      ],
+      "difficulty": "hard",
+      "notes": "XHTML transitional page laid out entirely with <table>/<td>; no <div> or <p> wrappers around the text.",
+      "expected": {
+        "groom": "서원준",
+        "bride": "최지민",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2026-11-15T15:00:00+09:00",
+        "dateText": "2026년 11월 15일 일요일 오후 3시",
+        "location": "W웨딩홀 대전 3층 파티오홀",
+        "locationKeywords": [
+          "W웨딩홀 대전"
+        ],
+        "address": "대전광역시 유성구 대덕대로 512",
+        "groomAccounts": [
+          {
+            "bank": "우체국",
+            "number": "48787-31-795505",
+            "holder": "서원준",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "새마을금고",
+            "number": "205237-80-949506",
+            "holder": "최지민",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/table-01/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "table-02",
+      "url": "https://chung-mo.web.app/eval/table-02/",
+      "template": "table-legacy",
+      "vendor": "행복한청첩장",
+      "tags": [
+        "table-legacy",
+        "table-only"
+      ],
+      "difficulty": "hard",
+      "notes": "XHTML transitional page laid out entirely with <table>/<td>; no <div> or <p> wrappers around the text.",
+      "expected": {
+        "groom": "박선우",
+        "bride": "신유진",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2026-11-21T16:00:00+09:00",
+        "dateText": "2026-11-21 16:00",
+        "location": "제주 오션블루 리조트 1층 오션홀",
+        "locationKeywords": [
+          "제주 오션블루 리조트"
+        ],
+        "address": "제주특별자치도 서귀포시 중문관광로 72",
+        "groomAccounts": [],
+        "brideAccounts": [],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/table-02/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "nextcard-01",
+      "url": "https://chung-mo.web.app/eval/nextcard-01/",
+      "template": "nextjs-ssr",
+      "vendor": "넥스트카드",
+      "tags": [
+        "css-modules",
+        "next-data",
+        "nextjs-ssr"
+      ],
+      "difficulty": "easy",
+      "notes": "Next.js SSR: hashed CSS-module class names and a __NEXT_DATA__ JSON blob duplicating the content (with an ISO datetime).",
+      "expected": {
+        "groom": "유하준",
+        "bride": "남가은",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2026-11-29T17:30:00+09:00",
+        "dateText": "2026년 11월 29일 일요일 오후 5시 30분",
+        "location": "세인트메리 성당 대성전",
+        "locationKeywords": [
+          "세인트메리 성당"
+        ],
+        "address": "서울특별시 중구 명동길 74",
+        "groomAccounts": [
+          {
+            "bank": "신한은행",
+            "number": "110-196-994437",
+            "holder": "유하준",
+            "relation": "신랑"
+          },
+          {
+            "bank": "새마을금고",
+            "number": "493152-71-969450",
+            "holder": "유광수",
+            "relation": "아버지"
+          },
+          {
+            "bank": "농협은행",
+            "number": "337-6981-9365-39",
+            "holder": "송명자",
+            "relation": "어머니"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "국민은행",
+            "number": "722441-71-540801",
+            "holder": "남가은",
+            "relation": "신부"
+          },
+          {
+            "bank": "케이뱅크",
+            "number": "100-501-922276",
+            "holder": "남재호",
+            "relation": "아버지"
+          },
+          {
+            "bank": "케이뱅크",
+            "number": "100-391-269352",
+            "holder": "백정희",
+            "relation": "어머니"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/nextcard-01/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "nextcard-02",
+      "url": "https://chung-mo.web.app/eval/nextcard-02/",
+      "template": "nextjs-ssr",
+      "vendor": "넥스트카드",
+      "tags": [
+        "css-modules",
+        "extra-event-date",
+        "next-data",
+        "nextjs-ssr"
+      ],
+      "difficulty": "medium",
+      "notes": "Next.js SSR: hashed CSS-module class names and a __NEXT_DATA__ JSON blob duplicating the content (with an ISO datetime).",
+      "expected": {
+        "groom": "정수호",
+        "bride": "서혜진",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2026-12-05T18:00:00+09:00",
+        "dateText": "2026.12.05 (토) 18:00",
+        "location": "라온컨벤션 3층 그랜드홀",
+        "locationKeywords": [
+          "라온컨벤션"
+        ],
+        "address": "서울특별시 강남구 테헤란로 123",
+        "groomAccounts": [
+          {
+            "bank": "국민은행",
+            "number": "987435-22-202142",
+            "holder": "정수호",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "SC제일은행",
+            "number": "799286-68-154131",
+            "holder": "서혜진",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/nextcard-02/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "nextcard-03",
+      "url": "https://chung-mo.web.app/eval/nextcard-03/",
+      "template": "nextjs-ssr",
+      "vendor": "넥스트카드",
+      "tags": [
+        "css-modules",
+        "next-data",
+        "nextjs-ssr"
+      ],
+      "difficulty": "easy",
+      "notes": "Next.js SSR: hashed CSS-module class names and a __NEXT_DATA__ JSON blob duplicating the content (with an ISO datetime).",
+      "expected": {
+        "groom": "배승민",
+        "bride": "남지유",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2026-12-06T12:30:00+09:00",
+        "dateText": "Sunday, December 6, 2026 at 12:30 PM",
+        "location": "울산 로얄호텔 3층 그랜드볼룸",
+        "locationKeywords": [
+          "울산 로얄호텔"
+        ],
+        "address": "울산광역시 남구 삼산로 300",
+        "groomAccounts": [],
+        "brideAccounts": [
+          {
+            "bank": "케이뱅크",
+            "number": "100-934-188929",
+            "holder": "남지유",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/nextcard-03/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "spa-01",
+      "url": "https://chung-mo.web.app/eval/spa-01/",
+      "template": "csr-shell",
+      "vendor": "모먼트",
+      "tags": [
+        "csr",
+        "csr-shell",
+        "og-only"
+      ],
+      "difficulty": "hard",
+      "notes": "Vite/CRA-style SPA: the HTML is an empty #root plus OpenGraph meta; content is fetched from data.json at runtime.",
+      "expected": {
+        "groom": "고진우",
+        "bride": "심하윤",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2026-12-27T13:30:00+09:00",
+        "dateText": "2026년 12월 27일 일요일 오후 1시 30분",
+        "location": "빌라드지디 수서 1층 가든홀",
+        "locationKeywords": [
+          "빌라드지디 수서"
+        ],
+        "address": "서울특별시 강남구 광평로 281",
+        "groomAccounts": [
+          {
+            "bank": "부산은행",
+            "number": "271068-41-392679",
+            "holder": "고진우",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "수협은행",
+            "number": "541075-82-985324",
+            "holder": "심하윤",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/spa-01/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "spa-02",
+      "url": "https://chung-mo.web.app/eval/spa-02/",
+      "template": "csr-shell",
+      "vendor": "모먼트",
+      "tags": [
+        "csr",
+        "csr-shell",
+        "og-only"
+      ],
+      "difficulty": "hard",
+      "notes": "Vite/CRA-style SPA: the HTML is an empty #root plus OpenGraph meta; content is fetched from data.json at runtime.",
+      "expected": {
+        "groom": "권명호",
+        "bride": "윤윤서",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-01-02T11:00:00+09:00",
+        "dateText": "2027.01.02 (토) 11:00",
+        "location": "엘리시안 컨벤션 6층 사파이어홀",
+        "locationKeywords": [
+          "엘리시안 컨벤션"
+        ],
+        "address": "경기도 수원시 영통구 광교중앙로 140",
+        "groomAccounts": [
+          {
+            "bank": "우리은행",
+            "number": "944424-88-455348",
+            "holder": "권명호",
+            "relation": "신랑"
+          },
+          {
+            "bank": "신한은행",
+            "number": "110-244-815862",
+            "holder": "권형식",
+            "relation": "아버지"
+          },
+          {
+            "bank": "카카오뱅크",
+            "number": "3333-21-4389560",
+            "holder": "정정희",
+            "relation": "어머니"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "하나은행",
+            "number": "917553-77-119108",
+            "holder": "윤윤서",
+            "relation": "신부"
+          },
+          {
+            "bank": "카카오뱅크",
+            "number": "3333-74-5988127",
+            "holder": "윤정호",
+            "relation": "아버지"
+          },
+          {
+            "bank": "신한은행",
+            "number": "110-965-185509",
+            "holder": "백현숙",
+            "relation": "어머니"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/spa-02/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "spa-03",
+      "url": "https://chung-mo.web.app/eval/spa-03/",
+      "template": "csr-shell",
+      "vendor": "모먼트",
+      "tags": [
+        "csr",
+        "csr-shell",
+        "og-only"
+      ],
+      "difficulty": "hard",
+      "notes": "Vite/CRA-style SPA: the HTML is an empty #root plus OpenGraph meta; content is fetched from data.json at runtime.",
+      "expected": {
+        "groom": "배우진",
+        "bride": "전수아",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-01-03T11:00:00+09:00",
+        "dateText": "2027년 1월 3일 일요일 오전 11시",
+        "location": "메종드블랑 2층 로즈홀",
+        "locationKeywords": [
+          "메종드블랑"
+        ],
+        "address": "서울특별시 서초구 반포대로 45",
+        "groomAccounts": [],
+        "brideAccounts": [],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/spa-03/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "nuxtcard-01",
+      "url": "https://chung-mo.web.app/eval/nuxtcard-01/",
+      "template": "nuxt-ssr",
+      "vendor": "다봄",
+      "tags": [
+        "nuxt-data",
+        "nuxt-ssr",
+        "scoped-attrs"
+      ],
+      "difficulty": "easy",
+      "notes": "Nuxt 2 SSR: data-v-* scoped attributes on every element and a window.__NUXT__ state script.",
+      "expected": {
+        "groom": "권승현",
+        "bride": "홍현지",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-01-10T11:30:00+09:00",
+        "dateText": "2027/01/10 일요일 11시 30분",
+        "location": "스칼라티움 강남 4층 아트홀",
+        "locationKeywords": [
+          "스칼라티움 강남"
+        ],
+        "address": "서울특별시 강남구 논현로 508",
+        "groomAccounts": [
+          {
+            "bank": "SC제일은행",
+            "number": "124731-59-265277",
+            "holder": "권상철",
+            "relation": "아버지"
+          },
+          {
+            "bank": "우체국",
+            "number": "41630-74-659335",
+            "holder": "남혜숙",
+            "relation": "어머니"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "농협은행",
+            "number": "332-1130-3927-79",
+            "holder": "홍석민",
+            "relation": "아버지"
+          },
+          {
+            "bank": "수협은행",
+            "number": "563261-36-709933",
+            "holder": "고혜숙",
+            "relation": "어머니"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/nuxtcard-01/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "nuxtcard-02",
+      "url": "https://chung-mo.web.app/eval/nuxtcard-02/",
+      "template": "nuxt-ssr",
+      "vendor": "다봄",
+      "tags": [
+        "nuxt-data",
+        "nuxt-ssr",
+        "scoped-attrs"
+      ],
+      "difficulty": "easy",
+      "notes": "Nuxt 2 SSR: data-v-* scoped attributes on every element and a window.__NUXT__ state script.",
+      "expected": {
+        "groom": "신연우",
+        "bride": "남다혜",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-01-16T12:00:00+09:00",
+        "dateText": "2027년 1월 16일 토요일 낮 12시",
+        "location": "그랜드힐 컨벤션 3층 다이아몬드홀",
+        "locationKeywords": [
+          "그랜드힐 컨벤션"
+        ],
+        "address": "서울특별시 송파구 올림픽로 300",
+        "groomAccounts": [
+          {
+            "bank": "새마을금고",
+            "number": "630349-96-588324",
+            "holder": "신연우",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "우체국",
+            "number": "40760-94-339779",
+            "holder": "남다혜",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/nuxtcard-02/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "builder-01",
+      "url": "https://chung-mo.web.app/eval/builder-01/",
+      "template": "site-builder",
+      "vendor": "메이커스",
+      "tags": [
+        "inline-styles",
+        "lazy-src",
+        "site-builder",
+        "span-split"
+      ],
+      "difficulty": "medium",
+      "notes": "Site-builder export: deep .inline-blocked/.fr-view nesting, inline styles, every word in its own <span>, lazy images with a data: pixel in src and the real URL in data-src.",
+      "expected": {
+        "groom": "손현우",
+        "bride": "윤하은",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-01-24T12:30:00+09:00",
+        "dateText": "2027년 1월 24일 일요일 오후 12시 30분",
+        "location": "헤리움 아트홀 5층 오페라홀",
+        "locationKeywords": [
+          "헤리움 아트홀"
+        ],
+        "address": "인천광역시 연수구 센트럴로 194",
+        "groomAccounts": [
+          {
+            "bank": "카카오뱅크",
+            "number": "3333-95-5471430",
+            "holder": "손현우",
+            "relation": "신랑"
+          },
+          {
+            "bank": "수협은행",
+            "number": "832260-85-280131",
+            "holder": "손승철",
+            "relation": "아버지"
+          },
+          {
+            "bank": "우체국",
+            "number": "63902-31-413625",
+            "holder": "남정자",
+            "relation": "어머니"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "신한은행",
+            "number": "110-428-239430",
+            "holder": "윤하은",
+            "relation": "신부"
+          },
+          {
+            "bank": "신한은행",
+            "number": "110-940-272863",
+            "holder": "윤기태",
+            "relation": "아버지"
+          },
+          {
+            "bank": "SC제일은행",
+            "number": "687264-64-925485",
+            "holder": "김미경",
+            "relation": "어머니"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/builder-01/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "builder-02",
+      "url": "https://chung-mo.web.app/eval/builder-02/",
+      "template": "site-builder",
+      "vendor": "메이커스",
+      "tags": [
+        "lazy-src",
+        "site-builder",
+        "span-split"
+      ],
+      "difficulty": "medium",
+      "notes": "Site-builder export: deep .inline-blocked/.fr-view nesting, inline styles, every word in its own <span>, lazy images with a data: pixel in src and the real URL in data-src.",
+      "expected": {
+        "groom": "양성민",
+        "bride": "최미소",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-01-30T13:00:00+09:00",
+        "dateText": "27.01.30 SAT PM 1:00",
+        "location": "루체스타 웨딩홀 6층 스텔라홀",
+        "locationKeywords": [
+          "루체스타 웨딩홀"
+        ],
+        "address": "경기도 성남시 분당구 판교역로 210",
+        "groomAccounts": [
+          {
+            "bank": "토스뱅크",
+            "number": "1000-9744-6150",
+            "holder": "양성민",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "하나은행",
+            "number": "318096-32-470253",
+            "holder": "최미소",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/builder-02/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "builder-03",
+      "url": "https://chung-mo.web.app/eval/builder-03/",
+      "template": "site-builder",
+      "vendor": "메이커스",
+      "tags": [
+        "lazy-src",
+        "site-builder",
+        "span-split"
+      ],
+      "difficulty": "medium",
+      "notes": "Site-builder export: deep .inline-blocked/.fr-view nesting, inline styles, every word in its own <span>, lazy images with a data: pixel in src and the real URL in data-src.",
+      "expected": {
+        "groom": "전태호",
+        "bride": "홍예지",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-02-07T13:30:00+09:00",
+        "dateText": "2027.02.07 (일) 13:30",
+        "location": "더채플앳한강 5층 채플홀",
+        "locationKeywords": [
+          "더채플앳한강"
+        ],
+        "address": "서울특별시 영등포구 여의대로 88",
+        "groomAccounts": [],
+        "brideAccounts": [],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/builder-03/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "tw-01",
+      "url": "https://chung-mo.web.app/eval/tw-01/",
+      "template": "tailwind-semantic",
+      "vendor": "온카드",
+      "tags": [
+        "details-accordion",
+        "json-ld",
+        "kakaopay",
+        "picture-srcset",
+        "tailwind-semantic"
+      ],
+      "difficulty": "easy",
+      "notes": "Modern semantic HTML with Tailwind utilities, JSON-LD Event, <time datetime>, <details> accordions for accounts, KakaoPay links.",
+      "expected": {
+        "groom": "문준서",
+        "bride": "송소희",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-02-13T14:00:00+09:00",
+        "dateText": "2027년 2월 13일 토요일 오후 2시",
+        "location": "호텔 라비앙 2층 크리스탈볼룸",
+        "locationKeywords": [
+          "호텔 라비앙"
+        ],
+        "address": "대구광역시 수성구 동대구로 111",
+        "groomAccounts": [
+          {
+            "bank": "케이뱅크",
+            "number": "100-598-461822",
+            "holder": "문준서",
+            "relation": "신랑"
+          },
+          {
+            "bank": "카카오뱅크",
+            "number": "3333-20-1919755",
+            "holder": "문병철",
+            "relation": "아버지"
+          },
+          {
+            "bank": "하나은행",
+            "number": "877323-88-614024",
+            "holder": "전미영",
+            "relation": "어머니"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "새마을금고",
+            "number": "550500-57-733914",
+            "holder": "송소희",
+            "relation": "신부"
+          },
+          {
+            "bank": "국민은행",
+            "number": "899629-53-975723",
+            "holder": "송기태",
+            "relation": "아버지"
+          },
+          {
+            "bank": "하나은행",
+            "number": "446527-73-456787",
+            "holder": "정미경",
+            "relation": "어머니"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/tw-01/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "tw-02",
+      "url": "https://chung-mo.web.app/eval/tw-02/",
+      "template": "tailwind-semantic",
+      "vendor": "온카드",
+      "tags": [
+        "details-accordion",
+        "json-ld",
+        "tailwind-semantic"
+      ],
+      "difficulty": "easy",
+      "notes": "Modern semantic HTML with Tailwind utilities, JSON-LD Event, <time datetime>, <details> accordions for accounts, KakaoPay links.",
+      "expected": {
+        "groom": "권동현",
+        "bride": "박가영",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-02-14T15:00:00+09:00",
+        "dateText": "2027-02-14 15:00",
+        "location": "루미에르 웨딩 2층 루미에르홀",
+        "locationKeywords": [
+          "루미에르 웨딩"
+        ],
+        "address": "광주광역시 서구 상무중앙로 66",
+        "groomAccounts": [
+          {
+            "bank": "신협",
+            "number": "381968-99-316102",
+            "holder": "권동현",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "부산은행",
+            "number": "630428-15-637677",
+            "holder": "박가영",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/tw-02/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "tw-03",
+      "url": "https://chung-mo.web.app/eval/tw-03/",
+      "template": "tailwind-semantic",
+      "vendor": "온카드",
+      "tags": [
+        "json-ld",
+        "no-date",
+        "tailwind-semantic"
+      ],
+      "difficulty": "easy",
+      "notes": "Modern semantic HTML with Tailwind utilities, JSON-LD Event, <time datetime>, <details> accordions for accounts, KakaoPay links.",
+      "expected": {
+        "groom": "윤찬영",
+        "bride": "손서연",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": null,
+        "dateText": "",
+        "location": "더파티움 안양 9층 파티움홀",
+        "locationKeywords": [
+          "더파티움 안양"
+        ],
+        "address": "경기도 안양시 동안구 시민대로 180",
+        "groomAccounts": [
+          {
+            "bank": "케이뱅크",
+            "number": "100-725-797527",
+            "holder": "윤형식",
+            "relation": "아버지"
+          },
+          {
+            "bank": "대구은행",
+            "number": "532006-56-263482",
+            "holder": "고정희",
+            "relation": "어머니"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "SC제일은행",
+            "number": "224149-39-996652",
+            "holder": "손동수",
+            "relation": "아버지"
+          },
+          {
+            "bank": "새마을금고",
+            "number": "897314-25-925548",
+            "holder": "심혜숙",
+            "relation": "어머니"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/tw-03/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "sc-01",
+      "url": "https://chung-mo.web.app/eval/sc-01/",
+      "template": "styled-react",
+      "vendor": "블룸",
+      "tags": [
+        "sc-classes",
+        "split-numerals",
+        "styled-react"
+      ],
+      "difficulty": "medium",
+      "notes": "React SSR with styled-components hashes; the date is rendered as three bare numerals whose separators are CSS ::before content.",
+      "expected": {
+        "groom": "정정우",
+        "bride": "양은서",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-02-21T17:30:00+09:00",
+        "dateText": "2027년 2월 21일 일요일 오후 5시 30분",
+        "location": "아펠가모 광화문 4층 라포레홀",
+        "locationKeywords": [
+          "아펠가모 광화문"
+        ],
+        "address": "서울특별시 종로구 종로1길 50",
+        "groomAccounts": [
+          {
+            "bank": "대구은행",
+            "number": "118986-18-163299",
+            "holder": "정정우",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "하나은행",
+            "number": "745783-11-375033",
+            "holder": "양은서",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/sc-01/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "sc-02",
+      "url": "https://chung-mo.web.app/eval/sc-02/",
+      "template": "styled-react",
+      "vendor": "블룸",
+      "tags": [
+        "sc-classes",
+        "split-numerals",
+        "styled-react"
+      ],
+      "difficulty": "medium",
+      "notes": "React SSR with styled-components hashes; the date is rendered as three bare numerals whose separators are CSS ::before content.",
+      "expected": {
+        "groom": "심상우",
+        "bride": "오나연",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-03-06T18:00:00+09:00",
+        "dateText": "2027년 3월 6일 토요일 오후 6시",
+        "location": "노블레스 웨딩 7층 노블홀",
+        "locationKeywords": [
+          "노블레스 웨딩"
+        ],
+        "address": "부산광역시 해운대구 센텀중앙로 55",
+        "groomAccounts": [
+          {
+            "bank": "국민은행",
+            "number": "577215-97-727754",
+            "holder": "심상우",
+            "relation": "신랑"
+          },
+          {
+            "bank": "카카오뱅크",
+            "number": "3333-62-9124750",
+            "holder": "심용호",
+            "relation": "아버지"
+          },
+          {
+            "bank": "부산은행",
+            "number": "389074-77-429655",
+            "holder": "허영미",
+            "relation": "어머니"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "SC제일은행",
+            "number": "396694-81-856151",
+            "holder": "오나연",
+            "relation": "신부"
+          },
+          {
+            "bank": "농협은행",
+            "number": "343-1290-3801-27",
+            "holder": "오재호",
+            "relation": "아버지"
+          },
+          {
+            "bank": "대구은행",
+            "number": "218297-63-785482",
+            "holder": "조혜숙",
+            "relation": "어머니"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/sc-02/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "wp-01",
+      "url": "https://chung-mo.web.app/eval/wp-01/",
+      "template": "wordpress-theme",
+      "vendor": "우리결혼",
+      "tags": [
+        "guestbook-distractors",
+        "time-element",
+        "wordpress-theme"
+      ],
+      "difficulty": "medium",
+      "notes": "WordPress single-post markup with a guestbook whose comments mention other dates and names.",
+      "expected": {
+        "groom": "남규민",
+        "bride": "조소율",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-03-13T12:30:00+09:00",
+        "dateText": "2027년 3월 13일 토요일 오후 12시 30분",
+        "location": "더컨벤션 목동 8층 그레이스홀",
+        "locationKeywords": [
+          "더컨벤션 목동"
+        ],
+        "address": "서울특별시 양천구 목동동로 233",
+        "groomAccounts": [
+          {
+            "bank": "농협은행",
+            "number": "305-6341-9255-85",
+            "holder": "남규민",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "대구은행",
+            "number": "407631-30-542067",
+            "holder": "조소율",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/wp-01/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "wp-02",
+      "url": "https://chung-mo.web.app/eval/wp-02/",
+      "template": "wordpress-theme",
+      "vendor": "우리결혼",
+      "tags": [
+        "guestbook-distractors",
+        "time-element",
+        "wordpress-theme"
+      ],
+      "difficulty": "medium",
+      "notes": "WordPress single-post markup with a guestbook whose comments mention other dates and names.",
+      "expected": {
+        "groom": "이민석",
+        "bride": "김지원",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-03-14T13:30:00+09:00",
+        "dateText": "2027.03.14 (일) 13:30",
+        "location": "포레스트 가든 야외 가든홀",
+        "locationKeywords": [
+          "포레스트 가든"
+        ],
+        "address": "경기도 고양시 일산동구 호수로 596",
+        "groomAccounts": [
+          {
+            "bank": "국민은행",
+            "number": "220433-53-896493",
+            "holder": "이인수",
+            "relation": "아버지"
+          },
+          {
+            "bank": "신협",
+            "number": "741527-41-947867",
+            "holder": "백혜숙",
+            "relation": "어머니"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "부산은행",
+            "number": "194062-64-684189",
+            "holder": "김동수",
+            "relation": "아버지"
+          },
+          {
+            "bank": "농협은행",
+            "number": "328-4825-9146-86",
+            "holder": "최미숙",
+            "relation": "어머니"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/wp-02/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "bs-01",
+      "url": "https://chung-mo.web.app/eval/bs-01/",
+      "template": "bootstrap-2019",
+      "vendor": "라온초대장",
+      "tags": [
+        "bootstrap-2019",
+        "map-iframe",
+        "modal-accounts",
+        "reception-distractor"
+      ],
+      "difficulty": "medium",
+      "notes": "Bootstrap 4 + jQuery: FontAwesome icons, Google Maps iframe, accounts inside a hidden modal, account numbers without hyphens, a reception on a different date/venue as a distractor.",
+      "expected": {
+        "groom": "심경수",
+        "bride": "최혜원",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-03-21T11:00:00+09:00",
+        "dateText": "2027년 3월 21일 일요일 오전 11시",
+        "location": "W웨딩홀 대전 3층 파티오홀",
+        "locationKeywords": [
+          "W웨딩홀 대전"
+        ],
+        "address": "대전광역시 유성구 대덕대로 512",
+        "groomAccounts": [
+          {
+            "bank": "신한은행",
+            "number": "110-166-724620",
+            "holder": "심경수",
+            "relation": "신랑"
+          },
+          {
+            "bank": "신한은행",
+            "number": "110-128-697906",
+            "holder": "심광수",
+            "relation": "아버지"
+          },
+          {
+            "bank": "케이뱅크",
+            "number": "100-151-395678",
+            "holder": "손명희",
+            "relation": "어머니"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "기업은행",
+            "number": "414678-40-314073",
+            "holder": "최혜원",
+            "relation": "신부"
+          },
+          {
+            "bank": "우체국",
+            "number": "99268-29-542063",
+            "holder": "최재호",
+            "relation": "아버지"
+          },
+          {
+            "bank": "케이뱅크",
+            "number": "100-612-251623",
+            "holder": "홍현숙",
+            "relation": "어머니"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/bs-01/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "bs-02",
+      "url": "https://chung-mo.web.app/eval/bs-02/",
+      "template": "bootstrap-2019",
+      "vendor": "라온초대장",
+      "tags": [
+        "bootstrap-2019",
+        "map-iframe",
+        "modal-accounts"
+      ],
+      "difficulty": "easy",
+      "notes": "Bootstrap 4 + jQuery: FontAwesome icons, Google Maps iframe, accounts inside a hidden modal, account numbers without hyphens, a reception on a different date/venue as a distractor.",
+      "expected": {
+        "groom": "허주원",
+        "bride": "황아름",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-04-03T11:00:00+09:00",
+        "dateText": "2027년 4월 3일 토요일 오전 11시",
+        "location": "제주 오션블루 리조트 1층 오션홀",
+        "locationKeywords": [
+          "제주 오션블루 리조트"
+        ],
+        "address": "제주특별자치도 서귀포시 중문관광로 72",
+        "groomAccounts": [
+          {
+            "bank": "농협은행",
+            "number": "307-3398-6730-60",
+            "holder": "허주원",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "하나은행",
+            "number": "320941-70-805259",
+            "holder": "황아름",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/bs-02/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "bs-03",
+      "url": "https://chung-mo.web.app/eval/w/ynmtmdm",
+      "template": "bootstrap-2019",
+      "vendor": "라온초대장",
+      "tags": [
+        "bootstrap-2019",
+        "modal-accounts",
+        "no-year",
+        "rewrite-url"
+      ],
+      "difficulty": "medium",
+      "notes": "Bootstrap 4 + jQuery: FontAwesome icons, Google Maps iframe, accounts inside a hidden modal, account numbers without hyphens, a reception on a different date/venue as a distractor.",
+      "expected": {
+        "groom": "남예준",
+        "bride": "신보람",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-04-04T11:30:00+09:00",
+        "dateText": "4월 4일 일요일 오전 11시 30분",
+        "location": "세인트메리 성당 대성전",
+        "locationKeywords": [
+          "세인트메리 성당"
+        ],
+        "address": "서울특별시 중구 명동길 74",
+        "groomAccounts": [
+          {
+            "bank": "기업은행",
+            "number": "183338-68-364930",
+            "holder": "남예준",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/bs-03/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "frame-01",
+      "url": "https://chung-mo.web.app/eval/frame-01/",
+      "template": "iframe-embed",
+      "vendor": "디어카드",
+      "tags": [
+        "iframe",
+        "iframe-embed"
+      ],
+      "difficulty": "hard",
+      "notes": "Outer shell page whose only content is an <iframe> pointing at content.html.",
+      "expected": {
+        "groom": "서재원",
+        "bride": "조지수",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-04-10T12:00:00+09:00",
+        "dateText": "2027년 4월 10일 토요일 낮 12시",
+        "location": "라온컨벤션 3층 그랜드홀",
+        "locationKeywords": [
+          "라온컨벤션"
+        ],
+        "address": "서울특별시 강남구 테헤란로 123",
+        "groomAccounts": [
+          {
+            "bank": "대구은행",
+            "number": "350808-29-886683",
+            "holder": "서재원",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "농협은행",
+            "number": "342-1583-1698-84",
+            "holder": "조지수",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/frame-01/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "frame-02",
+      "url": "https://chung-mo.web.app/eval/frame-02/",
+      "template": "iframe-embed",
+      "vendor": "디어카드",
+      "tags": [
+        "iframe",
+        "iframe-embed"
+      ],
+      "difficulty": "hard",
+      "notes": "Outer shell page whose only content is an <iframe> pointing at content.html.",
+      "expected": {
+        "groom": "허민준",
+        "bride": "송서현",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-04-11T12:30:00+09:00",
+        "dateText": "2027.04.11 (일) 12:30",
+        "location": "울산 로얄호텔 3층 그랜드볼룸",
+        "locationKeywords": [
+          "울산 로얄호텔"
+        ],
+        "address": "울산광역시 남구 삼산로 300",
+        "groomAccounts": [],
+        "brideAccounts": [],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/frame-02/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "img-01",
+      "url": "https://chung-mo.web.app/eval/img-01/",
+      "template": "image-only",
+      "vendor": "포토청첩장",
+      "tags": [
+        "image-only"
+      ],
+      "difficulty": "hard",
+      "notes": "Every section (date, venue, accounts) is an image; the HTML carries only <img> tags and OpenGraph meta.",
+      "expected": {
+        "groom": "유서준",
+        "bride": "허서윤",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-04-25T13:00:00+09:00",
+        "dateText": "2027년 4월 25일 일요일 오후 1시",
+        "location": "빌라드지디 수서 1층 가든홀",
+        "locationKeywords": [
+          "빌라드지디 수서"
+        ],
+        "address": "서울특별시 강남구 광평로 281",
+        "groomAccounts": [
+          {
+            "bank": "토스뱅크",
+            "number": "1000-4822-4645",
+            "holder": "유서준",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "케이뱅크",
+            "number": "100-623-762698",
+            "holder": "허서윤",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/img-01/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "img-02",
+      "url": "https://chung-mo.web.app/eval/img-02/",
+      "template": "image-only",
+      "vendor": "포토청첩장",
+      "tags": [
+        "image-only"
+      ],
+      "difficulty": "hard",
+      "notes": "Every section (date, venue, accounts) is an image; the HTML carries only <img> tags and OpenGraph meta.",
+      "expected": {
+        "groom": "정지환",
+        "bride": "허예린",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-05-01T13:30:00+09:00",
+        "dateText": "2027.05.01 (토) 13:30",
+        "location": "엘리시안 컨벤션 6층 사파이어홀",
+        "locationKeywords": [
+          "엘리시안 컨벤션"
+        ],
+        "address": "경기도 수원시 영통구 광교중앙로 140",
+        "groomAccounts": [],
+        "brideAccounts": [],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/img-02/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "kakao-01",
+      "url": "https://chung-mo.web.app/eval/kakao-01/",
+      "template": "kakao-card",
+      "vendor": "톡초대",
+      "tags": [
+        "data-attrs",
+        "hidden-accounts",
+        "kakao-card"
+      ],
+      "difficulty": "medium",
+      "notes": "Messenger-style share card: key/value rows, accounts held in data-* attributes and display:none blocks toggled by a button.",
+      "expected": {
+        "groom": "강유찬",
+        "bride": "조주하",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-05-09T14:00:00+09:00",
+        "dateText": "2027년 5월 9일 일요일 오후 2시",
+        "location": "메종드블랑 2층 로즈홀",
+        "locationKeywords": [
+          "메종드블랑"
+        ],
+        "address": "서울특별시 서초구 반포대로 45",
+        "groomAccounts": [
+          {
+            "bank": "농협은행",
+            "number": "350-2017-5910-93",
+            "holder": "강유찬",
+            "relation": "신랑"
+          },
+          {
+            "bank": "대구은행",
+            "number": "152416-86-717787",
+            "holder": "강재호",
+            "relation": "아버지"
+          },
+          {
+            "bank": "국민은행",
+            "number": "963714-55-156924",
+            "holder": "양경희",
+            "relation": "어머니"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "대구은행",
+            "number": "556846-88-627077",
+            "holder": "조주하",
+            "relation": "신부"
+          },
+          {
+            "bank": "기업은행",
+            "number": "398481-95-590646",
+            "holder": "조승철",
+            "relation": "아버지"
+          },
+          {
+            "bank": "부산은행",
+            "number": "217872-72-932476",
+            "holder": "전경자",
+            "relation": "어머니"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/kakao-01/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "kakao-02",
+      "url": "https://chung-mo.web.app/eval/s/a2fryw8t",
+      "template": "kakao-card",
+      "vendor": "톡초대",
+      "tags": [
+        "hidden-accounts",
+        "kakao-card",
+        "short-link"
+      ],
+      "difficulty": "medium",
+      "notes": "Messenger-style share card: key/value rows, accounts held in data-* attributes and display:none blocks toggled by a button.",
+      "expected": {
+        "groom": "장서진",
+        "bride": "정지아",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-05-30T15:00:00+09:00",
+        "dateText": "2027.05.30 (일) 15:00",
+        "location": "스칼라티움 강남 4층 아트홀",
+        "locationKeywords": [
+          "스칼라티움 강남"
+        ],
+        "address": "서울특별시 강남구 논현로 508",
+        "groomAccounts": [
+          {
+            "bank": "새마을금고",
+            "number": "298188-90-417531",
+            "holder": "장서진",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "농협은행",
+            "number": "353-8313-9787-42",
+            "holder": "정지아",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/kakao-02/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "kakao-03",
+      "url": "https://chung-mo.web.app/eval/kakao-03/",
+      "template": "kakao-card",
+      "vendor": "톡초대",
+      "tags": [
+        "hidden-accounts",
+        "kakao-card"
+      ],
+      "difficulty": "medium",
+      "notes": "Messenger-style share card: key/value rows, accounts held in data-* attributes and display:none blocks toggled by a button.",
+      "expected": {
+        "groom": "손지호",
+        "bride": "김민지",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-06-20T16:00:00+09:00",
+        "dateText": "2027년 6월 20일 일요일 오후 4시",
+        "location": "그랜드힐 컨벤션 3층 다이아몬드홀",
+        "locationKeywords": [
+          "그랜드힐 컨벤션"
+        ],
+        "address": "서울특별시 송파구 올림픽로 300",
+        "groomAccounts": [],
+        "brideAccounts": [],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/kakao-03/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "intl-01",
+      "url": "https://chung-mo.web.app/eval/intl-01/",
+      "template": "english-intl",
+      "vendor": "Ever After",
+      "tags": [
+        "english",
+        "english-intl"
+      ],
+      "difficulty": "easy",
+      "notes": "English-language invitation (romanised names, 'Saturday, October 17, 2026 at 1:30 PM'), optionally with a Korean summary block.",
+      "expected": {
+        "groom": "Siwoo Hong",
+        "bride": "Suyeon Son",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-06-27T17:30:00+09:00",
+        "dateText": "Sunday, June 27, 2027 at 5:30 PM",
+        "location": "헤리움 아트홀 5층 오페라홀",
+        "locationKeywords": [
+          "헤리움 아트홀"
+        ],
+        "address": "인천광역시 연수구 센트럴로 194",
+        "groomAccounts": [],
+        "brideAccounts": [],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/intl-01/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "intl-02",
+      "url": "https://chung-mo.web.app/eval/intl-02/",
+      "template": "english-intl",
+      "vendor": "Ever After",
+      "tags": [
+        "english",
+        "english-intl",
+        "mixed-language"
+      ],
+      "difficulty": "easy",
+      "notes": "English-language invitation (romanised names, 'Saturday, October 17, 2026 at 1:30 PM'), optionally with a Korean summary block.",
+      "expected": {
+        "groom": "백성훈",
+        "bride": "전하람",
+        "groomAliases": [
+          "Sunghoon Baek"
+        ],
+        "brideAliases": [
+          "Haram Jeon"
+        ],
+        "datetime": "2027-07-03T18:00:00+09:00",
+        "dateText": "Saturday, July 3, 2027 at 6:00 PM",
+        "location": "루체스타 웨딩홀 6층 스텔라홀",
+        "locationKeywords": [
+          "루체스타 웨딩홀"
+        ],
+        "address": "경기도 성남시 분당구 판교역로 210",
+        "groomAccounts": [
+          {
+            "bank": "신협",
+            "number": "663131-53-481595",
+            "holder": "백성훈",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "국민은행",
+            "number": "795886-94-424495",
+            "holder": "전하람",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/intl-02/main.svg"
+        ]
+      }
+    },
+    {
+      "id": "self-01",
+      "url": "https://chung-mo.web.app/eval/self-01/",
+      "template": "notion-export",
+      "vendor": "셀프제작",
+      "tags": [
+        "emoji-headings",
+        "notion-export",
+        "self-made"
+      ],
+      "difficulty": "easy",
+      "notes": "Self-made Notion HTML export: emoji headings, callout blocks, <figure> images.",
+      "expected": {
+        "groom": "김준혁",
+        "bride": "박채원",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2026-10-09T12:30:00+09:00",
+        "dateText": "2026년 10월 9일 금요일 오후 12시 30분",
+        "location": "더채플앳한강 5층 채플홀",
+        "locationKeywords": [
+          "더채플앳한강"
+        ],
+        "address": "서울특별시 영등포구 여의대로 88",
+        "groomAccounts": [
+          {
+            "bank": "케이뱅크",
+            "number": "100-832-627744",
+            "holder": "김준혁",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "하나은행",
+            "number": "617415-97-145039",
+            "holder": "박채원",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/self-01/main.svg"
+        ]
+      }
+    }
+  ]
+}

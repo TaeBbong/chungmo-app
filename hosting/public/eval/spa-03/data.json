@@ -1,0 +1,34 @@
+{
+  "couple": {
+    "groom": {
+      "name": "배우진",
+      "father": "배동수",
+      "mother": "오경희",
+      "order": "차남"
+    },
+    "bride": {
+      "name": "전수아",
+      "father": "전태영",
+      "mother": "임혜숙",
+      "order": "장녀"
+    }
+  },
+  "datetime": "2027-01-03T11:00:00+09:00",
+  "dateText": "2027년 1월 3일 일요일 오전 11시",
+  "venue": {
+    "name": "메종드블랑",
+    "hall": "2층 로즈홀",
+    "address": "서울특별시 서초구 반포대로 45",
+    "tel": "02-534-0202"
+  },
+  "accounts": {
+    "groom": [],
+    "bride": []
+  },
+  "greeting": "저희 두 사람이 사랑과 믿음으로 한 가정을 이루게 되었습니다. 귀한 걸음으로 축복해 주시면 감사하겠습니다.",
+  "gallery": [
+    "../_assets/gallery-1.svg",
+    "../_assets/gallery-2.svg",
+    "../_assets/gallery-3.svg"
+  ]
+}

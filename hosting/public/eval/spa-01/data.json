@@ -1,0 +1,48 @@
+{
+  "couple": {
+    "groom": {
+      "name": "고진우",
+      "father": "고병철",
+      "mother": "이숙희",
+      "order": "아들"
+    },
+    "bride": {
+      "name": "심하윤",
+      "father": "심인수",
+      "mother": "이영미",
+      "order": "딸"
+    }
+  },
+  "datetime": "2026-12-27T13:30:00+09:00",
+  "dateText": "2026년 12월 27일 일요일 오후 1시 30분",
+  "venue": {
+    "name": "빌라드지디 수서",
+    "hall": "1층 가든홀",
+    "address": "서울특별시 강남구 광평로 281",
+    "tel": "02-459-0808"
+  },
+  "accounts": {
+    "groom": [
+      {
+        "bank": "부산은행",
+        "number": "271068-41-392679",
+        "holder": "고진우",
+        "relation": "신랑"
+      }
+    ],
+    "bride": [
+      {
+        "bank": "수협은행",
+        "number": "541075-82-985324",
+        "holder": "심하윤",
+        "relation": "신부"
+      }
+    ]
+  },
+  "greeting": "저희 두 사람이 사랑과 믿음으로 한 가정을 이루게 되었습니다. 귀한 걸음으로 축복해 주시면 감사하겠습니다.",
+  "gallery": [
+    "../_assets/gallery-1.svg",
+    "../_assets/gallery-2.svg",
+    "../_assets/gallery-3.svg"
+  ]
+}

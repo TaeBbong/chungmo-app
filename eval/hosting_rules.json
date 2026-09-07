@@ -1,0 +1,49 @@
+{
+  "redirects": [
+    {
+      "source": "/eval/s/agfudwwt",
+      "destination": "/eval/hanul-03/",
+      "type": 301
+    },
+    {
+      "source": "/eval/s/a2fryw8t",
+      "destination": "/eval/kakao-02/",
+      "type": 301
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/eval/w/ynmtmdm",
+      "destination": "/eval/bs-03/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/eval/euckr-*",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=euc-kr"
+        }
+      ]
+    },
+    {
+      "source": "/eval/euckr-*/",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=euc-kr"
+        }
+      ]
+    },
+    {
+      "source": "/eval/euckr-*/index.html",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=euc-kr"
+        }
+      ]
+    }
+  ]
+}
