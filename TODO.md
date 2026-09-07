@@ -16,7 +16,7 @@
 - [x] **구조화 출력 적용**: Gemini `responseJsonSchema` + JSON 응답 강제 — 링크/이미지/텍스트 파서가 공유 스키마 사용
 - [x] **파싱 실패 fallback UX**: 날짜 누락 시 부분 추출(이름·장소·계좌)을 draft로 보존, 폼에 프리필해 빈 필드만 보정 — `feat/manual-schedule-fallback`
 - [x] **파싱 정확도 평가셋**: Firebase Hosting에 40개의 가상 청첩장 픽스처(벤더별 마크업 스타일)를 호스팅하고 `eval/run_eval.dart`로 자동 채점 → `eval/results/latest.md`에 정확도 수치 — `feat/parsing-eval`
-- [ ] **링크 파서 커버리지 1단계 (정적 HTML)**: 베이스라인 core 63%에서 hard 11건이 전부 크롤러에서 탈락 — `<meta>` OG content 추출, `<td>/<time>/<section>` 등 시맨틱·테이블 텍스트, EUC-KR 디코딩, 상대 URL·lazy `data-src` 해석, iframe 1단계 추적, 문서 순서 유지 → 평가셋으로 전후 비교
+- [x] **링크 파서 커버리지 1단계 (정적 HTML)**: 문서 순서 DOM 워크, `<meta>` OG content, `<td>/<time>/<section>` 텍스트, 순수 Dart CP949 디코더, 최종 URL 기준 상대 경로 해석, lazy `data-src`, iframe 1단계 추적 → 크롤 커버리지 68%→90%, core 63%→85% — `feat/crawler-coverage`, `docs/CRAWLER_COVERAGE.md`
 - [ ] **링크 파서 프롬프트 보강**: 기준 날짜 제공(연도 없는 날짜는 다음 도래일로), 성을 포함한 전체 이름 요구, 첫 대표 사진을 썸네일로
 - [ ] **링크 파서 이미지 폴백 (모달리티 전환)**: 크롤 결과가 빈약하면 페이지의 주요 이미지를 내려받아 기존 멀티모달 이미지 파서로 재시도 — 이미지 전용·CSR 청첩장의 근본 대응
 

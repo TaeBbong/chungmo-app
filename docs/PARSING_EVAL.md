@@ -290,6 +290,23 @@ Together this puts the ceiling after the listed crawler fixes at roughly
 the `easy`+`medium` level for the whole set, and the prompt fixes above
 are worth a few more points on top.
 
+### 6.2 After the crawler rewrite (layer 1)
+
+The rewrite described in `docs/CRAWLER_COVERAGE.md` (document-order text
+walk, meta content, CP949 decoding, resolved URLs, iframe follow) moved
+the same benchmark, same model, same prompt to:
+
+| | before | after |
+|---|---|---|
+| crawl coverage | 68% | **90%** |
+| core | 63% | **85%** |
+| easy / medium / hard | 93% / 79% / 0% | 100% / 86% / 64% |
+| groom · bride · datetime · location · accounts · thumbnail | 90 · 90 · 68 · 83 · 83 · 73 | 100 · 100 · 90 · 95 · 93 · 100 |
+
+The six cases still failing are the two year-less dates (prompt, issue
+#50) and the four whose data is not in the HTML at all — accounts behind a
+CSR shell and image-only pages (image fallback, issue #51).
+
 ---
 
 ## 7. Why not the alternatives
