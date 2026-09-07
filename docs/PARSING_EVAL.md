@@ -159,7 +159,14 @@ Runner options that matter day to day:
 --tag=csr               every case carrying a tag
 --label="after td fix"  stored in the report for before/after comparisons
 --base-url=http://localhost:5000   point at the hosting emulator
+--rescore=eval/results/history/<run>.json   re-apply the scorer to saved predictions
 ```
+
+`--rescore` exists because scorers have bugs too: the first run marked two
+thumbnails wrong because a relative `./main.svg` behind a short-link
+redirect was resolved against the short URL. Fixing the scorer and
+re-scoring the saved predictions costs nothing; re-running the model would
+have cost forty calls and introduced noise.
 
 A full run writes `eval/results/latest.json` (raw predictions, timings,
 token counts) and `eval/results/latest.md` (the tables). Partial or
@@ -239,9 +246,49 @@ ceiling first. The follow-up is tracked in `TODO.md` (crawler coverage);
 after each fix, `--crawl-only` shows the new ceiling in seconds and a full
 run shows what the model makes of it.
 
-The model-side numbers (`core`, per-field, by tag) live in
-`eval/results/latest.md` and are regenerated with a full run; they are not
-copied here so the document does not go stale.
+### 6.1 Model-side baseline (gemini-2.5-flash, unchanged crawler)
+
+| core | groom | bride | datetime | location | accounts | thumbnail |
+|---|---|---|---|---|---|---|
+| **63%** | 90% | 90% | 68% | 83% | 83% | 73% |
+
+| difficulty | n | core |
+|---|---|---|
+| easy | 15 | 93% |
+| medium | 14 | 79% |
+| hard | 11 | 0% |
+
+Mean model latency 5.2 s per case, ~1,000 prompt tokens per page. The full
+tables and every mismatch are in `eval/results/latest.md`; the run is
+reproducible with `fvm dart run eval/run_eval.dart`.
+
+Read against the coverage table, the 63% splits cleanly:
+
+- **Every `hard` case fails at the crawler**, before the model. The 11
+  cases (CSR shells, EUC-KR, tables, iframes, image-only) are exactly the
+  ones with 0% coverage. Names still come out right on most of them because
+  the `<title>` carries "김민준 ♥ 이서연" — which is why groom/bride sit at
+  90% while datetime is 68%.
+- **Where the crawler delivers everything, the model is at 93%.** Its own
+  failures are two patterns, both prompt-level:
+  - *Dates without a year* (`10월 24일 토요일 낮 12시 30분`) come back
+    empty. The prompt says "never invent a date" and gives no reference
+    date, so the model has no basis for choosing 2026 over 2025 and gives
+    up. Two cases (`hanul-04`, `bs-03`); the app would fall into the
+    manual-completion flow. A "today is …; a date without a year means the
+    next occurrence" line is the obvious fix.
+  - *Given names only* (`민석` for 이민석) on two pages whose hero prints
+    the full names but whose greeting says "이영수 · 김미숙의 장남 민석".
+    Both are lenient matches; the prompt should ask for the full name when
+    the page shows one.
+- **Thumbnails**: the model returns an empty string on a third of the
+  pages even though `[IMAGE] ./main.svg` is in the text, and a relative
+  path on the rest. Cosmetic, but the crawler should resolve URLs and the
+  prompt should say the first large photo is the thumbnail.
+
+Together this puts the ceiling after the listed crawler fixes at roughly
+the `easy`+`medium` level for the whole set, and the prompt fixes above
+are worth a few more points on top.
 
 ---
 
