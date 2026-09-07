@@ -75,3 +75,7 @@ app.*.map.json
 
 # Firebase Hosting deploy cache
 .firebase/
+
+# Parsing eval scratch output (latest.* is committed)
+eval/results/history/
+eval/results/crawl/
