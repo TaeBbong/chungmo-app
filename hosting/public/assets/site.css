@@ -1,0 +1,75 @@
+/* Shared stylesheet for the chung-mo.web.app static pages (landing, policies). */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
+:root {
+  color-scheme: light dark;
+  --brand: #f95e48;
+  --bg: #ffffff;
+  --surface: #f7f7f8;
+  --text: #191f28;
+  --muted: #6b7684;
+  --line: #e5e8eb;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17171c;
+    --surface: #202027;
+    --text: #f2f4f6;
+    --muted: #9aa3ad;
+    --line: #2f2f38;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+a { color: var(--brand); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 24px 20px 64px; }
+.topbar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 0; border-bottom: 1px solid var(--line); margin-bottom: 28px;
+}
+.topbar img { width: 28px; height: 28px; border-radius: 7px; }
+.topbar .brand { font-weight: 700; color: var(--text); }
+.topbar nav { margin-left: auto; display: flex; gap: 16px; font-size: 14px; }
+.topbar nav a { color: var(--muted); }
+h1 { font-size: 26px; line-height: 1.3; margin: 0 0 8px; letter-spacing: -0.01em; }
+h2 { font-size: 18px; margin: 36px 0 10px; letter-spacing: -0.01em; }
+p { margin: 0 0 14px; }
+ol, ul { padding-left: 22px; margin: 0 0 14px; }
+li { margin: 4px 0; }
+.meta { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+.note {
+  background: var(--surface); border-radius: 12px; padding: 14px 16px;
+  font-size: 14px; color: var(--muted); margin: 24px 0;
+}
+.contact dt { font-weight: 600; }
+.contact dd { margin: 0 0 8px; }
+.footer {
+  margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line);
+  color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 14px;
+}
+/* Landing */
+.hero { text-align: center; padding: 32px 0 8px; }
+.hero img { width: 96px; height: 96px; border-radius: 24px; }
+.hero h1 { margin-top: 16px; }
+.hero p { color: var(--muted); }
+.badges { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 20px 0 8px; }
+.badges a {
+  display: inline-block; padding: 12px 18px; border-radius: 12px;
+  background: var(--text); color: var(--bg); font-weight: 600; font-size: 14px;
+}
+.badges a:hover { text-decoration: none; opacity: .9; }
+.cards { display: grid; gap: 12px; margin-top: 32px; }
+.card { background: var(--surface); border-radius: 14px; padding: 16px 18px; }
+.card h3 { margin: 0 0 6px; font-size: 16px; }
+.card p { margin: 0; color: var(--muted); font-size: 14px; }
