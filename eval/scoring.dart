@@ -114,8 +114,7 @@ CaseScore scoreCase(
 
   final thumbs = (expected['thumbnails'] as List).cast<String>().toSet();
   final predThumb = _str(p['thumbnail']);
-  final thumbnail = predThumb.isNotEmpty &&
-      thumbs.contains(pageUrl.resolve(predThumb).toString());
+  final thumbnail = thumbnailMatches(thumbs, predThumb, pageUrl);
   if (!thumbnail) {
     mismatches['thumbnail'] = 'expected one of $thumbs, got "$predThumb"';
   }
@@ -178,6 +177,19 @@ DateTime? parseKst(String s) {
   final hasOffset = RegExp(r'(Z|[+-]\d{2}:?\d{2})$').hasMatch(s);
   final normalized = hasOffset ? s : '${s.replaceAll(' ', 'T')}+09:00';
   return DateTime.tryParse(normalized);
+}
+
+/// The prediction resolves to one of the expected URLs. A relative
+/// prediction is also accepted when its file name matches, because
+/// [pageUrl] may be a short link whose redirect target (the real base for
+/// relative paths) the crawler does not report.
+bool thumbnailMatches(Set<String> expected, String predicted, Uri pageUrl) {
+  if (predicted.isEmpty) return false;
+  if (expected.contains(pageUrl.resolve(predicted).toString())) return true;
+  final isRelative = !predicted.contains('://') && !predicted.startsWith('//');
+  if (!isRelative) return false;
+  final name = predicted.split('/').last;
+  return name.isNotEmpty && expected.any((e) => e.split('/').last == name);
 }
 
 /// Every keyword must appear in the prediction, ignoring whitespace.

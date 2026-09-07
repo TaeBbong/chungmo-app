@@ -21,6 +21,8 @@
 ///   --base-url=URL      override the dataset's base URL (e.g. the emulator)
 ///   --out=DIR           results directory (default eval/results)
 ///   --label=TEXT        free-form label stored in the report (e.g. a commit)
+///   --rescore=FILE      re-score the predictions saved in a previous report
+///                       (no crawling, no model calls) — for scorer changes
 library;
 
 import 'dart:convert';
@@ -44,8 +46,17 @@ Future<void> main(List<String> args) async {
   final concurrency = int.parse(opts['concurrency'] ?? '3');
   final outDir = Directory(opts['out'] ?? 'eval/results');
 
+  final rescore = opts['rescore'];
+  final Map<String, Map<String, dynamic>> saved = rescore == null
+      ? const {}
+      : {
+          for (final r in (jsonDecode(File(rescore).readAsStringSync())
+              as Map<String, dynamic>)['cases'] as List)
+            (r as Map<String, dynamic>)['id'] as String: r
+        };
+
   final apiKey = Platform.environment['GEMINI_API_KEY'];
-  if (!crawlOnly && (apiKey == null || apiKey.isEmpty)) {
+  if (!crawlOnly && rescore == null && (apiKey == null || apiKey.isEmpty)) {
     stderr.writeln(
         'GEMINI_API_KEY is not set (use --crawl-only to skip the model).');
     exit(2);
@@ -68,7 +79,9 @@ Future<void> main(List<String> args) async {
     exit(2);
   }
 
-  if (!crawlOnly) await _preflight(model: model, apiKey: apiKey!);
+  if (!crawlOnly && rescore == null) {
+    await _preflight(model: model, apiKey: apiKey!);
+  }
 
   final crawlDir = Directory('${outDir.path}/crawl')
     ..createSync(recursive: true);
@@ -81,13 +94,15 @@ Future<void> main(List<String> args) async {
   Future<void> worker() async {
     while (queue.isNotEmpty) {
       final c = queue.removeAt(0);
-      final r = await _runCase(c,
-          baseUrl: baseUrl,
-          datasetBase: datasetBase,
-          model: model,
-          apiKey: apiKey,
-          crawlOnly: crawlOnly,
-          crawlDir: crawlDir);
+      final r = rescore != null
+          ? _rescoreCase(c, saved[c['id']], crawlDir: crawlDir)
+          : await _runCase(c,
+              baseUrl: baseUrl,
+              datasetBase: datasetBase,
+              model: model,
+              apiKey: apiKey,
+              crawlOnly: crawlOnly,
+              crawlDir: crawlDir);
       results.add(r);
       final score = r['score'] as Map<String, Object?>?;
       final mark = score == null
@@ -106,7 +121,11 @@ Future<void> main(List<String> args) async {
   results.sort((a, b) => (a['id'] as String).compareTo(b['id'] as String));
 
   final report = {
-    'label': opts['label'],
+    'label': opts['label'] ??
+        (rescore == null
+            ? null
+            : 'rescored from ${saved.values.firstOrNull?['label'] ?? rescore}'),
+    'rescoredFrom': rescore,
     'startedAt': startedAt.toIso8601String(),
     'durationMs': DateTime.now().difference(startedAt).inMilliseconds,
     'model': model,
@@ -204,6 +223,35 @@ Future<void> _preflight({required String model, required String apiKey}) async {
         'Preflight failed (HTTP ${res.statusCode}) for model $model: ${res.body.substring(0, res.body.length.clamp(0, 300))}');
     exit(2);
   }
+}
+
+/// Applies the current scorer to a prediction saved by an earlier run; the
+/// crawl text (for coverage) comes from `results/crawl/<id>.txt` if present.
+Map<String, dynamic> _rescoreCase(
+    Map<String, dynamic> c, Map<String, dynamic>? saved,
+    {required Directory crawlDir}) {
+  final crawlFile = File('${crawlDir.path}/${c['id']}.txt');
+  final crawled = crawlFile.existsSync() ? crawlFile.readAsStringSync() : null;
+  final url = saved?['url'] as String? ?? c['url'] as String;
+  final predicted = saved?['predicted'] as Map<String, dynamic>?;
+  return {
+    'id': c['id'],
+    'url': url,
+    'template': c['template'],
+    'difficulty': c['difficulty'],
+    'tags': c['tags'],
+    'crawlMs': saved?['crawlMs'] ?? 0,
+    'crawlChars': saved?['crawlChars'] ?? crawled?.length ?? 0,
+    'modelMs': saved?['modelMs'],
+    'promptTokens': saved?['promptTokens'],
+    'outputTokens': saved?['outputTokens'],
+    if (saved?['error'] != null) 'error': saved!['error'],
+    'coverage': crawlCoverage(c['expected'] as Map<String, dynamic>, crawled),
+    'predicted': predicted,
+    'score': scoreCase(c['expected'] as Map<String, dynamic>, predicted,
+            pageUrl: Uri.parse(url))
+        .toJson(),
+  };
 }
 
 /// Gemini REST `generateContent` with the app's schema; retries on 429/5xx.

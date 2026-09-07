@@ -62,6 +62,25 @@ void main() {
       expect(score.mismatches, isEmpty);
     });
 
+    test('a relative thumbnail behind a short link matches by file name', () {
+      final shortLink = Uri.parse('https://chung-mo.web.app/eval/s/agfudwwt');
+      expect(
+          scoreCase(expected, {'thumbnail': './main.svg'}, pageUrl: shortLink)
+              .thumbnail,
+          isTrue);
+      expect(
+          scoreCase(expected, {'thumbnail': './gallery-1.svg'},
+                  pageUrl: shortLink)
+              .thumbnail,
+          isFalse);
+      expect(
+          scoreCase(expected, {'thumbnail': 'https://other.example/main.svg'},
+                  pageUrl: shortLink)
+              .thumbnail,
+          isFalse,
+          reason: 'absolute URLs must match exactly');
+    });
+
     test('a failed call scores as all wrong but keeps lenient flags false', () {
       final score = scoreCase(expected, null, pageUrl: pageUrl);
       expect(score.core, isFalse);
