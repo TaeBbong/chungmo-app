@@ -33,10 +33,11 @@ abstract class Constants {
   /// Gemini model used by every Firebase AI Logic call (invitation parsing
   /// and the pay recommendation).
   static const String geminiModel = 'gemini-2.5-flash';
-  static const String privacyUrl =
-      "https://wegange.notion.site/1b27042892c0806f8686ce41416fd1c6?pvs=4";
-  static const String termsUrl =
-      "https://wegange.notion.site/1b27042892c080bf812dd9a9dc5a02d0";
+
+  /// Policy pages served from the project's Firebase Hosting site
+  /// (`hosting/public`), replacing the former public Notion pages.
+  static const String privacyUrl = "https://chung-mo.web.app/privacy";
+  static const String termsUrl = "https://chung-mo.web.app/terms";
   static const String defaultThumbnail =
       "https://img.freepik.com/free-vector/bride-groom-getting-married-illustration_23-2148404918.jpg";
 }
