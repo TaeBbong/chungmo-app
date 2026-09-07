@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="960" viewBox="0 0 720 960">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="hsl(98,45%,78%)"/><stop offset="1" stop-color="hsl(158,40%,55%)"/></linearGradient></defs>
+<rect width="720" height="960" fill="url(#g)"/>
+<circle cx="274" cy="403" r="86" fill="rgba(255,255,255,0.55)"/>
+<circle cx="446" cy="403" r="86" fill="rgba(255,255,255,0.55)"/>
+<text x="50%" y="691" text-anchor="middle" font-family="sans-serif" font-size="43" fill="#fff">권승현 &amp; 홍현지</text>
+</svg>

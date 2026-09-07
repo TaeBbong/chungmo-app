@@ -1,0 +1,72 @@
+{
+  "couple": {
+    "groom": {
+      "name": "권명호",
+      "father": "권형식",
+      "mother": "정정희",
+      "order": "장남"
+    },
+    "bride": {
+      "name": "윤윤서",
+      "father": "윤정호",
+      "mother": "백현숙",
+      "order": "딸"
+    }
+  },
+  "datetime": "2027-01-02T11:00:00+09:00",
+  "dateText": "2027.01.02 (토) 11:00",
+  "venue": {
+    "name": "엘리시안 컨벤션",
+    "hall": "6층 사파이어홀",
+    "address": "경기도 수원시 영통구 광교중앙로 140",
+    "tel": "031-215-1616"
+  },
+  "accounts": {
+    "groom": [
+      {
+        "bank": "우리은행",
+        "number": "944424-88-455348",
+        "holder": "권명호",
+        "relation": "신랑"
+      },
+      {
+        "bank": "신한은행",
+        "number": "110-244-815862",
+        "holder": "권형식",
+        "relation": "아버지"
+      },
+      {
+        "bank": "카카오뱅크",
+        "number": "3333-21-4389560",
+        "holder": "정정희",
+        "relation": "어머니"
+      }
+    ],
+    "bride": [
+      {
+        "bank": "하나은행",
+        "number": "917553-77-119108",
+        "holder": "윤윤서",
+        "relation": "신부"
+      },
+      {
+        "bank": "카카오뱅크",
+        "number": "3333-74-5988127",
+        "holder": "윤정호",
+        "relation": "아버지"
+      },
+      {
+        "bank": "신한은행",
+        "number": "110-965-185509",
+        "holder": "백현숙",
+        "relation": "어머니"
+      }
+    ]
+  },
+  "greeting": "저희 두 사람이 사랑과 믿음으로 한 가정을 이루게 되었습니다. 귀한 걸음으로 축복해 주시면 감사하겠습니다.",
+  "gallery": [
+    "../_assets/gallery-1.svg",
+    "../_assets/gallery-2.svg",
+    "../_assets/gallery-3.svg"
+  ]
+}

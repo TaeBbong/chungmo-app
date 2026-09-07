@@ -37,7 +37,34 @@
       "**/node_modules/**"
     ],
     "cleanUrls": true,
-    "trailingSlash": false,
+    "redirects": [
+      {
+        "source": "/privacy/",
+        "destination": "/privacy",
+        "type": 301
+      },
+      {
+        "source": "/terms/",
+        "destination": "/terms",
+        "type": 301
+      },
+      {
+        "source": "/eval/s/agfudwwt",
+        "destination": "/eval/hanul-03/",
+        "type": 301
+      },
+      {
+        "source": "/eval/s/a2fryw8t",
+        "destination": "/eval/kakao-02/",
+        "type": 301
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "/eval/w/ynmtmdm",
+        "destination": "/eval/bs-03/index.html"
+      }
+    ],
     "headers": [
       {
         "source": "/assets/**",
@@ -54,6 +81,33 @@
           {
             "key": "Cache-Control",
             "value": "public, max-age=300"
+          }
+        ]
+      },
+      {
+        "source": "/eval/euckr-*",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "text/html; charset=euc-kr"
+          }
+        ]
+      },
+      {
+        "source": "/eval/euckr-*/",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "text/html; charset=euc-kr"
+          }
+        ]
+      },
+      {
+        "source": "/eval/euckr-*/index.html",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "text/html; charset=euc-kr"
           }
         ]
       }
