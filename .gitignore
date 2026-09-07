@@ -72,3 +72,6 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+
+# Firebase Hosting deploy cache
+.firebase/
