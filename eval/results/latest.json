@@ -1,8 +1,8 @@
 {
-  "label": "baseline crawler, 58edbf9",
-  "rescoredFrom": "eval/results/history/model-run-raw.json",
-  "startedAt": "2026-09-07T21:54:30.630011",
-  "durationMs": 27,
+  "label": "crawler layer 1, 694bf92",
+  "rescoredFrom": null,
+  "startedAt": "2026-09-07T22:08:08.228620",
+  "durationMs": 80096,
   "model": "gemini-2.5-flash",
   "baseUrl": "https://chung-mo.web.app",
   "crawlOnly": false,
@@ -11,29 +11,29 @@
   "summary": {
     "overall": {
       "count": 40,
-      "core": 0.625,
-      "groom": 0.9,
-      "bride": 0.9,
-      "datetime": 0.675,
-      "location": 0.825,
-      "accounts": 0.825,
-      "thumbnail": 0.725,
-      "groomLenient": 0.95,
-      "brideLenient": 0.95,
-      "accountPrecision": 0.825,
-      "accountRecall": 0.825
+      "core": 0.85,
+      "groom": 1.0,
+      "bride": 1.0,
+      "datetime": 0.9,
+      "location": 0.95,
+      "accounts": 0.925,
+      "thumbnail": 1.0,
+      "groomLenient": 1.0,
+      "brideLenient": 1.0,
+      "accountPrecision": 0.925,
+      "accountRecall": 0.925
     },
     "errors": 0,
     "byDifficulty": {
       "easy": {
         "count": 15,
-        "core": 0.9333333333333333,
-        "groom": 0.9333333333333333,
-        "bride": 0.9333333333333333,
+        "core": 1.0,
+        "groom": 1.0,
+        "bride": 1.0,
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
-        "thumbnail": 0.8666666666666667,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 1.0,
@@ -41,27 +41,27 @@
       },
       "hard": {
         "count": 11,
-        "core": 0.0,
-        "groom": 0.8181818181818182,
-        "bride": 0.8181818181818182,
-        "datetime": 0.0,
-        "location": 0.36363636363636365,
-        "accounts": 0.36363636363636365,
-        "thumbnail": 0.45454545454545453,
-        "groomLenient": 0.8181818181818182,
-        "brideLenient": 0.8181818181818182,
-        "accountPrecision": 0.36363636363636365,
-        "accountRecall": 0.36363636363636365
+        "core": 0.6363636363636364,
+        "groom": 1.0,
+        "bride": 1.0,
+        "datetime": 0.8181818181818182,
+        "location": 0.8181818181818182,
+        "accounts": 0.7272727272727273,
+        "thumbnail": 1.0,
+        "groomLenient": 1.0,
+        "brideLenient": 1.0,
+        "accountPrecision": 0.7272727272727273,
+        "accountRecall": 0.7272727272727273
       },
       "medium": {
         "count": 14,
-        "core": 0.7857142857142857,
-        "groom": 0.9285714285714286,
-        "bride": 0.9285714285714286,
+        "core": 0.8571428571428571,
+        "groom": 1.0,
+        "bride": 1.0,
         "datetime": 0.8571428571428571,
         "location": 1.0,
         "accounts": 1.0,
-        "thumbnail": 0.7857142857142857,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 1.0,
@@ -71,9 +71,9 @@
     "byTemplate": {
       "bootstrap-2019": {
         "count": 3,
-        "core": 0.3333333333333333,
-        "groom": 0.6666666666666666,
-        "bride": 0.6666666666666666,
+        "core": 0.6666666666666666,
+        "groom": 1.0,
+        "bride": 1.0,
         "datetime": 0.6666666666666666,
         "location": 1.0,
         "accounts": 1.0,
@@ -99,13 +99,13 @@
       },
       "csr-shell": {
         "count": 3,
-        "core": 0.0,
+        "core": 0.3333333333333333,
         "groom": 1.0,
         "bride": 1.0,
-        "datetime": 0.0,
-        "location": 0.0,
+        "datetime": 1.0,
+        "location": 1.0,
         "accounts": 0.3333333333333333,
-        "thumbnail": 0.0,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 0.3333333333333333,
@@ -119,7 +119,7 @@
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
-        "thumbnail": 0.5,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 1.0,
@@ -127,31 +127,31 @@
       },
       "euckr-asp": {
         "count": 2,
-        "core": 0.0,
-        "groom": 0.0,
-        "bride": 0.0,
-        "datetime": 0.0,
+        "core": 1.0,
+        "groom": 1.0,
+        "bride": 1.0,
+        "datetime": 1.0,
         "location": 1.0,
-        "accounts": 0.0,
+        "accounts": 1.0,
         "thumbnail": 1.0,
-        "groomLenient": 0.0,
-        "brideLenient": 0.0,
-        "accountPrecision": 0.0,
-        "accountRecall": 0.0
+        "groomLenient": 1.0,
+        "brideLenient": 1.0,
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0
       },
       "iframe-embed": {
         "count": 2,
-        "core": 0.0,
+        "core": 1.0,
         "groom": 1.0,
         "bride": 1.0,
-        "datetime": 0.0,
-        "location": 0.0,
-        "accounts": 0.5,
-        "thumbnail": 0.0,
+        "datetime": 1.0,
+        "location": 1.0,
+        "accounts": 1.0,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
-        "accountPrecision": 0.5,
-        "accountRecall": 0.5
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0
       },
       "image-only": {
         "count": 2,
@@ -161,7 +161,7 @@
         "datetime": 0.0,
         "location": 0.0,
         "accounts": 0.5,
-        "thumbnail": 0.5,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 0.5,
@@ -189,7 +189,7 @@
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
-        "thumbnail": 0.6666666666666666,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 1.0,
@@ -231,7 +231,7 @@
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
-        "thumbnail": 0.0,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 1.0,
@@ -253,17 +253,17 @@
       },
       "table-legacy": {
         "count": 2,
-        "core": 0.0,
+        "core": 1.0,
         "groom": 1.0,
         "bride": 1.0,
-        "datetime": 0.0,
+        "datetime": 1.0,
         "location": 1.0,
-        "accounts": 0.5,
+        "accounts": 1.0,
         "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
-        "accountPrecision": 0.5,
-        "accountRecall": 0.5
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0
       },
       "tailwind-semantic": {
         "count": 3,
@@ -281,9 +281,9 @@
       },
       "wordpress-theme": {
         "count": 2,
-        "core": 0.5,
-        "groom": 0.5,
-        "bride": 0.5,
+        "core": 1.0,
+        "groom": 1.0,
+        "bride": 1.0,
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
@@ -297,9 +297,9 @@
     "byTag": {
       "bootstrap-2019": {
         "count": 3,
-        "core": 0.3333333333333333,
-        "groom": 0.6666666666666666,
-        "bride": 0.6666666666666666,
+        "core": 0.6666666666666666,
+        "groom": 1.0,
+        "bride": 1.0,
         "datetime": 0.6666666666666666,
         "location": 1.0,
         "accounts": 1.0,
@@ -353,13 +353,13 @@
       },
       "csr": {
         "count": 3,
-        "core": 0.0,
+        "core": 0.3333333333333333,
         "groom": 1.0,
         "bride": 1.0,
-        "datetime": 0.0,
-        "location": 0.0,
+        "datetime": 1.0,
+        "location": 1.0,
         "accounts": 0.3333333333333333,
-        "thumbnail": 0.0,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 0.3333333333333333,
@@ -367,13 +367,13 @@
       },
       "csr-shell": {
         "count": 3,
-        "core": 0.0,
+        "core": 0.3333333333333333,
         "groom": 1.0,
         "bride": 1.0,
-        "datetime": 0.0,
-        "location": 0.0,
+        "datetime": 1.0,
+        "location": 1.0,
         "accounts": 0.3333333333333333,
-        "thumbnail": 0.0,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 0.3333333333333333,
@@ -387,7 +387,7 @@
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
-        "thumbnail": 0.6666666666666666,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 1.0,
@@ -443,7 +443,7 @@
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
-        "thumbnail": 0.5,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 1.0,
@@ -457,7 +457,7 @@
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
-        "thumbnail": 0.5,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 1.0,
@@ -465,31 +465,31 @@
       },
       "euc-kr": {
         "count": 2,
-        "core": 0.0,
-        "groom": 0.0,
-        "bride": 0.0,
-        "datetime": 0.0,
+        "core": 1.0,
+        "groom": 1.0,
+        "bride": 1.0,
+        "datetime": 1.0,
         "location": 1.0,
-        "accounts": 0.0,
+        "accounts": 1.0,
         "thumbnail": 1.0,
-        "groomLenient": 0.0,
-        "brideLenient": 0.0,
-        "accountPrecision": 0.0,
-        "accountRecall": 0.0
+        "groomLenient": 1.0,
+        "brideLenient": 1.0,
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0
       },
       "euckr-asp": {
         "count": 2,
-        "core": 0.0,
-        "groom": 0.0,
-        "bride": 0.0,
-        "datetime": 0.0,
+        "core": 1.0,
+        "groom": 1.0,
+        "bride": 1.0,
+        "datetime": 1.0,
         "location": 1.0,
-        "accounts": 0.0,
+        "accounts": 1.0,
         "thumbnail": 1.0,
-        "groomLenient": 0.0,
-        "brideLenient": 0.0,
-        "accountPrecision": 0.0,
-        "accountRecall": 0.0
+        "groomLenient": 1.0,
+        "brideLenient": 1.0,
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0
       },
       "extra-event-date": {
         "count": 1,
@@ -507,17 +507,17 @@
       },
       "font-tags": {
         "count": 1,
-        "core": 0.0,
-        "groom": 0.0,
-        "bride": 0.0,
-        "datetime": 0.0,
+        "core": 1.0,
+        "groom": 1.0,
+        "bride": 1.0,
+        "datetime": 1.0,
         "location": 1.0,
-        "accounts": 0.0,
+        "accounts": 1.0,
         "thumbnail": 1.0,
-        "groomLenient": 0.0,
-        "brideLenient": 0.0,
-        "accountPrecision": 0.0,
-        "accountRecall": 0.0
+        "groomLenient": 1.0,
+        "brideLenient": 1.0,
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0
       },
       "gallery-captions": {
         "count": 1,
@@ -535,9 +535,9 @@
       },
       "guestbook-distractors": {
         "count": 2,
-        "core": 0.5,
-        "groom": 0.5,
-        "bride": 0.5,
+        "core": 1.0,
+        "groom": 1.0,
+        "bride": 1.0,
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
@@ -563,31 +563,31 @@
       },
       "iframe": {
         "count": 2,
-        "core": 0.0,
+        "core": 1.0,
         "groom": 1.0,
         "bride": 1.0,
-        "datetime": 0.0,
-        "location": 0.0,
-        "accounts": 0.5,
-        "thumbnail": 0.0,
+        "datetime": 1.0,
+        "location": 1.0,
+        "accounts": 1.0,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
-        "accountPrecision": 0.5,
-        "accountRecall": 0.5
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0
       },
       "iframe-embed": {
         "count": 2,
-        "core": 0.0,
+        "core": 1.0,
         "groom": 1.0,
         "bride": 1.0,
-        "datetime": 0.0,
-        "location": 0.0,
-        "accounts": 0.5,
-        "thumbnail": 0.0,
+        "datetime": 1.0,
+        "location": 1.0,
+        "accounts": 1.0,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
-        "accountPrecision": 0.5,
-        "accountRecall": 0.5
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0
       },
       "image-only": {
         "count": 2,
@@ -597,7 +597,7 @@
         "datetime": 0.0,
         "location": 0.0,
         "accounts": 0.5,
-        "thumbnail": 0.5,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 0.5,
@@ -625,7 +625,7 @@
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
-        "thumbnail": 0.0,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 1.0,
@@ -681,7 +681,7 @@
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
-        "thumbnail": 0.0,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 1.0,
@@ -689,9 +689,9 @@
       },
       "map-iframe": {
         "count": 2,
-        "core": 0.5,
-        "groom": 0.5,
-        "bride": 0.5,
+        "core": 1.0,
+        "groom": 1.0,
+        "bride": 1.0,
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
@@ -709,7 +709,7 @@
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
-        "thumbnail": 0.0,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 1.0,
@@ -717,9 +717,9 @@
       },
       "modal-accounts": {
         "count": 3,
-        "core": 0.3333333333333333,
-        "groom": 0.6666666666666666,
-        "bride": 0.6666666666666666,
+        "core": 0.6666666666666666,
+        "groom": 1.0,
+        "bride": 1.0,
         "datetime": 0.6666666666666666,
         "location": 1.0,
         "accounts": 1.0,
@@ -731,17 +731,17 @@
       },
       "nbsp": {
         "count": 1,
-        "core": 0.0,
-        "groom": 0.0,
-        "bride": 0.0,
-        "datetime": 0.0,
+        "core": 1.0,
+        "groom": 1.0,
+        "bride": 1.0,
+        "datetime": 1.0,
         "location": 1.0,
-        "accounts": 0.0,
+        "accounts": 1.0,
         "thumbnail": 1.0,
-        "groomLenient": 0.0,
-        "brideLenient": 0.0,
-        "accountPrecision": 0.0,
-        "accountRecall": 0.0
+        "groomLenient": 1.0,
+        "brideLenient": 1.0,
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0
       },
       "next-data": {
         "count": 3,
@@ -751,7 +751,7 @@
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
-        "thumbnail": 0.6666666666666666,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 1.0,
@@ -765,7 +765,7 @@
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
-        "thumbnail": 0.6666666666666666,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 1.0,
@@ -843,13 +843,13 @@
       },
       "og-only": {
         "count": 3,
-        "core": 0.0,
+        "core": 0.3333333333333333,
         "groom": 1.0,
         "bride": 1.0,
-        "datetime": 0.0,
-        "location": 0.0,
+        "datetime": 1.0,
+        "location": 1.0,
         "accounts": 0.3333333333333333,
-        "thumbnail": 0.0,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 0.3333333333333333,
@@ -961,7 +961,7 @@
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
-        "thumbnail": 0.0,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 1.0,
@@ -975,7 +975,7 @@
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
-        "thumbnail": 0.0,
+        "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
         "accountPrecision": 1.0,
@@ -1011,31 +1011,31 @@
       },
       "table-legacy": {
         "count": 2,
-        "core": 0.0,
+        "core": 1.0,
         "groom": 1.0,
         "bride": 1.0,
-        "datetime": 0.0,
+        "datetime": 1.0,
         "location": 1.0,
-        "accounts": 0.5,
+        "accounts": 1.0,
         "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
-        "accountPrecision": 0.5,
-        "accountRecall": 0.5
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0
       },
       "table-only": {
         "count": 2,
-        "core": 0.0,
+        "core": 1.0,
         "groom": 1.0,
         "bride": 1.0,
-        "datetime": 0.0,
+        "datetime": 1.0,
         "location": 1.0,
-        "accounts": 0.5,
+        "accounts": 1.0,
         "thumbnail": 1.0,
         "groomLenient": 1.0,
         "brideLenient": 1.0,
-        "accountPrecision": 0.5,
-        "accountRecall": 0.5
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0
       },
       "tailwind-semantic": {
         "count": 3,
@@ -1053,9 +1053,9 @@
       },
       "time-element": {
         "count": 2,
-        "core": 0.5,
-        "groom": 0.5,
-        "bride": 0.5,
+        "core": 1.0,
+        "groom": 1.0,
+        "bride": 1.0,
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
@@ -1067,9 +1067,9 @@
       },
       "wordpress-theme": {
         "count": 2,
-        "core": 0.5,
-        "groom": 0.5,
-        "bride": 0.5,
+        "core": 1.0,
+        "groom": 1.0,
+        "bride": 1.0,
         "datetime": 1.0,
         "location": 1.0,
         "accounts": 1.0,
@@ -1080,19 +1080,19 @@
         "accountRecall": 1.0
       }
     },
-    "meanCrawlMs": 29,
-    "meanModelMs": 5172,
-    "promptTokens": 39711
+    "meanCrawlMs": 25,
+    "meanModelMs": 5887,
+    "promptTokens": 32740
   },
   "coverage": {
     "overall": {
       "count": 40,
-      "all": 0.675,
-      "groom": 0.95,
-      "bride": 0.95,
-      "date": 0.675,
-      "location": 0.775,
-      "accounts": 0.825
+      "all": 0.9,
+      "groom": 1.0,
+      "bride": 1.0,
+      "date": 0.95,
+      "location": 0.95,
+      "accounts": 0.925
     },
     "byTemplate": {
       "bootstrap-2019": {
@@ -1115,11 +1115,11 @@
       },
       "csr-shell": {
         "count": 3,
-        "all": 0.0,
+        "all": 0.3333333333333333,
         "groom": 1.0,
         "bride": 1.0,
-        "date": 0.0,
-        "location": 0.0,
+        "date": 1.0,
+        "location": 1.0,
         "accounts": 0.3333333333333333
       },
       "english-intl": {
@@ -1133,21 +1133,21 @@
       },
       "euckr-asp": {
         "count": 2,
-        "all": 0.0,
-        "groom": 0.0,
-        "bride": 0.0,
-        "date": 0.0,
-        "location": 0.0,
-        "accounts": 0.0
+        "all": 1.0,
+        "groom": 1.0,
+        "bride": 1.0,
+        "date": 1.0,
+        "location": 1.0,
+        "accounts": 1.0
       },
       "iframe-embed": {
         "count": 2,
-        "all": 0.0,
+        "all": 1.0,
         "groom": 1.0,
         "bride": 1.0,
-        "date": 0.0,
-        "location": 0.0,
-        "accounts": 0.5
+        "date": 1.0,
+        "location": 1.0,
+        "accounts": 1.0
       },
       "image-only": {
         "count": 2,
@@ -1214,19 +1214,19 @@
       },
       "table-legacy": {
         "count": 2,
-        "all": 0.0,
+        "all": 1.0,
         "groom": 1.0,
         "bride": 1.0,
-        "date": 0.0,
+        "date": 1.0,
         "location": 1.0,
-        "accounts": 0.5
+        "accounts": 1.0
       },
       "tailwind-semantic": {
         "count": 3,
-        "all": 0.3333333333333333,
+        "all": 1.0,
         "groom": 1.0,
         "bride": 1.0,
-        "date": 0.3333333333333333,
+        "date": 1.0,
         "location": 1.0,
         "accounts": 1.0
       },
@@ -1253,11 +1253,8 @@
         "modal-accounts",
         "reception-distractor"
       ],
-      "crawlMs": 26,
-      "crawlChars": 2442,
-      "modelMs": 9489,
-      "promptTokens": 1905,
-      "outputTokens": 442,
+      "crawlMs": 23,
+      "crawlChars": 1273,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1265,24 +1262,27 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 1014,
+      "outputTokens": 446,
+      "modelMs": 7111,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/bs-01/main.svg",
         "groom": "심경수",
         "bride": "최혜원",
-        "location": "W웨딩홀 대전 3층 파티오홀 대전광역시 유성구 대덕대로 512",
+        "location": "W웨딩홀 대전 3층 파티오홀",
         "datetime": "2027-03-21T11:00:00+09:00",
         "groomAccounts": [
-          {
-            "bank": "신한은행",
-            "number": "110128697906",
-            "holder": "심광수",
-            "relation": "아버지"
-          },
           {
             "bank": "신한은행",
             "number": "110166724620",
             "holder": "심경수",
             "relation": "신랑"
+          },
+          {
+            "bank": "신한은행",
+            "number": "110128697906",
+            "holder": "심광수",
+            "relation": "아버지"
           },
           {
             "bank": "케이뱅크",
@@ -1337,11 +1337,8 @@
         "map-iframe",
         "modal-accounts"
       ],
-      "crawlMs": 22,
-      "crawlChars": 1822,
-      "modelMs": 7891,
-      "promptTokens": 1402,
-      "outputTokens": 231,
+      "crawlMs": 20,
+      "crawlChars": 1110,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1349,11 +1346,14 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 874,
+      "outputTokens": 234,
+      "modelMs": 5005,
       "predicted": {
-        "thumbnail": "./main.svg",
-        "groom": "주원",
-        "bride": "아름",
-        "location": "제주 오션블루 리조트 1층 오션홀 제주특별자치도 서귀포시 중문관광로 72",
+        "thumbnail": "https://chung-mo.web.app/eval/bs-02/main.svg",
+        "groom": "허주원",
+        "bride": "황아름",
+        "location": "제주 오션블루 리조트 1층 오션홀",
         "datetime": "2027-04-03T11:00:00+09:00",
         "groomAccounts": [
           {
@@ -1373,21 +1373,18 @@
         ]
       },
       "score": {
-        "groom": false,
-        "bride": false,
+        "groom": true,
+        "bride": true,
         "datetime": true,
         "location": true,
         "accounts": true,
         "thumbnail": true,
-        "core": false,
+        "core": true,
         "accountPrecision": 1.0,
         "accountRecall": 1.0,
         "groomLenient": true,
         "brideLenient": true,
-        "mismatches": {
-          "groom": "expected \"허주원\", got \"주원\"",
-          "bride": "expected \"황아름\", got \"아름\""
-        }
+        "mismatches": {}
       }
     },
     {
@@ -1401,11 +1398,8 @@
         "no-year",
         "rewrite-url"
       ],
-      "crawlMs": 23,
-      "crawlChars": 1624,
-      "modelMs": 14917,
-      "promptTokens": 1198,
-      "outputTokens": 113,
+      "crawlMs": 16,
+      "crawlChars": 1048,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1413,16 +1407,19 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 814,
+      "outputTokens": 156,
+      "modelMs": 10161,
       "predicted": {
-        "thumbnail": "/eval/bs-03/main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/bs-03/main.svg",
         "groom": "남예준",
         "bride": "신보람",
-        "location": "세인트메리 성당 대성전서울특별시 중구 명동길 74",
+        "location": "세인트메리 성당 대성전, 서울특별시 중구 명동길 74",
         "datetime": null,
         "groomAccounts": [
           {
             "bank": "기업은행",
-            "number": "183-338683-64930",
+            "number": "18333868364930",
             "holder": "남예준",
             "relation": "신랑"
           }
@@ -1457,11 +1454,8 @@
         "site-builder",
         "span-split"
       ],
-      "crawlMs": 20,
-      "crawlChars": 1790,
-      "modelMs": 6864,
-      "promptTokens": 1515,
-      "outputTokens": 455,
+      "crawlMs": 29,
+      "crawlChars": 1048,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1469,11 +1463,14 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 848,
+      "outputTokens": 463,
+      "modelMs": 9109,
       "predicted": {
-        "thumbnail": "",
+        "thumbnail": "https://chung-mo.web.app/eval/builder-01/main.svg",
         "groom": "손현우",
         "bride": "윤하은",
-        "location": "헤리움 아트홀 5층 오페라홀 인천광역시 연수구 센트럴로 194",
+        "location": "헤리움 아트홀 5층 오페라홀",
         "datetime": "2027-01-24T12:30:00+09:00",
         "groomAccounts": [
           {
@@ -1522,15 +1519,13 @@
         "datetime": true,
         "location": true,
         "accounts": true,
-        "thumbnail": false,
+        "thumbnail": true,
         "core": true,
         "accountPrecision": 1.0,
         "accountRecall": 1.0,
         "groomLenient": true,
         "brideLenient": true,
-        "mismatches": {
-          "thumbnail": "expected one of {https://chung-mo.web.app/eval/builder-01/main.svg}, got \"\""
-        }
+        "mismatches": {}
       }
     },
     {
@@ -1544,10 +1539,7 @@
         "span-split"
       ],
       "crawlMs": 27,
-      "crawlChars": 1418,
-      "modelMs": 5051,
-      "promptTokens": 1181,
-      "outputTokens": 215,
+      "crawlChars": 922,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1555,8 +1547,11 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 732,
+      "outputTokens": 236,
+      "modelMs": 4539,
       "predicted": {
-        "thumbnail": "",
+        "thumbnail": "https://chung-mo.web.app/eval/builder-02/main.svg",
         "groom": "양성민",
         "bride": "최미소",
         "location": "루체스타 웨딩홀 6층 스텔라홀",
@@ -1584,15 +1579,13 @@
         "datetime": true,
         "location": true,
         "accounts": true,
-        "thumbnail": false,
+        "thumbnail": true,
         "core": true,
         "accountPrecision": 1.0,
         "accountRecall": 1.0,
         "groomLenient": true,
         "brideLenient": true,
-        "mismatches": {
-          "thumbnail": "expected one of {https://chung-mo.web.app/eval/builder-02/main.svg}, got \"\""
-        }
+        "mismatches": {}
       }
     },
     {
@@ -1605,11 +1598,8 @@
         "site-builder",
         "span-split"
       ],
-      "crawlMs": 23,
-      "crawlChars": 1288,
-      "modelMs": 3636,
-      "promptTokens": 1068,
-      "outputTokens": 146,
+      "crawlMs": 28,
+      "crawlChars": 869,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1617,11 +1607,14 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 695,
+      "outputTokens": 116,
+      "modelMs": 4231,
       "predicted": {
-        "thumbnail": "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+        "thumbnail": "https://chung-mo.web.app/eval/builder-03/main.svg",
         "groom": "전태호",
         "bride": "홍예지",
-        "location": "더채플앳한강 5층 채플홀, 서울특별시 영등포구 여의대로 88",
+        "location": "더채플앳한강 5층 채플홀",
         "datetime": "2027-02-07T13:30:00+09:00",
         "groomAccounts": [],
         "brideAccounts": []
@@ -1632,15 +1625,13 @@
         "datetime": true,
         "location": true,
         "accounts": true,
-        "thumbnail": false,
+        "thumbnail": true,
         "core": true,
         "accountPrecision": 1.0,
         "accountRecall": 1.0,
         "groomLenient": true,
         "brideLenient": true,
-        "mismatches": {
-          "thumbnail": "expected one of {https://chung-mo.web.app/eval/builder-03/main.svg}, got \"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\""
-        }
+        "mismatches": {}
       }
     },
     {
@@ -1653,45 +1644,78 @@
         "euckr-asp",
         "font-tags"
       ],
-      "crawlMs": 26,
-      "crawlChars": 153,
-      "modelMs": 3162,
-      "promptTokens": 327,
-      "outputTokens": 61,
+      "crawlMs": 31,
+      "crawlChars": 725,
       "coverage": {
-        "groom": false,
-        "bride": false,
-        "date": false,
-        "location": false,
-        "accounts": false
+        "groom": true,
+        "bride": true,
+        "date": true,
+        "location": true,
+        "accounts": true
       },
+      "promptTokens": 701,
+      "outputTokens": 463,
+      "modelMs": 7188,
       "predicted": {
-        "thumbnail": "./main.jpg.svg",
-        "groom": "",
-        "bride": "",
-        "location": "더컨벤션 목동",
-        "datetime": null,
-        "groomAccounts": [],
-        "brideAccounts": []
+        "thumbnail": "https://chung-mo.web.app/eval/euckr-01/main.jpg.svg",
+        "groom": "송태양",
+        "bride": "서유나",
+        "location": "더컨벤션 목동 8층 그레이스홀",
+        "datetime": "2026-11-01T13:30:00+09:00",
+        "groomAccounts": [
+          {
+            "bank": "수협",
+            "number": "169730-90-290061",
+            "holder": "송태양",
+            "relation": "신랑"
+          },
+          {
+            "bank": "하나",
+            "number": "422288-71-329236",
+            "holder": "송경식",
+            "relation": "아버지"
+          },
+          {
+            "bank": "신협",
+            "number": "646315-45-984245",
+            "holder": "최미영",
+            "relation": "어머니"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "대구",
+            "number": "866426-50-570721",
+            "holder": "서유나",
+            "relation": "신부"
+          },
+          {
+            "bank": "신협",
+            "number": "756156-79-770931",
+            "holder": "서상철",
+            "relation": "아버지"
+          },
+          {
+            "bank": "신한",
+            "number": "110-949-645285",
+            "holder": "윤미영",
+            "relation": "어머니"
+          }
+        ]
       },
       "score": {
-        "groom": false,
-        "bride": false,
-        "datetime": false,
+        "groom": true,
+        "bride": true,
+        "datetime": true,
         "location": true,
-        "accounts": false,
+        "accounts": true,
         "thumbnail": true,
-        "core": false,
-        "accountPrecision": 0.0,
-        "accountRecall": 0.0,
-        "groomLenient": false,
-        "brideLenient": false,
-        "mismatches": {
-          "groom": "expected \"송태양\", got \"\"",
-          "bride": "expected \"서유나\", got \"\"",
-          "datetime": "expected \"2026-11-01T13:30:00+09:00\", got \"\"",
-          "accounts": "missing [groom|수협|16973090290061, groom|하나|42228871329236, groom|신협|64631545984245, bride|대구|86642650570721, bride|신협|75615679770931, bride|신한|110949645285], extra []"
-        }
+        "core": true,
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0,
+        "groomLenient": true,
+        "brideLenient": true,
+        "mismatches": {}
       }
     },
     {
@@ -1704,45 +1728,47 @@
         "euckr-asp",
         "nbsp"
       ],
-      "crawlMs": 37,
-      "crawlChars": 153,
-      "modelMs": 3513,
-      "promptTokens": 325,
-      "outputTokens": 60,
+      "crawlMs": 36,
+      "crawlChars": 567,
       "coverage": {
-        "groom": false,
-        "bride": false,
-        "date": false,
-        "location": false,
-        "accounts": false
+        "groom": true,
+        "bride": true,
+        "date": true,
+        "location": true,
+        "accounts": true
       },
+      "promptTokens": 558,
+      "outputTokens": 176,
+      "modelMs": 3805,
       "predicted": {
-        "thumbnail": "./main.jpg.svg",
-        "groom": "",
-        "bride": "",
-        "location": "포레스트 가든",
-        "datetime": null,
-        "groomAccounts": [],
+        "thumbnail": "https://chung-mo.web.app/eval/euckr-02/main.jpg.svg",
+        "groom": "이재현",
+        "bride": "전세영",
+        "location": "포레스트 가든 야외 가든홀",
+        "datetime": "2026-11-14T14:00:00+09:00",
+        "groomAccounts": [
+          {
+            "bank": "하나",
+            "number": "860336-57-991073",
+            "holder": "이재현",
+            "relation": "신랑"
+          }
+        ],
         "brideAccounts": []
       },
       "score": {
-        "groom": false,
-        "bride": false,
-        "datetime": false,
+        "groom": true,
+        "bride": true,
+        "datetime": true,
         "location": true,
-        "accounts": false,
+        "accounts": true,
         "thumbnail": true,
-        "core": false,
-        "accountPrecision": 0.0,
-        "accountRecall": 0.0,
-        "groomLenient": false,
-        "brideLenient": false,
-        "mismatches": {
-          "groom": "expected \"이재현\", got \"\"",
-          "bride": "expected \"전세영\", got \"\"",
-          "datetime": "expected \"2026-11-14T14:00:00+09:00\", got \"\"",
-          "accounts": "missing [groom|하나|86033657991073], extra []"
-        }
+        "core": true,
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0,
+        "groomLenient": true,
+        "brideLenient": true,
+        "mismatches": {}
       }
     },
     {
@@ -1754,45 +1780,54 @@
         "iframe",
         "iframe-embed"
       ],
-      "crawlMs": 24,
-      "crawlChars": 66,
-      "modelMs": 1997,
-      "promptTokens": 266,
-      "outputTokens": 40,
+      "crawlMs": 38,
+      "crawlChars": 1531,
       "coverage": {
         "groom": true,
         "bride": true,
-        "date": false,
-        "location": false,
-        "accounts": false
+        "date": true,
+        "location": true,
+        "accounts": true
       },
+      "promptTokens": 1073,
+      "outputTokens": 250,
+      "modelMs": 5368,
       "predicted": {
-        "thumbnail": "",
+        "thumbnail": "https://chung-mo.web.app/eval/frame-01/main.svg",
         "groom": "서재원",
         "bride": "조지수",
-        "location": "",
-        "datetime": null,
-        "groomAccounts": [],
-        "brideAccounts": []
+        "location": "라온컨벤션 3층 그랜드홀, 서울특별시 강남구 테헤란로 123",
+        "datetime": "2027-04-10T12:00:00+09:00",
+        "groomAccounts": [
+          {
+            "bank": "대구은행",
+            "number": "350808-29-886683",
+            "holder": "서재원",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "농협은행",
+            "number": "342-1583-1698-84",
+            "holder": "조지수",
+            "relation": "신부"
+          }
+        ]
       },
       "score": {
         "groom": true,
         "bride": true,
-        "datetime": false,
-        "location": false,
-        "accounts": false,
-        "thumbnail": false,
-        "core": false,
-        "accountPrecision": 0.0,
-        "accountRecall": 0.0,
+        "datetime": true,
+        "location": true,
+        "accounts": true,
+        "thumbnail": true,
+        "core": true,
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0,
         "groomLenient": true,
         "brideLenient": true,
-        "mismatches": {
-          "datetime": "expected \"2027-04-10T12:00:00+09:00\", got \"\"",
-          "location": "expected keywords [라온컨벤션], got \"\"",
-          "accounts": "missing [groom|대구|35080829886683, bride|농협|3421583169884], extra []",
-          "thumbnail": "expected one of {https://chung-mo.web.app/eval/frame-01/main.svg}, got \"\""
-        }
+        "mismatches": {}
       }
     },
     {
@@ -1804,44 +1839,40 @@
         "iframe",
         "iframe-embed"
       ],
-      "crawlMs": 23,
-      "crawlChars": 66,
-      "modelMs": 2043,
-      "promptTokens": 266,
-      "outputTokens": 40,
+      "crawlMs": 21,
+      "crawlChars": 1452,
       "coverage": {
         "groom": true,
         "bride": true,
-        "date": false,
-        "location": false,
+        "date": true,
+        "location": true,
         "accounts": true
       },
+      "promptTokens": 1004,
+      "outputTokens": 100,
+      "modelMs": 3824,
       "predicted": {
-        "thumbnail": "",
+        "thumbnail": "https://chung-mo.web.app/eval/frame-02/main.svg",
         "groom": "허민준",
         "bride": "송서현",
-        "location": "",
-        "datetime": null,
+        "location": "울산 로얄호텔 3층 그랜드볼룸",
+        "datetime": "2027-04-11T12:30:00+09:00",
         "groomAccounts": [],
         "brideAccounts": []
       },
       "score": {
         "groom": true,
         "bride": true,
-        "datetime": false,
-        "location": false,
+        "datetime": true,
+        "location": true,
         "accounts": true,
-        "thumbnail": false,
-        "core": false,
+        "thumbnail": true,
+        "core": true,
         "accountPrecision": 1.0,
         "accountRecall": 1.0,
         "groomLenient": true,
         "brideLenient": true,
-        "mismatches": {
-          "datetime": "expected \"2027-04-11T12:30:00+09:00\", got \"\"",
-          "location": "expected keywords [울산 로얄호텔], got \"\"",
-          "thumbnail": "expected one of {https://chung-mo.web.app/eval/frame-02/main.svg}, got \"\""
-        }
+        "mismatches": {}
       }
     },
     {
@@ -1854,11 +1885,8 @@
         "classic-jquery",
         "inline-js-korean"
       ],
-      "crawlMs": 56,
-      "crawlChars": 3267,
-      "modelMs": 8134,
-      "promptTokens": 2380,
-      "outputTokens": 448,
+      "crawlMs": 44,
+      "crawlChars": 1808,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1866,8 +1894,11 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 1240,
+      "outputTokens": 466,
+      "modelMs": 6981,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/hanul-01/main.svg",
         "groom": "전형준",
         "bride": "신예은",
         "location": "호텔 라비앙 2층 크리스탈볼룸",
@@ -1938,11 +1969,8 @@
         "classic-jquery",
         "gallery-captions"
       ],
-      "crawlMs": 44,
-      "crawlChars": 2458,
-      "modelMs": 5294,
-      "promptTokens": 1900,
-      "outputTokens": 222,
+      "crawlMs": 54,
+      "crawlChars": 1321,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1950,8 +1978,11 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 1046,
+      "outputTokens": 240,
+      "modelMs": 5863,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/hanul-02/main.svg",
         "groom": "남건우",
         "bride": "배다은",
         "location": "루미에르 웨딩 2층 루미에르홀",
@@ -1997,11 +2028,8 @@
         "classic-jquery",
         "short-link"
       ],
-      "crawlMs": 74,
-      "crawlChars": 2470,
-      "modelMs": 8671,
-      "promptTokens": 1879,
-      "outputTokens": 333,
+      "crawlMs": 57,
+      "crawlChars": 1270,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2009,8 +2037,11 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 986,
+      "outputTokens": 351,
+      "modelMs": 7703,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/hanul-03/main.svg",
         "groom": "송도윤",
         "bride": "전수빈",
         "location": "더파티움 안양 9층 파티움홀",
@@ -2069,11 +2100,8 @@
         "countdown",
         "no-year"
       ],
-      "crawlMs": 30,
-      "crawlChars": 2247,
-      "modelMs": 9478,
-      "promptTokens": 1671,
-      "outputTokens": 197,
+      "crawlMs": 24,
+      "crawlChars": 1234,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2081,11 +2109,14 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 946,
+      "outputTokens": 227,
+      "modelMs": 5919,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/hanul-04/main.svg",
         "groom": "심영훈",
         "bride": "남민서",
-        "location": "아펠가모 광화문 4층 라포레홀",
+        "location": "아펠가모 광화문 4층 라포레홀 (서울특별시 종로구 종로1길 50)",
         "datetime": null,
         "groomAccounts": [
           {
@@ -2130,11 +2161,8 @@
         "classic-jquery",
         "no-date"
       ],
-      "crawlMs": 21,
-      "crawlChars": 2168,
-      "modelMs": 4736,
-      "promptTokens": 1596,
-      "outputTokens": 208,
+      "crawlMs": 22,
+      "crawlChars": 1173,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2142,11 +2170,14 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 891,
+      "outputTokens": 211,
+      "modelMs": 6019,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/hanul-05/main.svg",
         "groom": "서지훈",
         "bride": "권지우",
-        "location": "노블레스 웨딩 7층 노블홀, 부산광역시 해운대구 센텀중앙로 55",
+        "location": "노블레스 웨딩 7층 노블홀",
         "datetime": null,
         "groomAccounts": [
           {
@@ -2188,11 +2219,8 @@
       "tags": [
         "image-only"
       ],
-      "crawlMs": 24,
-      "crawlChars": 211,
-      "modelMs": 3755,
-      "promptTokens": 316,
-      "outputTokens": 40,
+      "crawlMs": 18,
+      "crawlChars": 624,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2200,8 +2228,11 @@
         "location": false,
         "accounts": false
       },
+      "promptTokens": 495,
+      "outputTokens": 77,
+      "modelMs": 3543,
       "predicted": {
-        "thumbnail": "",
+        "thumbnail": "https://chung-mo.web.app/eval/img-01/main.svg",
         "groom": "유서준",
         "bride": "허서윤",
         "location": "",
@@ -2215,7 +2246,7 @@
         "datetime": false,
         "location": false,
         "accounts": false,
-        "thumbnail": false,
+        "thumbnail": true,
         "core": false,
         "accountPrecision": 0.0,
         "accountRecall": 0.0,
@@ -2224,8 +2255,7 @@
         "mismatches": {
           "datetime": "expected \"2027-04-25T13:00:00+09:00\", got \"\"",
           "location": "expected keywords [빌라드지디 수서], got \"\"",
-          "accounts": "missing [groom|토스뱅크|100048224645, bride|케이뱅크|100623762698], extra []",
-          "thumbnail": "expected one of {https://chung-mo.web.app/eval/img-01/main.svg}, got \"\""
+          "accounts": "missing [groom|토스뱅크|100048224645, bride|케이뱅크|100623762698], extra []"
         }
       }
     },
@@ -2237,11 +2267,8 @@
       "tags": [
         "image-only"
       ],
-      "crawlMs": 21,
-      "crawlChars": 211,
-      "modelMs": 2400,
-      "promptTokens": 316,
-      "outputTokens": 60,
+      "crawlMs": 18,
+      "crawlChars": 624,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2249,8 +2276,11 @@
         "location": false,
         "accounts": true
       },
+      "promptTokens": 495,
+      "outputTokens": 77,
+      "modelMs": 2717,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/img-02/main.svg",
         "groom": "정지환",
         "bride": "허예린",
         "location": "",
@@ -2285,11 +2315,8 @@
         "english",
         "english-intl"
       ],
-      "crawlMs": 21,
-      "crawlChars": 613,
-      "modelMs": 3130,
-      "promptTokens": 511,
-      "outputTokens": 97,
+      "crawlMs": 23,
+      "crawlChars": 814,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2297,8 +2324,11 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 574,
+      "outputTokens": 130,
+      "modelMs": 3739,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/intl-01/main.svg",
         "groom": "Siwoo Hong",
         "bride": "Suyeon Son",
         "location": "헤리움 아트홀, 5층 오페라홀 인천광역시 연수구 센트럴로 194",
@@ -2331,11 +2361,8 @@
         "english-intl",
         "mixed-language"
       ],
-      "crawlMs": 21,
-      "crawlChars": 995,
-      "modelMs": 5578,
-      "promptTokens": 765,
-      "outputTokens": 182,
+      "crawlMs": 24,
+      "crawlChars": 1004,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2343,11 +2370,14 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 693,
+      "outputTokens": 256,
+      "modelMs": 4621,
       "predicted": {
-        "thumbnail": "",
-        "groom": "백성훈",
-        "bride": "전하람",
-        "location": "루체스타 웨딩홀, 6층 스텔라홀 경기도 성남시 분당구 판교역로 210",
+        "thumbnail": "https://chung-mo.web.app/eval/intl-02/main.svg",
+        "groom": "Sunghoon Baek",
+        "bride": "Haram Jeon",
+        "location": "루체스타 웨딩홀 6층 스텔라홀, 경기도 성남시 분당구 판교역로 210",
         "datetime": "2027-07-03T18:00:00+09:00",
         "groomAccounts": [
           {
@@ -2372,15 +2402,13 @@
         "datetime": true,
         "location": true,
         "accounts": true,
-        "thumbnail": false,
+        "thumbnail": true,
         "core": true,
         "accountPrecision": 1.0,
         "accountRecall": 1.0,
         "groomLenient": true,
         "brideLenient": true,
-        "mismatches": {
-          "thumbnail": "expected one of {https://chung-mo.web.app/eval/intl-02/main.svg}, got \"\""
-        }
+        "mismatches": {}
       }
     },
     {
@@ -2393,11 +2421,8 @@
         "hidden-accounts",
         "kakao-card"
       ],
-      "crawlMs": 125,
-      "crawlChars": 1519,
-      "modelMs": 5868,
-      "promptTokens": 1403,
-      "outputTokens": 447,
+      "crawlMs": 22,
+      "crawlChars": 850,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2405,8 +2430,11 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 802,
+      "outputTokens": 465,
+      "modelMs": 7478,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/kakao-01/main.svg",
         "groom": "강유찬",
         "bride": "조주하",
         "location": "메종드블랑 2층 로즈홀",
@@ -2477,11 +2505,8 @@
         "kakao-card",
         "short-link"
       ],
-      "crawlMs": 36,
-      "crawlChars": 822,
-      "modelMs": 4523,
-      "promptTokens": 867,
-      "outputTokens": 234,
+      "crawlMs": 30,
+      "crawlChars": 644,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2489,11 +2514,14 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 649,
+      "outputTokens": 240,
+      "modelMs": 5995,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/kakao-02/main.svg",
         "groom": "장서진",
         "bride": "정지아",
-        "location": "스칼라티움 강남 4층 아트홀 (서울특별시 강남구 논현로 508)",
+        "location": "스칼라티움 강남 4층 아트홀",
         "datetime": "2027-05-30T15:00:00+09:00",
         "groomAccounts": [
           {
@@ -2536,11 +2564,8 @@
         "hidden-accounts",
         "kakao-card"
       ],
-      "crawlMs": 24,
-      "crawlChars": 508,
-      "modelMs": 3038,
-      "promptTokens": 582,
-      "outputTokens": 98,
+      "crawlMs": 18,
+      "crawlChars": 562,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2548,11 +2573,14 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 571,
+      "outputTokens": 119,
+      "modelMs": 4548,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/kakao-03/main.svg",
         "groom": "손지호",
         "bride": "김민지",
-        "location": "그랜드힐 컨벤션 3층 다이아몬드홀, 서울특별시 송파구 올림픽로 300",
+        "location": "그랜드힐 컨벤션 3층 다이아몬드홀",
         "datetime": "2027-06-20T16:00:00+09:00",
         "groomAccounts": [],
         "brideAccounts": []
@@ -2583,10 +2611,7 @@
         "nextjs-ssr"
       ],
       "crawlMs": 23,
-      "crawlChars": 2432,
-      "modelMs": 6473,
-      "promptTokens": 1724,
-      "outputTokens": 346,
+      "crawlChars": 2244,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2594,8 +2619,11 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 1423,
+      "outputTokens": 471,
+      "modelMs": 9297,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/nextcard-01/main.svg",
         "groom": "유하준",
         "bride": "남가은",
         "location": "세인트메리 성당 대성전 서울특별시 중구 명동길 74",
@@ -2667,11 +2695,8 @@
         "next-data",
         "nextjs-ssr"
       ],
-      "crawlMs": 21,
-      "crawlChars": 1865,
-      "modelMs": 6569,
-      "promptTokens": 1351,
-      "outputTokens": 220,
+      "crawlMs": 19,
+      "crawlChars": 1808,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2679,11 +2704,14 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 1190,
+      "outputTokens": 252,
+      "modelMs": 8727,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/nextcard-02/main.svg",
         "groom": "정수호",
         "bride": "서혜진",
-        "location": "라온컨벤션 3층 그랜드홀",
+        "location": "라온컨벤션 3층 그랜드홀, 서울특별시 강남구 테헤란로 123",
         "datetime": "2026-12-05T18:00:00+09:00",
         "groomAccounts": [
           {
@@ -2727,11 +2755,8 @@
         "next-data",
         "nextjs-ssr"
       ],
-      "crawlMs": 26,
-      "crawlChars": 1549,
-      "modelMs": 5112,
-      "promptTokens": 1106,
-      "outputTokens": 154,
+      "crawlMs": 23,
+      "crawlChars": 1654,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2739,11 +2764,14 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 1070,
+      "outputTokens": 189,
+      "modelMs": 5086,
       "predicted": {
-        "thumbnail": "",
+        "thumbnail": "https://chung-mo.web.app/eval/nextcard-03/main.svg",
         "groom": "배승민",
         "bride": "남지유",
-        "location": "울산 로얄호텔 3층 그랜드볼룸",
+        "location": "울산 로얄호텔 3층 그랜드볼룸 (울산광역시 남구 삼산로 300)",
         "datetime": "2026-12-06T12:30:00+09:00",
         "groomAccounts": [],
         "brideAccounts": [
@@ -2761,15 +2789,13 @@
         "datetime": true,
         "location": true,
         "accounts": true,
-        "thumbnail": false,
+        "thumbnail": true,
         "core": true,
         "accountPrecision": 1.0,
         "accountRecall": 1.0,
         "groomLenient": true,
         "brideLenient": true,
-        "mismatches": {
-          "thumbnail": "expected one of {https://chung-mo.web.app/eval/nextcard-03/main.svg}, got \"\""
-        }
+        "mismatches": {}
       }
     },
     {
@@ -2782,11 +2808,8 @@
         "nuxt-ssr",
         "scoped-attrs"
       ],
-      "crawlMs": 26,
-      "crawlChars": 1823,
-      "modelMs": 6242,
-      "promptTokens": 1337,
-      "outputTokens": 334,
+      "crawlMs": 16,
+      "crawlChars": 1598,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2794,8 +2817,11 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 1088,
+      "outputTokens": 352,
+      "modelMs": 6768,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/nuxtcard-01/main.svg",
         "groom": "권승현",
         "bride": "홍현지",
         "location": "스칼라티움 강남 4층 아트홀",
@@ -2854,11 +2880,8 @@
         "nuxt-ssr",
         "scoped-attrs"
       ],
-      "crawlMs": 27,
-      "crawlChars": 1466,
-      "modelMs": 5263,
-      "promptTokens": 1106,
-      "outputTokens": 224,
+      "crawlMs": 22,
+      "crawlChars": 1368,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2866,8 +2889,11 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 954,
+      "outputTokens": 191,
+      "modelMs": 7175,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/nuxtcard-02/main.svg",
         "groom": "신연우",
         "bride": "남다혜",
         "location": "그랜드힐 컨벤션 3층 다이아몬드홀",
@@ -2914,11 +2940,8 @@
         "split-numerals",
         "styled-react"
       ],
-      "crawlMs": 26,
-      "crawlChars": 1002,
-      "modelMs": 4217,
-      "promptTokens": 911,
-      "outputTokens": 233,
+      "crawlMs": 20,
+      "crawlChars": 782,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2926,11 +2949,14 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 666,
+      "outputTokens": 250,
+      "modelMs": 4881,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/sc-01/main.svg",
         "groom": "정정우",
         "bride": "양은서",
-        "location": "아펠가모 광화문 4층 라포레홀 서울특별시 종로구 종로1길 50",
+        "location": "아펠가모 광화문 4층 라포레홀 (서울특별시 종로구 종로1길 50)",
         "datetime": "2027-02-21T17:30:00+09:00",
         "groomAccounts": [
           {
@@ -2974,11 +3000,8 @@
         "split-numerals",
         "styled-react"
       ],
-      "crawlMs": 25,
-      "crawlChars": 1325,
-      "modelMs": 6474,
-      "promptTokens": 1181,
-      "outputTokens": 464,
+      "crawlMs": 22,
+      "crawlChars": 898,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2986,11 +3009,14 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 761,
+      "outputTokens": 300,
+      "modelMs": 7310,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/sc-02/main.svg",
         "groom": "심상우",
         "bride": "오나연",
-        "location": "노블레스 웨딩 7층 노블홀 부산광역시 해운대구 센텀중앙로 550",
+        "location": "노블레스 웨딩 7층 노블홀",
         "datetime": "2027-03-06T18:00:00+09:00",
         "groomAccounts": [
           {
@@ -3058,11 +3084,8 @@
         "notion-export",
         "self-made"
       ],
-      "crawlMs": 21,
-      "crawlChars": 876,
-      "modelMs": 4971,
-      "promptTokens": 811,
-      "outputTokens": 230,
+      "crawlMs": 20,
+      "crawlChars": 816,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -3070,11 +3093,14 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 700,
+      "outputTokens": 235,
+      "modelMs": 4707,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/self-01/main.svg",
         "groom": "김준혁",
         "bride": "박채원",
-        "location": "더채플앳한강 5층 채플홀 서울특별시 영등포구 여의대로 88",
+        "location": "더채플앳한강 5층 채플홀",
         "datetime": "2026-10-09T12:30:00+09:00",
         "groomAccounts": [
           {
@@ -3118,44 +3144,41 @@
         "csr-shell",
         "og-only"
       ],
-      "crawlMs": 16,
-      "crawlChars": 15,
-      "modelMs": 2005,
-      "promptTokens": 240,
-      "outputTokens": 56,
+      "crawlMs": 26,
+      "crawlChars": 235,
       "coverage": {
         "groom": true,
         "bride": true,
-        "date": false,
-        "location": false,
+        "date": true,
+        "location": true,
         "accounts": false
       },
+      "promptTokens": 355,
+      "outputTokens": 100,
+      "modelMs": 3238,
       "predicted": {
-        "thumbnail": "",
+        "thumbnail": "https://chung-mo.web.app/eval/spa-01/main.svg",
         "groom": "고진우",
         "bride": "심하윤",
-        "location": "",
-        "datetime": null,
+        "location": "빌라드지디 수서 1층 가든홀",
+        "datetime": "2026-12-27T13:30:00+09:00",
         "groomAccounts": [],
         "brideAccounts": []
       },
       "score": {
         "groom": true,
         "bride": true,
-        "datetime": false,
-        "location": false,
+        "datetime": true,
+        "location": true,
         "accounts": false,
-        "thumbnail": false,
+        "thumbnail": true,
         "core": false,
         "accountPrecision": 0.0,
         "accountRecall": 0.0,
         "groomLenient": true,
         "brideLenient": true,
         "mismatches": {
-          "datetime": "expected \"2026-12-27T13:30:00+09:00\", got \"\"",
-          "location": "expected keywords [빌라드지디 수서], got \"\"",
-          "accounts": "missing [groom|부산|27106841392679, bride|수협|54107582985324], extra []",
-          "thumbnail": "expected one of {https://chung-mo.web.app/eval/spa-01/main.svg}, got \"\""
+          "accounts": "missing [groom|부산|27106841392679, bride|수협|54107582985324], extra []"
         }
       }
     },
@@ -3169,44 +3192,41 @@
         "csr-shell",
         "og-only"
       ],
-      "crawlMs": 18,
-      "crawlChars": 15,
-      "modelMs": 1823,
-      "promptTokens": 240,
-      "outputTokens": 56,
+      "crawlMs": 25,
+      "crawlChars": 230,
       "coverage": {
         "groom": true,
         "bride": true,
-        "date": false,
-        "location": false,
+        "date": true,
+        "location": true,
         "accounts": false
       },
+      "promptTokens": 352,
+      "outputTokens": 101,
+      "modelMs": 3543,
       "predicted": {
-        "thumbnail": "",
+        "thumbnail": "https://chung-mo.web.app/eval/spa-02/main.svg",
         "groom": "권명호",
         "bride": "윤윤서",
-        "location": "",
-        "datetime": null,
+        "location": "엘리시안 컨벤션 6층 사파이어홀",
+        "datetime": "2027-01-02T11:00:00+09:00",
         "groomAccounts": [],
         "brideAccounts": []
       },
       "score": {
         "groom": true,
         "bride": true,
-        "datetime": false,
-        "location": false,
+        "datetime": true,
+        "location": true,
         "accounts": false,
-        "thumbnail": false,
+        "thumbnail": true,
         "core": false,
         "accountPrecision": 0.0,
         "accountRecall": 0.0,
         "groomLenient": true,
         "brideLenient": true,
         "mismatches": {
-          "datetime": "expected \"2027-01-02T11:00:00+09:00\", got \"\"",
-          "location": "expected keywords [엘리시안 컨벤션], got \"\"",
-          "accounts": "missing [groom|우리|94442488455348, groom|신한|110244815862, groom|카카오뱅크|3333214389560, bride|하나|91755377119108, bride|카카오뱅크|3333745988127, bride|신한|110965185509], extra []",
-          "thumbnail": "expected one of {https://chung-mo.web.app/eval/spa-02/main.svg}, got \"\""
+          "accounts": "missing [groom|우리|94442488455348, groom|신한|110244815862, groom|카카오뱅크|3333214389560, bride|하나|91755377119108, bride|카카오뱅크|3333745988127, bride|신한|110965185509], extra []"
         }
       }
     },
@@ -3220,44 +3240,40 @@
         "csr-shell",
         "og-only"
       ],
-      "crawlMs": 23,
-      "crawlChars": 15,
-      "modelMs": 1672,
-      "promptTokens": 240,
-      "outputTokens": 56,
+      "crawlMs": 19,
+      "crawlChars": 227,
       "coverage": {
         "groom": true,
         "bride": true,
-        "date": false,
-        "location": false,
+        "date": true,
+        "location": true,
         "accounts": true
       },
+      "promptTokens": 347,
+      "outputTokens": 114,
+      "modelMs": 3511,
       "predicted": {
-        "thumbnail": "",
+        "thumbnail": "https://chung-mo.web.app/eval/spa-03/main.svg",
         "groom": "배우진",
         "bride": "전수아",
-        "location": "",
-        "datetime": null,
+        "location": "메종드블랑 2층 로즈홀",
+        "datetime": "2027-01-03T11:00:00+09:00",
         "groomAccounts": [],
         "brideAccounts": []
       },
       "score": {
         "groom": true,
         "bride": true,
-        "datetime": false,
-        "location": false,
+        "datetime": true,
+        "location": true,
         "accounts": true,
-        "thumbnail": false,
-        "core": false,
+        "thumbnail": true,
+        "core": true,
         "accountPrecision": 1.0,
         "accountRecall": 1.0,
         "groomLenient": true,
         "brideLenient": true,
-        "mismatches": {
-          "datetime": "expected \"2027-01-03T11:00:00+09:00\", got \"\"",
-          "location": "expected keywords [메종드블랑], got \"\"",
-          "thumbnail": "expected one of {https://chung-mo.web.app/eval/spa-03/main.svg}, got \"\""
-        }
+        "mismatches": {}
       }
     },
     {
@@ -3269,43 +3285,54 @@
         "table-legacy",
         "table-only"
       ],
-      "crawlMs": 31,
-      "crawlChars": 121,
-      "modelMs": 2150,
-      "promptTokens": 288,
-      "outputTokens": 67,
+      "crawlMs": 27,
+      "crawlChars": 675,
       "coverage": {
         "groom": true,
         "bride": true,
-        "date": false,
+        "date": true,
         "location": true,
-        "accounts": false
+        "accounts": true
       },
+      "promptTokens": 664,
+      "outputTokens": 239,
+      "modelMs": 5252,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/table-01/main.svg",
         "groom": "서원준",
         "bride": "최지민",
-        "location": "W웨딩홀 대전",
-        "datetime": null,
-        "groomAccounts": [],
-        "brideAccounts": []
+        "location": "W웨딩홀 대전 3층 파티오홀",
+        "datetime": "2026-11-15T15:00:00+09:00",
+        "groomAccounts": [
+          {
+            "bank": "우체국",
+            "number": "48787-31-795505",
+            "holder": "서원준",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "새마을금고",
+            "number": "205237-80-949506",
+            "holder": "최지민",
+            "relation": "신부"
+          }
+        ]
       },
       "score": {
         "groom": true,
         "bride": true,
-        "datetime": false,
+        "datetime": true,
         "location": true,
-        "accounts": false,
+        "accounts": true,
         "thumbnail": true,
-        "core": false,
-        "accountPrecision": 0.0,
-        "accountRecall": 0.0,
+        "core": true,
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0,
         "groomLenient": true,
         "brideLenient": true,
-        "mismatches": {
-          "datetime": "expected \"2026-11-15T15:00:00+09:00\", got \"\"",
-          "accounts": "missing [groom|우체국|4878731795505, bride|새마을금고|20523780949506], extra []"
-        }
+        "mismatches": {}
       }
     },
     {
@@ -3317,42 +3344,40 @@
         "table-legacy",
         "table-only"
       ],
-      "crawlMs": 22,
-      "crawlChars": 125,
-      "modelMs": 3351,
-      "promptTokens": 291,
-      "outputTokens": 54,
+      "crawlMs": 20,
+      "crawlChars": 605,
       "coverage": {
         "groom": true,
         "bride": true,
-        "date": false,
+        "date": true,
         "location": true,
         "accounts": true
       },
+      "promptTokens": 602,
+      "outputTokens": 90,
+      "modelMs": 3914,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/table-02/main.svg",
         "groom": "박선우",
         "bride": "신유진",
-        "location": "제주 오션블루 리조트",
-        "datetime": null,
+        "location": "제주 오션블루 리조트 1층 오션홀",
+        "datetime": "2026-11-21T16:00:00+09:00",
         "groomAccounts": [],
         "brideAccounts": []
       },
       "score": {
         "groom": true,
         "bride": true,
-        "datetime": false,
+        "datetime": true,
         "location": true,
         "accounts": true,
         "thumbnail": true,
-        "core": false,
+        "core": true,
         "accountPrecision": 1.0,
         "accountRecall": 1.0,
         "groomLenient": true,
         "brideLenient": true,
-        "mismatches": {
-          "datetime": "expected \"2026-11-21T16:00:00+09:00\", got \"\""
-        }
+        "mismatches": {}
       }
     },
     {
@@ -3367,23 +3392,23 @@
         "picture-srcset",
         "tailwind-semantic"
       ],
-      "crawlMs": 22,
-      "crawlChars": 1008,
-      "modelMs": 6088,
-      "promptTokens": 826,
-      "outputTokens": 466,
+      "crawlMs": 28,
+      "crawlChars": 1440,
       "coverage": {
         "groom": true,
         "bride": true,
-        "date": false,
+        "date": true,
         "location": true,
         "accounts": true
       },
+      "promptTokens": 1038,
+      "outputTokens": 481,
+      "modelMs": 6948,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/tw-01/main.svg",
         "groom": "문준서",
         "bride": "송소희",
-        "location": "호텔 라비앙 2층 크리스탈볼룸",
+        "location": "호텔 라비앙 2층 크리스탈볼룸 (대구광역시 수성구 동대구로 111)",
         "datetime": "2027-02-13T14:00:00+09:00",
         "groomAccounts": [
           {
@@ -3451,23 +3476,23 @@
         "json-ld",
         "tailwind-semantic"
       ],
-      "crawlMs": 21,
-      "crawlChars": 814,
-      "modelMs": 4035,
-      "promptTokens": 679,
-      "outputTokens": 251,
+      "crawlMs": 27,
+      "crawlChars": 1251,
       "coverage": {
         "groom": true,
         "bride": true,
-        "date": false,
+        "date": true,
         "location": true,
         "accounts": true
       },
+      "promptTokens": 900,
+      "outputTokens": 237,
+      "modelMs": 7442,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/tw-02/main.svg",
         "groom": "권동현",
         "bride": "박가영",
-        "location": "루미에르 웨딩 2층 루미에르홀 (광주광역시 서구 상무중앙로 66)",
+        "location": "루미에르 웨딩 2층 루미에르홀",
         "datetime": "2027-02-14T15:00:00+09:00",
         "groomAccounts": [
           {
@@ -3511,11 +3536,8 @@
         "no-date",
         "tailwind-semantic"
       ],
-      "crawlMs": 28,
-      "crawlChars": 898,
-      "modelMs": 5254,
-      "promptTokens": 732,
-      "outputTokens": 295,
+      "crawlMs": 23,
+      "crawlChars": 1303,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -3523,6 +3545,9 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 917,
+      "outputTokens": 249,
+      "modelMs": 8675,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/tw-03/main.svg",
         "groom": "윤찬영",
@@ -3583,11 +3608,8 @@
         "time-element",
         "wordpress-theme"
       ],
-      "crawlMs": 27,
-      "crawlChars": 1757,
-      "modelMs": 5249,
-      "promptTokens": 1448,
-      "outputTokens": 234,
+      "crawlMs": 28,
+      "crawlChars": 1255,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -3595,11 +3617,14 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 989,
+      "outputTokens": 238,
+      "modelMs": 6424,
       "predicted": {
-        "thumbnail": "./main.svg",
+        "thumbnail": "https://chung-mo.web.app/eval/wp-01/main.svg",
         "groom": "남규민",
         "bride": "조소율",
-        "location": "더컨벤션 목동 8층 그레이스홀 서울특별시 양천구 목동동로 233",
+        "location": "더컨벤션 목동 8층 그레이스홀",
         "datetime": "2027-03-13T12:30:00+09:00",
         "groomAccounts": [
           {
@@ -3643,11 +3668,8 @@
         "time-element",
         "wordpress-theme"
       ],
-      "crawlMs": 19,
-      "crawlChars": 1897,
-      "modelMs": 6796,
-      "promptTokens": 1561,
-      "outputTokens": 327,
+      "crawlMs": 23,
+      "crawlChars": 1296,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -3655,10 +3677,13 @@
         "location": true,
         "accounts": true
       },
+      "promptTokens": 1023,
+      "outputTokens": 346,
+      "modelMs": 7120,
       "predicted": {
-        "thumbnail": "./main.svg",
-        "groom": "민석",
-        "bride": "지원",
+        "thumbnail": "https://chung-mo.web.app/eval/wp-02/main.svg",
+        "groom": "이민석",
+        "bride": "김지원",
         "location": "포레스트 가든 야외 가든홀",
         "datetime": "2027-03-14T13:30:00+09:00",
         "groomAccounts": [
@@ -3691,21 +3716,18 @@
         ]
       },
       "score": {
-        "groom": false,
-        "bride": false,
+        "groom": true,
+        "bride": true,
         "datetime": true,
         "location": true,
         "accounts": true,
         "thumbnail": true,
-        "core": false,
+        "core": true,
         "accountPrecision": 1.0,
         "accountRecall": 1.0,
         "groomLenient": true,
         "brideLenient": true,
-        "mismatches": {
-          "groom": "expected \"이민석\", got \"민석\"",
-          "bride": "expected \"김지원\", got \"지원\""
-        }
+        "mismatches": {}
       }
     }
   ]
