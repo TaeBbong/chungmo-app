@@ -32,6 +32,8 @@ sheet — no link required.
 - **Fixed**
   - Calendar month swipes no longer stutter (removed a full calendar remount on every state change).
   - Returning to the home screen no longer re-summons the keyboard; tapping the background dismisses it.
+- **Deployment**
+  - Released on both Google Play and the App Store (2026-09-08).
 
 ---
 
