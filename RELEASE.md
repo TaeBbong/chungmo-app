@@ -8,6 +8,33 @@ This file documents the main changes for each release.
 
 ---
 
+### Version 2.0.0+8 (2026-09-08)
+
+A major update: the app grows from a link parser into an AI wedding assistant.
+Invitations can now be registered from images, plain text, or the OS share
+sheet — no link required.
+
+- **Added**
+  - Image invitation parsing: analyze a 카톡 capture or photo of an invitation with Gemini multimodal input (gallery pick + camera).
+  - Text invitation parsing: paste an invitation SMS/message and parse it without a link.
+  - OS share sheet integration: share a link, image, or text from other apps straight into 청모 (Android Share Intent / iOS Share Extension).
+  - AI gift money recommendation: suggests an amount from the relationship, your past records, and public survey data, with a dedicated attendance/gift record page.
+  - Gift money statistics dashboard: yearly and per-relation charts of amounts given and received.
+  - Home screen widget (Android/iOS): D-day for the next wedding with the invitation photo as background, rolling over at midnight.
+  - Manual schedule entry, and a fallback form pre-filled with partially parsed fields when the invitation has no date.
+  - Device calendar hand-off: register a saved schedule into the OS calendar.
+  - Redesigned onboarding: intro carousel plus a versioned coach-mark tour, replayable from settings.
+- **Changed**
+  - Structured output (`responseJsonSchema`) is enforced for all parsers sharing one schema.
+  - App-wide micro-interaction polish: motion tokens, pressed feedback, count-up statistics, haptics, and smoother transitions.
+  - Image preprocessing and hashing moved to isolates; uploads shrink from ~487KB to ~65KB and the UI stays at 60fps.
+  - The iOS paste permission popup appears only when actually pasting.
+- **Fixed**
+  - Calendar month swipes no longer stutter (removed a full calendar remount on every state change).
+  - Returning to the home screen no longer re-summons the keyboard; tapping the background dismisses it.
+
+---
+
 ### Version 1.3.1+7 (2026-08-26)
 
 - **Added**
