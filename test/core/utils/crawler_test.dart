@@ -1,7 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:chungmo/core/utils/crawler.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 
 void main() {
   final base = Uri.parse('https://vendor.example/card/abc/');
@@ -95,10 +99,66 @@ void main() {
       expect(text, isNot(contains('display:none')));
     });
 
+    test('resolves relative URLs against <base href> when present', () {
+      final result = extractContentFromHtml('''
+<html><head><base href="https://cdn.vendor.example/cards/xyz/">
+<meta property="og:image" content="cover.jpg"></head>
+<body><img src="photos/1.jpg"><iframe src="frame.html"></iframe></body></html>''',
+          base);
+      expect(
+          result.text,
+          contains(
+              '[META] og:image → https://cdn.vendor.example/cards/xyz/cover.jpg'));
+      expect(
+          result.text,
+          contains(
+              '[IMAGE] https://cdn.vendor.example/cards/xyz/photos/1.jpg'));
+      expect(result.iframes.single.toString(),
+          'https://cdn.vendor.example/cards/xyz/frame.html');
+    });
+
     test('keeps text hidden by inline styles (modals, toggled accounts)', () {
       final text = extract(
           '<div style="display:none"><p>신한 110-123-456789 예금주 이서연</p></div>');
       expect(text, contains('신한 110-123-456789 예금주 이서연'));
+    });
+  });
+
+  group('fetchPage', () {
+    test('follows redirects by hand and reports the final URL', () async {
+      final client = MockClient((request) async {
+        if (request.url.path == '/s/abc') {
+          return http.Response('', 301, headers: {'location': '/card/real/'});
+        }
+        return http.Response('<p>안녕</p>', 200,
+            headers: {'content-type': 'text/html; charset=utf-8'});
+      });
+      final page =
+          await fetchPage('https://vendor.example/s/abc', client: client);
+      expect(page!.finalUri.toString(), 'https://vendor.example/card/real/');
+      expect(page.html, '<p>안녕</p>');
+    });
+
+    test('gives up on a body stream that never closes', () async {
+      final controller = StreamController<List<int>>();
+      controller.add(utf8.encode('<p>partial'));
+      final client = MockClient.streaming((request, body) async =>
+          http.StreamedResponse(controller.stream, 200,
+              headers: {'content-type': 'text/html; charset=utf-8'}));
+      final page = await fetchPage('https://vendor.example/hang',
+          client: client, timeout: const Duration(milliseconds: 200));
+      expect(page, isNull);
+      await controller.close();
+    });
+
+    test('returns null for non-200 responses and network errors', () async {
+      final notFound = MockClient((_) async => http.Response('nope', 404));
+      expect(await fetchPage('https://vendor.example/x', client: notFound),
+          isNull);
+      final failing =
+          MockClient((_) async => throw const SocketException('down'));
+      expect(
+          await fetchPage('https://vendor.example/x', client: failing), isNull);
     });
   });
 

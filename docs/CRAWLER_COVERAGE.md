@@ -131,6 +131,11 @@ The decoder is checked against reference vectors — symbols, common
 syllables, extension syllables such as 뷁, Hanja and 300 random syllables
 encoded by Python — in `test/core/utils/euc_kr_test.dart`.
 
+Error recovery follows the WHATWG `euc-kr` decoder rather than Python's:
+an invalid or unassigned pair becomes one U+FFFD, and the trail byte is
+re-read only when it is ASCII. That is what the user's browser renders for
+the same bytes, which is the ground truth the eval set is built on.
+
 ---
 
 ## 4. Concept: the final URL is the base URL

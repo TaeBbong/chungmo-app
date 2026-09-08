@@ -31,13 +31,22 @@ class FetchedPage {
 }
 
 const int _maxRedirects = 5;
-const Duration _timeout = Duration(seconds: 15);
+const Duration _defaultTimeout = Duration(seconds: 15);
+
+/// Upper bound on a page body; anything past it is dropped. Invitation
+/// pages are tens of KB, so this only guards against a misbehaving host.
+const int _maxBodyBytes = 4 << 20;
 
 /// Fetches [url], following up to five redirects by hand so that the final
 /// URL is known — relative image and iframe URLs resolve against it, and a
 /// vendor's short link is not the page's real base. Returns `null` on any
 /// network error or a non-200 status.
-Future<FetchedPage?> fetchPage(String url, {http.Client? client}) async {
+///
+/// [timeout] bounds each hop twice: once for the headers and once for
+/// reading the body, so a server that keeps the connection open after
+/// the headers cannot stall the parser.
+Future<FetchedPage?> fetchPage(String url,
+    {http.Client? client, Duration timeout = _defaultTimeout}) async {
   final owned = client == null;
   final c = client ?? http.Client();
   try {
@@ -48,18 +57,18 @@ Future<FetchedPage?> fetchPage(String url, {http.Client? client}) async {
         ..headers['User-Agent'] =
             'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) '
                 'AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 chungmo';
-      final streamed = await c.send(request).timeout(_timeout);
-      final response = await http.Response.fromStream(streamed);
-      if (response.isRedirect || response.statusCode ~/ 100 == 3) {
-        final location = response.headers['location'];
+      final streamed = await c.send(request).timeout(timeout);
+      // Decide on the headers alone; a redirect's body is never read.
+      if (streamed.isRedirect || streamed.statusCode ~/ 100 == 3) {
+        final location = streamed.headers['location'];
         if (location == null) return null;
         uri = uri.resolve(location);
         continue;
       }
-      if (response.statusCode != 200) return null;
+      if (streamed.statusCode != 200) return null;
+      final bytes = await _readBody(streamed.stream, timeout);
       return FetchedPage(
-          decodeBody(response.bodyBytes, response.headers['content-type']),
-          uri);
+          decodeBody(bytes, streamed.headers['content-type']), uri);
     }
     return null;
   } catch (_) {
@@ -67,6 +76,40 @@ Future<FetchedPage?> fetchPage(String url, {http.Client? client}) async {
   } finally {
     if (owned) c.close();
   }
+}
+
+/// Collects [stream] into bytes, giving up after [timeout] and truncating
+/// at [_maxBodyBytes]. The subscription is cancelled on both exits, so a
+/// never-ending body does not keep the connection alive.
+Future<List<int>> _readBody(Stream<List<int>> stream, Duration timeout) {
+  final completer = Completer<List<int>>();
+  final bytes = <int>[];
+  late final StreamSubscription<List<int>> sub;
+  void finish() {
+    if (!completer.isCompleted) completer.complete(bytes);
+    sub.cancel();
+  }
+
+  sub = stream.listen(
+      (chunk) {
+        final room = _maxBodyBytes - bytes.length;
+        if (chunk.length >= room) {
+          bytes.addAll(chunk.take(room));
+          finish();
+          return;
+        }
+        bytes.addAll(chunk);
+      },
+      onDone: finish,
+      onError: (Object e) {
+        if (!completer.isCompleted) completer.completeError(e);
+        sub.cancel();
+      },
+      cancelOnError: true);
+  return completer.future.timeout(timeout, onTimeout: () {
+    sub.cancel();
+    throw TimeoutException('body read exceeded $timeout');
+  });
 }
 
 /// Decodes [bytes] using the charset from [contentType], else from a
@@ -130,8 +173,11 @@ Future<String?> extractContentWithImages(String url,
     if (page == null || page.html.isEmpty) return null;
     final extracted = extractContentFromHtml(page.html, page.finalUri);
     final buffer = StringBuffer(extracted.text);
-    for (final frame in extracted.iframes.take(_maxIframes)) {
-      if (frame.host != page.finalUri.host) continue;
+    final frames = extracted.iframes
+        .where((f) => f.host == page.finalUri.host)
+        .toSet()
+        .take(_maxIframes);
+    for (final frame in frames) {
       final inner = await fetchPage(frame.toString(), client: c);
       if (inner == null || inner.html.isEmpty) continue;
       final innerText = extractContentFromHtml(inner.html, inner.finalUri).text;
@@ -164,7 +210,7 @@ class ExtractedContent {
 /// Exposed for tests and for the eval runner's `--crawl-only` mode.
 ExtractedContent extractContentFromHtml(String html, Uri base) {
   final doc = html_parser.parse(html);
-  final walker = _Walker(base);
+  final walker = _Walker(_documentBase(doc, base));
   final title = doc.querySelector('title')?.text.trim();
   if (title != null && title.isNotEmpty) walker._emit(title);
   walker._emitMeta(doc);
@@ -177,6 +223,21 @@ ExtractedContent extractContentFromHtml(String html, Uri base) {
   return ExtractedContent(walker._output(), walker.iframes);
 }
 
+/// The first valid `<base href>` resolved against [fetched], else
+/// [fetched] itself — the same rule browsers use for relative URLs.
+Uri _documentBase(Document doc, Uri fetched) {
+  for (final el in doc.querySelectorAll('base[href]')) {
+    final href = el.attributes['href']?.trim();
+    if (href == null || href.isEmpty) continue;
+    try {
+      return fetched.resolve(href);
+    } catch (_) {
+      continue;
+    }
+  }
+  return fetched;
+}
+
 const _skippedTags = {
   'style',
   'noscript',
@@ -185,6 +246,7 @@ const _skippedTags = {
   'title',
   'meta',
   'link',
+  'base',
   'select',
   'option',
 };

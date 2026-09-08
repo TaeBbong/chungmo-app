@@ -32,10 +32,12 @@ String decodeEucKr(List<int> bytes) {
     }
     final trail = bytes[i + 1];
     final ch = _decodePair(lead, trail);
-    if (ch == null) {
-      // Not a valid pair: emit U+FFFD for the lead and re-read the trail.
+    if (ch == null || ch == '\ufffd') {
+      // Invalid or unassigned pair. WHATWG's euc-kr decoder (what a
+      // browser shows) emits U+FFFD and re-reads the trail only when it
+      // is an ASCII byte; a non-ASCII trail is consumed with the lead.
       out.write('\ufffd');
-      i++;
+      i += trail < 0x80 ? 1 : 2;
       continue;
     }
     out.write(ch);
