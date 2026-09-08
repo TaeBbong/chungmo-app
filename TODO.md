@@ -17,8 +17,8 @@
 - [x] **파싱 실패 fallback UX**: 날짜 누락 시 부분 추출(이름·장소·계좌)을 draft로 보존, 폼에 프리필해 빈 필드만 보정 — `feat/manual-schedule-fallback`
 - [x] **파싱 정확도 평가셋**: Firebase Hosting에 40개의 가상 청첩장 픽스처(벤더별 마크업 스타일)를 호스팅하고 `eval/run_eval.dart`로 자동 채점 → `eval/results/latest.md`에 정확도 수치 — `feat/parsing-eval`
 - [x] **링크 파서 커버리지 1단계 (정적 HTML)**: 문서 순서 DOM 워크, `<meta>` OG content, `<td>/<time>/<section>` 텍스트, 순수 Dart CP949 디코더, 최종 URL 기준 상대 경로 해석, lazy `data-src`, iframe 1단계 추적 → 크롤 커버리지 68%→90%, core 63%→85% — `feat/crawler-coverage`, `docs/CRAWLER_COVERAGE.md`
-- [ ] **링크 파서 프롬프트 보강**: 기준 날짜 제공(연도 없는 날짜는 다음 도래일로), 성을 포함한 전체 이름 요구, 첫 대표 사진을 썸네일로
-- [ ] **링크 파서 이미지 폴백 (모달리티 전환)**: 크롤 결과가 빈약하면 페이지의 주요 이미지를 내려받아 기존 멀티모달 이미지 파서로 재시도 — 이미지 전용·CSR 청첩장의 근본 대응
+- [ ] **링크 파서 프롬프트 보강** (#50): 기준 날짜 제공(연도 없는 날짜는 다음 도래일로), 성을 포함한 전체 이름 요구, 첫 대표 사진을 썸네일로 — 현재 실패 6건 중 2건(hanul-04, bs-03)
+- [ ] **링크 파서 이미지 폴백 (모달리티 전환)** (#51): 크롤 결과가 빈약하면 페이지의 주요 이미지를 내려받아 기존 멀티모달 이미지 파서로 재시도 — 이미지 전용·CSR 청첩장의 근본 대응, 현재 실패 6건 중 4건
 
 ### 🧠 에이전틱/스마트 기능
 
@@ -66,6 +66,7 @@
 
 최근에 완료된 주요 작업 목록입니다.
 
+- [x] 링크 크롤러 재작성: 문서 순서 DOM 워크·OG meta·순수 Dart CP949 디코더·최종 URL 기준 경로 해석·iframe 추적, 본문 타임아웃/4MB 상한 — 크롤 커버리지 68%→90%, core 63%→85%, `docs/CRAWLER_COVERAGE.md` 포함 (#52)
 - [x] 파싱 평가셋: 16가지 벤더 마크업 스타일의 가상 청첩장 40개를 `chung-mo.web.app/eval/`에 호스팅, 앱과 동일한 크롤러·프롬프트로 채점하는 러너와 모델 독립적인 크롤 커버리지 지표 — `docs/PARSING_EVAL.md` 포함 (#47)
 - [x] 개인정보처리방침·이용약관을 Notion에서 Firebase Hosting(`chung-mo.web.app/privacy`, `/terms`)으로 이전 — `docs/FIREBASE_HOSTING.md` 포함 (#45)
 
