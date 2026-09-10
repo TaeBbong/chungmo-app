@@ -40,13 +40,18 @@ void main() async {
   // attests store/CI-signed builds, so debug builds use the debug provider —
   // its token (printed to the console on first run) must be registered in
   // Firebase console > App Check > Apps > Manage debug tokens.
+  //
+  // The release providers must match what the app is registered with in the
+  // console (Play Integrity / App Attest): an unregistered provider's
+  // attestation is rejected, leaving every backend call without a token.
+  // App Attest also needs the appattest-environment entitlement on Runner.
   await FirebaseAppCheck.instance.activate(
     providerAndroid: kDebugMode
         ? const AndroidDebugProvider()
         : const AndroidPlayIntegrityProvider(),
     providerApple: kDebugMode
         ? const AppleDebugProvider()
-        : const AppleDeviceCheckProvider(),
+        : const AppleAppAttestProvider(),
   );
   // Route Flutter and uncaught async errors to Crashlytics; skip in debug so
   // development noise does not pollute the release crash reports.
