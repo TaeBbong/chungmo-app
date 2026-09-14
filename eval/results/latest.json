@@ -1,8 +1,8 @@
 {
-  "label": "crawler layer 1, 694bf92",
+  "label": "pre-submission rerun",
   "rescoredFrom": null,
-  "startedAt": "2026-09-07T22:08:08.228620",
-  "durationMs": 80096,
+  "startedAt": "2026-09-14T20:05:06.867909",
+  "durationMs": 84196,
   "model": "gemini-2.5-flash",
   "baseUrl": "https://chung-mo.web.app",
   "crawlOnly": false,
@@ -1080,8 +1080,8 @@
         "accountRecall": 1.0
       }
     },
-    "meanCrawlMs": 25,
-    "meanModelMs": 5887,
+    "meanCrawlMs": 252,
+    "meanModelMs": 5946,
     "promptTokens": 32740
   },
   "coverage": {
@@ -1253,7 +1253,7 @@
         "modal-accounts",
         "reception-distractor"
       ],
-      "crawlMs": 23,
+      "crawlMs": 194,
       "crawlChars": 1273,
       "coverage": {
         "groom": true,
@@ -1263,8 +1263,8 @@
         "accounts": true
       },
       "promptTokens": 1014,
-      "outputTokens": 446,
-      "modelMs": 7111,
+      "outputTokens": 458,
+      "modelMs": 10199,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/bs-01/main.svg",
         "groom": "심경수",
@@ -1274,19 +1274,19 @@
         "groomAccounts": [
           {
             "bank": "신한은행",
-            "number": "110166724620",
+            "number": "110-166724-620",
             "holder": "심경수",
             "relation": "신랑"
           },
           {
             "bank": "신한은행",
-            "number": "110128697906",
+            "number": "110-128697-906",
             "holder": "심광수",
             "relation": "아버지"
           },
           {
             "bank": "케이뱅크",
-            "number": "100151395678",
+            "number": "100-151395-678",
             "holder": "손명희",
             "relation": "어머니"
           }
@@ -1294,19 +1294,19 @@
         "brideAccounts": [
           {
             "bank": "기업은행",
-            "number": "41467840314073",
+            "number": "414-678403-14073",
             "holder": "최혜원",
             "relation": "신부"
           },
           {
             "bank": "우체국",
-            "number": "9926829542063",
+            "number": "992682-95-42063",
             "holder": "최재호",
             "relation": "아버지"
           },
           {
             "bank": "케이뱅크",
-            "number": "100612251623",
+            "number": "100-612251-623",
             "holder": "홍현숙",
             "relation": "어머니"
           }
@@ -1337,7 +1337,7 @@
         "map-iframe",
         "modal-accounts"
       ],
-      "crawlMs": 20,
+      "crawlMs": 197,
       "crawlChars": 1110,
       "coverage": {
         "groom": true,
@@ -1348,7 +1348,7 @@
       },
       "promptTokens": 874,
       "outputTokens": 234,
-      "modelMs": 5005,
+      "modelMs": 5907,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/bs-02/main.svg",
         "groom": "허주원",
@@ -1398,7 +1398,7 @@
         "no-year",
         "rewrite-url"
       ],
-      "crawlMs": 16,
+      "crawlMs": 220,
       "crawlChars": 1048,
       "coverage": {
         "groom": true,
@@ -1408,8 +1408,8 @@
         "accounts": true
       },
       "promptTokens": 814,
-      "outputTokens": 156,
-      "modelMs": 10161,
+      "outputTokens": 158,
+      "modelMs": 8190,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/bs-03/main.svg",
         "groom": "남예준",
@@ -1419,7 +1419,7 @@
         "groomAccounts": [
           {
             "bank": "기업은행",
-            "number": "18333868364930",
+            "number": "183-338683-64930",
             "holder": "남예준",
             "relation": "신랑"
           }
@@ -1454,7 +1454,7 @@
         "site-builder",
         "span-split"
       ],
-      "crawlMs": 29,
+      "crawlMs": 175,
       "crawlChars": 1048,
       "coverage": {
         "groom": true,
@@ -1464,8 +1464,8 @@
         "accounts": true
       },
       "promptTokens": 848,
-      "outputTokens": 463,
-      "modelMs": 9109,
+      "outputTokens": 356,
+      "modelMs": 8872,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/builder-01/main.svg",
         "groom": "손현우",
@@ -1538,7 +1538,7 @@
         "site-builder",
         "span-split"
       ],
-      "crawlMs": 27,
+      "crawlMs": 167,
       "crawlChars": 922,
       "coverage": {
         "groom": true,
@@ -1549,7 +1549,7 @@
       },
       "promptTokens": 732,
       "outputTokens": 236,
-      "modelMs": 4539,
+      "modelMs": 7647,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/builder-02/main.svg",
         "groom": "양성민",
@@ -1598,7 +1598,7 @@
         "site-builder",
         "span-split"
       ],
-      "crawlMs": 28,
+      "crawlMs": 168,
       "crawlChars": 869,
       "coverage": {
         "groom": true,
@@ -1609,7 +1609,7 @@
       },
       "promptTokens": 695,
       "outputTokens": 116,
-      "modelMs": 4231,
+      "modelMs": 3737,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/builder-03/main.svg",
         "groom": "전태호",
@@ -1644,7 +1644,7 @@
         "euckr-asp",
         "font-tags"
       ],
-      "crawlMs": 31,
+      "crawlMs": 194,
       "crawlChars": 725,
       "coverage": {
         "groom": true,
@@ -1654,8 +1654,8 @@
         "accounts": true
       },
       "promptTokens": 701,
-      "outputTokens": 463,
-      "modelMs": 7188,
+      "outputTokens": 297,
+      "modelMs": 7320,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/euckr-01/main.jpg.svg",
         "groom": "송태양",
@@ -1728,7 +1728,7 @@
         "euckr-asp",
         "nbsp"
       ],
-      "crawlMs": 36,
+      "crawlMs": 478,
       "crawlChars": 567,
       "coverage": {
         "groom": true,
@@ -1739,7 +1739,7 @@
       },
       "promptTokens": 558,
       "outputTokens": 176,
-      "modelMs": 3805,
+      "modelMs": 5125,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/euckr-02/main.jpg.svg",
         "groom": "이재현",
@@ -1780,7 +1780,7 @@
         "iframe",
         "iframe-embed"
       ],
-      "crawlMs": 38,
+      "crawlMs": 940,
       "crawlChars": 1531,
       "coverage": {
         "groom": true,
@@ -1791,7 +1791,7 @@
       },
       "promptTokens": 1073,
       "outputTokens": 250,
-      "modelMs": 5368,
+      "modelMs": 5216,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/frame-01/main.svg",
         "groom": "서재원",
@@ -1839,7 +1839,7 @@
         "iframe",
         "iframe-embed"
       ],
-      "crawlMs": 21,
+      "crawlMs": 460,
       "crawlChars": 1452,
       "coverage": {
         "groom": true,
@@ -1849,8 +1849,8 @@
         "accounts": true
       },
       "promptTokens": 1004,
-      "outputTokens": 100,
-      "modelMs": 3824,
+      "outputTokens": 116,
+      "modelMs": 4027,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/frame-02/main.svg",
         "groom": "허민준",
@@ -1885,7 +1885,7 @@
         "classic-jquery",
         "inline-js-korean"
       ],
-      "crawlMs": 44,
+      "crawlMs": 244,
       "crawlChars": 1808,
       "coverage": {
         "groom": true,
@@ -1895,13 +1895,13 @@
         "accounts": true
       },
       "promptTokens": 1240,
-      "outputTokens": 466,
-      "modelMs": 6981,
+      "outputTokens": 481,
+      "modelMs": 9452,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/hanul-01/main.svg",
         "groom": "전형준",
         "bride": "신예은",
-        "location": "호텔 라비앙 2층 크리스탈볼룸",
+        "location": "호텔 라비앙 2층 크리스탈볼룸 (대구광역시 수성구 동대구로 111)",
         "datetime": "2026-10-04T11:00:00+09:00",
         "groomAccounts": [
           {
@@ -1969,7 +1969,7 @@
         "classic-jquery",
         "gallery-captions"
       ],
-      "crawlMs": 54,
+      "crawlMs": 233,
       "crawlChars": 1321,
       "coverage": {
         "groom": true,
@@ -1979,8 +1979,8 @@
         "accounts": true
       },
       "promptTokens": 1046,
-      "outputTokens": 240,
-      "modelMs": 5863,
+      "outputTokens": 189,
+      "modelMs": 5650,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/hanul-02/main.svg",
         "groom": "남건우",
@@ -2028,7 +2028,7 @@
         "classic-jquery",
         "short-link"
       ],
-      "crawlMs": 57,
+      "crawlMs": 302,
       "crawlChars": 1270,
       "coverage": {
         "groom": true,
@@ -2038,8 +2038,8 @@
         "accounts": true
       },
       "promptTokens": 986,
-      "outputTokens": 351,
-      "modelMs": 7703,
+      "outputTokens": 229,
+      "modelMs": 6666,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/hanul-03/main.svg",
         "groom": "송도윤",
@@ -2100,7 +2100,7 @@
         "countdown",
         "no-year"
       ],
-      "crawlMs": 24,
+      "crawlMs": 190,
       "crawlChars": 1234,
       "coverage": {
         "groom": true,
@@ -2110,13 +2110,13 @@
         "accounts": true
       },
       "promptTokens": 946,
-      "outputTokens": 227,
-      "modelMs": 5919,
+      "outputTokens": 215,
+      "modelMs": 7904,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/hanul-04/main.svg",
         "groom": "심영훈",
         "bride": "남민서",
-        "location": "아펠가모 광화문 4층 라포레홀 (서울특별시 종로구 종로1길 50)",
+        "location": "아펠가모 광화문 4층 라포레홀",
         "datetime": null,
         "groomAccounts": [
           {
@@ -2161,7 +2161,7 @@
         "classic-jquery",
         "no-date"
       ],
-      "crawlMs": 22,
+      "crawlMs": 191,
       "crawlChars": 1173,
       "coverage": {
         "groom": true,
@@ -2171,13 +2171,13 @@
         "accounts": true
       },
       "promptTokens": 891,
-      "outputTokens": 211,
-      "modelMs": 6019,
+      "outputTokens": 226,
+      "modelMs": 6126,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/hanul-05/main.svg",
         "groom": "서지훈",
         "bride": "권지우",
-        "location": "노블레스 웨딩 7층 노블홀",
+        "location": "노블레스 웨딩 7층 노블홀, 부산광역시 해운대구 센텀중앙로 55",
         "datetime": null,
         "groomAccounts": [
           {
@@ -2219,7 +2219,7 @@
       "tags": [
         "image-only"
       ],
-      "crawlMs": 18,
+      "crawlMs": 185,
       "crawlChars": 624,
       "coverage": {
         "groom": true,
@@ -2230,7 +2230,7 @@
       },
       "promptTokens": 495,
       "outputTokens": 77,
-      "modelMs": 3543,
+      "modelMs": 3339,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/img-01/main.svg",
         "groom": "유서준",
@@ -2267,7 +2267,7 @@
       "tags": [
         "image-only"
       ],
-      "crawlMs": 18,
+      "crawlMs": 163,
       "crawlChars": 624,
       "coverage": {
         "groom": true,
@@ -2278,7 +2278,7 @@
       },
       "promptTokens": 495,
       "outputTokens": 77,
-      "modelMs": 2717,
+      "modelMs": 2654,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/img-02/main.svg",
         "groom": "정지환",
@@ -2315,7 +2315,7 @@
         "english",
         "english-intl"
       ],
-      "crawlMs": 23,
+      "crawlMs": 170,
       "crawlChars": 814,
       "coverage": {
         "groom": true,
@@ -2325,13 +2325,13 @@
         "accounts": true
       },
       "promptTokens": 574,
-      "outputTokens": 130,
-      "modelMs": 3739,
+      "outputTokens": 131,
+      "modelMs": 4055,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/intl-01/main.svg",
         "groom": "Siwoo Hong",
         "bride": "Suyeon Son",
-        "location": "헤리움 아트홀, 5층 오페라홀 인천광역시 연수구 센트럴로 194",
+        "location": "헤리움 아트홀, 5층 오페라홀, 인천광역시 연수구 센트럴로 194",
         "datetime": "2027-06-27T17:30:00+09:00",
         "groomAccounts": [],
         "brideAccounts": []
@@ -2361,7 +2361,7 @@
         "english-intl",
         "mixed-language"
       ],
-      "crawlMs": 24,
+      "crawlMs": 186,
       "crawlChars": 1004,
       "coverage": {
         "groom": true,
@@ -2372,12 +2372,12 @@
       },
       "promptTokens": 693,
       "outputTokens": 256,
-      "modelMs": 4621,
+      "modelMs": 5593,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/intl-02/main.svg",
         "groom": "Sunghoon Baek",
         "bride": "Haram Jeon",
-        "location": "루체스타 웨딩홀 6층 스텔라홀, 경기도 성남시 분당구 판교역로 210",
+        "location": "루체스타 웨딩홀, 6층 스텔라홀 경기도 성남시 분당구 판교역로 210",
         "datetime": "2027-07-03T18:00:00+09:00",
         "groomAccounts": [
           {
@@ -2421,7 +2421,7 @@
         "hidden-accounts",
         "kakao-card"
       ],
-      "crawlMs": 22,
+      "crawlMs": 195,
       "crawlChars": 850,
       "coverage": {
         "groom": true,
@@ -2432,7 +2432,7 @@
       },
       "promptTokens": 802,
       "outputTokens": 465,
-      "modelMs": 7478,
+      "modelMs": 7551,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/kakao-01/main.svg",
         "groom": "강유찬",
@@ -2505,7 +2505,7 @@
         "kakao-card",
         "short-link"
       ],
-      "crawlMs": 30,
+      "crawlMs": 782,
       "crawlChars": 644,
       "coverage": {
         "groom": true,
@@ -2516,7 +2516,7 @@
       },
       "promptTokens": 649,
       "outputTokens": 240,
-      "modelMs": 5995,
+      "modelMs": 5005,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/kakao-02/main.svg",
         "groom": "장서진",
@@ -2564,7 +2564,7 @@
         "hidden-accounts",
         "kakao-card"
       ],
-      "crawlMs": 18,
+      "crawlMs": 499,
       "crawlChars": 562,
       "coverage": {
         "groom": true,
@@ -2574,8 +2574,8 @@
         "accounts": true
       },
       "promptTokens": 571,
-      "outputTokens": 119,
-      "modelMs": 4548,
+      "outputTokens": 91,
+      "modelMs": 3884,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/kakao-03/main.svg",
         "groom": "손지호",
@@ -2610,7 +2610,7 @@
         "next-data",
         "nextjs-ssr"
       ],
-      "crawlMs": 23,
+      "crawlMs": 174,
       "crawlChars": 2244,
       "coverage": {
         "groom": true,
@@ -2620,13 +2620,13 @@
         "accounts": true
       },
       "promptTokens": 1423,
-      "outputTokens": 471,
-      "modelMs": 9297,
+      "outputTokens": 472,
+      "modelMs": 9267,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/nextcard-01/main.svg",
         "groom": "유하준",
         "bride": "남가은",
-        "location": "세인트메리 성당 대성전 서울특별시 중구 명동길 74",
+        "location": "세인트메리 성당 대성전, 서울특별시 중구 명동길 74",
         "datetime": "2026-11-29T17:30:00+09:00",
         "groomAccounts": [
           {
@@ -2695,7 +2695,7 @@
         "next-data",
         "nextjs-ssr"
       ],
-      "crawlMs": 19,
+      "crawlMs": 180,
       "crawlChars": 1808,
       "coverage": {
         "groom": true,
@@ -2705,8 +2705,8 @@
         "accounts": true
       },
       "promptTokens": 1190,
-      "outputTokens": 252,
-      "modelMs": 8727,
+      "outputTokens": 174,
+      "modelMs": 5554,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/nextcard-02/main.svg",
         "groom": "정수호",
@@ -2755,7 +2755,7 @@
         "next-data",
         "nextjs-ssr"
       ],
-      "crawlMs": 23,
+      "crawlMs": 218,
       "crawlChars": 1654,
       "coverage": {
         "groom": true,
@@ -2766,7 +2766,7 @@
       },
       "promptTokens": 1070,
       "outputTokens": 189,
-      "modelMs": 5086,
+      "modelMs": 7048,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/nextcard-03/main.svg",
         "groom": "배승민",
@@ -2808,7 +2808,7 @@
         "nuxt-ssr",
         "scoped-attrs"
       ],
-      "crawlMs": 16,
+      "crawlMs": 151,
       "crawlChars": 1598,
       "coverage": {
         "groom": true,
@@ -2818,13 +2818,13 @@
         "accounts": true
       },
       "promptTokens": 1088,
-      "outputTokens": 352,
-      "modelMs": 6768,
+      "outputTokens": 365,
+      "modelMs": 6191,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/nuxtcard-01/main.svg",
         "groom": "권승현",
         "bride": "홍현지",
-        "location": "스칼라티움 강남 4층 아트홀",
+        "location": "스칼라티움 강남 4층 아트홀, 서울특별시 강남구 논현로 508",
         "datetime": "2027-01-10T11:30:00+09:00",
         "groomAccounts": [
           {
@@ -2880,7 +2880,7 @@
         "nuxt-ssr",
         "scoped-attrs"
       ],
-      "crawlMs": 22,
+      "crawlMs": 413,
       "crawlChars": 1368,
       "coverage": {
         "groom": true,
@@ -2890,8 +2890,8 @@
         "accounts": true
       },
       "promptTokens": 954,
-      "outputTokens": 191,
-      "modelMs": 7175,
+      "outputTokens": 242,
+      "modelMs": 5121,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/nuxtcard-02/main.svg",
         "groom": "신연우",
@@ -2940,7 +2940,7 @@
         "split-numerals",
         "styled-react"
       ],
-      "crawlMs": 20,
+      "crawlMs": 158,
       "crawlChars": 782,
       "coverage": {
         "groom": true,
@@ -2950,13 +2950,13 @@
         "accounts": true
       },
       "promptTokens": 666,
-      "outputTokens": 250,
-      "modelMs": 4881,
+      "outputTokens": 251,
+      "modelMs": 5192,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/sc-01/main.svg",
         "groom": "정정우",
         "bride": "양은서",
-        "location": "아펠가모 광화문 4층 라포레홀 (서울특별시 종로구 종로1길 50)",
+        "location": "아펠가모 광화문 4층 라포레홀, 서울특별시 종로구 종로1길 50",
         "datetime": "2027-02-21T17:30:00+09:00",
         "groomAccounts": [
           {
@@ -3000,7 +3000,7 @@
         "split-numerals",
         "styled-react"
       ],
-      "crawlMs": 22,
+      "crawlMs": 205,
       "crawlChars": 898,
       "coverage": {
         "groom": true,
@@ -3010,13 +3010,13 @@
         "accounts": true
       },
       "promptTokens": 761,
-      "outputTokens": 300,
-      "modelMs": 7310,
+      "outputTokens": 481,
+      "modelMs": 7248,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/sc-02/main.svg",
         "groom": "심상우",
         "bride": "오나연",
-        "location": "노블레스 웨딩 7층 노블홀",
+        "location": "노블레스 웨딩 7층 노블홀 (부산광역시 해운대구 센텀중앙로 55)",
         "datetime": "2027-03-06T18:00:00+09:00",
         "groomAccounts": [
           {
@@ -3084,7 +3084,7 @@
         "notion-export",
         "self-made"
       ],
-      "crawlMs": 20,
+      "crawlMs": 187,
       "crawlChars": 816,
       "coverage": {
         "groom": true,
@@ -3094,13 +3094,13 @@
         "accounts": true
       },
       "promptTokens": 700,
-      "outputTokens": 235,
-      "modelMs": 4707,
+      "outputTokens": 248,
+      "modelMs": 5500,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/self-01/main.svg",
         "groom": "김준혁",
         "bride": "박채원",
-        "location": "더채플앳한강 5층 채플홀",
+        "location": "더채플앳한강 5층 채플홀, 서울특별시 영등포구 여의대로 88",
         "datetime": "2026-10-09T12:30:00+09:00",
         "groomAccounts": [
           {
@@ -3144,7 +3144,7 @@
         "csr-shell",
         "og-only"
       ],
-      "crawlMs": 26,
+      "crawlMs": 167,
       "crawlChars": 235,
       "coverage": {
         "groom": true,
@@ -3154,8 +3154,8 @@
         "accounts": false
       },
       "promptTokens": 355,
-      "outputTokens": 100,
-      "modelMs": 3238,
+      "outputTokens": 116,
+      "modelMs": 3705,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/spa-01/main.svg",
         "groom": "고진우",
@@ -3192,7 +3192,7 @@
         "csr-shell",
         "og-only"
       ],
-      "crawlMs": 25,
+      "crawlMs": 155,
       "crawlChars": 230,
       "coverage": {
         "groom": true,
@@ -3202,8 +3202,8 @@
         "accounts": false
       },
       "promptTokens": 352,
-      "outputTokens": 101,
-      "modelMs": 3543,
+      "outputTokens": 89,
+      "modelMs": 3352,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/spa-02/main.svg",
         "groom": "권명호",
@@ -3240,7 +3240,7 @@
         "csr-shell",
         "og-only"
       ],
-      "crawlMs": 19,
+      "crawlMs": 165,
       "crawlChars": 227,
       "coverage": {
         "groom": true,
@@ -3251,7 +3251,7 @@
       },
       "promptTokens": 347,
       "outputTokens": 114,
-      "modelMs": 3511,
+      "modelMs": 3354,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/spa-03/main.svg",
         "groom": "배우진",
@@ -3285,7 +3285,7 @@
         "table-legacy",
         "table-only"
       ],
-      "crawlMs": 27,
+      "crawlMs": 216,
       "crawlChars": 675,
       "coverage": {
         "groom": true,
@@ -3295,13 +3295,13 @@
         "accounts": true
       },
       "promptTokens": 664,
-      "outputTokens": 239,
-      "modelMs": 5252,
+      "outputTokens": 252,
+      "modelMs": 5454,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/table-01/main.svg",
         "groom": "서원준",
         "bride": "최지민",
-        "location": "W웨딩홀 대전 3층 파티오홀",
+        "location": "W웨딩홀 대전 3층 파티오홀 (대전광역시 유성구 대덕대로 512)",
         "datetime": "2026-11-15T15:00:00+09:00",
         "groomAccounts": [
           {
@@ -3344,7 +3344,7 @@
         "table-legacy",
         "table-only"
       ],
-      "crawlMs": 20,
+      "crawlMs": 148,
       "crawlChars": 605,
       "coverage": {
         "groom": true,
@@ -3354,8 +3354,8 @@
         "accounts": true
       },
       "promptTokens": 602,
-      "outputTokens": 90,
-      "modelMs": 3914,
+      "outputTokens": 118,
+      "modelMs": 3433,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/table-02/main.svg",
         "groom": "박선우",
@@ -3392,7 +3392,7 @@
         "picture-srcset",
         "tailwind-semantic"
       ],
-      "crawlMs": 28,
+      "crawlMs": 179,
       "crawlChars": 1440,
       "coverage": {
         "groom": true,
@@ -3403,7 +3403,7 @@
       },
       "promptTokens": 1038,
       "outputTokens": 481,
-      "modelMs": 6948,
+      "modelMs": 7316,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/tw-01/main.svg",
         "groom": "문준서",
@@ -3476,7 +3476,7 @@
         "json-ld",
         "tailwind-semantic"
       ],
-      "crawlMs": 27,
+      "crawlMs": 213,
       "crawlChars": 1251,
       "coverage": {
         "groom": true,
@@ -3486,13 +3486,13 @@
         "accounts": true
       },
       "promptTokens": 900,
-      "outputTokens": 237,
-      "modelMs": 7442,
+      "outputTokens": 200,
+      "modelMs": 6470,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/tw-02/main.svg",
         "groom": "권동현",
         "bride": "박가영",
-        "location": "루미에르 웨딩 2층 루미에르홀",
+        "location": "루미에르 웨딩 2층 루미에르홀, 광주광역시 서구 상무중앙로 66",
         "datetime": "2027-02-14T15:00:00+09:00",
         "groomAccounts": [
           {
@@ -3536,7 +3536,7 @@
         "no-date",
         "tailwind-semantic"
       ],
-      "crawlMs": 23,
+      "crawlMs": 199,
       "crawlChars": 1303,
       "coverage": {
         "groom": true,
@@ -3546,8 +3546,8 @@
         "accounts": true
       },
       "promptTokens": 917,
-      "outputTokens": 249,
-      "modelMs": 8675,
+      "outputTokens": 328,
+      "modelMs": 6572,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/tw-03/main.svg",
         "groom": "윤찬영",
@@ -3608,7 +3608,7 @@
         "time-element",
         "wordpress-theme"
       ],
-      "crawlMs": 28,
+      "crawlMs": 188,
       "crawlChars": 1255,
       "coverage": {
         "groom": true,
@@ -3619,7 +3619,7 @@
       },
       "promptTokens": 989,
       "outputTokens": 238,
-      "modelMs": 6424,
+      "modelMs": 6145,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/wp-01/main.svg",
         "groom": "남규민",
@@ -3668,7 +3668,7 @@
         "time-element",
         "wordpress-theme"
       ],
-      "crawlMs": 23,
+      "crawlMs": 259,
       "crawlChars": 1296,
       "coverage": {
         "groom": true,
@@ -3679,7 +3679,7 @@
       },
       "promptTokens": 1023,
       "outputTokens": 346,
-      "modelMs": 7120,
+      "modelMs": 6824,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/wp-02/main.svg",
         "groom": "이민석",

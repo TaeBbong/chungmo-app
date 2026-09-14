@@ -1,7 +1,7 @@
 # Link parser eval — gemini-2.5-flash
 
-- Run: 2026-09-07T22:08:08.228620 (crawler layer 1, 694bf92)
-- Cases: 40 · errors: 0 · mean crawl 25 ms · mean model 5887 ms · prompt tokens 32740
+- Run: 2026-09-14T20:05:06.867909 (pre-submission rerun)
+- Cases: 40 · errors: 0 · mean crawl 252 ms · mean model 5946 ms · prompt tokens 32740
 
 ## Overall
 
@@ -129,43 +129,43 @@ Whether the crawler's text contains each expected value verbatim; a field missin
 
 | id | template | difficulty | G | B | D | L | A | T | chars | ms | mismatches |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| bs-01 | bootstrap-2019 | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1273 | 23+7111 |  |
-| bs-02 | bootstrap-2019 | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1110 | 20+5005 |  |
-| bs-03 | bootstrap-2019 | medium | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ | 1048 | 16+10161 | datetime: expected "2027-04-04T11:30:00+09:00", got "" |
-| builder-01 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1048 | 29+9109 |  |
-| builder-02 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 922 | 27+4539 |  |
-| builder-03 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 869 | 28+4231 |  |
-| euckr-01 | euckr-asp | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 725 | 31+7188 |  |
-| euckr-02 | euckr-asp | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 567 | 36+3805 |  |
-| frame-01 | iframe-embed | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1531 | 38+5368 |  |
-| frame-02 | iframe-embed | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1452 | 21+3824 |  |
-| hanul-01 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1808 | 44+6981 |  |
-| hanul-02 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1321 | 54+5863 |  |
-| hanul-03 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1270 | 57+7703 |  |
-| hanul-04 | classic-jquery | medium | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ | 1234 | 24+5919 | datetime: expected "2026-10-24T12:30:00+09:00", got "" |
-| hanul-05 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1173 | 22+6019 |  |
-| img-01 | image-only | hard | ✓ | ✓ | ✗ | ✗ | ✗ | ✓ | 624 | 18+3543 | datetime: expected "2027-04-25T13:00:00+09:00", got ""; location: expected keywords [빌라드지디 수서], got ""; accounts: missing [groom\|토스뱅크\|100048224645, bride\|케이뱅크\|100623762698], extra [] |
-| img-02 | image-only | hard | ✓ | ✓ | ✗ | ✗ | ✓ | ✓ | 624 | 18+2717 | datetime: expected "2027-05-01T13:30:00+09:00", got ""; location: expected keywords [엘리시안 컨벤션], got "" |
-| intl-01 | english-intl | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 814 | 23+3739 |  |
-| intl-02 | english-intl | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1004 | 24+4621 |  |
-| kakao-01 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 850 | 22+7478 |  |
-| kakao-02 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 644 | 30+5995 |  |
-| kakao-03 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 562 | 18+4548 |  |
-| nextcard-01 | nextjs-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 2244 | 23+9297 |  |
-| nextcard-02 | nextjs-ssr | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1808 | 19+8727 |  |
-| nextcard-03 | nextjs-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1654 | 23+5086 |  |
-| nuxtcard-01 | nuxt-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1598 | 16+6768 |  |
-| nuxtcard-02 | nuxt-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1368 | 22+7175 |  |
-| sc-01 | styled-react | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 782 | 20+4881 |  |
-| sc-02 | styled-react | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 898 | 22+7310 |  |
-| self-01 | notion-export | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 816 | 20+4707 |  |
-| spa-01 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | 235 | 26+3238 | accounts: missing [groom\|부산\|27106841392679, bride\|수협\|54107582985324], extra [] |
-| spa-02 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | 230 | 25+3543 | accounts: missing [groom\|우리\|94442488455348, groom\|신한\|110244815862, groom\|카카오뱅크\|3333214389560, bride\|하나\|91755377119108, bride\|카카오뱅크\|3333745988127, bride\|신한\|110965185509], extra [] |
-| spa-03 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 227 | 19+3511 |  |
-| table-01 | table-legacy | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 675 | 27+5252 |  |
-| table-02 | table-legacy | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 605 | 20+3914 |  |
-| tw-01 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1440 | 28+6948 |  |
-| tw-02 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1251 | 27+7442 |  |
-| tw-03 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1303 | 23+8675 |  |
-| wp-01 | wordpress-theme | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1255 | 28+6424 |  |
-| wp-02 | wordpress-theme | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1296 | 23+7120 |  |
+| bs-01 | bootstrap-2019 | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1273 | 194+10199 |  |
+| bs-02 | bootstrap-2019 | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1110 | 197+5907 |  |
+| bs-03 | bootstrap-2019 | medium | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ | 1048 | 220+8190 | datetime: expected "2027-04-04T11:30:00+09:00", got "" |
+| builder-01 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1048 | 175+8872 |  |
+| builder-02 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 922 | 167+7647 |  |
+| builder-03 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 869 | 168+3737 |  |
+| euckr-01 | euckr-asp | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 725 | 194+7320 |  |
+| euckr-02 | euckr-asp | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 567 | 478+5125 |  |
+| frame-01 | iframe-embed | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1531 | 940+5216 |  |
+| frame-02 | iframe-embed | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1452 | 460+4027 |  |
+| hanul-01 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1808 | 244+9452 |  |
+| hanul-02 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1321 | 233+5650 |  |
+| hanul-03 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1270 | 302+6666 |  |
+| hanul-04 | classic-jquery | medium | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ | 1234 | 190+7904 | datetime: expected "2026-10-24T12:30:00+09:00", got "" |
+| hanul-05 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1173 | 191+6126 |  |
+| img-01 | image-only | hard | ✓ | ✓ | ✗ | ✗ | ✗ | ✓ | 624 | 185+3339 | datetime: expected "2027-04-25T13:00:00+09:00", got ""; location: expected keywords [빌라드지디 수서], got ""; accounts: missing [groom\|토스뱅크\|100048224645, bride\|케이뱅크\|100623762698], extra [] |
+| img-02 | image-only | hard | ✓ | ✓ | ✗ | ✗ | ✓ | ✓ | 624 | 163+2654 | datetime: expected "2027-05-01T13:30:00+09:00", got ""; location: expected keywords [엘리시안 컨벤션], got "" |
+| intl-01 | english-intl | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 814 | 170+4055 |  |
+| intl-02 | english-intl | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1004 | 186+5593 |  |
+| kakao-01 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 850 | 195+7551 |  |
+| kakao-02 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 644 | 782+5005 |  |
+| kakao-03 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 562 | 499+3884 |  |
+| nextcard-01 | nextjs-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 2244 | 174+9267 |  |
+| nextcard-02 | nextjs-ssr | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1808 | 180+5554 |  |
+| nextcard-03 | nextjs-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1654 | 218+7048 |  |
+| nuxtcard-01 | nuxt-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1598 | 151+6191 |  |
+| nuxtcard-02 | nuxt-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1368 | 413+5121 |  |
+| sc-01 | styled-react | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 782 | 158+5192 |  |
+| sc-02 | styled-react | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 898 | 205+7248 |  |
+| self-01 | notion-export | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 816 | 187+5500 |  |
+| spa-01 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | 235 | 167+3705 | accounts: missing [groom\|부산\|27106841392679, bride\|수협\|54107582985324], extra [] |
+| spa-02 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | 230 | 155+3352 | accounts: missing [groom\|우리\|94442488455348, groom\|신한\|110244815862, groom\|카카오뱅크\|3333214389560, bride\|하나\|91755377119108, bride\|카카오뱅크\|3333745988127, bride\|신한\|110965185509], extra [] |
+| spa-03 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 227 | 165+3354 |  |
+| table-01 | table-legacy | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 675 | 216+5454 |  |
+| table-02 | table-legacy | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 605 | 148+3433 |  |
+| tw-01 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1440 | 179+7316 |  |
+| tw-02 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1251 | 213+6470 |  |
+| tw-03 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1303 | 199+6572 |  |
+| wp-01 | wordpress-theme | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1255 | 188+6145 |  |
+| wp-02 | wordpress-theme | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1296 | 259+6824 |  |

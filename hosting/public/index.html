@@ -3,41 +3,799 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>청모 — 모바일 청첩장 모음 앱</title>
-  <meta name="description" content="청첩장 링크·이미지·문자를 붙여넣으면 AI가 일정, 장소, 축의금 계좌를 자동으로 정리해 주는 앱, 청모.">
+  <title>청모 - 청첩장을 붙여넣으면 끝나는 AI 경조사 비서</title>
+  <meta name="description" content="청첩장 링크·문자·사진 무엇이든 붙여넣으면 AI가 일정·장소·축의금 계좌를 읽어 정리하고, 축의금 액수까지 추천하는 앱.">
+  <meta property="og:title" content="청모 - 청첩장을 붙여넣으면 끝나는 AI 경조사 비서">
+  <meta property="og:description" content="링크·문자·사진 무엇이든 AI가 분석해 일정을 만들어 드려요.">
+  <meta property="og:image" content="https://chung-mo.web.app/assets/shot-result.jpg">
+  <meta property="og:url" content="https://chung-mo.web.app/">
   <link rel="icon" href="/assets/icon.png">
-  <link rel="stylesheet" href="/assets/site.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <style>
+    :root {
+      --burgundy: #800020;
+      --burgundy-600: #69001a;
+      --burgundy-100: #f2d7dc;
+      --burgundy-50: #faeef0;
+      --beige-100: #faf1e3;
+      --ink: #111111;
+      --ink-2: #555555;
+      --ink-3: #949494;
+      --line: #efefef;
+      --surface: #ffffff;
+      --surface-muted: #f7f7f8;
+      --success: #12b76a;
+      --radius: 20px;
+      --ease: cubic-bezier(.215, .61, .355, 1);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --burgundy-100: #4a1523;
+        --burgundy-50: #2a121a;
+        --beige-100: #241d12;
+        --ink: #f2f2f2;
+        --ink-2: #b7b7b7;
+        --ink-3: #8a8a8a;
+        --line: #2a2a2a;
+        --surface: #161616;
+        --surface-muted: #1f1f1f;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      word-break: keep-all;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    .wrap { max-width: 1060px; margin: 0 auto; padding: 0 20px; }
+
+    /* ---------- top bar ---------- */
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: color-mix(in srgb, var(--surface) 85%, transparent);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar .wrap { display: flex; align-items: center; gap: 10px; height: 56px; }
+    .topbar img { width: 28px; height: 28px; border-radius: 7px; }
+    .topbar .brand { font-weight: 800; font-size: 17px; }
+    .topbar nav { margin-left: auto; display: flex; align-items: center; gap: 18px; font-size: 14px; color: var(--ink-2); }
+    .topbar nav a:hover { color: var(--ink); }
+    .topbar .cta {
+      background: var(--burgundy); color: #fff; font-weight: 700;
+      padding: 7px 14px; border-radius: 999px; font-size: 13px;
+    }
+
+    /* ---------- hero ---------- */
+    .hero { padding: 64px 0 40px; }
+    .hero .wrap { display: grid; grid-template-columns: 1fr 360px; gap: 48px; align-items: center; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--burgundy-50); color: var(--burgundy);
+      font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 999px;
+      margin-bottom: 18px;
+    }
+    @media (prefers-color-scheme: dark) { .eyebrow { color: #e0a8b2; } }
+    h1 { font-size: 44px; line-height: 1.25; font-weight: 800; letter-spacing: -0.02em; }
+    h1 .accent { color: var(--burgundy); }
+    @media (prefers-color-scheme: dark) { h1 .accent { color: #e0a8b2; } }
+    .hero p.sub { margin-top: 16px; font-size: 18px; color: var(--ink-2); max-width: 480px; }
+    .stores { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+    .store-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--ink); color: var(--surface);
+      border-radius: 14px; padding: 10px 18px; min-width: 168px;
+      transition: transform .15s var(--ease), opacity .15s;
+    }
+    .store-btn:hover { transform: translateY(-2px); opacity: .92; }
+    .store-btn svg { width: 26px; height: 26px; flex: none; }
+    .store-btn .lines { line-height: 1.2; }
+    .store-btn .small { font-size: 11px; opacity: .75; }
+    .store-btn .big { font-size: 16px; font-weight: 700; }
+    .hero-note { margin-top: 14px; font-size: 13px; color: var(--ink-3); }
+
+    /* ---------- phone demo ---------- */
+    .demo-col { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+    .phone {
+      width: 300px; height: 640px; flex: none;
+      background: var(--surface);
+      border: 10px solid var(--ink);
+      border-radius: 44px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.18);
+      overflow: hidden; position: relative;
+    }
+    @media (prefers-color-scheme: dark) { .phone { border-color: #3a3a3a; } }
+    .phone .notch {
+      position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+      width: 84px; height: 22px; background: var(--ink); border-radius: 999px; z-index: 5;
+    }
+    @media (prefers-color-scheme: dark) { .phone .notch { background: #3a3a3a; } }
+    .screen { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--surface); }
+    .p-appbar { display: flex; align-items: center; gap: 8px; padding: 44px 16px 8px; }
+    .p-appbar .t { font-weight: 800; font-size: 15px; }
+    .p-appbar .ic { color: var(--ink-2); font-size: 14px; }
+    .p-appbar .sp { margin-left: auto; display: flex; gap: 10px; }
+    .p-body { flex: 1; position: relative; overflow: hidden; }
+    .p-stage { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 18px; text-align: center; opacity: 0; transition: opacity .35s var(--ease); pointer-events: none; }
+    .p-stage.on { opacity: 1; }
+    .sparkle {
+      width: 96px; height: 96px; border-radius: 50%;
+      background: var(--burgundy-50); color: var(--burgundy);
+      display: flex; align-items: center; justify-content: center; font-size: 40px;
+      margin-bottom: 16px;
+    }
+    .analyzing .sparkle { animation: pulse 1.1s ease-in-out infinite; }
+    @keyframes pulse { 50% { transform: scale(1.12); box-shadow: 0 0 0 14px color-mix(in srgb, var(--burgundy) 8%, transparent); } }
+    .p-h { font-weight: 800; font-size: 16px; }
+    .p-s { font-size: 12.5px; color: var(--ink-3); margin-top: 6px; }
+    .result-rows { margin-top: 14px; display: flex; flex-direction: column; gap: 9px; width: 100%; }
+    .rrow {
+      display: flex; align-items: center; gap: 8px; justify-content: center;
+      font-size: 13.5px; font-weight: 600;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity .4s var(--ease), transform .4s var(--ease);
+    }
+    .rrow.on { opacity: 1; transform: none; }
+    .rrow .tag { font-size: 11px; color: var(--burgundy); background: var(--burgundy-50); border-radius: 6px; padding: 2px 6px; font-weight: 700; }
+    @media (prefers-color-scheme: dark) { .rrow .tag { color: #e0a8b2; } }
+    .p-confirm {
+      margin-top: 18px; background: var(--burgundy); color: #fff;
+      font-size: 13.5px; font-weight: 700; border-radius: 12px; padding: 10px 44px;
+      opacity: 0; transition: opacity .4s var(--ease);
+    }
+    .p-confirm.on { opacity: 1; }
+    .p-confirm.tapped { animation: tap .35s var(--ease); }
+    @keyframes tap { 40% { transform: scale(.94); } }
+    .saved-card {
+      width: 100%; background: var(--surface-muted); border-radius: 16px;
+      padding: 13px 14px; display: flex; align-items: center; gap: 10px; text-align: left;
+      opacity: 0; transform: translateY(14px);
+      transition: opacity .45s var(--ease), transform .45s var(--ease);
+    }
+    .saved-card.on { opacity: 1; transform: none; }
+    .saved-card .thumb { width: 38px; height: 38px; border-radius: 50%; background: var(--burgundy-100); display: flex; align-items: center; justify-content: center; font-size: 18px; flex: none; }
+    .saved-card .n { font-size: 13.5px; font-weight: 700; }
+    .saved-card .d { font-size: 11.5px; color: var(--ink-3); }
+    .dday { margin-left: auto; background: var(--burgundy-50); color: var(--burgundy); font-weight: 800; font-size: 12px; border-radius: 999px; padding: 5px 10px; flex: none; }
+    @media (prefers-color-scheme: dark) { .dday { color: #e0a8b2; } }
+    .toast {
+      position: absolute; left: 50%; bottom: 84px; transform: translateX(-50%) translateY(16px);
+      background: var(--ink); color: var(--surface); font-size: 12px; font-weight: 600;
+      padding: 8px 16px; border-radius: 999px; white-space: nowrap;
+      opacity: 0; transition: opacity .35s var(--ease), transform .35s var(--ease); z-index: 6;
+    }
+    .toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .pay-chips { display: flex; gap: 6px; margin-top: 14px; }
+    .chip { font-size: 12px; font-weight: 600; color: var(--ink-2); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; transition: all .3s var(--ease); }
+    .chip.sel { background: var(--burgundy); border-color: var(--burgundy); color: #fff; }
+    .pay-amount { margin-top: 16px; font-size: 30px; font-weight: 800; color: var(--burgundy); opacity: 0; transform: scale(.9); transition: opacity .45s var(--ease), transform .45s var(--ease); }
+    .pay-amount.on { opacity: 1; transform: none; }
+    @media (prefers-color-scheme: dark) { .pay-amount { color: #e0a8b2; } }
+    .pay-why { font-size: 12px; color: var(--ink-3); margin-top: 8px; max-width: 220px; opacity: 0; transition: opacity .45s var(--ease) .1s; }
+    .pay-why.on { opacity: 1; }
+    .p-input {
+      margin: 0 12px 16px; background: var(--surface-muted);
+      border-radius: 16px; padding: 11px 14px; display: flex; align-items: center; gap: 8px;
+      font-size: 12.5px; color: var(--ink-3); position: relative; z-index: 4;
+    }
+    .p-input .txt { flex: 1; text-align: left; white-space: nowrap; overflow: hidden; color: var(--ink-2); }
+    .p-input .txt:empty::before { content: "링크 또는 청첩장 문자 붙여넣기..."; color: var(--ink-3); }
+    .p-input .send { color: var(--burgundy); font-weight: 800; font-size: 15px; }
+    .p-input .send.tapped { animation: tap .35s var(--ease); }
+    .caret { display: inline-block; width: 2px; height: 13px; background: var(--burgundy); margin-left: 1px; vertical-align: -2px; animation: blink 1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .demo-steps { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .dstep {
+      font-family: inherit; font-size: 12.5px; font-weight: 700; color: var(--ink-3);
+      background: var(--surface-muted); border: 0; border-radius: 999px; padding: 6px 13px;
+      cursor: pointer; transition: all .3s var(--ease);
+    }
+    .dstep:hover { color: var(--ink); background: var(--burgundy-50); }
+    .dstep.on, .dstep.on:hover { background: var(--burgundy); color: #fff; }
+    .demo-caption { font-size: 14px; color: var(--ink-2); min-height: 22px; text-align: center; font-weight: 600; }
+
+    /* ---------- sections ---------- */
+    section.block { padding: 72px 0; }
+    section.block.alt { background: var(--surface-muted); }
+    .k { text-align: center; margin-bottom: 44px; }
+    .k h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.01em; }
+    .k p { margin-top: 10px; color: var(--ink-2); font-size: 16px; }
+
+    .paths { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .path {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 22px; overflow: hidden;
+    }
+    .path h3 { margin-top: 18px; font-size: 17px; font-weight: 800; }
+    .path p { margin-top: 6px; font-size: 14px; color: var(--ink-2); }
+    /* each card opens with the artifact itself, not an icon */
+    .art { height: 96px; display: flex; align-items: center; justify-content: center; }
+    .art-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--surface-muted); border: 1px solid var(--line);
+      border-radius: 999px; padding: 9px 16px; font-size: 13px; color: var(--ink-2);
+      font-weight: 600;
+    }
+    .art-link .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); flex: none; }
+    .art-link u { text-decoration-color: var(--burgundy); text-underline-offset: 3px; }
+    .art-kakao { display: flex; align-items: flex-end; gap: 7px; }
+    .art-kakao .face { width: 28px; height: 28px; border-radius: 12px; background: var(--burgundy-100); flex: none; }
+    .art-kakao .bubble {
+      background: #fee500; color: #1d1d1f; border-radius: 14px 14px 14px 3px;
+      padding: 9px 13px; font-size: 12px; line-height: 1.5; max-width: 200px; text-align: left;
+      font-weight: 500;
+    }
+    .art-photo { position: relative; width: 78px; height: 96px; }
+    .art-photo .paper {
+      position: absolute; inset: 0; transform: rotate(-5deg);
+      background: var(--beige-100); border: 1px solid var(--line); border-radius: 10px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px;
+      box-shadow: 0 8px 18px rgba(0,0,0,.08);
+    }
+    .art-photo .paper i { display: block; height: 4px; border-radius: 2px; background: var(--line); width: 44px; }
+    .art-photo .paper i:first-child { width: 30px; background: var(--burgundy-200, var(--burgundy-100)); }
+    .art-photo .date {
+      position: absolute; right: -12px; bottom: 6px; transform: rotate(4deg);
+      background: var(--burgundy); color: #fff; font-size: 11px; font-weight: 800;
+      border-radius: 8px; padding: 4px 8px;
+    }
+
+    /* alternating feature rows built on real screenshots */
+    .zig { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; padding: 36px 0; }
+    .zig + .zig { border-top: 1px solid var(--line); }
+    .zig img { width: 250px; border-radius: 22px; border: 1px solid var(--line); box-shadow: 0 14px 36px rgba(0,0,0,.10); margin: 0 auto; }
+    .zig.flip .shotcell { order: 2; }
+    .zig h3 { font-size: 23px; font-weight: 800; letter-spacing: -0.01em; }
+    .zig .desc { margin-top: 10px; font-size: 15.5px; color: var(--ink-2); max-width: 400px; }
+    .zig .pt { margin-top: 14px; font-size: 14px; color: var(--ink-2); display: flex; flex-direction: column; gap: 7px; }
+    .zig .pt span::before { content: ""; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--burgundy); margin: 0 9px 3px 1px; }
+    .minor {
+      margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--line);
+      display: flex; flex-wrap: wrap; gap: 8px 26px; justify-content: center;
+      font-size: 14px; color: var(--ink-2);
+    }
+    .minor b { color: var(--ink); font-weight: 700; }
+
+    /* numbers */
+    /* one number carries the section; the rest stay supporting */
+    .stats-hero { display: grid; grid-template-columns: 1.35fr 1fr; grid-auto-rows: 1fr; gap: 16px; margin-bottom: 28px; }
+    .stat {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 24px 22px; text-align: center;
+    }
+    .stat.big { grid-row: 1 / 3; display: flex; flex-direction: column; justify-content: center; background: var(--surface-muted); border: 0; }
+    .stat.big .v { font-size: 96px; line-height: 1.05; }
+    .stat.big .m { font-size: 14px; max-width: 300px; margin: 6px auto 0; }
+    .stat .v { font-size: 34px; font-weight: 800; color: var(--burgundy); letter-spacing: -0.02em; }
+    @media (prefers-color-scheme: dark) { .stat .v { color: #e0a8b2; } }
+    .stat .l { margin-top: 4px; font-size: 14px; font-weight: 700; }
+    .stat .m { margin-top: 2px; font-size: 12.5px; color: var(--ink-3); }
+    .bars { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 24px; }
+    .bars h3 { font-size: 15px; font-weight: 800; margin-bottom: 16px; }
+    .bar-row { display: grid; grid-template-columns: 64px 1fr 44px; align-items: center; gap: 12px; margin-top: 10px; font-size: 13.5px; }
+    .bar-row .n { color: var(--ink-2); font-weight: 600; }
+    .bar-track { height: 10px; background: var(--surface-muted); border-radius: 999px; overflow: hidden; }
+    .bar-fill { height: 100%; width: 0; background: var(--burgundy); border-radius: 999px; transition: width 1s var(--ease); }
+    .bar-row .v { font-weight: 800; text-align: right; }
+    .stats-foot { margin-top: 14px; font-size: 13px; color: var(--ink-3); text-align: center; }
+    .stats-foot a { color: var(--burgundy); font-weight: 700; }
+    @media (prefers-color-scheme: dark) { .stats-foot a { color: #e0a8b2; } }
+
+    /* final cta */
+    /* screenshots carousel */
+    .shots { display: flex; gap: 18px; overflow-x: auto; padding: 8px 4px 20px; scroll-snap-type: x mandatory; }
+    .shots::-webkit-scrollbar { height: 6px; }
+    .shots::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
+    .shot { flex: none; width: 224px; scroll-snap-align: center; }
+    .shot img { border-radius: 24px; border: 1px solid var(--line); box-shadow: 0 12px 32px rgba(0,0,0,.10); }
+    .shot figcaption { text-align: center; font-size: 13px; color: var(--ink-2); margin-top: 10px; font-weight: 600; }
+
+    .voice { padding: 76px 0; text-align: center; }
+    .voice .quote { font-size: 21px; font-weight: 700; line-height: 1.65; letter-spacing: -0.01em; }
+    .voice .who { margin-top: 14px; color: var(--ink-3); font-size: 14px; }
+
+    .cta-final { text-align: center; padding: 88px 0; }
+    .cta-final .icon { width: 84px; height: 84px; border-radius: 22px; margin: 0 auto 22px; box-shadow: 0 12px 30px rgba(128,0,32,.25); }
+    .cta-final h2 { font-size: 32px; font-weight: 800; }
+    .cta-final p { margin-top: 10px; color: var(--ink-2); }
+    .cta-final .stores { justify-content: center; }
+
+    footer { border-top: 1px solid var(--line); padding: 28px 0 48px; }
+    footer .wrap { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; font-size: 13px; color: var(--ink-3); }
+    footer nav { display: flex; gap: 16px; margin-left: auto; }
+    footer a:hover { color: var(--ink); }
+
+    /* reveal on scroll */
+    .rv { opacity: 0; transform: translateY(18px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
+    .rv.in { opacity: 1; transform: none; }
+
+    @media (max-width: 880px) {
+      h1 { font-size: 32px; }
+      .hero { padding-top: 40px; }
+      .hero .wrap { grid-template-columns: 1fr; gap: 40px; }
+      .demo-col { order: 2; }
+      .paths, .stats-hero { grid-template-columns: 1fr; }
+      .stat.big { grid-row: auto; }
+      .stat.big .v { font-size: 64px; }
+      .zig { grid-template-columns: 1fr; gap: 22px; padding: 28px 0; }
+      .zig.flip .shotcell { order: 0; }
+      .zig img { width: 210px; }
+      .voice .quote { font-size: 17px; }
+      .topbar nav .hide-m { display: none; }
+      section.block { padding: 56px 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { animation: none !important; transition: none !important; }
+      .rv { opacity: 1; transform: none; }
+    }
+  </style>
 </head>
 <body>
+
+<header class="topbar">
   <div class="wrap">
-    <header class="topbar">
-      <img src="/assets/icon.png" alt="">
-      <a class="brand" href="/">청모</a>
-      <nav><a href="/terms">이용약관</a><a href="/privacy">개인정보처리방침</a></nav>
-    </header>
+    <img src="/assets/icon.png" alt="">
+    <a class="brand" href="/">청모</a>
+    <nav>
+      <a class="hide-m" href="#features">기능</a>
+      <a class="hide-m" href="#numbers">정확도</a>
+      <a class="cta" href="#download">앱 다운로드</a>
+    </nav>
+  </div>
+</header>
 
-    <section class="hero">
-      <img src="/assets/icon.png" alt="청모 앱 아이콘">
-      <h1>청첩장, 붙여넣기만 하면 끝</h1>
-      <p>링크·캡처 이미지·안내 문자를 넣으면 AI가 예식 일정과 장소, 축의금 계좌를 읽어 캘린더에 정리합니다.</p>
-      <div class="badges">
-        <a href="https://play.google.com/store/apps/details?id=com.taebbong.chungmo">Google Play</a>
-        <a href="https://apps.apple.com/kr/app/id6745786004">App Store</a>
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Play Store · App Store 정식 출시</span>
+      <h1>청첩장을 붙여넣으면<br><span class="accent">끝나는</span> AI 경조사 비서</h1>
+      <p class="sub">링크, 카톡 캡처, 안내 문자 등 받은 그대로 넣으세요. AI가 신랑·신부, 일시, 장소, 축의금 계좌까지 읽어 일정을 만들고, 축의금 액수도 추천해 드립니다.</p>
+      <div class="stores" id="download">
+        <a class="store-btn" href="https://apps.apple.com/kr/app/id6745786004">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 12.54c-.03-2.89 2.36-4.27 2.47-4.34-1.35-1.97-3.44-2.24-4.18-2.27-1.78-.18-3.47 1.05-4.37 1.05-.9 0-2.29-1.02-3.77-1-1.94.03-3.72 1.13-4.72 2.86-2.01 3.49-.51 8.66 1.45 11.49.96 1.39 2.1 2.94 3.6 2.88 1.44-.06 1.99-.93 3.73-.93s2.23.93 3.76.9c1.55-.03 2.53-1.41 3.48-2.8 1.1-1.61 1.55-3.17 1.57-3.25-.03-.02-3.01-1.16-3.02-4.59zM14.16 4.06c.79-.96 1.33-2.3 1.18-3.63-1.14.05-2.53.76-3.35 1.72-.73.85-1.38 2.21-1.21 3.51 1.28.1 2.58-.65 3.38-1.6z"/></svg>
+          <span class="lines"><span class="small">Download on the</span><br><span class="big">App Store</span></span>
+        </a>
+        <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.taebbong.chungmo">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.61 1.81c-.36.19-.61.57-.61 1.06v18.25c0 .49.25.87.61 1.06l10.3-10.18L3.61 1.81zM15.4 10.5 5.05 1.36l12.03 6.93-1.68 2.21zm0 3 1.68 2.2L5.05 22.65l10.35-9.15zm4.97-2.9-2.63-1.52-1.86 1.92 1.86 1.92 2.63-1.52c.82-.47.82-2.33 0-2.8z"/></svg>
+          <span class="lines"><span class="small">GET IT ON</span><br><span class="big">Google Play</span></span>
+        </a>
       </div>
-    </section>
+      <p class="hero-note">iOS 15+ · Android 8+ · 무료</p>
+    </div>
 
-    <section class="cards">
-      <div class="card"><h3>AI 청첩장 파싱</h3><p>모바일 청첩장 링크, 카톡 캡처, 문자 메시지에서 신랑·신부, 일시, 장소, 계좌를 추출합니다.</p></div>
-      <div class="card"><h3>일정과 알림</h3><p>캘린더·목록으로 모아 보고, 예식 전날 알림과 홈 화면 위젯으로 D-day를 확인합니다.</p></div>
-      <div class="card"><h3>축의금 기록과 추천</h3><p>참석 여부와 축의금을 기록하고, 관계와 지난 기록을 바탕으로 금액을 추천받습니다.</p></div>
-    </section>
+    <div class="demo-col">
+      <div class="phone" id="phone" aria-label="청모 앱 라이브 데모">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="p-appbar">
+            <span class="ic">📅</span><span class="t">청모</span>
+            <span class="sp"><span class="ic">📈</span><span class="ic">⚙️</span></span>
+          </div>
+          <div class="p-body">
+            <!-- stage: idle -->
+            <div class="p-stage on" data-stage="idle">
+              <div class="sparkle">✦</div>
+              <div class="p-h">모바일 청첩장을 첨부해주세요.</div>
+              <div class="p-s">링크·문자·사진 무엇이든 AI가 분석해드려요.</div>
+            </div>
+            <!-- stage: analyzing -->
+            <div class="p-stage analyzing" data-stage="analyzing">
+              <div class="sparkle">✦</div>
+              <div class="p-h">AI가 청첩장을 읽고 있어요</div>
+              <div class="p-s">일시·장소·계좌를 추출하는 중…</div>
+            </div>
+            <!-- stage: result -->
+            <div class="p-stage" data-stage="result">
+              <div class="sparkle">💍</div>
+              <div class="result-rows">
+                <div class="rrow"><span class="tag">신랑·신부</span> 김민준 &amp; 이서연</div>
+                <div class="rrow"><span class="tag">일시</span> 2026년 10월 24일(토) 13시 30분</div>
+                <div class="rrow"><span class="tag">장소</span> 더채플앳청담 3층 채플홀</div>
+                <div class="rrow"><span class="tag">계좌</span> 양가 축의금 계좌 2건</div>
+              </div>
+              <div class="p-confirm">확인</div>
+            </div>
+            <!-- stage: saved -->
+            <div class="p-stage" data-stage="saved">
+              <div class="saved-card">
+                <div class="thumb">💐</div>
+                <div>
+                  <div class="n">김민준 &amp; 이서연</div>
+                  <div class="d">2026년 10월 24일(토) 13시 30분</div>
+                </div>
+                <div class="dday" id="demoDday">D-40</div>
+              </div>
+              <div class="p-s" style="margin-top:14px">예식 전날, 잊지 않게 알려드려요.</div>
+            </div>
+            <!-- stage: pay -->
+            <div class="p-stage" data-stage="pay">
+              <div class="p-h">축의금, 얼마가 적당할까요?</div>
+              <div class="pay-chips">
+                <span class="chip" data-chip="가족">가족</span>
+                <span class="chip" data-chip="친구">친구</span>
+                <span class="chip" data-chip="직장">직장</span>
+              </div>
+              <div class="pay-amount">100,000원</div>
+              <div class="pay-why">내 과거 기록과 친구 관계 평균을 근거로 AI가 추천한 금액이에요.</div>
+            </div>
+            <div class="toast">일정이 저장됐어요 ✓</div>
+          </div>
+          <div class="p-input">
+            <span>🖼️</span>
+            <span class="txt"></span>
+            <span class="send">↑</span>
+          </div>
+        </div>
+      </div>
+      <div class="demo-caption" id="demoCaption">받은 청첩장을 그대로 붙여넣으세요</div>
+      <div class="demo-steps" id="demoSteps">
+        <button type="button" class="dstep" data-step="paste">① 붙여넣기</button>
+        <button type="button" class="dstep" data-step="analyze">② AI 분석</button>
+        <button type="button" class="dstep" data-step="save">③ 일정 완성</button>
+        <button type="button" class="dstep" data-step="pay">④ 축의금 추천</button>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <footer class="footer">
-      <span>© 밍기원정대</span>
+<section class="block alt" id="features">
+  <div class="wrap">
+    <div class="k rv">
+      <h2>무엇을 받았든, 넣기만 하세요</h2>
+      <p>모든 타입의 청첩장을 처리합니다. 캘린더에 직접 등록하는 일은 이제 없습니다.</p>
+    </div>
+    <div class="paths">
+      <div class="path rv">
+        <div class="art"><span class="art-link"><span class="dot"></span><u>mcard.wedding/minjun-seoyeon</u></span></div>
+        <h3>모바일 청첩장 링크</h3>
+        <p>자체 크롤러가 벤더마다 제각각인 청첩장 페이지에서 본문을 추출해 AI에 전달합니다.</p>
+      </div>
+      <div class="path rv">
+        <div class="art">
+          <div class="art-kakao">
+            <span class="face"></span>
+            <span class="bubble">저희 결혼합니다 💐<br>10월 24일 토요일 오후 1시 30분</span>
+          </div>
+        </div>
+        <h3>안내 문자 · 카톡</h3>
+        <p>링크가 없어도 됩니다. 안내 문자를 붙여넣으면 텍스트만으로 일정을 만듭니다.</p>
+      </div>
+      <div class="path rv">
+        <div class="art">
+          <div class="art-photo">
+            <div class="paper"><i></i><i></i><i></i></div>
+            <span class="date">10.24</span>
+          </div>
+        </div>
+        <h3>캡처 · 종이 청첩장 사진</h3>
+        <p>카톡 캡처, 종이 청첩장 촬영본도 멀티모달 AI가 읽습니다. 공유 시트에서 바로 보내도 돼요.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="numbers">
+  <div class="wrap">
+    <div class="k rv">
+      <h2>증명된 안정성</h2>
+      <p>실제 청첩장 벤더 유형 16종을 재현한 40건 평가셋과 자동 채점기를 직접 구축해 검증했습니다.</p>
+    </div>
+    <div class="stats-hero">
+      <div class="stat big rv"><div class="v">85%</div><div class="l">핵심 필드 완전 정확도</div><div class="m">이름·일시·장소·계좌가 모두 맞아 수정 없이 저장되는 비율</div></div>
+      <div class="stat rv"><div class="v">40건</div><div class="l">자가 구축 평가셋</div><div class="m">벤더 유형 16종 재현 · 자동 채점 · 회귀 추적</div></div>
+      <div class="stat rv"><div class="v">6초</div><div class="l">평균 분석 시간</div><div class="m">붙여넣기부터 일정 완성까지</div></div>
+    </div>
+    <div class="bars rv">
+      <h3>필드별 정확도</h3>
+      <div class="bar-row"><span class="n">이름</span><div class="bar-track"><div class="bar-fill" data-w="100"></div></div><span class="v">100%</span></div>
+      <div class="bar-row"><span class="n">장소</span><div class="bar-track"><div class="bar-fill" data-w="95"></div></div><span class="v">95%</span></div>
+      <div class="bar-row"><span class="n">계좌</span><div class="bar-track"><div class="bar-fill" data-w="93"></div></div><span class="v">93%</span></div>
+      <div class="bar-row"><span class="n">일시</span><div class="bar-track"><div class="bar-fill" data-w="90"></div></div><span class="v">90%</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="block alt">
+  <div class="wrap">
+    <div class="k rv">
+      <h2>저장 이후까지 챙기는 비서</h2>
+      <p>일정 등록은 시작일 뿐. 참석과 축의금, 그 이후의 기록까지 한 곳에서.</p>
+    </div>
+    <div class="zig rv">
+      <div class="shotcell"><img src="/assets/shot-detail.jpg" alt="일정 상세 - D-day, 장소, 축의금, 계좌" loading="lazy"></div>
+      <div>
+        <h3>축의금, AI에게 물어보세요</h3>
+        <p class="desc">관계와 친밀도 메모를 적으면, 내 과거 기록 통계와 공개 설문 데이터를 근거로 금액과 이유를 제안합니다.</p>
+        <div class="pt">
+          <span>참석 여부·낸 금액을 결혼식별로 기록</span>
+          <span>양가 계좌는 자동 추출, 탭 한 번에 복사</span>
+        </div>
+      </div>
+    </div>
+    <div class="zig flip rv">
+      <div class="shotcell"><img src="/assets/shot-list.jpg" alt="일정 리스트 - 연간 축의금 합계" loading="lazy"></div>
+      <div>
+        <h3>낸 만큼 똑똑하게 기록하기</h3>
+        <p class="desc">올해 낸 축의금 합계와 연도별·관계별 통계를 차트로 봅니다. 경조사비 지출이 처음으로 한눈에 잡혀요.</p>
+      </div>
+    </div>
+    <div class="zig rv">
+      <div class="shotcell"><img src="/assets/shot-calendar.jpg" alt="캘린더 - 예식 일정 마커" loading="lazy"></div>
+      <div>
+        <h3>캘린더로 한눈에</h3>
+        <p class="desc">저장한 예식이 달력에 표시되고, 탭 한 번으로 기기 기본 캘린더에도 등록됩니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="k rv">
+      <h2>실제 앱 화면</h2>
+    </div>
+    <div class="shots rv">
+      <figure class="shot"><img src="/assets/shot-home.jpg" alt="홈 - 청첩장 붙여넣기" loading="lazy"><figcaption>붙여넣으면 시작</figcaption></figure>
+      <figure class="shot"><img src="/assets/shot-result.jpg" alt="AI 분석 결과" loading="lazy"><figcaption>AI 분석 결과</figcaption></figure>
+      <figure class="shot"><img src="/assets/shot-detail.jpg" alt="일정 상세" loading="lazy"><figcaption>D-day와 계좌까지</figcaption></figure>
+      <figure class="shot"><img src="/assets/shot-calendar.jpg" alt="캘린더" loading="lazy"><figcaption>캘린더로 한눈에</figcaption></figure>
+      <figure class="shot"><img src="/assets/shot-list.jpg" alt="일정 리스트" loading="lazy"><figcaption>연간 축의금 합계</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section class="voice">
+  <div class="wrap rv">
+    <p class="quote">"결혼식 직전 채팅방 올리면서 청첩장 찾다가 만들었습니다.<br>귀찮은 일정관리는 청모 앱에서."</p>
+  </div>
+</section>
+
+<section class="cta-final">
+  <div class="wrap rv">
+    <img class="icon" src="/assets/icon.png" alt="청모 앱 아이콘">
+    <h2>다음 청첩장부터, 붙여넣기만 하세요</h2>
+    <p>무료로 시작할 수 있습니다.</p>
+    <div class="stores" style="margin-top:24px">
+      <a class="store-btn" href="https://apps.apple.com/kr/app/id6745786004">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 12.54c-.03-2.89 2.36-4.27 2.47-4.34-1.35-1.97-3.44-2.24-4.18-2.27-1.78-.18-3.47 1.05-4.37 1.05-.9 0-2.29-1.02-3.77-1-1.94.03-3.72 1.13-4.72 2.86-2.01 3.49-.51 8.66 1.45 11.49.96 1.39 2.1 2.94 3.6 2.88 1.44-.06 1.99-.93 3.73-.93s2.23.93 3.76.9c1.55-.03 2.53-1.41 3.48-2.8 1.1-1.61 1.55-3.17 1.57-3.25-.03-.02-3.01-1.16-3.02-4.59zM14.16 4.06c.79-.96 1.33-2.3 1.18-3.63-1.14.05-2.53.76-3.35 1.72-.73.85-1.38 2.21-1.21 3.51 1.28.1 2.58-.65 3.38-1.6z"/></svg>
+        <span class="lines"><span class="small">Download on the</span><br><span class="big">App Store</span></span>
+      </a>
+      <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.taebbong.chungmo">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.61 1.81c-.36.19-.61.57-.61 1.06v18.25c0 .49.25.87.61 1.06l10.3-10.18L3.61 1.81zM15.4 10.5 5.05 1.36l12.03 6.93-1.68 2.21zm0 3 1.68 2.2L5.05 22.65l10.35-9.15zm4.97-2.9-2.63-1.52-1.86 1.92 1.86 1.92 2.63-1.52c.82-.47.82-2.33 0-2.8z"/></svg>
+        <span class="lines"><span class="small">GET IT ON</span><br><span class="big">Google Play</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 TaeBbong. All rights reserved.</span>
+    <nav>
+      <a href="https://github.com/TaeBbong/chungmo-app">GitHub</a>
       <a href="/terms">이용약관</a>
       <a href="/privacy">개인정보처리방침</a>
-      <a href="mailto:mok05289@naver.com">문의</a>
-    </footer>
+    </nav>
   </div>
+</footer>
+
+<script>
+(function () {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // reveal on scroll
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        if (e.target.classList.contains('bars')) {
+          e.target.querySelectorAll('.bar-fill').forEach(function (b) {
+            b.style.width = b.dataset.w + '%';
+          });
+        }
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.18 });
+  document.querySelectorAll('.rv').forEach(function (el) { io.observe(el); });
+  if (reduced) {
+    document.querySelectorAll('.bar-fill').forEach(function (b) { b.style.width = b.dataset.w + '%'; });
+  }
+
+  // ----- live demo -----
+  var phone = document.getElementById('phone');
+  if (!phone) return;
+  var stages = {};
+  phone.querySelectorAll('.p-stage').forEach(function (s) { stages[s.dataset.stage] = s; });
+  var inputTxt = phone.querySelector('.p-input .txt');
+  var sendBtn = phone.querySelector('.p-input .send');
+  var toast = phone.querySelector('.toast');
+  var confirmBtn = stages.result.querySelector('.p-confirm');
+  var rrows = stages.result.querySelectorAll('.rrow');
+  var chips = stages.pay.querySelectorAll('.chip');
+  var payAmount = stages.pay.querySelector('.pay-amount');
+  var payWhy = stages.pay.querySelector('.pay-why');
+  var caption = document.getElementById('demoCaption');
+  var stepEls = document.getElementById('demoSteps').querySelectorAll('.dstep');
+  var INVITE = '저희 결혼합니다 💐 신랑 김민준 · 신부 이서연 / 10월 24일(토) 오후 1시 30분 더채플앳청담…';
+  var SEQ = ['paste', 'analyze', 'save', 'pay'];
+  var CAPTIONS = {
+    paste: '받은 청첩장을 그대로 붙여넣으세요',
+    analyze: 'AI가 일시·장소·계좌를 추출합니다 - 평균 6초',
+    save: '수정할 것 없이, 이대로 저장하면 끝',
+    pay: '관계를 고르면, 축의금 액수까지 AI가 추천'
+  };
+  // Bumping `gen` cancels the running loop: every await checks it before
+  // touching the DOM again, so a step click can restart cleanly mid-stage.
+  var gen = 0;
+
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function cancelled(g) { return g !== gen; }
+  function show(name) {
+    Object.keys(stages).forEach(function (k) {
+      var active = k === name;
+      stages[k].classList.toggle('on', active);
+      stages[k].setAttribute('aria-hidden', String(!active));
+    });
+  }
+  function setStep(name) {
+    stepEls.forEach(function (s) {
+      var active = s.dataset.step === name;
+      s.classList.toggle('on', active);
+      s.setAttribute('aria-pressed', String(active));
+    });
+    caption.textContent = CAPTIONS[name];
+  }
+  // The demo names a concrete wedding date, so the badge must track it:
+  // a frozen D-40 would drift wrong the day after shipping.
+  (function () {
+    var el = document.getElementById('demoDday');
+    var days = Math.ceil((new Date(2026, 9, 24) - new Date().setHours(0, 0, 0, 0)) / 86400000);
+    el.textContent = days > 0 ? 'D-' + days : days === 0 ? 'D-DAY' : '예정';
+  })();
+  function resetDemo() {
+    inputTxt.textContent = '';
+    sendBtn.classList.remove('tapped');
+    rrows.forEach(function (r) { r.classList.remove('on'); });
+    confirmBtn.classList.remove('on', 'tapped');
+    stages.saved.querySelector('.saved-card').classList.remove('on');
+    toast.classList.remove('on');
+    chips.forEach(function (c) { c.classList.remove('sel'); });
+    payAmount.classList.remove('on');
+    payWhy.classList.remove('on');
+  }
+
+  async function typeInto(el, text, g) {
+    var caret = document.createElement('span');
+    caret.className = 'caret';
+    el.textContent = '';
+    el.appendChild(caret);
+    for (var i = 0; i < text.length; i++) {
+      if (cancelled(g)) { caret.remove(); return; }
+      caret.insertAdjacentText('beforebegin', text[i]);
+      /* keep the tail visible while typing */
+      el.scrollLeft = el.scrollWidth;
+      await sleep(45);
+    }
+    await sleep(500);
+    caret.remove();
+  }
+
+  var STAGES = {
+    paste: async function (g) {
+      resetDemo();
+      show('idle');
+      setStep('paste');
+      await sleep(2000); if (cancelled(g)) return;
+      await typeInto(inputTxt, INVITE, g); if (cancelled(g)) return;
+      sendBtn.classList.add('tapped');
+      await sleep(450);
+      sendBtn.classList.remove('tapped');
+    },
+    analyze: async function (g) {
+      resetDemo();
+      inputTxt.textContent = INVITE;
+      show('analyzing');
+      setStep('analyze');
+      await sleep(3400); if (cancelled(g)) return;
+      inputTxt.textContent = '';
+    },
+    save: async function (g) {
+      resetDemo();
+      show('result');
+      setStep('save');
+      for (var i = 0; i < rrows.length; i++) {
+        if (cancelled(g)) return;
+        rrows[i].classList.add('on');
+        await sleep(620);
+      }
+      confirmBtn.classList.add('on');
+      await sleep(1300); if (cancelled(g)) return;
+      confirmBtn.classList.add('tapped');
+      await sleep(500); if (cancelled(g)) return;
+      show('saved');
+      stages.saved.querySelector('.saved-card').classList.add('on');
+      toast.classList.add('on');
+      await sleep(2100); if (cancelled(g)) return;
+      toast.classList.remove('on');
+      await sleep(1100);
+    },
+    pay: async function (g) {
+      resetDemo();
+      show('pay');
+      setStep('pay');
+      await sleep(900); if (cancelled(g)) return;
+      chips.forEach(function (c) { c.classList.toggle('sel', c.dataset.chip === '친구'); });
+      await sleep(1100); if (cancelled(g)) return;
+      payAmount.classList.add('on');
+      payWhy.classList.add('on');
+      await sleep(4200);
+    }
+  };
+
+  async function run(fromIdx) {
+    var g = ++gen;
+    for (var i = fromIdx; !cancelled(g); i = (i + 1) % SEQ.length) {
+      await STAGES[SEQ[i]](g);
+    }
+  }
+
+  function showStatic(name) {
+    gen++;
+    resetDemo();
+    setStep(name);
+    if (name === 'paste') {
+      show('idle');
+      inputTxt.textContent = INVITE;
+    } else if (name === 'analyze') {
+      show('analyzing');
+      inputTxt.textContent = INVITE;
+    } else if (name === 'save') {
+      show('result');
+      rrows.forEach(function (r) { r.classList.add('on'); });
+      confirmBtn.classList.add('on');
+    } else {
+      show('pay');
+      chips.forEach(function (c) { c.classList.toggle('sel', c.dataset.chip === '친구'); });
+      payAmount.classList.add('on');
+      payWhy.classList.add('on');
+    }
+  }
+
+  stepEls.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (reduced) { showStatic(btn.dataset.step); return; }
+      run(SEQ.indexOf(btn.dataset.step));
+    });
+  });
+
+  // Seed the accessibility state before any loop or observer runs.
+  show('idle');
+  stepEls.forEach(function (s) { s.setAttribute('aria-pressed', 'false'); });
+
+  if (reduced) {
+    showStatic('save');
+  } else {
+    var started = false;
+    var demoIo = new IntersectionObserver(function (entries) {
+      if (!started && entries[0].isIntersecting) {
+        started = true;
+        demoIo.disconnect();
+        run(0);
+      }
+    }, { threshold: 0.3 });
+    demoIo.observe(phone);
+  }
+})();
+</script>
+
 </body>
 </html>
