@@ -65,7 +65,7 @@
     .topbar .wrap { display: flex; align-items: center; gap: 10px; height: 56px; }
     .topbar img { width: 28px; height: 28px; border-radius: 7px; }
     .topbar .brand { font-weight: 800; font-size: 17px; }
-    .topbar nav { margin-left: auto; display: flex; gap: 18px; font-size: 14px; color: var(--ink-2); }
+    .topbar nav { margin-left: auto; display: flex; align-items: center; gap: 18px; font-size: 14px; color: var(--ink-2); }
     .topbar nav a:hover { color: var(--ink); }
     .topbar .cta {
       background: var(--burgundy); color: #fff; font-weight: 700;
@@ -193,11 +193,12 @@
 
     .demo-steps { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
     .dstep {
-      font-size: 12.5px; font-weight: 700; color: var(--ink-3);
-      background: var(--surface-muted); border-radius: 999px; padding: 6px 13px;
-      transition: all .3s var(--ease);
+      font-family: inherit; font-size: 12.5px; font-weight: 700; color: var(--ink-3);
+      background: var(--surface-muted); border: 0; border-radius: 999px; padding: 6px 13px;
+      cursor: pointer; transition: all .3s var(--ease);
     }
-    .dstep.on { background: var(--burgundy); color: #fff; }
+    .dstep:hover { color: var(--ink); background: var(--burgundy-50); }
+    .dstep.on, .dstep.on:hover { background: var(--burgundy); color: #fff; }
     .demo-caption { font-size: 14px; color: var(--ink-2); min-height: 22px; text-align: center; font-weight: 600; }
 
     /* ---------- sections ---------- */
@@ -383,10 +384,10 @@
       </div>
       <div class="demo-caption" id="demoCaption">받은 청첩장을 그대로 붙여넣으세요</div>
       <div class="demo-steps" id="demoSteps">
-        <span class="dstep" data-step="paste">① 붙여넣기</span>
-        <span class="dstep" data-step="analyze">② AI 분석</span>
-        <span class="dstep" data-step="save">③ 일정 완성</span>
-        <span class="dstep" data-step="pay">④ 축의금 추천</span>
+        <button type="button" class="dstep" data-step="paste">① 붙여넣기</button>
+        <button type="button" class="dstep" data-step="analyze">② AI 분석</button>
+        <button type="button" class="dstep" data-step="save">③ 일정 완성</button>
+        <button type="button" class="dstep" data-step="pay">④ 축의금 추천</button>
       </div>
     </div>
   </div>
@@ -532,17 +533,29 @@
   var caption = document.getElementById('demoCaption');
   var stepEls = document.getElementById('demoSteps').querySelectorAll('.dstep');
   var INVITE = '저희 결혼합니다 💐 신랑 김민준 · 신부 이서연 / 10월 24일(토) 오후 1시 30분 더채플앳청담…';
+  var SEQ = ['paste', 'analyze', 'save', 'pay'];
+  var CAPTIONS = {
+    paste: '받은 청첩장을 그대로 붙여넣으세요',
+    analyze: 'AI가 일시·장소·계좌를 추출합니다 — 평균 6초',
+    save: '수정할 것 없이, 이대로 저장하면 끝',
+    pay: '관계를 고르면, 축의금 액수까지 AI가 추천'
+  };
+  // Bumping `gen` cancels the running loop: every await checks it before
+  // touching the DOM again, so a step click can restart cleanly mid-stage.
+  var gen = 0;
 
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function cancelled(g) { return g !== gen; }
   function show(name) {
     Object.keys(stages).forEach(function (k) { stages[k].classList.toggle('on', k === name); });
   }
-  function setStep(name, text) {
+  function setStep(name) {
     stepEls.forEach(function (s) { s.classList.toggle('on', s.dataset.step === name); });
-    caption.textContent = text;
+    caption.textContent = CAPTIONS[name];
   }
   function resetDemo() {
     inputTxt.textContent = '';
+    sendBtn.classList.remove('tapped');
     rrows.forEach(function (r) { r.classList.remove('on'); });
     confirmBtn.classList.remove('on', 'tapped');
     stages.saved.querySelector('.saved-card').classList.remove('on');
@@ -552,76 +565,119 @@
     payWhy.classList.remove('on');
   }
 
-  async function typeInto(el, text) {
+  async function typeInto(el, text, g) {
     var caret = document.createElement('span');
     caret.className = 'caret';
     el.textContent = '';
     el.appendChild(caret);
     for (var i = 0; i < text.length; i++) {
+      if (cancelled(g)) { caret.remove(); return; }
       caret.insertAdjacentText('beforebegin', text[i]);
       /* keep the tail visible while typing */
       el.scrollLeft = el.scrollWidth;
-      await sleep(28);
+      await sleep(45);
     }
-    await sleep(350);
+    await sleep(500);
     caret.remove();
   }
 
-  async function runLoop() {
-    for (;;) {
+  var STAGES = {
+    paste: async function (g) {
       resetDemo();
       show('idle');
-      setStep('paste', '받은 청첩장을 그대로 붙여넣으세요');
-      await sleep(1400);
-
-      await typeInto(inputTxt, INVITE);
+      setStep('paste');
+      await sleep(2000); if (cancelled(g)) return;
+      await typeInto(inputTxt, INVITE, g); if (cancelled(g)) return;
       sendBtn.classList.add('tapped');
-      await sleep(400);
-      sendBtn.classList.remove('tapped');
-
-      show('analyzing');
-      setStep('analyze', 'AI가 일시·장소·계좌를 추출합니다 — 평균 6초');
-      await sleep(2300);
-      inputTxt.textContent = '';
-
-      show('result');
-      setStep('save', '수정할 것 없이, 이대로 저장하면 끝');
-      for (var i = 0; i < rrows.length; i++) { rrows[i].classList.add('on'); await sleep(420); }
-      confirmBtn.classList.add('on');
-      await sleep(900);
-      confirmBtn.classList.add('tapped');
       await sleep(450);
-
+      sendBtn.classList.remove('tapped');
+    },
+    analyze: async function (g) {
+      resetDemo();
+      inputTxt.textContent = INVITE;
+      show('analyzing');
+      setStep('analyze');
+      await sleep(3400); if (cancelled(g)) return;
+      inputTxt.textContent = '';
+    },
+    save: async function (g) {
+      resetDemo();
+      show('result');
+      setStep('save');
+      for (var i = 0; i < rrows.length; i++) {
+        if (cancelled(g)) return;
+        rrows[i].classList.add('on');
+        await sleep(620);
+      }
+      confirmBtn.classList.add('on');
+      await sleep(1300); if (cancelled(g)) return;
+      confirmBtn.classList.add('tapped');
+      await sleep(500); if (cancelled(g)) return;
       show('saved');
       stages.saved.querySelector('.saved-card').classList.add('on');
       toast.classList.add('on');
-      await sleep(1600);
+      await sleep(2100); if (cancelled(g)) return;
       toast.classList.remove('on');
-      await sleep(900);
-
+      await sleep(1100);
+    },
+    pay: async function (g) {
+      resetDemo();
       show('pay');
-      setStep('pay', '관계를 고르면, 축의금 액수까지 AI가 추천');
-      await sleep(600);
+      setStep('pay');
+      await sleep(900); if (cancelled(g)) return;
       chips.forEach(function (c) { c.classList.toggle('sel', c.dataset.chip === '친구'); });
-      await sleep(900);
+      await sleep(1100); if (cancelled(g)) return;
       payAmount.classList.add('on');
       payWhy.classList.add('on');
-      await sleep(3000);
+      await sleep(4200);
+    }
+  };
+
+  async function run(fromIdx) {
+    var g = ++gen;
+    for (var i = fromIdx; !cancelled(g); i = (i + 1) % SEQ.length) {
+      await STAGES[SEQ[i]](g);
     }
   }
 
+  function showStatic(name) {
+    gen++;
+    resetDemo();
+    setStep(name);
+    if (name === 'paste') {
+      show('idle');
+      inputTxt.textContent = INVITE;
+    } else if (name === 'analyze') {
+      show('analyzing');
+      inputTxt.textContent = INVITE;
+    } else if (name === 'save') {
+      show('result');
+      rrows.forEach(function (r) { r.classList.add('on'); });
+      confirmBtn.classList.add('on');
+    } else {
+      show('pay');
+      chips.forEach(function (c) { c.classList.toggle('sel', c.dataset.chip === '친구'); });
+      payAmount.classList.add('on');
+      payWhy.classList.add('on');
+    }
+  }
+
+  stepEls.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (reduced) { showStatic(btn.dataset.step); return; }
+      run(SEQ.indexOf(btn.dataset.step));
+    });
+  });
+
   if (reduced) {
-    show('result');
-    rrows.forEach(function (r) { r.classList.add('on'); });
-    confirmBtn.classList.add('on');
-    setStep('save', 'AI가 읽어낸 결과를 그대로 저장');
+    showStatic('save');
   } else {
     var started = false;
     var demoIo = new IntersectionObserver(function (entries) {
       if (!started && entries[0].isIntersecting) {
         started = true;
         demoIo.disconnect();
-        runLoop();
+        run(0);
       }
     }, { threshold: 0.3 });
     demoIo.observe(phone);
