@@ -332,6 +332,7 @@
       section.block { padding: 56px 0; }
     }
     @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
       * { animation: none !important; transition: none !important; }
       .rv { opacity: 1; transform: none; }
     }
@@ -410,7 +411,7 @@
                   <div class="n">김민준 &amp; 이서연</div>
                   <div class="d">2026년 10월 24일(토) 13시 30분</div>
                 </div>
-                <div class="dday">D-40</div>
+                <div class="dday" id="demoDday">D-40</div>
               </div>
               <div class="p-s" style="margin-top:14px">예식 전날, 잊지 않게 알려드려요.</div>
             </div>
@@ -639,12 +640,27 @@
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
   function cancelled(g) { return g !== gen; }
   function show(name) {
-    Object.keys(stages).forEach(function (k) { stages[k].classList.toggle('on', k === name); });
+    Object.keys(stages).forEach(function (k) {
+      var active = k === name;
+      stages[k].classList.toggle('on', active);
+      stages[k].setAttribute('aria-hidden', String(!active));
+    });
   }
   function setStep(name) {
-    stepEls.forEach(function (s) { s.classList.toggle('on', s.dataset.step === name); });
+    stepEls.forEach(function (s) {
+      var active = s.dataset.step === name;
+      s.classList.toggle('on', active);
+      s.setAttribute('aria-pressed', String(active));
+    });
     caption.textContent = CAPTIONS[name];
   }
+  // The demo names a concrete wedding date, so the badge must track it:
+  // a frozen D-40 would drift wrong the day after shipping.
+  (function () {
+    var el = document.getElementById('demoDday');
+    var days = Math.ceil((new Date(2026, 9, 24) - new Date().setHours(0, 0, 0, 0)) / 86400000);
+    el.textContent = days > 0 ? 'D-' + days : days === 0 ? 'D-DAY' : '예정';
+  })();
   function resetDemo() {
     inputTxt.textContent = '';
     sendBtn.classList.remove('tapped');
@@ -760,6 +776,10 @@
       run(SEQ.indexOf(btn.dataset.step));
     });
   });
+
+  // Seed the accessibility state before any loop or observer runs.
+  show('idle');
+  stepEls.forEach(function (s) { s.setAttribute('aria-pressed', 'false'); });
 
   if (reduced) {
     showStatic('save');
