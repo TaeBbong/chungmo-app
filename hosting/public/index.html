@@ -205,33 +205,75 @@
     section.block { padding: 72px 0; }
     section.block.alt { background: var(--surface-muted); }
     .k { text-align: center; margin-bottom: 44px; }
-    .k .eyebrow { margin-bottom: 12px; }
     .k h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.01em; }
     .k p { margin-top: 10px; color: var(--ink-2); font-size: 16px; }
 
     .paths { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .path {
       background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
-      padding: 26px 22px;
+      padding: 22px; overflow: hidden;
     }
-    .path .em { font-size: 30px; }
-    .path h3 { margin-top: 12px; font-size: 17px; font-weight: 800; }
+    .path h3 { margin-top: 18px; font-size: 17px; font-weight: 800; }
     .path p { margin-top: 6px; font-size: 14px; color: var(--ink-2); }
+    /* each card opens with the artifact itself, not an icon */
+    .art { height: 96px; display: flex; align-items: center; justify-content: center; }
+    .art-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--surface-muted); border: 1px solid var(--line);
+      border-radius: 999px; padding: 9px 16px; font-size: 13px; color: var(--ink-2);
+      font-weight: 600;
+    }
+    .art-link .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); flex: none; }
+    .art-link u { text-decoration-color: var(--burgundy); text-underline-offset: 3px; }
+    .art-kakao { display: flex; align-items: flex-end; gap: 7px; }
+    .art-kakao .face { width: 28px; height: 28px; border-radius: 12px; background: var(--burgundy-100); flex: none; }
+    .art-kakao .bubble {
+      background: #fee500; color: #1d1d1f; border-radius: 14px 14px 14px 3px;
+      padding: 9px 13px; font-size: 12px; line-height: 1.5; max-width: 200px; text-align: left;
+      font-weight: 500;
+    }
+    .art-photo { position: relative; width: 78px; height: 96px; }
+    .art-photo .paper {
+      position: absolute; inset: 0; transform: rotate(-5deg);
+      background: var(--beige-100); border: 1px solid var(--line); border-radius: 10px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px;
+      box-shadow: 0 8px 18px rgba(0,0,0,.08);
+    }
+    .art-photo .paper i { display: block; height: 4px; border-radius: 2px; background: var(--line); width: 44px; }
+    .art-photo .paper i:first-child { width: 30px; background: var(--burgundy-200, var(--burgundy-100)); }
+    .art-photo .date {
+      position: absolute; right: -12px; bottom: 6px; transform: rotate(4deg);
+      background: var(--burgundy); color: #fff; font-size: 11px; font-weight: 800;
+      border-radius: 8px; padding: 4px 8px;
+    }
 
-    .feats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .feat { background: var(--surface-muted); border-radius: var(--radius); padding: 24px 22px; }
-    section.block.alt .feat { background: var(--surface); border: 1px solid var(--line); }
-    .feat .em { font-size: 26px; }
-    .feat h3 { margin-top: 10px; font-size: 16px; font-weight: 800; }
-    .feat p { margin-top: 5px; font-size: 13.5px; color: var(--ink-2); }
+    /* alternating feature rows built on real screenshots */
+    .zig { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; padding: 36px 0; }
+    .zig + .zig { border-top: 1px solid var(--line); }
+    .zig img { width: 250px; border-radius: 22px; border: 1px solid var(--line); box-shadow: 0 14px 36px rgba(0,0,0,.10); margin: 0 auto; }
+    .zig.flip .shotcell { order: 2; }
+    .zig h3 { font-size: 23px; font-weight: 800; letter-spacing: -0.01em; }
+    .zig .desc { margin-top: 10px; font-size: 15.5px; color: var(--ink-2); max-width: 400px; }
+    .zig .pt { margin-top: 14px; font-size: 14px; color: var(--ink-2); display: flex; flex-direction: column; gap: 7px; }
+    .zig .pt span::before { content: ""; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--burgundy); margin: 0 9px 3px 1px; }
+    .minor {
+      margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--line);
+      display: flex; flex-wrap: wrap; gap: 8px 26px; justify-content: center;
+      font-size: 14px; color: var(--ink-2);
+    }
+    .minor b { color: var(--ink); font-weight: 700; }
 
     /* numbers */
-    .stats-hero { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+    /* one number carries the section; the rest stay supporting */
+    .stats-hero { display: grid; grid-template-columns: 1.35fr 1fr; grid-auto-rows: 1fr; gap: 16px; margin-bottom: 28px; }
     .stat {
       background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
       padding: 24px 22px; text-align: center;
     }
-    .stat .v { font-size: 38px; font-weight: 800; color: var(--burgundy); letter-spacing: -0.02em; }
+    .stat.big { grid-row: 1 / 3; display: flex; flex-direction: column; justify-content: center; background: var(--surface-muted); border: 0; }
+    .stat.big .v { font-size: 96px; line-height: 1.05; }
+    .stat.big .m { font-size: 14px; max-width: 300px; margin: 6px auto 0; }
+    .stat .v { font-size: 34px; font-weight: 800; color: var(--burgundy); letter-spacing: -0.02em; }
     @media (prefers-color-scheme: dark) { .stat .v { color: #e0a8b2; } }
     .stat .l { margin-top: 4px; font-size: 14px; font-weight: 700; }
     .stat .m { margin-top: 2px; font-size: 12.5px; color: var(--ink-3); }
@@ -246,15 +288,11 @@
     .stats-foot a { color: var(--burgundy); font-weight: 700; }
     @media (prefers-color-scheme: dark) { .stats-foot a { color: #e0a8b2; } }
 
-    /* screenshots */
-    .shots { display: flex; gap: 18px; overflow-x: auto; padding: 8px 4px 20px; scroll-snap-type: x mandatory; }
-    .shots::-webkit-scrollbar { height: 6px; }
-    .shots::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
-    .shot { flex: none; width: 224px; scroll-snap-align: center; }
-    .shot img { border-radius: 24px; border: 1px solid var(--line); box-shadow: 0 12px 32px rgba(0,0,0,.10); }
-    .shot figcaption { text-align: center; font-size: 13px; color: var(--ink-2); margin-top: 10px; font-weight: 600; }
-
     /* final cta */
+    .voice { padding: 76px 0; text-align: center; }
+    .voice .quote { font-size: 21px; font-weight: 700; line-height: 1.65; letter-spacing: -0.01em; }
+    .voice .who { margin-top: 14px; color: var(--ink-3); font-size: 14px; }
+
     .cta-final { text-align: center; padding: 88px 0; }
     .cta-final .icon { width: 84px; height: 84px; border-radius: 22px; margin: 0 auto 22px; box-shadow: 0 12px 30px rgba(128,0,32,.25); }
     .cta-final h2 { font-size: 32px; font-weight: 800; }
@@ -275,7 +313,13 @@
       .hero { padding-top: 40px; }
       .hero .wrap { grid-template-columns: 1fr; gap: 40px; }
       .demo-col { order: 2; }
-      .paths, .feats, .stats-hero { grid-template-columns: 1fr; }
+      .paths, .stats-hero { grid-template-columns: 1fr; }
+      .stat.big { grid-row: auto; }
+      .stat.big .v { font-size: 64px; }
+      .zig { grid-template-columns: 1fr; gap: 22px; padding: 28px 0; }
+      .zig.flip .shotcell { order: 0; }
+      .zig img { width: 210px; }
+      .voice .quote { font-size: 17px; }
       .topbar nav .hide-m { display: none; }
       section.block { padding: 56px 0; }
     }
@@ -302,7 +346,7 @@
 <section class="hero">
   <div class="wrap">
     <div>
-      <span class="eyebrow">✦ Play Store, App Store 정식 출시</span>
+      <span class="eyebrow">Play Store · App Store 정식 출시</span>
       <h1>청첩장을 붙여넣으면<br><span class="accent">끝나는</span> AI 경조사 비서</h1>
       <p class="sub">링크, 카톡 캡처, 안내 문자 - 받은 그대로 넣으세요. AI가 신랑·신부, 일시, 장소, 축의금 계좌까지 읽어 일정을 만들고, 축의금 액수도 추천해 드립니다.</p>
       <div class="stores" id="download">
@@ -396,45 +440,47 @@
 <section class="block alt" id="features">
   <div class="wrap">
     <div class="k rv">
-      <span class="eyebrow">INPUT</span>
       <h2>무엇을 받았든, 넣기만 하세요</h2>
       <p>모든 타입의 청첩장을 처리합니다. 캘린더에 직접 등록하는 일은 이제 없습니다.</p>
     </div>
     <div class="paths">
-      <div class="path rv"><span class="em">🔗</span><h3>모바일 청첩장 링크</h3><p>자체 크롤러가 벤더마다 제각각인 청첩장 페이지에서 본문을 추출해 AI에 전달합니다.</p></div>
-      <div class="path rv"><span class="em">💬</span><h3>안내 문자 · 카톡</h3><p>링크가 없어도 됩니다. 안내 문자를 붙여넣으면 텍스트만으로 일정을 만듭니다.</p></div>
-      <div class="path rv"><span class="em">📸</span><h3>캡처 · 종이 청첩장 사진</h3><p>카톡 캡처, 종이 청첩장 촬영본도 멀티모달 AI가 읽습니다. 공유 시트에서 바로 보내도 돼요.</p></div>
+      <div class="path rv">
+        <div class="art"><span class="art-link"><span class="dot"></span><u>mcard.wedding/minjun-seoyeon</u></span></div>
+        <h3>모바일 청첩장 링크</h3>
+        <p>자체 크롤러가 벤더마다 제각각인 청첩장 페이지에서 본문을 추출해 AI에 전달합니다.</p>
+      </div>
+      <div class="path rv">
+        <div class="art">
+          <div class="art-kakao">
+            <span class="face"></span>
+            <span class="bubble">저희 결혼합니다 💐<br>10월 24일 토요일 오후 1시 30분</span>
+          </div>
+        </div>
+        <h3>안내 문자 · 카톡</h3>
+        <p>링크가 없어도 됩니다. 안내 문자를 붙여넣으면 텍스트만으로 일정을 만듭니다.</p>
+      </div>
+      <div class="path rv">
+        <div class="art">
+          <div class="art-photo">
+            <div class="paper"><i></i><i></i><i></i></div>
+            <span class="date">10.24</span>
+          </div>
+        </div>
+        <h3>캡처 · 종이 청첩장 사진</h3>
+        <p>카톡 캡처, 종이 청첩장 촬영본도 멀티모달 AI가 읽습니다. 공유 시트에서 바로 보내도 돼요.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="block">
+<section class="block" id="numbers">
   <div class="wrap">
     <div class="k rv">
-      <span class="eyebrow">FEATURES</span>
-      <h2>저장 이후까지 챙기는 비서</h2>
-      <p>일정 등록은 시작일 뿐. 참석과 축의금, 그 이후의 기록까지 한 곳에서.</p>
-    </div>
-    <div class="feats">
-      <div class="feat rv"><span class="em">💸</span><h3>AI 축의금 추천</h3><p>관계·친밀도 메모에 내 기록 통계와 공개 설문 데이터를 근거로 금액과 이유를 제안합니다.</p></div>
-      <div class="feat rv"><span class="em">📊</span><h3>축의금 통계</h3><p>연도별·관계별로 낸 금액을 차트로. 경조사비 지출이 한눈에 잡힙니다.</p></div>
-      <div class="feat rv"><span class="em">📱</span><h3>홈 화면 위젯</h3><p>다가오는 예식의 D-day를 청첩장 사진과 함께. 자정마다 자동 갱신됩니다.</p></div>
-      <div class="feat rv"><span class="em">🔔</span><h3>전날 알림</h3><p>예식 하루 전에 알려드려요. 깜빡하고 못 가는 일이 없도록.</p></div>
-      <div class="feat rv"><span class="em">📆</span><h3>기기 캘린더 연동</h3><p>저장한 일정을 탭 한 번으로 기본 캘린더 앱에 등록합니다.</p></div>
-      <div class="feat rv"><span class="em">💳</span><h3>계좌 탭 복사</h3><p>양가 축의금 계좌를 자동 추출하고, 탭 한 번에 계좌번호가 복사됩니다.</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="block alt" id="numbers">
-  <div class="wrap">
-    <div class="k rv">
-      <span class="eyebrow">MEASURED</span>
       <h2>증명된 안정성</h2>
       <p>실제 청첩장 벤더 유형 16종을 재현한 40건 평가셋과 자동 채점기를 직접 구축해 검증했습니다.</p>
     </div>
     <div class="stats-hero">
-      <div class="stat rv"><div class="v">85%</div><div class="l">핵심 필드 완전 정확도</div><div class="m">이름·일시·장소·계좌가 모두 맞아 수정 없이 저장되는 비율</div></div>
+      <div class="stat big rv"><div class="v">85%</div><div class="l">핵심 필드 완전 정확도</div><div class="m">이름·일시·장소·계좌가 모두 맞아 수정 없이 저장되는 비율</div></div>
       <div class="stat rv"><div class="v">40건</div><div class="l">자가 구축 평가셋</div><div class="m">벤더 유형 16종 재현 · 자동 채점 · 회귀 추적</div></div>
       <div class="stat rv"><div class="v">6초</div><div class="l">평균 분석 시간</div><div class="m">붙여넣기부터 일정 완성까지</div></div>
     </div>
@@ -448,19 +494,43 @@
   </div>
 </section>
 
-<section class="block">
+<section class="block alt">
   <div class="wrap">
     <div class="k rv">
-      <span class="eyebrow">SCREENS</span>
-      <h2>실제 앱 화면</h2>
+      <h2>저장 이후까지 챙기는 비서</h2>
+      <p>일정 등록은 시작일 뿐. 참석과 축의금, 그 이후의 기록까지 한 곳에서.</p>
     </div>
-    <div class="shots rv">
-      <figure class="shot"><img src="/assets/shot-home.jpg" alt="홈 - 청첩장 붙여넣기" loading="lazy"><figcaption>붙여넣으면 시작</figcaption></figure>
-      <figure class="shot"><img src="/assets/shot-result.jpg" alt="AI 분석 결과" loading="lazy"><figcaption>AI 분석 결과</figcaption></figure>
-      <figure class="shot"><img src="/assets/shot-detail.jpg" alt="일정 상세" loading="lazy"><figcaption>D-day와 계좌까지</figcaption></figure>
-      <figure class="shot"><img src="/assets/shot-calendar.jpg" alt="캘린더" loading="lazy"><figcaption>캘린더로 한눈에</figcaption></figure>
-      <figure class="shot"><img src="/assets/shot-list.jpg" alt="일정 리스트" loading="lazy"><figcaption>연간 축의금 합계</figcaption></figure>
+    <div class="zig rv">
+      <div class="shotcell"><img src="/assets/shot-detail.jpg" alt="일정 상세 - D-day, 장소, 축의금, 계좌" loading="lazy"></div>
+      <div>
+        <h3>축의금, AI에게 물어보세요</h3>
+        <p class="desc">관계와 친밀도 메모를 적으면, 내 과거 기록 통계와 공개 설문 데이터를 근거로 금액과 이유를 제안합니다.</p>
+        <div class="pt">
+          <span>참석 여부·낸 금액을 결혼식별로 기록</span>
+          <span>양가 계좌는 자동 추출, 탭 한 번에 복사</span>
+        </div>
+      </div>
     </div>
+    <div class="zig flip rv">
+      <div class="shotcell"><img src="/assets/shot-list.jpg" alt="일정 리스트 - 연간 축의금 합계" loading="lazy"></div>
+      <div>
+        <h3>낸 만큼 똑똑하게 기록하기</h3>
+        <p class="desc">올해 낸 축의금 합계와 연도별·관계별 통계를 차트로 봅니다. 경조사비 지출이 처음으로 한눈에 잡혀요.</p>
+      </div>
+    </div>
+    <div class="zig rv">
+      <div class="shotcell"><img src="/assets/shot-calendar.jpg" alt="캘린더 - 예식 일정 마커" loading="lazy"></div>
+      <div>
+        <h3>캘린더로 한눈에</h3>
+        <p class="desc">저장한 예식이 달력에 표시되고, 탭 한 번으로 기기 기본 캘린더에도 등록됩니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="voice">
+  <div class="wrap rv">
+    <p class="quote">"결혼식 직전 채팅방 올리면서 청첩장 찾다가 만들었습니다.<br>귀찮은 일정관리는 청모 앱에서."</p>
   </div>
 </section>
 
