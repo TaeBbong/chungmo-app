@@ -187,6 +187,40 @@ Future<String?> extractContentWithImages(String url,
         ..writeln('[IFRAME] $frame')
         ..write(innerText);
     }
+    // CSR shell fallback: a page whose rendered HTML carries almost no
+    // text usually builds itself at runtime from a same-origin JSON that
+    // its bundle fetches (static-export SPA vendors). Follow the bundle's
+    // JSON references once, the same way same-host iframes are followed.
+    if (buffer.length < _csrShellTextThreshold) {
+      final scripts = extracted.scripts
+          .where((s) => s.host == page.finalUri.host)
+          .toSet()
+          .take(_maxScripts);
+      final seen = <Uri>{};
+      for (final script in scripts) {
+        final js = await fetchPage(script.toString(), client: c);
+        if (js == null || js.html.isEmpty) continue;
+        for (final match in _jsonRefPattern.allMatches(js.html)) {
+          if (seen.length >= _maxDataFiles) break;
+          final Uri ref;
+          try {
+            ref = script.resolve(match.group(1)!);
+          } catch (_) {
+            continue;
+          }
+          if (ref.host != page.finalUri.host || !seen.add(ref)) continue;
+          final data = await fetchPage(ref.toString(), client: c);
+          if (data == null || data.html.isEmpty) continue;
+          final capped = data.html.length > _maxScriptChars
+              ? data.html.substring(0, _maxScriptChars)
+              : data.html;
+          buffer
+            ..writeln()
+            ..writeln('[DATA] $ref')
+            ..write(capped);
+        }
+      }
+    }
     return buffer.toString();
   } finally {
     if (owned) c.close();
@@ -197,13 +231,24 @@ const int _maxIframes = 2;
 const int _maxScriptChars = 6000;
 const int _maxOutputChars = 30000;
 
-/// What [extractContentFromHtml] found: the prompt text and the iframe
-/// sources the caller may want to follow.
+/// Below this many characters of extracted text, a page is treated as a
+/// client-rendered shell and its bundle's JSON references are followed.
+const int _csrShellTextThreshold = 600;
+const int _maxScripts = 2;
+const int _maxDataFiles = 2;
+
+/// A JSON resource mentioned inside a script bundle, e.g. fetch('./data.json').
+final RegExp _jsonRefPattern =
+    RegExp('''['"]([^'"\\s]+\\.json(?:\\?[^'"\\s]*)?)['"]''');
+
+/// What [extractContentFromHtml] found: the prompt text, the iframe
+/// sources and the external script bundles the caller may want to follow.
 class ExtractedContent {
   final String text;
   final List<Uri> iframes;
+  final List<Uri> scripts;
 
-  const ExtractedContent(this.text, this.iframes);
+  const ExtractedContent(this.text, this.iframes, [this.scripts = const []]);
 }
 
 /// Pure extraction from an HTML string, with URLs resolved against [base].
@@ -220,7 +265,7 @@ ExtractedContent extractContentFromHtml(String html, Uri base) {
   final root = doc.documentElement;
   if (root != null) walker._walk(root);
   walker._flush();
-  return ExtractedContent(walker._output(), walker.iframes);
+  return ExtractedContent(walker._output(), walker.iframes, walker.scripts);
 }
 
 /// The first valid `<base href>` resolved against [fetched], else
@@ -313,6 +358,7 @@ class _Walker {
   final List<String> _lines = [];
   final Set<String> _seen = {};
   final List<Uri> iframes = [];
+  final List<Uri> scripts = [];
   final StringBuffer _current = StringBuffer();
 
   _Walker(this.base);
@@ -393,7 +439,16 @@ class _Walker {
   /// pages stash strings there), capped so one bundle cannot flood the
   /// prompt.
   void _emitScript(Element script) {
-    if (script.attributes.containsKey('src')) return;
+    final src = script.attributes['src']?.trim();
+    if (src != null) {
+      if (src.isNotEmpty) {
+        final uri = _resolveUri(src);
+        if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https')) {
+          scripts.add(uri);
+        }
+      }
+      return;
+    }
     final type = script.attributes['type']?.toLowerCase() ?? '';
     final id = script.attributes['id'] ?? '';
     final text = script.text.trim();

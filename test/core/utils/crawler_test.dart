@@ -192,4 +192,84 @@ void main() {
           contains('<p>'));
     });
   });
+
+  group('CSR shell fallback', () {
+    const shell = '''
+<html><head><title>고진우 ♥ 심하윤</title>
+<script type="module" src="./app.js"></script></head>
+<body><div id="root"></div></body></html>''';
+    const bundle = '''
+const root = document.getElementById('root');
+fetch('./data.json').then(r => r.json()).then(render);''';
+    const data =
+        '{"accounts":{"groom":[{"bank":"부산은행","number":"271068-41-392679"}]}}';
+
+    test('follows a same-origin JSON referenced by the shell bundle',
+        () async {
+      final requested = <String>[];
+      final client = MockClient((request) async {
+        requested.add(request.url.path);
+        switch (request.url.path) {
+          case '/card/':
+            return http.Response(shell, 200,
+                headers: {'content-type': 'text/html; charset=utf-8'});
+          case '/card/app.js':
+            return http.Response(bundle, 200);
+          case '/card/data.json':
+            return http.Response(data, 200,
+                headers: {'content-type': 'application/json'});
+        }
+        return http.Response('nope', 404);
+      });
+      final text = await extractContentWithImages(
+          'https://vendor.example/card/',
+          client: client);
+      expect(text, contains('[DATA] https://vendor.example/card/data.json'));
+      expect(text, contains('부산은행'));
+      expect(requested, contains('/card/app.js'));
+    });
+
+    test('leaves pages with real text content alone', () async {
+      final filler = List.generate(
+          60, (i) => '<p>결혼식에 초대합니다 좋은 날 함께해 주세요 $i번째 안내</p>').join();
+      final requested = <String>[];
+      final client = MockClient((request) async {
+        requested.add(request.url.path);
+        return http.Response(
+            '<html><head><script src="./app.js"></script></head>'
+            '<body>$filler</body></html>',
+            200,
+            headers: {'content-type': 'text/html; charset=utf-8'});
+      });
+      await extractContentWithImages('https://vendor.example/card/',
+          client: client);
+      expect(requested, isNot(contains('/card/app.js')));
+    });
+
+    test('never leaves the page origin', () async {
+      final requested = <String>[];
+      final client = MockClient((request) async {
+        requested.add(request.url.toString());
+        if (request.url.path == '/card/') {
+          return http.Response(
+              '<html><head><title>x</title>'
+              '<script src="https://cdn.other.example/app.js"></script>'
+              '<script src="./local.js"></script></head>'
+              '<body><div id="root"></div></body></html>',
+              200,
+              headers: {'content-type': 'text/html; charset=utf-8'});
+        }
+        if (request.url.path == '/card/local.js') {
+          return http.Response(
+              "fetch('https://api.other.example/data.json')", 200);
+        }
+        return http.Response('nope', 404);
+      });
+      await extractContentWithImages('https://vendor.example/card/',
+          client: client);
+      expect(requested, isNot(contains('https://cdn.other.example/app.js')));
+      expect(
+          requested, isNot(contains('https://api.other.example/data.json')));
+    });
+  });
 }
