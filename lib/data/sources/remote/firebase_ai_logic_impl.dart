@@ -63,7 +63,7 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
       final String syntheticLink = 'image://${await bytes.hashBytes}';
       final prompt = [
         Content.multi([
-          const TextPart(imageExtractionPrompt),
+          TextPart(imageExtractionPrompt()),
           InlineDataPart(mimeType, bytes),
         ])
       ];

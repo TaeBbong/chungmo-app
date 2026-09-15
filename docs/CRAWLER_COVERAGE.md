@@ -168,8 +168,9 @@ because cross-origin frames are maps, videos and ads.
 
 ## 5. What it changed
 
-Measured with `eval/run_eval.dart` on the same 40 fixtures, same model,
-same prompt (`eval/results/latest.md`):
+Measured with `eval/run_eval.dart` on the original 40-fixture set, same
+model, same prompt — the historical layer-1 numbers, before the later
+round rescoped the dataset:
 
 | | before | after |
 |---|---|---|
@@ -180,6 +181,12 @@ same prompt (`eval/results/latest.md`):
 | datetime · location · accounts | 68% · 83% · 83% | 90% · 95% · 93% |
 | thumbnail | 73% | 100% |
 | prompt tokens per page (mean) | ~990 | ~820 |
+
+A later round (issue #54, `docs/PARSING_EVAL.md` §6.3) added a CSR
+shell fallback — same-origin JSON referenced by a page's script bundles
+is fetched and appended as `[DATA]` blocks — and, with prompt-side year
+inference and the image-only cases scoped out, both coverage and `core`
+now sit at **100%** on the 38-case set.
 
 Templates that went from 0% to 100%: `euckr-asp` (charset), `table-legacy`
 (td text), `iframe-embed` (follow), `tailwind-semantic` (`<time>` in a

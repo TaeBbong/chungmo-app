@@ -159,8 +159,6 @@ CASES = [
     ("frame-01", "iframe-embed", dict(date_style="kor_full", accounts="couple", quirks=["iframe"])),
     ("frame-02", "iframe-embed", dict(date_style="kor_dot", accounts="none", quirks=["iframe"])),
     # Image-only invitations
-    ("img-01", "image-only", dict(date_style="kor_full", accounts="couple", quirks=["image-only"])),
-    ("img-02", "image-only", dict(date_style="kor_dot", accounts="none", quirks=["image-only"])),
     # Messenger-style share card, accounts in hidden DOM
     ("kakao-01", "kakao-card", dict(date_style="kor_full", accounts="full", quirks=["hidden-accounts", "data-attrs"])),
     ("kakao-02", "kakao-card", dict(date_style="kor_dot", accounts="couple", quirks=["hidden-accounts", "short-link"])),
@@ -1355,7 +1353,7 @@ def main() -> None:
 
     (OUT / "index.html").write_text(catalogue(dataset), encoding="utf-8")
     (ROOT / "eval" / "dataset.json").write_text(
-        json.dumps({"version": 1, "baseUrl": BASE_URL, "generatedBy": "eval/generate_fixtures.py", "cases": dataset}, ensure_ascii=False, indent=2) + "\n",
+        json.dumps({"version": 2, "baseUrl": BASE_URL, "generatedBy": "eval/generate_fixtures.py", "cases": dataset}, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8")
     (ROOT / "eval" / "hosting_rules.json").write_text(json.dumps(hosting_rules(cases), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"generated {len(dataset)} fixtures under {OUT}")

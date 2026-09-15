@@ -65,12 +65,29 @@ const Map<String, Object> scheduleResponseJsonSchema = {
   }
 };
 
+/// Today in KST, regardless of the device's timezone — the guidelines
+/// label the date as KST, and Korean weddings live on the KST calendar.
+DateTime _kstNow() => DateTime.now().toUtc().add(const Duration(hours: 9));
+
 /// Field guidelines shared by the link and image extraction prompts.
-const String extractionGuidelines = '''Required data's are:
+///
+/// [now] anchors the year-inference rule: Korean invitations routinely omit
+/// the year, and resolving "10월 24일 토요일" needs to know what today is.
+String extractionGuidelines(DateTime now) {
+  final String today = '${now.year}-'
+      '${now.month.toString().padLeft(2, '0')}-'
+      '${now.day.toString().padLeft(2, '0')}';
+  return '''Required data's are:
 thumbnail, groom, bride, location, datetime, groomAccounts, brideAccounts
 If you can't find proper data, just put empty string for that field.
-For datetime, put null when the wedding date is not stated; never guess or
-invent a date.
+Today is $today (KST). Weddings are upcoming events.
+For datetime, put null when the invitation states no date at all; never
+invent a month, day or time.
+Korean invitations often omit the year. When the month and day are stated
+but the year is not, do not treat the date as missing: choose the nearest
+year, today or later, on which that month/day falls on the stated weekday;
+when no weekday is stated, choose the nearest such year with the date still
+in the future.
 
 groomAccounts/brideAccounts are the gift money(축의금) accounts, usually
 written under a section like "마음 전하실 곳" or "축의금 계좌".
@@ -79,31 +96,32 @@ holder's relation(신랑, 신부, 아버지, 어머니). Group them by side: the
 side(신랑측, including his parents) into groomAccounts, the bride's side
 (신부측, including her parents) into brideAccounts.
 If no account is found for a side, return an empty array for it.''';
+}
 
 /// Prompt for HTML text crawled from an invitation link ([parsed] is the
 /// output of `extractContentWithImages`).
-String linkExtractionPrompt(String? parsed) =>
+String linkExtractionPrompt(String? parsed, {DateTime? now}) =>
     '''Extract the required wedding data from the given text and return it in pure JSON format, without any additional text or snippet tags.
-          $extractionGuidelines
+          ${extractionGuidelines(now ?? _kstNow())}
 
           Given text:
           $parsed
           ''';
 
 /// Prompt paired with an invitation image part.
-const String imageExtractionPrompt =
+String imageExtractionPrompt({DateTime? now}) =>
     '''Extract the required wedding data from the given wedding invitation image and return it in pure JSON format, without any additional text or snippet tags.
           The image is usually a screenshot of a mobile wedding invitation or a
           photo of a paper invitation, written in Korean.
-          $extractionGuidelines
+          ${extractionGuidelines(now ?? _kstNow())}
           Put an empty string for thumbnail; an image has no thumbnail URL.
           ''';
 
 /// Prompt for invitation text the user pasted directly.
-String textExtractionPrompt(String text) =>
+String textExtractionPrompt(String text, {DateTime? now}) =>
     '''Extract the required wedding data from the given text and return it in pure JSON format, without any additional text or snippet tags.
           The text is usually an SMS or messenger invitation written in Korean.
-          $extractionGuidelines
+          ${extractionGuidelines(now ?? _kstNow())}
           Put an empty string for thumbnail; pasted text has no thumbnail URL.
 
           Given text:

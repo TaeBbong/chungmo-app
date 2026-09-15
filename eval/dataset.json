@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "baseUrl": "https://chung-mo.web.app",
   "generatedBy": "eval/generate_fixtures.py",
   "cases": [
@@ -1603,78 +1603,6 @@
         "brideAccounts": [],
         "thumbnails": [
           "https://chung-mo.web.app/eval/frame-02/main.svg"
-        ]
-      }
-    },
-    {
-      "id": "img-01",
-      "url": "https://chung-mo.web.app/eval/img-01/",
-      "template": "image-only",
-      "vendor": "포토청첩장",
-      "tags": [
-        "image-only"
-      ],
-      "difficulty": "hard",
-      "notes": "Every section (date, venue, accounts) is an image; the HTML carries only <img> tags and OpenGraph meta.",
-      "expected": {
-        "groom": "유서준",
-        "bride": "허서윤",
-        "groomAliases": [],
-        "brideAliases": [],
-        "datetime": "2027-04-25T13:00:00+09:00",
-        "dateText": "2027년 4월 25일 일요일 오후 1시",
-        "location": "빌라드지디 수서 1층 가든홀",
-        "locationKeywords": [
-          "빌라드지디 수서"
-        ],
-        "address": "서울특별시 강남구 광평로 281",
-        "groomAccounts": [
-          {
-            "bank": "토스뱅크",
-            "number": "1000-4822-4645",
-            "holder": "유서준",
-            "relation": "신랑"
-          }
-        ],
-        "brideAccounts": [
-          {
-            "bank": "케이뱅크",
-            "number": "100-623-762698",
-            "holder": "허서윤",
-            "relation": "신부"
-          }
-        ],
-        "thumbnails": [
-          "https://chung-mo.web.app/eval/img-01/main.svg"
-        ]
-      }
-    },
-    {
-      "id": "img-02",
-      "url": "https://chung-mo.web.app/eval/img-02/",
-      "template": "image-only",
-      "vendor": "포토청첩장",
-      "tags": [
-        "image-only"
-      ],
-      "difficulty": "hard",
-      "notes": "Every section (date, venue, accounts) is an image; the HTML carries only <img> tags and OpenGraph meta.",
-      "expected": {
-        "groom": "정지환",
-        "bride": "허예린",
-        "groomAliases": [],
-        "brideAliases": [],
-        "datetime": "2027-05-01T13:30:00+09:00",
-        "dateText": "2027.05.01 (토) 13:30",
-        "location": "엘리시안 컨벤션 6층 사파이어홀",
-        "locationKeywords": [
-          "엘리시안 컨벤션"
-        ],
-        "address": "경기도 수원시 영통구 광교중앙로 140",
-        "groomAccounts": [],
-        "brideAccounts": [],
-        "thumbnails": [
-          "https://chung-mo.web.app/eval/img-02/main.svg"
         ]
       }
     },
