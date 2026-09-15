@@ -246,6 +246,48 @@ fetch('./data.json').then(r => r.json()).then(render);''';
       expect(requested, isNot(contains('/card/app.js')));
     });
 
+    test('rejects same-host resources on another port or scheme', () async {
+      final requested = <String>[];
+      final client = MockClient((request) async {
+        requested.add(request.url.toString());
+        return http.Response(
+            '<html><head><title>x</title>'
+            '<script src="https://vendor.example:8443/app.js"></script>'
+            '<script src="http://vendor.example/plain.js"></script></head>'
+            '<body><div id="root"></div></body></html>',
+            200,
+            headers: {'content-type': 'text/html; charset=utf-8'});
+      });
+      await extractContentWithImages('https://vendor.example/card/',
+          client: client);
+      expect(requested,
+          isNot(contains('https://vendor.example:8443/app.js')));
+      expect(requested, isNot(contains('http://vendor.example/plain.js')));
+    });
+
+    test('abandons a resource that redirects off the origin', () async {
+      final requested = <String>[];
+      final client = MockClient((request) async {
+        requested.add(request.url.toString());
+        switch (request.url.path) {
+          case '/card/':
+            return http.Response(shell, 200,
+                headers: {'content-type': 'text/html; charset=utf-8'});
+          case '/card/app.js':
+            return http.Response(bundle, 200);
+          case '/card/data.json':
+            return http.Response('', 302,
+                headers: {'location': 'http://169.254.169.254/meta.json'});
+        }
+        return http.Response('secret', 200);
+      });
+      final text = await extractContentWithImages(
+          'https://vendor.example/card/',
+          client: client);
+      expect(requested, isNot(contains('http://169.254.169.254/meta.json')));
+      expect(text, isNot(contains('secret')));
+    });
+
     test('never leaves the page origin', () async {
       final requested = <String>[];
       final client = MockClient((request) async {

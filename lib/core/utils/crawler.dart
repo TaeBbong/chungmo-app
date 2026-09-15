@@ -45,13 +45,24 @@ const int _maxBodyBytes = 4 << 20;
 /// [timeout] bounds each hop twice: once for the headers and once for
 /// reading the body, so a server that keeps the connection open after
 /// the headers cannot stall the parser.
+/// When [sameOriginAs] is set, every hop — the request itself and any
+/// redirect target — must share that origin (scheme, host and port), or
+/// the fetch is abandoned. Page fetches leave it unset because vendor
+/// short links legitimately redirect across origins; subresource fetches
+/// (script bundles, their JSON) set it so a redirect cannot pull local or
+/// third-party content into the prompt.
 Future<FetchedPage?> fetchPage(String url,
-    {http.Client? client, Duration timeout = _defaultTimeout}) async {
+    {http.Client? client,
+    Duration timeout = _defaultTimeout,
+    Uri? sameOriginAs}) async {
   final owned = client == null;
   final c = client ?? http.Client();
   try {
     var uri = Uri.parse(url);
     for (var hop = 0; hop <= _maxRedirects; hop++) {
+      if (sameOriginAs != null && uri.origin != sameOriginAs.origin) {
+        return null;
+      }
       final request = http.Request('GET', uri)
         ..followRedirects = false
         ..headers['User-Agent'] =
@@ -192,13 +203,15 @@ Future<String?> extractContentWithImages(String url,
     // its bundle fetches (static-export SPA vendors). Follow the bundle's
     // JSON references once, the same way same-host iframes are followed.
     if (buffer.length < _csrShellTextThreshold) {
+      final origin = page.finalUri;
       final scripts = extracted.scripts
-          .where((s) => s.host == page.finalUri.host)
+          .where((s) => s.origin == origin.origin)
           .toSet()
           .take(_maxScripts);
       final seen = <Uri>{};
       for (final script in scripts) {
-        final js = await fetchPage(script.toString(), client: c);
+        final js =
+            await fetchPage(script.toString(), client: c, sameOriginAs: origin);
         if (js == null || js.html.isEmpty) continue;
         for (final match in _jsonRefPattern.allMatches(js.html)) {
           if (seen.length >= _maxDataFiles) break;
@@ -208,8 +221,9 @@ Future<String?> extractContentWithImages(String url,
           } catch (_) {
             continue;
           }
-          if (ref.host != page.finalUri.host || !seen.add(ref)) continue;
-          final data = await fetchPage(ref.toString(), client: c);
+          if (ref.origin != origin.origin || !seen.add(ref)) continue;
+          final data =
+              await fetchPage(ref.toString(), client: c, sameOriginAs: origin);
           if (data == null || data.html.isEmpty) continue;
           final capped = data.html.length > _maxScriptChars
               ? data.html.substring(0, _maxScriptChars)
