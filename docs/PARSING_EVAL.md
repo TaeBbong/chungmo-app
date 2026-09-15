@@ -307,6 +307,38 @@ The six cases still failing are the two year-less dates (prompt, issue
 #50) and the four whose data is not in the HTML at all — accounts behind a
 CSR shell and image-only pages (image fallback, issue #51).
 
+### 6.3 Closing the gap to 100% (issue #54)
+
+Three changes, one per failure class, took the same benchmark to
+**38/38 core = 100%** with the crawl-coverage ceiling also at 100%:
+
+1. **Year inference (prompt).** Korean invitations routinely print
+   "10월 24일 토요일" with no year. The guidelines now carry today's date
+   and a rule: when month/day are stated but the year is not, pick the
+   nearest future year on which that date falls on the stated weekday.
+   The never-invent rule still applies when no date is stated at all —
+   the `no-date` cases keep passing with `null`.
+2. **CSR JSON follow (crawler).** A page that extracts to almost no text
+   is treated as a client-rendered shell: its same-host script bundles
+   are fetched, the `.json` resources they reference are resolved and
+   appended as `[DATA]` blocks. Same spirit and same caps as the iframe
+   follow; the crawler never leaves the page origin. This generalises to
+   static-export SPA vendors that ship a `data.json` next to the bundle.
+3. **Scope (dataset).** The two image-only cases were removed (dataset
+   version 2, 38 cases). Their crawl coverage ceiling was 0% by
+   construction: no text crawler can read pixels. In the app that
+   invitation arrives through the image-parsing path, so keeping them in
+   a *link*-parser benchmark measured the wrong pipeline.
+
+| | layer 0 | layer 1 | now |
+|---|---|---|---|
+| crawl coverage | 68% | 90% | **100%** |
+| core | 63% | 85% | **100%** (38 cases) |
+
+The number to watch for regressions is still the coverage ceiling: a new
+vendor pattern that hides a field from the crawler shows up there first,
+model-independently.
+
 ---
 
 ## 7. Why not the alternatives
