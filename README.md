@@ -2,112 +2,114 @@
 
 [한국어](./README.ko.md)
 
-# chungmo: AI-Powered Wedding Invitation Parser
+# chungmo: An AI Wedding-Invitation Assistant
 
-![Brand Preview](./designs/previews_android/brand.jpeg)
+![Brand Preview](./designs/previews_submission/cover.png)
 
 <p align="center">
-  <strong>Mobile wedding invitation parser app using Firebase AI Logic</strong>
+  <strong>Paste an invitation — a link, a KakaoTalk capture, or plain text — and AI turns it into a schedule, down to the gift-money accounts.</strong>
 </p>
 
 <p align="center">
   <a href="https://play.google.com/store/apps/details?id=com.taebbong.chungmo">
     <img src="https://img.shields.io/badge/google play-414141?style=for-the-badge&logo=googleplay&logoColor=white" alt="Google Play">
   </a>
-  <a href="https://apps.apple.com/kr/app/%EC%B2%AD%EB%AA%A8/id6745786004%EC%B2%AD%EB%AA%A8">
+  <a href="https://apps.apple.com/kr/app/id6745786004">
     <img src="https://img.shields.io/badge/appstore-0D96F6?style=for-the-badge&logo=appstore&logoColor=white" alt="App Store">
+  </a>
+  <a href="https://chung-mo.web.app">
+    <img src="https://img.shields.io/badge/website-800020?style=for-the-badge&logo=firebase&logoColor=white" alt="Website">
   </a>
 </p>
 
 ## Features
 
-![Feature Overview](./designs/previews_android/merged.jpeg)
+- **AI invitation parsing — link, photo, or text**
+  - Paste a mobile invitation URL, share a KakaoTalk capture or paper-invitation photo, or paste the announcement SMS. Gemini (Firebase AI Logic) extracts the couple, date, venue and both families' gift-money accounts through a structured-output schema shared by all three paths (`lib/data/sources/remote/invitation_prompt.dart`).
+  - Links are crawled by a purpose-built extractor (`lib/core/utils/crawler.dart`): document-order text walk, OpenGraph metadata, EUC-KR decoding, same-host iframe follow and a CSR-shell JSON fallback.
+  - When an invitation states no date, the partial extraction pre-fills a manual form instead of failing.
+- **OS share-sheet integration**
+  - "Share → 청모" from any app starts the analysis immediately (Android Share Intent / iOS Share Extension).
+- **AI gift-money recommendation**
+  - Describe the relationship and closeness; the model grounds its suggestion in your own records and public survey statistics, and explains the amount.
+- **Records and statistics**
+  - Track attendance and the amount given per wedding; see yearly and per-relationship charts (`lib/presentation/pages/stats_page.dart`).
+- **Around the schedule**
+  - Home-screen widget with the next wedding's D-day (Android/iOS), day-before push reminder, one-tap hand-off to the device calendar, tap-to-copy account numbers, and clipboard link detection.
 
-- **AI-Powered Schedule Parsing**
-  - Users can submit a wedding invitation URL. The app sends the link to a server for AI-powered content analysis and automatically extracts event details. This process is handled by `lib/domain/usecases/analyze_link_usecase.dart` and reflected in the UI via `lib/presentation/bloc/create/create_cubit.dart`.
-- **Calendar & List View**
-  - View all saved schedules on a calendar or as a list. The UI logic for this is managed by `lib/presentation/bloc/calendar/calendar_bloc.dart`, with widgets like `lib/presentation/widgets/calendar_view.dart` and `lib/presentation/widgets/calendar_list_view.dart`. Tapping a date shows a summary, and tapping an event navigates to the detail page.
-- **Schedule Management**
-  - View, edit, and delete schedule details. The `DetailPage` allows for modifications, which are processed by use cases such as `lib/domain/usecases/edit_schedule_usecase.dart` and `lib/domain/usecases/delete_schedule_usecase.dart`.
-- **Push Notifications**
-  - The app provides timely reminders for upcoming events (e.g., the day before) using local push notifications, configured in `lib/core/services/notification_service.dart`.
-- **Clipboard Detection**
-  - The app automatically detects and suggests a wedding invitation link from the user's clipboard to streamline the creation process.
+### Measured accuracy
+
+The parser is scored against a self-built benchmark: 38 fixture invitations reproducing 15 real vendor markup styles, hosted at [chung-mo.web.app/eval](https://chung-mo.web.app), with an automatic scorer.
+
+| | value |
+|---|---|
+| Core accuracy (schedule saves with no manual fix) | **100%** (38/38) |
+| Per field — names · datetime · venue · accounts | 100% each |
+| Journey | 63% → 85% (crawler rewrite) → 100% (year inference, CSR JSON follow) |
+
+How it is built and scored: [docs/PARSING_EVAL.md](./docs/PARSING_EVAL.md), [docs/CRAWLER_COVERAGE.md](./docs/CRAWLER_COVERAGE.md).
 
 ### App Screenshots
 
-| ![](./designs/screenshots/splash.jpg) | ![](./designs/screenshots/permission.jpg) | ![](./designs/screenshots/main.jpg)     | ![](./designs/screenshots/loading.jpg) |
-| ------------------------------------- | ----------------------------------------- | --------------------------------------- | -------------------------------------- |
-| ![](./designs/screenshots/result.jpg) | ![](./designs/screenshots/done.jpg)       | ![](./designs/screenshots/calendar.jpg) | ![](./designs/screenshots/list.jpg)    |
-| ![](./designs/screenshots/detail.jpg) | ![](./designs/screenshots/edit.jpg)       |                                         |                                        |
+| ![](./designs/screenshots_new_ios/home_light.png) | ![](./designs/screenshots_new_ios/result_light.png) | ![](./designs/screenshots_new_ios/detail_light.png) | ![](./designs/screenshots_new_ios/calendar_light.png) |
+| --- | --- | --- | --- |
+| ![](./designs/screenshots_new_ios/list_light.png) | ![](./designs/screenshots_new_ios/onboarding1_light.png) | ![](./designs/screenshots_new_ios/coachmark_light.png) | ![](./designs/screenshots_new_ios/home_dark.png) |
 
 ## Get Started
 
 ### Prerequisites
 
-- [Flutter SDK](https://flutter.dev/docs/get-started/install)
-- An editor like [VS Code](https://code.visualstudio.com/) or [Android Studio](https://developer.android.com/studio)
+- [Flutter SDK](https://flutter.dev/docs/get-started/install) — the project pins its version with [fvm](https://fvm.app) (`.fvmrc`)
+- A Firebase project of your own: the app relies on Firebase AI Logic, App Check, Analytics and Crashlytics, so run `flutterfire configure` to generate your `firebase_options.dart` and platform config files
+- For AI calls in debug builds, register the App Check debug token printed on first run (Firebase console → App Check → Manage debug tokens)
 
 ### Installation
 
 1.  Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/chungmo-app.git
+    git clone https://github.com/TaeBbong/chungmo-app.git
     cd chungmo-app
     ```
 
 2.  Install dependencies:
 
     ```bash
-    dart pub get
+    fvm flutter pub get
     ```
 
 3.  Run the code generator:
 
     ```bash
-    dart run build_runner build --delete-conflicting-outputs
+    fvm dart run build_runner build --delete-conflicting-outputs
     ```
 
 4.  Run the app:
     ```bash
-    flutter run
+    fvm flutter run
     ```
 
 ## Configuration
 
 ### Environment Setup
 
-The project uses a temporary, hard-coded method for managing environments (local, dev, production) via a static class.
+Environments are still selected through a static class (a Flavor/`dart-define` migration is on the roadmap). `main.dart` picks the environment from the build mode:
 
 ```dart
-/// lib/core/env.dart
-/// Temporary way to seperate environments.
-/// TODO: Apply Flavor to native env
+/// lib/core/env.dart (excerpt)
 enum Environ { local, dev, production }
 
-class Env {
-  static late final Environ env;
-  static late final String url;
+enum RemoteSourceEnv { firebase, cloud }
 
-  static void init(Environ environment) {
-    env = environment;
-    switch (environment) {
-      case Environ.local:
-        url = 'https://local-api.example.com';
-        break;
-      case Environ.dev:
-        url = 'https://dev-api.example.com';
-        break;
-      case Environ.production:
-        url = 'https://api.example.com';
-        break;
-    }
+class Env {
+  static void init(
+      {required Environ environment, required RemoteSourceEnv remoteSource}) {
+    // resolves the legacy cloud endpoint and the DI backendType
   }
 }
 ```
 
-To set an environment, call `Env.init()` at the start of the application, for example in `lib/main.dart`.
+`RemoteSourceEnv.firebase` is the shipping path (Firebase AI Logic); `cloud` keeps the legacy GPT-backend implementation selectable through DI.
 
 ## Project Architecture
 
@@ -115,13 +117,13 @@ This project is based on **Clean Architecture** to separate concerns and create 
 
 ```css
 📂 core/
-   ├── utils/       (Common utility functions)
+   ├── utils/       (Crawler, image preprocessing, extensions)
    ├── di/          (Dependency injection setup)
    ├── navigation/  (Routing logic)
-   └── services/    (Background services like notifications)
+   └── services/    (Notifications, home widget, analytics)
 
 📂 data/
-   ├── sources/     (Local and remote data sources)
+   ├── sources/     (Local and remote data sources, AI prompts)
    ├── repositories/ (Implementation of domain repositories)
    ├── models/      (Data Transfer Objects)
    └── mapper/      (Mappers between models and entities)
@@ -135,10 +137,12 @@ This project is based on **Clean Architecture** to separate concerns and create 
    ├── bloc/        (Blocs and Cubits for state management)
    ├── pages/       (UI screens/pages)
    ├── widgets/     (Reusable UI components)
-   └── theme/       (App theme and styling)
+   └── theme/       (App theme, palette, motion tokens)
 
 📂 main.dart      (Application entry point)
 ```
+
+Beyond `lib/`, the repository carries the parsing benchmark (`eval/` — dataset, runner, scorer), the static site and eval fixtures served from Firebase Hosting (`hosting/public/`, [chung-mo.web.app](https://chung-mo.web.app)), and engineering write-ups under `docs/` (isolates, micro-interactions, crawler coverage, parsing eval, hosting, analytics, release checklist).
 
 The data flow follows a clear, unidirectional pattern from the UI to the data layer, orchestrated by dependency injection (`get_it` and `injectable`).
 
@@ -148,7 +152,7 @@ The data flow follows a clear, unidirectional pattern from the UI to the data la
 │     ├──> Bloc / Cubit (State Management)                      │
 │     │     ├──> UseCase (Business Logic)                       │
 │     │     │     ├──> Repository (Interface)                   │
-│     │     │     │     ├──> Remote Data Source (API)           │
+│     │     │     │     ├──> Remote Data Source (Firebase AI)   │
 │     │     │     │     └──> Local Data Source (SQLite)         │
 │     │     │     │                                             │
 └───────> Dependency Injection (get_it + injectable) ───────────┘
@@ -156,20 +160,21 @@ The data flow follows a clear, unidirectional pattern from the UI to the data la
 
 ## Release History
 
-For detailed information on version changes, see the [Release Notes](./RELEASE.md).
+For detailed information on version changes, see the [Release Notes](./RELEASE.md) or the [GitHub Releases](https://github.com/TaeBbong/chungmo-app/releases).
 
 ## Dependencies
 
 This project uses several key packages, including:
 
+- `firebase_ai` (+ `firebase_app_check`) for Gemini calls through Firebase AI Logic.
 - `flutter_bloc` for state management.
 - `get_it` and `injectable` for dependency injection.
-- `dio` for networking.
 - `sqflite` for local database storage.
 - `table_calendar` for the calendar UI.
+- `home_widget`, `fl_chart`, `receive_sharing_intent`, `add_2_calendar` for the widget, charts, share sheet and calendar hand-off.
 
 A full list of dependencies is available in the [`pubspec.yaml`](./pubspec.yaml) file.
 
 ## License
 
-This project is open source. Please check the license file for more details.
+Copyright © 2026 TaeBbong. The source is public for reading and reference.
