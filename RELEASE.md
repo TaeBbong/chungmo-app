@@ -8,6 +8,18 @@ This file documents the main changes for each release.
 
 ---
 
+### Version 2.0.1+9 (2026-09-10)
+
+Hotfix for App Store users who saw an immediate "try again" error on every
+AI request after the 2.0.0 launch.
+
+- **Fixed**
+  - Release iOS builds activated the DeviceCheck App Check provider while the Firebase console registers the app with App Attest, so attestation was rejected and every AI call failed instantly. Release builds now use the App Attest provider, with the required entitlement added.
+- **Deployment**
+  - Released on both Google Play and the App Store (version-code sync on Android; no functional Android change).
+
+---
+
 ### Version 2.0.0+8 (2026-09-08)
 
 A major update: the app grows from a link parser into an AI wedding assistant.
