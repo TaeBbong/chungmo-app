@@ -168,8 +168,9 @@ because cross-origin frames are maps, videos and ads.
 
 ## 5. What it changed
 
-Measured with `eval/run_eval.dart` on the same 40 fixtures, same model,
-same prompt (`eval/results/latest.md`):
+Measured with `eval/run_eval.dart` on the original 40-fixture set, same
+model, same prompt — the historical layer-1 numbers, before the later
+round rescoped the dataset:
 
 | | before | after |
 |---|---|---|

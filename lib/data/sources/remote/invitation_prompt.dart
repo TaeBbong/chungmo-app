@@ -65,6 +65,10 @@ const Map<String, Object> scheduleResponseJsonSchema = {
   }
 };
 
+/// Today in KST, regardless of the device's timezone — the guidelines
+/// label the date as KST, and Korean weddings live on the KST calendar.
+DateTime _kstNow() => DateTime.now().toUtc().add(const Duration(hours: 9));
+
 /// Field guidelines shared by the link and image extraction prompts.
 ///
 /// [now] anchors the year-inference rule: Korean invitations routinely omit
@@ -98,7 +102,7 @@ If no account is found for a side, return an empty array for it.''';
 /// output of `extractContentWithImages`).
 String linkExtractionPrompt(String? parsed, {DateTime? now}) =>
     '''Extract the required wedding data from the given text and return it in pure JSON format, without any additional text or snippet tags.
-          ${extractionGuidelines(now ?? DateTime.now())}
+          ${extractionGuidelines(now ?? _kstNow())}
 
           Given text:
           $parsed
@@ -109,7 +113,7 @@ String imageExtractionPrompt({DateTime? now}) =>
     '''Extract the required wedding data from the given wedding invitation image and return it in pure JSON format, without any additional text or snippet tags.
           The image is usually a screenshot of a mobile wedding invitation or a
           photo of a paper invitation, written in Korean.
-          ${extractionGuidelines(now ?? DateTime.now())}
+          ${extractionGuidelines(now ?? _kstNow())}
           Put an empty string for thumbnail; an image has no thumbnail URL.
           ''';
 
@@ -117,7 +121,7 @@ String imageExtractionPrompt({DateTime? now}) =>
 String textExtractionPrompt(String text, {DateTime? now}) =>
     '''Extract the required wedding data from the given text and return it in pure JSON format, without any additional text or snippet tags.
           The text is usually an SMS or messenger invitation written in Korean.
-          ${extractionGuidelines(now ?? DateTime.now())}
+          ${extractionGuidelines(now ?? _kstNow())}
           Put an empty string for thumbnail; pasted text has no thumbnail URL.
 
           Given text:

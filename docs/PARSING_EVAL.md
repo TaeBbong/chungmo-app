@@ -309,8 +309,9 @@ CSR shell and image-only pages (image fallback, issue #51).
 
 ### 6.3 Closing the gap to 100% (issue #54)
 
-Three changes, one per failure class, took the same benchmark to
-**38/38 core = 100%** with the crawl-coverage ceiling also at 100%:
+Three changes, one per failure class, took the benchmark — now scoped
+to the 38 crawlable cases — to **38/38 core = 100%** with the
+crawl-coverage ceiling also at 100%:
 
 1. **Year inference (prompt).** Korean invitations routinely print
    "10월 24일 토요일" with no year. The guidelines now carry today's date
