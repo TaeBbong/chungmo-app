@@ -1,13 +1,13 @@
 # Link parser eval — gemini-2.5-flash
 
-- Run: 2026-09-15T21:16:38.733033 (100% run: year inference + csr json, image-only removed)
-- Cases: 38 · errors: 0 · mean crawl 259 ms · mean model 6509 ms · prompt tokens 37087
+- Run: 2026-09-21T21:12:35.730800 (venue field added)
+- Cases: 38 · errors: 0 · mean crawl 166 ms · mean model 5952 ms · prompt tokens 39557
 
 ## Overall
 
-| core | groom | bride | datetime | location | accounts | thumbnail | groom (lenient) | bride (lenient) | account P / R |
-|---|---|---|---|---|---|---|---|---|---|
-| **100%** | 100% | 100% | 100% | 100% | 100% | 100% | 100% | 100% | 100% / 100% |
+| core | groom | bride | datetime | location | venue | accounts | thumbnail | groom (lenient) | bride (lenient) | account P / R |
+|---|---|---|---|---|---|---|---|---|---|---|
+| **100%** | 100% | 100% | 100% | 100% | 100% | 100% | 100% | 100% | 100% | 100% / 100% |
 
 `core` = groom, bride, datetime, location and the full account set all correct — the schedule saves without manual fixes.
 
@@ -126,41 +126,41 @@ Whether the crawler's text contains each expected value verbatim; a field missin
 
 | id | template | difficulty | G | B | D | L | A | T | chars | ms | mismatches |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| bs-01 | bootstrap-2019 | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1273 | 214+13889 |  |
-| bs-02 | bootstrap-2019 | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1110 | 166+5368 |  |
-| bs-03 | bootstrap-2019 | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1048 | 27+5979 |  |
-| builder-01 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1048 | 175+9627 |  |
-| builder-02 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 922 | 172+7407 |  |
-| builder-03 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 869 | 175+4503 |  |
-| euckr-01 | euckr-asp | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 725 | 228+6861 |  |
-| euckr-02 | euckr-asp | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 567 | 608+5077 |  |
-| frame-01 | iframe-embed | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1531 | 531+6102 |  |
-| frame-02 | iframe-embed | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1452 | 464+5706 |  |
-| hanul-01 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1808 | 210+7588 |  |
-| hanul-02 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1321 | 198+6828 |  |
-| hanul-03 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1270 | 557+7768 |  |
-| hanul-04 | classic-jquery | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1234 | 119+5504 |  |
-| hanul-05 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1173 | 187+4757 |  |
-| intl-01 | english-intl | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 814 | 173+4222 |  |
-| intl-02 | english-intl | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1004 | 210+6926 |  |
-| kakao-01 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 850 | 188+6859 |  |
-| kakao-02 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 644 | 275+6407 |  |
-| kakao-03 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 562 | 239+4855 |  |
-| nextcard-01 | nextjs-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 2244 | 166+9588 |  |
-| nextcard-02 | nextjs-ssr | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1808 | 168+6767 |  |
-| nextcard-03 | nextjs-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1654 | 272+6528 |  |
-| nuxtcard-01 | nuxt-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1598 | 374+7426 |  |
-| nuxtcard-02 | nuxt-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1368 | 186+7335 |  |
-| sc-01 | styled-react | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 782 | 159+5163 |  |
-| sc-02 | styled-react | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 898 | 237+8931 |  |
-| self-01 | notion-export | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 816 | 160+6264 |  |
-| spa-01 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1252 | 510+2927 |  |
-| spa-02 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1763 | 445+6272 |  |
-| spa-03 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 971 | 680+4915 |  |
-| table-01 | table-legacy | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 675 | 186+6948 |  |
-| table-02 | table-legacy | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 605 | 156+4591 |  |
-| tw-01 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1440 | 186+7609 |  |
-| tw-02 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1251 | 192+4043 |  |
-| tw-03 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1303 | 227+6493 |  |
-| wp-01 | wordpress-theme | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1255 | 199+5474 |  |
-| wp-02 | wordpress-theme | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1296 | 242+7864 |  |
+| bs-01 | bootstrap-2019 | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1273 | 164+9463 |  |
+| bs-02 | bootstrap-2019 | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1110 | 191+4989 |  |
+| bs-03 | bootstrap-2019 | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1048 | 33+6721 |  |
+| builder-01 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1048 | 18+5600 |  |
+| builder-02 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 922 | 22+5363 |  |
+| builder-03 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 869 | 23+5097 |  |
+| euckr-01 | euckr-asp | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 725 | 179+6924 |  |
+| euckr-02 | euckr-asp | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 567 | 435+4154 |  |
+| frame-01 | iframe-embed | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1531 | 527+4989 |  |
+| frame-02 | iframe-embed | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1452 | 134+3461 |  |
+| hanul-01 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1808 | 336+10613 |  |
+| hanul-02 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1321 | 89+6269 |  |
+| hanul-03 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1270 | 440+7230 |  |
+| hanul-04 | classic-jquery | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1234 | 249+6926 |  |
+| hanul-05 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1173 | 24+5422 |  |
+| intl-01 | english-intl | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 814 | 22+3883 |  |
+| intl-02 | english-intl | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1004 | 158+5206 |  |
+| kakao-01 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 850 | 158+6015 |  |
+| kakao-02 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 644 | 130+3720 |  |
+| kakao-03 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 562 | 17+3069 |  |
+| nextcard-01 | nextjs-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 2244 | 23+6143 |  |
+| nextcard-02 | nextjs-ssr | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1808 | 169+5408 |  |
+| nextcard-03 | nextjs-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1654 | 402+5175 |  |
+| nuxtcard-01 | nuxt-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1598 | 46+8772 |  |
+| nuxtcard-02 | nuxt-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1368 | 24+7324 |  |
+| sc-01 | styled-react | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 782 | 15+6150 |  |
+| sc-02 | styled-react | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 898 | 214+8454 |  |
+| self-01 | notion-export | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 816 | 172+6579 |  |
+| spa-01 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1252 | 392+4747 |  |
+| spa-02 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1763 | 445+7427 |  |
+| spa-03 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 971 | 270+3248 |  |
+| table-01 | table-legacy | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 675 | 32+4911 |  |
+| table-02 | table-legacy | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 605 | 186+5326 |  |
+| tw-01 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1440 | 16+6790 |  |
+| tw-02 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1251 | 15+5608 |  |
+| tw-03 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1303 | 354+6018 |  |
+| wp-01 | wordpress-theme | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1255 | 187+5057 |  |
+| wp-02 | wordpress-theme | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1296 | 16+7927 |  |
