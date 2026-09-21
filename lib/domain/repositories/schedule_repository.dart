@@ -41,4 +41,9 @@ abstract class ScheduleRepository {
   ///
   /// Delete notify schedule.
   Future<void> deleteSchedule(String link);
+
+  /// Fills the venue of upcoming schedules that predate the venue field,
+  /// using one batched extraction call. Rows the model cannot resolve stay
+  /// empty and keep the full-location map fallback.
+  Future<void> backfillVenues();
 }

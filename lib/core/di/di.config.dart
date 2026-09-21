@@ -17,6 +17,7 @@ import 'package:chungmo/core/services/home_widget_service.dart' as _i25;
 import 'package:chungmo/core/services/notification_service.dart' as _i109;
 import 'package:chungmo/core/services/preferences_checker.dart' as _i391;
 import 'package:chungmo/core/services/share_intent_service.dart' as _i774;
+import 'package:chungmo/core/services/venue_backfill_service.dart' as _i728;
 import 'package:chungmo/data/repositories/pay_recommendation_repository.dart'
     as _i700;
 import 'package:chungmo/data/repositories/schedule_repository.dart' as _i798;
@@ -39,6 +40,7 @@ import 'package:chungmo/domain/repositories/schedule_repository.dart' as _i561;
 import 'package:chungmo/domain/usecases/analyze_image_usecase.dart' as _i338;
 import 'package:chungmo/domain/usecases/analyze_link_usecase.dart' as _i596;
 import 'package:chungmo/domain/usecases/analyze_text_usecase.dart' as _i451;
+import 'package:chungmo/domain/usecases/backfill_venues_usecase.dart' as _i673;
 import 'package:chungmo/domain/usecases/delete_schedule_usecase.dart' as _i993;
 import 'package:chungmo/domain/usecases/edit_schedule_usecase.dart' as _i15;
 import 'package:chungmo/domain/usecases/get_schedule_by_link_usecase.dart'
@@ -109,6 +111,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i596.AnalyzeLinkUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i451.AnalyzeTextUsecase>(
         () => _i451.AnalyzeTextUsecase(gh<_i561.ScheduleRepository>()));
+    gh.factory<_i673.BackfillVenuesUsecase>(
+        () => _i673.BackfillVenuesUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i993.DeleteScheduleUsecase>(
         () => _i993.DeleteScheduleUsecase(gh<_i561.ScheduleRepository>()));
     gh.factory<_i15.EditScheduleUsecase>(
@@ -121,6 +125,12 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i389.WatchAllSchedulesUsecase(gh<_i561.ScheduleRepository>()));
     gh.lazySingleton<_i25.HomeWidgetService>(
         () => _i25.HomeWidgetServiceImpl(gh<_i87.WatchAllSchedulesUsecase>()));
+    gh.lazySingleton<_i728.VenueBackfillService>(
+        () => _i728.VenueBackfillService(
+              gh<_i673.BackfillVenuesUsecase>(),
+              gh<_i391.PreferencesChecker>(),
+              gh<_i413.AnalyticsService>(),
+            ));
     return this;
   }
 }

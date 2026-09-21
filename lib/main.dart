@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chungmo/firebase_options.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -14,6 +16,7 @@ import 'core/navigation/app_navigation.dart';
 import 'core/services/home_widget_service.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/preferences_checker.dart';
+import 'core/services/venue_backfill_service.dart';
 import 'core/utils/constants.dart';
 import 'presentation/pages/pages.dart';
 import 'presentation/theme/dark_theme.dart';
@@ -67,6 +70,9 @@ void main() async {
   await notificationService.getPermissions();
   await notificationService.init();
   await getIt<HomeWidgetService>().init();
+  // Fire-and-forget: the one-shot venue backfill needs the network and must
+  // never delay startup; it retries on a later launch if this one fails.
+  unawaited(getIt<VenueBackfillService>().run());
   final bool onboarded =
       await getIt<PreferencesChecker>().hasKey(Constants.onboardingDoneKey);
   // await initializeDateFormatting('ko_KR', 'null');

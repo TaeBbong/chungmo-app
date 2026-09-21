@@ -118,4 +118,45 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
     await localSource.deleteScheduleByLink(link);
     await notificationService.cancelNotifySchedule(link: link);
   }
+
+  /// Locations sent per extraction call; the loop below covers the rest, so
+  /// this bounds prompt size, never how many rows get backfilled.
+  static const int _backfillBatchSize = 50;
+
+  @override
+  Future<void> backfillVenues() async {
+    final DateTime today = DateTime.now();
+    final DateTime midnight = DateTime(today.year, today.month, today.day);
+    // Only upcoming schedules matter: past rows never open the map again,
+    // and skipping them keeps the batch (and the prompt) small.
+    final List<ScheduleModel> candidates =
+        (await localSource.getAllSchedulesOnce())
+            .where((m) =>
+                m.venue.isEmpty &&
+                m.location.trim().isNotEmpty &&
+                (DateTime.tryParse(m.date)?.isAfter(midnight) ?? false))
+            .toList();
+    if (candidates.isEmpty) return;
+
+    final List<String> locations =
+        candidates.map((m) => m.location.trim()).toSet().toList();
+    var updated = 0;
+    // Batched so no location is ever dropped: the service's done-flag is
+    // permanent, so a truncated run here would strand the remainder forever.
+    for (var start = 0; start < locations.length; start += _backfillBatchSize) {
+      final List<String> batch = locations.sublist(start,
+          (start + _backfillBatchSize).clamp(0, locations.length));
+      final Map<String, String> venues =
+          await remoteSource.extractVenues(batch);
+      for (final model in candidates) {
+        final String? venue = venues[model.location.trim()];
+        if (venue == null || venue.isEmpty) continue;
+        await localSource.editSchedule(model.copyWith(venue: venue));
+        updated++;
+      }
+    }
+    // One emission at the end: the home preview, calendar and widget all
+    // watch this stream and pick the new venues up together.
+    if (updated > 0) await localSource.emitAllSchedules();
+  }
 }

@@ -349,4 +349,91 @@ void main() {
           .called(1);
     });
   });
+
+  group('backfillVenues', () {
+    ScheduleModel row(String link, DateTime date,
+        {String location = '', String venue = ''}) {
+      return tScheduleModel.copyWith(
+          link: link,
+          date: date.toIso8601String(),
+          location: location,
+          venue: venue);
+    }
+
+    test('fills only upcoming rows with an empty venue, then emits once',
+        () async {
+      // Given: one of each — eligible, past, already filled, no location.
+      final eligible =
+          row('a', tomorrow, location: '더채플앳청담 3층 채플홀');
+      final past = row('b', yesterday, location: '아펠가모 공덕 라로브홀');
+      final filled =
+          row('c', farFuture, location: '라온컨벤션 3층', venue: '라온컨벤션');
+      final blank = row('d', farFuture);
+      when(mockLocalSource.getAllSchedulesOnce())
+          .thenAnswer((_) async => [eligible, past, filled, blank]);
+      when(mockRemoteSource.extractVenues(any))
+          .thenAnswer((_) async => {'더채플앳청담 3층 채플홀': '더채플앳청담'});
+      when(mockLocalSource.editSchedule(any)).thenAnswer((_) async {});
+      when(mockLocalSource.emitAllSchedules()).thenAnswer((_) async {});
+
+      // When
+      await repository.backfillVenues();
+
+      // Then: only the eligible location was sent and only it was written.
+      expect(
+          verify(mockRemoteSource.extractVenues(captureAny)).captured.single,
+          ['더채플앳청담 3층 채플홀']);
+      final ScheduleModel written =
+          verify(mockLocalSource.editSchedule(captureAny)).captured.single
+              as ScheduleModel;
+      expect(written.link, 'a');
+      expect(written.venue, '더채플앳청담');
+      verify(mockLocalSource.emitAllSchedules()).called(1);
+    });
+
+    test('makes no remote call when nothing needs backfilling', () async {
+      when(mockLocalSource.getAllSchedulesOnce()).thenAnswer(
+          (_) async => [row('a', tomorrow, location: 'l', venue: 'v')]);
+
+      await repository.backfillVenues();
+
+      verifyNever(mockRemoteSource.extractVenues(any));
+      verifyNever(mockLocalSource.emitAllSchedules());
+    });
+
+    test('covers every location across batches; none are dropped', () async {
+      // 60 unique locations: one 50-batch plus a 10-remainder. A truncated
+      // run would strand rows forever behind the permanent done-flag.
+      final many = List.generate(
+          60, (i) => row('l$i', tomorrow, location: '예식장$i 3층'));
+      when(mockLocalSource.getAllSchedulesOnce())
+          .thenAnswer((_) async => many);
+      when(mockRemoteSource.extractVenues(any)).thenAnswer((inv) async => {
+            for (final l in inv.positionalArguments.first as List<String>)
+              l: l.replaceAll(' 3층', '')
+          });
+      when(mockLocalSource.editSchedule(any)).thenAnswer((_) async {});
+      when(mockLocalSource.emitAllSchedules()).thenAnswer((_) async {});
+
+      await repository.backfillVenues();
+
+      final batches =
+          verify(mockRemoteSource.extractVenues(captureAny)).captured;
+      expect(batches.map((b) => (b as List).length).toList(), [50, 10]);
+      verify(mockLocalSource.editSchedule(any)).called(60);
+      verify(mockLocalSource.emitAllSchedules()).called(1);
+    });
+
+    test('leaves unresolved locations untouched without emitting', () async {
+      when(mockLocalSource.getAllSchedulesOnce()).thenAnswer(
+          (_) async => [row('a', tomorrow, location: '어딘가 3층')]);
+      when(mockRemoteSource.extractVenues(any))
+          .thenAnswer((_) async => const {});
+
+      await repository.backfillVenues();
+
+      verifyNever(mockLocalSource.editSchedule(any));
+      verifyNever(mockLocalSource.emitAllSchedules());
+    });
+  });
 }

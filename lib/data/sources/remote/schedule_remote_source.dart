@@ -17,4 +17,9 @@ abstract class ScheduleRemoteSource {
   /// The returned model's `link` is a synthetic `text://<hash>` id derived
   /// from the text, since pasted invitations have no URL.
   Future<ScheduleModel> fetchScheduleFromText(String text);
+
+  /// Split searchable venue names out of already-saved [locations] in one
+  /// batched call — the upgrade backfill for pre-venue rows. Returns a
+  /// location → venue map; locations the model could not resolve are absent.
+  Future<Map<String, String>> extractVenues(List<String> locations);
 }
