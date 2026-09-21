@@ -18,4 +18,18 @@ void main() {
     expect(uri.host, 'maps.apple.com');
     expect(uri.queryParameters['q'], location);
   });
+
+  test('searches the venue name when the parser extracted one', () {
+    expect(
+      mapSearchQuery(venue: '더채플앳청담', location: '더채플앳청담 3층 채플홀'),
+      '더채플앳청담',
+    );
+  });
+
+  test('falls back to the full location for legacy and manual entries', () {
+    expect(
+      mapSearchQuery(venue: '', location: '아펠가모 공덕 라로브홀'),
+      '아펠가모 공덕 라로브홀',
+    );
+  });
 }

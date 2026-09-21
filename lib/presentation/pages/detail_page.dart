@@ -183,11 +183,13 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Future<void> _openMap() async {
-    final String location = cubit.state.schedule!.location;
-    if (location.isEmpty) return;
+    final Schedule schedule = cubit.state.schedule!;
+    final String query =
+        mapSearchQuery(venue: schedule.venue, location: schedule.location);
+    if (query.isEmpty) return;
 
     getIt<AnalyticsService>().logEvent(AnalyticsEvents.locationMapOpened);
-    final Uri url = mapSearchUri(location);
+    final Uri url = mapSearchUri(query);
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     }
