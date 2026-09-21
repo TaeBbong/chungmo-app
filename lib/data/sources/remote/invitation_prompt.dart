@@ -46,6 +46,12 @@ const Map<String, Object> scheduleResponseJsonSchema = {
       "type": "string",
       "description": "Event location from response",
     },
+    "venue": {
+      "type": "string",
+      "description":
+          "Searchable place name only — the wedding hall, hotel, church or "
+              "building name, e.g. 더채플앳청담. No floor, hall, room or address.",
+    },
     "datetime": {
       "type": ["string", "null"],
       "description":
@@ -78,8 +84,12 @@ String extractionGuidelines(DateTime now) {
       '${now.month.toString().padLeft(2, '0')}-'
       '${now.day.toString().padLeft(2, '0')}';
   return '''Required data's are:
-thumbnail, groom, bride, location, datetime, groomAccounts, brideAccounts
+thumbnail, groom, bride, location, venue, datetime, groomAccounts, brideAccounts
 If you can't find proper data, just put empty string for that field.
+location is the full venue line as written (hall and floor included);
+venue is the searchable place name alone — the wedding hall, hotel, church
+or building name with its branch if any, stripped of floor, hall, room and
+address. A map app search for venue should find the building.
 Today is $today (KST). Weddings are upcoming events.
 For datetime, put null when the invitation states no date at all; never
 invent a month, day or time.
