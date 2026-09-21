@@ -49,6 +49,11 @@ class ScheduleFormCubit extends Cubit<ScheduleFormState> {
       bride: bride.trim(),
       date: date,
       location: location.trim(),
+      // The extracted venue survives only while the location it was split
+      // from does; a hand-edited location falls back to itself on the map.
+      venue: (draft != null && location.trim() == draft.location)
+          ? draft.venue
+          : '',
       groomAccounts: draft?.groomAccounts ?? const [],
       brideAccounts: draft?.brideAccounts ?? const [],
     );

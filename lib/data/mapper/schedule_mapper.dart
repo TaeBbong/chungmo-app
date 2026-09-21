@@ -58,6 +58,7 @@ class ScheduleMapper {
       bride: model.bride,
       date: null,
       location: model.location,
+      venue: model.venue,
       groomAccounts: decodeAccounts(model.groomAccounts),
       brideAccounts: decodeAccounts(model.brideAccounts),
     );

@@ -94,11 +94,16 @@ class _DetailPageState extends State<DetailPage> {
 
   void saveChanges() {
     setState(() {
-      final Schedule editedSchedule = cubit.state.schedule!.copyWith(
+      final Schedule current = cubit.state.schedule!;
+      final String location = locationController.text;
+      final Schedule editedSchedule = current.copyWith(
         groom: groomController.text,
         bride: brideController.text,
         date: selectedDate!,
-        location: locationController.text,
+        location: location,
+        // A hand-edited location invalidates the extracted venue; the map
+        // search then falls back to the new location text.
+        venue: location == current.location ? current.venue : '',
       );
       cubit.editSchedule(editedSchedule);
       editMode = false;
