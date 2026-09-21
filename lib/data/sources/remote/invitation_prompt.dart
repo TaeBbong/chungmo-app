@@ -108,6 +108,50 @@ side(신랑측, including his parents) into groomAccounts, the bride's side
 If no account is found for a side, return an empty array for it.''';
 }
 
+/// Schema for the one-shot venue backfill: each input location string comes
+/// back paired with its searchable venue name.
+const Map<String, Object> venueBackfillJsonSchema = {
+  "type": "object",
+  "title": "VenueBackfillResponse",
+  "properties": {
+    "venues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "The input location string, unchanged.",
+          },
+          "venue": {
+            "type": "string",
+            "description":
+                "Searchable place name only — the wedding hall, hotel, church "
+                    "or building name, e.g. 더채플앳청담. No floor, hall, room "
+                    "or address. Empty when it cannot be determined.",
+          },
+        },
+      },
+    },
+  },
+};
+
+/// Prompt that splits venue names out of already-saved location strings —
+/// the upgrade backfill for schedules parsed before the venue field existed.
+String venueBackfillPrompt(List<String> locations) {
+  final String lines = locations.map((l) => '- $l').join('\n');
+  return '''For each wedding location string below, extract the searchable place name and return pure JSON, without any additional text or snippet tags.
+venue is the place name alone — the wedding hall, hotel, church or building
+name with its branch if any, stripped of floor, hall, room and address.
+A map app search for venue should find the building. Return every input
+location unchanged next to its venue; use an empty venue when the string
+carries no recognizable place name.
+
+Locations:
+$lines
+''';
+}
+
 /// Prompt for HTML text crawled from an invitation link ([parsed] is the
 /// output of `extractContentWithImages`).
 String linkExtractionPrompt(String? parsed, {DateTime? now}) =>

@@ -23,13 +23,31 @@ import 'schedule_remote_source.dart';
 class FirebaseAiLogicImpl implements ScheduleRemoteSource {
   FirebaseAiLogicImpl();
 
-  GenerativeModel _buildModel() {
+  GenerativeModel _buildModel({Map<String, Object>? schema}) {
     return FirebaseAI.googleAI().generativeModel(
       model: Constants.geminiModel,
       generationConfig: GenerationConfig(
-          responseJsonSchema: scheduleResponseJsonSchema,
+          responseJsonSchema: schema ?? scheduleResponseJsonSchema,
           responseMimeType: "application/json"),
     );
+  }
+
+  @override
+  Future<Map<String, String>> extractVenues(List<String> locations) async {
+    if (locations.isEmpty) return const {};
+    final response = await _buildModel(schema: venueBackfillJsonSchema)
+        .generateContent([Content.text(venueBackfillPrompt(locations))]);
+    final String? text = response.text;
+    if (text == null) return const {};
+    final decoded = jsonDecode(text) as Map<String, dynamic>;
+    final venues = <String, String>{};
+    for (final entry in (decoded['venues'] as List? ?? const [])) {
+      if (entry is! Map) continue;
+      final location = entry['location']?.toString().trim() ?? '';
+      final venue = entry['venue']?.toString().trim() ?? '';
+      if (location.isNotEmpty && venue.isNotEmpty) venues[location] = venue;
+    }
+    return venues;
   }
 
   /// Fetch analyzed data in `json` type from Firebase AI Logic.

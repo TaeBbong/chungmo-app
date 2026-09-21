@@ -60,4 +60,11 @@ class CloudFunctionImpl implements ScheduleRemoteSource {
     throw UnsupportedError(
         '[-] Text parsing is not supported by the cloud backend');
   }
+
+  @override
+  Future<Map<String, String>> extractVenues(List<String> locations) {
+    // Venue backfill ships with the Firebase AI Logic source only.
+    throw UnsupportedError(
+        '[-] Venue extraction is not supported by the cloud backend');
+  }
 }
