@@ -8,7 +8,7 @@ This file documents the main changes for each release.
 
 ---
 
-### Version 2.0.2+10 (2026-09-21)
+### Version 2.0.2+11 (2026-09-21)
 
 Fixes the map hand-off for parsed schedules.
 
