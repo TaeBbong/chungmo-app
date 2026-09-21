@@ -10,6 +10,14 @@ void main() {
           contains('Today is 2026-09-05 (KST)'));
     });
 
+    test('separates the searchable venue from the full location', () {
+      final text = extractionGuidelines(now);
+      expect(text, contains('venue is the searchable place name alone'));
+      expect(text, contains('stripped of floor, hall, room'));
+      expect(scheduleResponseJsonSchema['properties'],
+          containsPair('venue', anything));
+    });
+
     test('spells out the year-inference rule for year-less dates', () {
       final text = extractionGuidelines(now);
       expect(text, contains('omit the year'));

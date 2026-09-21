@@ -22,6 +22,10 @@ mixin _$ScheduleModel {
   String get date;
   String get location;
 
+  /// Searchable place name for map hand-offs; NULL from pre-v5 rows and
+  /// manual entries reads as ''.
+  String get venue;
+
   /// JSON-encoded `List<AccountModel>`; sqflite has no list column type.
 // ignore: invalid_annotation_target
   @JsonKey(name: 'groom_accounts')
@@ -67,6 +71,7 @@ mixin _$ScheduleModel {
             (identical(other.date, date) || other.date == date) &&
             (identical(other.location, location) ||
                 other.location == location) &&
+            (identical(other.venue, venue) || other.venue == venue) &&
             (identical(other.groomAccounts, groomAccounts) ||
                 other.groomAccounts == groomAccounts) &&
             (identical(other.brideAccounts, brideAccounts) ||
@@ -90,6 +95,7 @@ mixin _$ScheduleModel {
       bride,
       date,
       location,
+      venue,
       groomAccounts,
       brideAccounts,
       attendance,
@@ -99,7 +105,7 @@ mixin _$ScheduleModel {
 
   @override
   String toString() {
-    return 'ScheduleModel(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay, relation: $relation, relationNote: $relationNote)';
+    return 'ScheduleModel(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, venue: $venue, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay, relation: $relation, relationNote: $relationNote)';
   }
 }
 
@@ -116,6 +122,7 @@ abstract mixin class $ScheduleModelCopyWith<$Res> {
       String bride,
       @JsonKey(name: 'datetime') String date,
       String location,
+      String venue,
       @JsonKey(name: 'groom_accounts') String groomAccounts,
       @JsonKey(name: 'bride_accounts') String brideAccounts,
       String attendance,
@@ -143,6 +150,7 @@ class _$ScheduleModelCopyWithImpl<$Res>
     Object? bride = null,
     Object? date = null,
     Object? location = null,
+    Object? venue = null,
     Object? groomAccounts = null,
     Object? brideAccounts = null,
     Object? attendance = null,
@@ -174,6 +182,10 @@ class _$ScheduleModelCopyWithImpl<$Res>
       location: null == location
           ? _self.location
           : location // ignore: cast_nullable_to_non_nullable
+              as String,
+      venue: null == venue
+          ? _self.venue
+          : venue // ignore: cast_nullable_to_non_nullable
               as String,
       groomAccounts: null == groomAccounts
           ? _self.groomAccounts
@@ -303,6 +315,7 @@ extension ScheduleModelPatterns on ScheduleModel {
             String bride,
             @JsonKey(name: 'datetime') String date,
             String location,
+            String venue,
             @JsonKey(name: 'groom_accounts') String groomAccounts,
             @JsonKey(name: 'bride_accounts') String brideAccounts,
             String attendance,
@@ -322,6 +335,7 @@ extension ScheduleModelPatterns on ScheduleModel {
             _that.bride,
             _that.date,
             _that.location,
+            _that.venue,
             _that.groomAccounts,
             _that.brideAccounts,
             _that.attendance,
@@ -355,6 +369,7 @@ extension ScheduleModelPatterns on ScheduleModel {
             String bride,
             @JsonKey(name: 'datetime') String date,
             String location,
+            String venue,
             @JsonKey(name: 'groom_accounts') String groomAccounts,
             @JsonKey(name: 'bride_accounts') String brideAccounts,
             String attendance,
@@ -373,6 +388,7 @@ extension ScheduleModelPatterns on ScheduleModel {
             _that.bride,
             _that.date,
             _that.location,
+            _that.venue,
             _that.groomAccounts,
             _that.brideAccounts,
             _that.attendance,
@@ -405,6 +421,7 @@ extension ScheduleModelPatterns on ScheduleModel {
             String bride,
             @JsonKey(name: 'datetime') String date,
             String location,
+            String venue,
             @JsonKey(name: 'groom_accounts') String groomAccounts,
             @JsonKey(name: 'bride_accounts') String brideAccounts,
             String attendance,
@@ -423,6 +440,7 @@ extension ScheduleModelPatterns on ScheduleModel {
             _that.bride,
             _that.date,
             _that.location,
+            _that.venue,
             _that.groomAccounts,
             _that.brideAccounts,
             _that.attendance,
@@ -445,6 +463,7 @@ class _ScheduleModel implements ScheduleModel {
       required this.bride,
       @JsonKey(name: 'datetime') required this.date,
       required this.location,
+      this.venue = '',
       @JsonKey(name: 'groom_accounts') this.groomAccounts = '[]',
       @JsonKey(name: 'bride_accounts') this.brideAccounts = '[]',
       this.attendance = 'undecided',
@@ -468,6 +487,12 @@ class _ScheduleModel implements ScheduleModel {
   final String date;
   @override
   final String location;
+
+  /// Searchable place name for map hand-offs; NULL from pre-v5 rows and
+  /// manual entries reads as ''.
+  @override
+  @JsonKey()
+  final String venue;
 
   /// JSON-encoded `List<AccountModel>`; sqflite has no list column type.
 // ignore: invalid_annotation_target
@@ -528,6 +553,7 @@ class _ScheduleModel implements ScheduleModel {
             (identical(other.date, date) || other.date == date) &&
             (identical(other.location, location) ||
                 other.location == location) &&
+            (identical(other.venue, venue) || other.venue == venue) &&
             (identical(other.groomAccounts, groomAccounts) ||
                 other.groomAccounts == groomAccounts) &&
             (identical(other.brideAccounts, brideAccounts) ||
@@ -551,6 +577,7 @@ class _ScheduleModel implements ScheduleModel {
       bride,
       date,
       location,
+      venue,
       groomAccounts,
       brideAccounts,
       attendance,
@@ -560,7 +587,7 @@ class _ScheduleModel implements ScheduleModel {
 
   @override
   String toString() {
-    return 'ScheduleModel(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay, relation: $relation, relationNote: $relationNote)';
+    return 'ScheduleModel(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, venue: $venue, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay, relation: $relation, relationNote: $relationNote)';
   }
 }
 
@@ -579,6 +606,7 @@ abstract mixin class _$ScheduleModelCopyWith<$Res>
       String bride,
       @JsonKey(name: 'datetime') String date,
       String location,
+      String venue,
       @JsonKey(name: 'groom_accounts') String groomAccounts,
       @JsonKey(name: 'bride_accounts') String brideAccounts,
       String attendance,
@@ -606,6 +634,7 @@ class __$ScheduleModelCopyWithImpl<$Res>
     Object? bride = null,
     Object? date = null,
     Object? location = null,
+    Object? venue = null,
     Object? groomAccounts = null,
     Object? brideAccounts = null,
     Object? attendance = null,
@@ -637,6 +666,10 @@ class __$ScheduleModelCopyWithImpl<$Res>
       location: null == location
           ? _self.location
           : location // ignore: cast_nullable_to_non_nullable
+              as String,
+      venue: null == venue
+          ? _self.venue
+          : venue // ignore: cast_nullable_to_non_nullable
               as String,
       groomAccounts: null == groomAccounts
           ? _self.groomAccounts

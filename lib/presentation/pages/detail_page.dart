@@ -94,11 +94,16 @@ class _DetailPageState extends State<DetailPage> {
 
   void saveChanges() {
     setState(() {
-      final Schedule editedSchedule = cubit.state.schedule!.copyWith(
+      final Schedule current = cubit.state.schedule!;
+      final String location = locationController.text;
+      final Schedule editedSchedule = current.copyWith(
         groom: groomController.text,
         bride: brideController.text,
         date: selectedDate!,
-        location: locationController.text,
+        location: location,
+        // A hand-edited location invalidates the extracted venue; the map
+        // search then falls back to the new location text.
+        venue: location == current.location ? current.venue : '',
       );
       cubit.editSchedule(editedSchedule);
       editMode = false;
@@ -183,11 +188,13 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Future<void> _openMap() async {
-    final String location = cubit.state.schedule!.location;
-    if (location.isEmpty) return;
+    final Schedule schedule = cubit.state.schedule!;
+    final String query =
+        mapSearchQuery(venue: schedule.venue, location: schedule.location);
+    if (query.isEmpty) return;
 
     getIt<AnalyticsService>().logEvent(AnalyticsEvents.locationMapOpened);
-    final Uri url = mapSearchUri(location);
+    final Uri url = mapSearchUri(query);
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     }

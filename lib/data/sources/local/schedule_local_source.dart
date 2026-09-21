@@ -58,7 +58,7 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     final path = join(await getDatabasesPath(), 'schedule_database.db');
     return await openDatabase(
       path,
-      version: 4,
+      version: 5,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE schedules (
@@ -73,7 +73,8 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
             attendance TEXT,
             pay INTEGER,
             relation TEXT,
-            relation_note TEXT
+            relation_note TEXT,
+            venue TEXT
           )
         ''');
       },
@@ -98,6 +99,12 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
           await db.execute('ALTER TABLE schedules ADD COLUMN relation TEXT;');
           await db
               .execute('ALTER TABLE schedules ADD COLUMN relation_note TEXT;');
+        }
+        if (oldVersion < 5) {
+          // UPDATE: searchable place name for map hand-offs ('venue').
+          // Existing rows keep NULL, read back as '' and the map search
+          // falls back to the full location string.
+          await db.execute('ALTER TABLE schedules ADD COLUMN venue TEXT;');
         }
       },
     );

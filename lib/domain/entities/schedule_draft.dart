@@ -20,6 +20,10 @@ class ScheduleDraft {
   final String bride;
   final DateTime? date;
   final String location;
+
+  /// Searchable place name carried alongside [location]; empty when the
+  /// parser found none.
+  final String venue;
   final List<Account> groomAccounts;
   final List<Account> brideAccounts;
 
@@ -30,6 +34,7 @@ class ScheduleDraft {
     this.bride = '',
     this.date,
     this.location = '',
+    this.venue = '',
     this.groomAccounts = const <Account>[],
     this.brideAccounts = const <Account>[],
   });
@@ -42,6 +47,7 @@ class ScheduleDraft {
       bride: schedule.bride,
       date: date,
       location: schedule.location,
+      venue: schedule.venue,
       groomAccounts: schedule.groomAccounts,
       brideAccounts: schedule.brideAccounts,
     );

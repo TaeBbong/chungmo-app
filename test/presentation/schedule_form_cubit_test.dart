@@ -61,6 +61,7 @@ void main() {
       groom: '김민준',
       bride: '이서연',
       location: '그랜드홀',
+      venue: '그랜드힐 컨벤션',
       groomAccounts: [tAccount],
     );
 
@@ -85,6 +86,31 @@ void main() {
         expect(saved.link, 'text://12345');
         expect(saved.thumbnail, 'https://thumb');
         expect(saved.groomAccounts, [tAccount]);
+        expect(saved.venue, '그랜드힐 컨벤션',
+            reason: 'an untouched location keeps the extracted venue');
+      },
+    );
+
+    blocTest<ScheduleFormCubit, ScheduleFormState>(
+      'drops the draft venue when the user rewrites the location',
+      build: () {
+        when(save.execute(any)).thenAnswer((_) async {});
+        return cubit;
+      },
+      act: (cubit) => cubit.save(
+          draft: tDraft,
+          groom: tDraft.groom,
+          bride: tDraft.bride,
+          date: tDate,
+          location: '완전히 다른 예식장'),
+      expect: () => [
+        const ScheduleFormState(status: ScheduleFormStatus.saving),
+        const ScheduleFormState(status: ScheduleFormStatus.success),
+      ],
+      verify: (_) {
+        expect(savedSchedule().venue, '',
+            reason: 'a stale venue must not outlive the location it was '
+                'split from — the map falls back to the new location');
       },
     );
 

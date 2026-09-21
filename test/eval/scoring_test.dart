@@ -37,6 +37,7 @@ void main() {
             'bride': '이서연',
             'datetime': '2026-10-17T13:30:00+09:00',
             'location': '라온컨벤션 3층 그랜드홀',
+            'venue': '라온컨벤션',
             'groomAccounts': [
               {
                 'bank': '국민',
@@ -264,6 +265,14 @@ void main() {
       expect(locationMatches(['호텔 라비앙'], '호텔라비앙 2층 크리스탈볼룸'), isTrue);
       expect(locationMatches(['호텔 라비앙'], '크리스탈볼룸'), isFalse);
       expect(locationMatches(['호텔 라비앙'], ''), isFalse);
+    });
+
+    test('venue must be exactly the searchable name, nothing more', () {
+      expect(venueMatches(['호텔 라비앙'], '호텔 라비앙'), isTrue);
+      expect(venueMatches(['호텔 라비앙'], '호텔라비앙'), isTrue);
+      // The failure mode the field exists for: hall/floor still attached.
+      expect(venueMatches(['호텔 라비앙'], '호텔 라비앙 2층 크리스탈볼룸'), isFalse);
+      expect(venueMatches(['호텔 라비앙'], ''), isFalse);
     });
   });
 }

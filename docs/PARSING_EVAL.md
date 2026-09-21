@@ -183,6 +183,7 @@ the key and model name before any case runs, for the same reason.
 | groom / bride | exact match after stripping whitespace, punctuation and role prefixes ("신랑 김민준"); English pages carry romanised aliases. A *lenient* rate (given name only) is reported separately, never counted as correct. |
 | datetime | same instant at minute precision; a prediction without an offset is read as KST. A `null` expectation (no-date invitation) is met only by an empty prediction — the prompt says "never invent a date", and this checks it. |
 | location | every expected keyword (the venue name) appears in the prediction, whitespace-insensitive. Hall and address are free text and are not scored. |
+| venue | exactly the searchable place name (the location keywords) and nothing more, whitespace- and case-insensitive — a trailing "3층 채플홀" fails it. This field feeds the map hand-off (issue #56); like the thumbnail it stays out of `core`. |
 | accounts | the predicted set of `side|bank|number` keys equals the expected set. Banks are canonicalised (`KB국민은행` → `국민`), numbers reduced to digits, so formatting never counts as an error but a wrong side or a missing parent account does. Precision/recall are reported alongside. |
 | thumbnail | resolves (relative to the page URL) to the main photo. Cosmetic, excluded from `core`. |
 

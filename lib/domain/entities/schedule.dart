@@ -25,6 +25,11 @@ abstract class Schedule with _$Schedule {
     required DateTime date,
     required String location,
 
+    /// Searchable place name (wedding hall / building, no floor or hall);
+    /// used for map searches. Empty for legacy rows and manual entries,
+    /// in which case [location] is searched instead.
+    @Default('') String venue,
+
     /// 축의금 accounts of the groom's side. Empty when not found in invitation.
     @Default(<Account>[]) List<Account> groomAccounts,
 

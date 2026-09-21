@@ -21,6 +21,11 @@ mixin _$Schedule {
   DateTime get date;
   String get location;
 
+  /// Searchable place name (wedding hall / building, no floor or hall);
+  /// used for map searches. Empty for legacy rows and manual entries,
+  /// in which case [location] is searched instead.
+  String get venue;
+
   /// 축의금 accounts of the groom's side. Empty when not found in invitation.
   List<Account> get groomAccounts;
 
@@ -60,6 +65,7 @@ mixin _$Schedule {
             (identical(other.date, date) || other.date == date) &&
             (identical(other.location, location) ||
                 other.location == location) &&
+            (identical(other.venue, venue) || other.venue == venue) &&
             const DeepCollectionEquality()
                 .equals(other.groomAccounts, groomAccounts) &&
             const DeepCollectionEquality()
@@ -82,6 +88,7 @@ mixin _$Schedule {
       bride,
       date,
       location,
+      venue,
       const DeepCollectionEquality().hash(groomAccounts),
       const DeepCollectionEquality().hash(brideAccounts),
       attendance,
@@ -91,7 +98,7 @@ mixin _$Schedule {
 
   @override
   String toString() {
-    return 'Schedule(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay, relation: $relation, relationNote: $relationNote)';
+    return 'Schedule(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, venue: $venue, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay, relation: $relation, relationNote: $relationNote)';
   }
 }
 
@@ -107,6 +114,7 @@ abstract mixin class $ScheduleCopyWith<$Res> {
       String bride,
       DateTime date,
       String location,
+      String venue,
       List<Account> groomAccounts,
       List<Account> brideAccounts,
       Attendance attendance,
@@ -133,6 +141,7 @@ class _$ScheduleCopyWithImpl<$Res> implements $ScheduleCopyWith<$Res> {
     Object? bride = null,
     Object? date = null,
     Object? location = null,
+    Object? venue = null,
     Object? groomAccounts = null,
     Object? brideAccounts = null,
     Object? attendance = null,
@@ -164,6 +173,10 @@ class _$ScheduleCopyWithImpl<$Res> implements $ScheduleCopyWith<$Res> {
       location: null == location
           ? _self.location
           : location // ignore: cast_nullable_to_non_nullable
+              as String,
+      venue: null == venue
+          ? _self.venue
+          : venue // ignore: cast_nullable_to_non_nullable
               as String,
       groomAccounts: null == groomAccounts
           ? _self.groomAccounts
@@ -293,6 +306,7 @@ extension SchedulePatterns on Schedule {
             String bride,
             DateTime date,
             String location,
+            String venue,
             List<Account> groomAccounts,
             List<Account> brideAccounts,
             Attendance attendance,
@@ -312,6 +326,7 @@ extension SchedulePatterns on Schedule {
             _that.bride,
             _that.date,
             _that.location,
+            _that.venue,
             _that.groomAccounts,
             _that.brideAccounts,
             _that.attendance,
@@ -345,6 +360,7 @@ extension SchedulePatterns on Schedule {
             String bride,
             DateTime date,
             String location,
+            String venue,
             List<Account> groomAccounts,
             List<Account> brideAccounts,
             Attendance attendance,
@@ -363,6 +379,7 @@ extension SchedulePatterns on Schedule {
             _that.bride,
             _that.date,
             _that.location,
+            _that.venue,
             _that.groomAccounts,
             _that.brideAccounts,
             _that.attendance,
@@ -395,6 +412,7 @@ extension SchedulePatterns on Schedule {
             String bride,
             DateTime date,
             String location,
+            String venue,
             List<Account> groomAccounts,
             List<Account> brideAccounts,
             Attendance attendance,
@@ -413,6 +431,7 @@ extension SchedulePatterns on Schedule {
             _that.bride,
             _that.date,
             _that.location,
+            _that.venue,
             _that.groomAccounts,
             _that.brideAccounts,
             _that.attendance,
@@ -435,6 +454,7 @@ class _Schedule implements Schedule {
       required this.bride,
       required this.date,
       required this.location,
+      this.venue = '',
       final List<Account> groomAccounts = const <Account>[],
       final List<Account> brideAccounts = const <Account>[],
       this.attendance = Attendance.undecided,
@@ -456,6 +476,13 @@ class _Schedule implements Schedule {
   final DateTime date;
   @override
   final String location;
+
+  /// Searchable place name (wedding hall / building, no floor or hall);
+  /// used for map searches. Empty for legacy rows and manual entries,
+  /// in which case [location] is searched instead.
+  @override
+  @JsonKey()
+  final String venue;
 
   /// 축의금 accounts of the groom's side. Empty when not found in invitation.
   final List<Account> _groomAccounts;
@@ -523,6 +550,7 @@ class _Schedule implements Schedule {
             (identical(other.date, date) || other.date == date) &&
             (identical(other.location, location) ||
                 other.location == location) &&
+            (identical(other.venue, venue) || other.venue == venue) &&
             const DeepCollectionEquality()
                 .equals(other._groomAccounts, _groomAccounts) &&
             const DeepCollectionEquality()
@@ -545,6 +573,7 @@ class _Schedule implements Schedule {
       bride,
       date,
       location,
+      venue,
       const DeepCollectionEquality().hash(_groomAccounts),
       const DeepCollectionEquality().hash(_brideAccounts),
       attendance,
@@ -554,7 +583,7 @@ class _Schedule implements Schedule {
 
   @override
   String toString() {
-    return 'Schedule(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay, relation: $relation, relationNote: $relationNote)';
+    return 'Schedule(link: $link, thumbnail: $thumbnail, groom: $groom, bride: $bride, date: $date, location: $location, venue: $venue, groomAccounts: $groomAccounts, brideAccounts: $brideAccounts, attendance: $attendance, pay: $pay, relation: $relation, relationNote: $relationNote)';
   }
 }
 
@@ -572,6 +601,7 @@ abstract mixin class _$ScheduleCopyWith<$Res>
       String bride,
       DateTime date,
       String location,
+      String venue,
       List<Account> groomAccounts,
       List<Account> brideAccounts,
       Attendance attendance,
@@ -598,6 +628,7 @@ class __$ScheduleCopyWithImpl<$Res> implements _$ScheduleCopyWith<$Res> {
     Object? bride = null,
     Object? date = null,
     Object? location = null,
+    Object? venue = null,
     Object? groomAccounts = null,
     Object? brideAccounts = null,
     Object? attendance = null,
@@ -629,6 +660,10 @@ class __$ScheduleCopyWithImpl<$Res> implements _$ScheduleCopyWith<$Res> {
       location: null == location
           ? _self.location
           : location // ignore: cast_nullable_to_non_nullable
+              as String,
+      venue: null == venue
+          ? _self.venue
+          : venue // ignore: cast_nullable_to_non_nullable
               as String,
       groomAccounts: null == groomAccounts
           ? _self._groomAccounts
