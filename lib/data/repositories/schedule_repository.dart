@@ -118,4 +118,43 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
     await localSource.deleteScheduleByLink(link);
     await notificationService.cancelNotifySchedule(link: link);
   }
+
+  /// Caps one backfill batch; more than this in one household is unheard of.
+  static const int _maxBackfillLocations = 50;
+
+  @override
+  Future<void> backfillVenues() async {
+    final DateTime today = DateTime.now();
+    final DateTime midnight = DateTime(today.year, today.month, today.day);
+    // Only upcoming schedules matter: past rows never open the map again,
+    // and skipping them keeps the batch (and the prompt) small.
+    final List<ScheduleModel> candidates =
+        (await localSource.getAllSchedulesOnce())
+            .where((m) =>
+                m.venue.isEmpty &&
+                m.location.trim().isNotEmpty &&
+                (DateTime.tryParse(m.date)?.isAfter(midnight) ?? false))
+            .toList();
+    if (candidates.isEmpty) return;
+
+    final List<String> locations = candidates
+        .map((m) => m.location.trim())
+        .toSet()
+        .take(_maxBackfillLocations)
+        .toList();
+    final Map<String, String> venues =
+        await remoteSource.extractVenues(locations);
+    if (venues.isEmpty) return;
+
+    var updated = 0;
+    for (final model in candidates) {
+      final String? venue = venues[model.location.trim()];
+      if (venue == null || venue.isEmpty) continue;
+      await localSource.editSchedule(model.copyWith(venue: venue));
+      updated++;
+    }
+    // One emission at the end: the home preview, calendar and widget all
+    // watch this stream and pick the new venues up together.
+    if (updated > 0) await localSource.emitAllSchedules();
+  }
 }

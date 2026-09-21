@@ -8,6 +8,7 @@ import 'dart:typed_data' as _i15;
 
 import 'package:chungmo/core/analytics/analytics_service.dart' as _i10;
 import 'package:chungmo/core/services/notification_service.dart' as _i9;
+import 'package:chungmo/core/services/preferences_checker.dart' as _i19;
 import 'package:chungmo/data/models/schedule/schedule_model.dart' as _i2;
 import 'package:chungmo/data/sources/local/schedule_local_source.dart' as _i12;
 import 'package:chungmo/data/sources/remote/pay_recommendation_source.dart'
@@ -22,7 +23,7 @@ import 'package:chungmo/domain/repositories/pay_recommendation_repository.dart'
 import 'package:chungmo/domain/repositories/schedule_repository.dart' as _i6;
 import 'package:chungmo/domain/usecases/usecases.dart' as _i8;
 import 'package:chungmo/presentation/bloc/create/create_cubit.dart' as _i11;
-import 'package:flutter_bloc/flutter_bloc.dart' as _i19;
+import 'package:flutter_bloc/flutter_bloc.dart' as _i20;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     as _i5;
 import 'package:mockito/mockito.dart' as _i1;
@@ -359,6 +360,16 @@ class MockScheduleRemoteSource extends _i1.Mock
           ),
         )),
       ) as _i13.Future<_i2.ScheduleModel>);
+
+  @override
+  _i13.Future<Map<String, String>> extractVenues(List<String>? locations) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #extractVenues,
+          [locations],
+        ),
+        returnValue: _i13.Future<Map<String, String>>.value(<String, String>{}),
+      ) as _i13.Future<Map<String, String>>);
 }
 
 /// A class which mocks [ScheduleRepository].
@@ -460,6 +471,16 @@ class MockScheduleRepository extends _i1.Mock
         Invocation.method(
           #deleteSchedule,
           [link],
+        ),
+        returnValue: _i13.Future<void>.value(),
+        returnValueForMissingStub: _i13.Future<void>.value(),
+      ) as _i13.Future<void>);
+
+  @override
+  _i13.Future<void> backfillVenues() => (super.noSuchMethod(
+        Invocation.method(
+          #backfillVenues,
+          [],
         ),
         returnValue: _i13.Future<void>.value(),
         returnValueForMissingStub: _i13.Future<void>.value(),
@@ -627,6 +648,138 @@ class MockNotificationService extends _i1.Mock
           #addTestNotifySchedule,
           [],
           {#id: id},
+        ),
+        returnValue: _i13.Future<void>.value(),
+        returnValueForMissingStub: _i13.Future<void>.value(),
+      ) as _i13.Future<void>);
+}
+
+/// A class which mocks [PreferencesChecker].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPreferencesChecker extends _i1.Mock
+    implements _i19.PreferencesChecker {
+  MockPreferencesChecker() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i13.Future<bool> hasKey(String? key) => (super.noSuchMethod(
+        Invocation.method(
+          #hasKey,
+          [key],
+        ),
+        returnValue: _i13.Future<bool>.value(false),
+      ) as _i13.Future<bool>);
+
+  @override
+  _i13.Future<void> setKey(String? key) => (super.noSuchMethod(
+        Invocation.method(
+          #setKey,
+          [key],
+        ),
+        returnValue: _i13.Future<void>.value(),
+        returnValueForMissingStub: _i13.Future<void>.value(),
+      ) as _i13.Future<void>);
+}
+
+/// A class which mocks [AnalyticsService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAnalyticsService extends _i1.Mock implements _i10.AnalyticsService {
+  MockAnalyticsService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i13.Future<void> logEvent(
+    String? name, {
+    Map<String, Object?>? parameters,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #logEvent,
+          [name],
+          {#parameters: parameters},
+        ),
+        returnValue: _i13.Future<void>.value(),
+        returnValueForMissingStub: _i13.Future<void>.value(),
+      ) as _i13.Future<void>);
+
+  @override
+  _i13.Future<void> setCurrentScreen(String? screenName) => (super.noSuchMethod(
+        Invocation.method(
+          #setCurrentScreen,
+          [screenName],
+        ),
+        returnValue: _i13.Future<void>.value(),
+        returnValueForMissingStub: _i13.Future<void>.value(),
+      ) as _i13.Future<void>);
+
+  @override
+  _i13.Future<void> setUserProperty(
+    String? name,
+    String? value,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setUserProperty,
+          [
+            name,
+            value,
+          ],
+        ),
+        returnValue: _i13.Future<void>.value(),
+        returnValueForMissingStub: _i13.Future<void>.value(),
+      ) as _i13.Future<void>);
+
+  @override
+  _i13.Future<void> recordError(
+    Object? error,
+    StackTrace? stack, {
+    String? reason,
+    Map<String, Object?>? keys,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #recordError,
+          [
+            error,
+            stack,
+          ],
+          {
+            #reason: reason,
+            #keys: keys,
+          },
+        ),
+        returnValue: _i13.Future<void>.value(),
+        returnValueForMissingStub: _i13.Future<void>.value(),
+      ) as _i13.Future<void>);
+}
+
+/// A class which mocks [BackfillVenuesUsecase].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockBackfillVenuesUsecase extends _i1.Mock
+    implements _i8.BackfillVenuesUsecase {
+  MockBackfillVenuesUsecase() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i6.ScheduleRepository get repository => (super.noSuchMethod(
+        Invocation.getter(#repository),
+        returnValue: _FakeScheduleRepository_4(
+          this,
+          Invocation.getter(#repository),
+        ),
+      ) as _i6.ScheduleRepository);
+
+  @override
+  _i13.Future<void> execute() => (super.noSuchMethod(
+        Invocation.method(
+          #execute,
+          [],
         ),
         returnValue: _i13.Future<void>.value(),
         returnValueForMissingStub: _i13.Future<void>.value(),
@@ -1108,7 +1261,7 @@ class MockCreateCubit extends _i1.Mock implements _i11.CreateCubit {
       );
 
   @override
-  void onChange(_i19.Change<_i11.CreateState>? change) => super.noSuchMethod(
+  void onChange(_i20.Change<_i11.CreateState>? change) => super.noSuchMethod(
         Invocation.method(
           #onChange,
           [change],

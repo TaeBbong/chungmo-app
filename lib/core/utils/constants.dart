@@ -4,6 +4,10 @@ abstract class Constants {
   /// Preference key marking the intro carousel as seen.
   static const String onboardingDoneKey = 'onboarding_done';
 
+  /// Set once the one-shot venue backfill (issue #58) has succeeded, so it
+  /// never runs twice; left unset on failure so the next launch retries.
+  static const String venueBackfillDoneKey = 'venue_backfill_done';
+
   /// Preference key marking the home coach mark tour as seen. Versioned:
   /// bump the suffix when the tour gains steps so users who already saw an
   /// older tour get the new steps once after updating.

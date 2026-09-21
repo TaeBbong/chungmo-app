@@ -6,6 +6,8 @@ import 'package:mockito/annotations.dart';
 import 'package:chungmo/data/sources/local/schedule_local_source.dart';
 import 'package:chungmo/data/sources/remote/pay_recommendation_source.dart';
 import 'package:chungmo/core/services/notification_service.dart';
+import 'package:chungmo/core/services/preferences_checker.dart';
+import 'package:chungmo/core/analytics/analytics_service.dart';
 
 @GenerateMocks([
   ScheduleLocalSource,
@@ -13,6 +15,9 @@ import 'package:chungmo/core/services/notification_service.dart';
   ScheduleRepository,
   PayRecommendationSource,
   NotificationService,
+  PreferencesChecker,
+  AnalyticsService,
+  BackfillVenuesUsecase,
   AnalyzeLinkUsecase,
   AnalyzeImageUsecase,
   AnalyzeTextUsecase,
