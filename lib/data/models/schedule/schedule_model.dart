@@ -23,6 +23,10 @@ abstract class ScheduleModel with _$ScheduleModel {
     @JsonKey(name: 'datetime') required String date,
     required String location,
 
+    /// Searchable place name for map hand-offs; NULL from pre-v5 rows and
+    /// manual entries reads as ''.
+    @Default('') String venue,
+
     /// JSON-encoded `List<AccountModel>`; sqflite has no list column type.
     // ignore: invalid_annotation_target
     @JsonKey(name: 'groom_accounts') @Default('[]') String groomAccounts,
