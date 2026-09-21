@@ -8,6 +8,17 @@ This file documents the main changes for each release.
 
 ---
 
+### Version 2.0.2+10 (2026-09-21)
+
+Fixes the map hand-off for parsed schedules.
+
+- **Fixed**
+  - Tapping the location opened the map app with the full extracted line ("OOO웨딩홀 3층 OO홀"), which map searches routinely fail to find. The parser now extracts a searchable venue name as its own field and the map queries that instead; hand-editing the location falls back to the edited text.
+- **Changed**
+  - The parsing benchmark scores the new venue field: 38/38 exact on the current run, with core accuracy holding at 100%.
+
+---
+
 ### Version 2.0.1+9 (2026-09-10)
 
 Hotfix for App Store users who saw an immediate "try again" error on every
