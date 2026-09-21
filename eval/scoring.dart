@@ -11,6 +11,11 @@ class CaseScore {
   final bool bride;
   final bool datetime;
   final bool location;
+
+  /// The map-search name: exactly the expected venue keywords and nothing
+  /// more. Reported on its own — it gates the map hand-off, not whether
+  /// the schedule saves, so it stays out of [core].
+  final bool venue;
   final bool accounts;
   final bool thumbnail;
 
@@ -32,6 +37,7 @@ class CaseScore {
     required this.bride,
     required this.datetime,
     required this.location,
+    required this.venue,
     required this.accounts,
     required this.thumbnail,
     required this.accountPrecision,
@@ -50,6 +56,7 @@ class CaseScore {
         'bride': bride,
         'datetime': datetime,
         'location': location,
+        'venue': venue,
         'accounts': accounts,
         'thumbnail': thumbnail,
         'core': core,
@@ -93,6 +100,12 @@ CaseScore scoreCase(
     mismatches['location'] = 'expected keywords $keywords, got "$predLocation"';
   }
 
+  final predVenue = _str(p['venue']);
+  final venue = venueMatches(keywords, predVenue);
+  if (!venue) {
+    mismatches['venue'] = 'expected "${keywords.join(' ')}", got "$predVenue"';
+  }
+
   final expKeys = <String>{
     ...accountKeys('groom', expected['groomAccounts'] as List?),
     ...accountKeys('bride', expected['brideAccounts'] as List?),
@@ -124,6 +137,7 @@ CaseScore scoreCase(
     bride: bride,
     datetime: datetime,
     location: location,
+    venue: venue,
     accounts: accounts,
     thumbnail: thumbnail,
     accountPrecision: precision,
@@ -198,6 +212,15 @@ bool locationMatches(List<String> keywords, String predicted) {
   if (hay.isEmpty) return false;
   return keywords.every(
       (k) => hay.contains(k.replaceAll(RegExp(r'\s'), '').toLowerCase()));
+}
+
+/// The venue must be exactly the searchable place name, whitespace- and
+/// case-insensitive: the location keywords and nothing else. Containment is
+/// not enough — a trailing "3층 채플홀" is precisely the failure mode the
+/// field exists to prevent.
+bool venueMatches(List<String> keywords, String predicted) {
+  String norm(String s) => s.replaceAll(RegExp(r'\s'), '').toLowerCase();
+  return predicted.isNotEmpty && norm(predicted) == norm(keywords.join());
 }
 
 const _bankAliases = <String, String>{

@@ -330,6 +330,7 @@ Map<String, dynamic> _summarize(List<Map<String, dynamic>> results) {
       'bride': rate('bride'),
       'datetime': rate('datetime'),
       'location': rate('location'),
+      'venue': rate('venue'),
       'accounts': rate('accounts'),
       'thumbnail': rate('thumbnail'),
       'groomLenient': rate('groomLenient'),
@@ -435,6 +436,7 @@ String _flags(Map<String, Object?> s) => [
       'B${s['bride'] == true ? '✓' : '✗'}',
       'D${s['datetime'] == true ? '✓' : '✗'}',
       'L${s['location'] == true ? '✓' : '✗'}',
+      'V${s['venue'] == true ? '✓' : '✗'}',
       'A${s['accounts'] == true ? '✓' : '✗'}',
       'T${s['thumbnail'] == true ? '✓' : '✗'}',
     ].join(' ');
@@ -442,7 +444,7 @@ String _flags(Map<String, Object?> s) => [
 List<String> _summaryLines(Map<String, dynamic> s) {
   final o = s['overall'] as Map<String, dynamic>;
   return [
-    'Overall (${o['count']} cases): core ${_pct(o['core'])} · groom ${_pct(o['groom'])} · bride ${_pct(o['bride'])} · datetime ${_pct(o['datetime'])} · location ${_pct(o['location'])} · accounts ${_pct(o['accounts'])} · thumbnail ${_pct(o['thumbnail'])}',
+    'Overall (${o['count']} cases): core ${_pct(o['core'])} · groom ${_pct(o['groom'])} · bride ${_pct(o['bride'])} · datetime ${_pct(o['datetime'])} · location ${_pct(o['location'])} · venue ${_pct(o['venue'])} · accounts ${_pct(o['accounts'])} · thumbnail ${_pct(o['thumbnail'])}',
     for (final e in (s['byDifficulty'] as Map<String, dynamic>).entries)
       '  ${e.key}: core ${_pct((e.value as Map)['core'])} (${(e.value as Map)['count']})',
   ];
@@ -462,10 +464,10 @@ String _markdown(Map<String, dynamic> report) {
     ..writeln('## Overall')
     ..writeln()
     ..writeln(
-        '| core | groom | bride | datetime | location | accounts | thumbnail | groom (lenient) | bride (lenient) | account P / R |')
-    ..writeln('|---|---|---|---|---|---|---|---|---|---|')
+        '| core | groom | bride | datetime | location | venue | accounts | thumbnail | groom (lenient) | bride (lenient) | account P / R |')
+    ..writeln('|---|---|---|---|---|---|---|---|---|---|---|')
     ..writeln(
-        '| **${_pct(o['core'])}** | ${_pct(o['groom'])} | ${_pct(o['bride'])} | ${_pct(o['datetime'])} | ${_pct(o['location'])} | ${_pct(o['accounts'])} | ${_pct(o['thumbnail'])} | ${_pct(o['groomLenient'])} | ${_pct(o['brideLenient'])} | ${_pct(o['accountPrecision'])} / ${_pct(o['accountRecall'])} |')
+        '| **${_pct(o['core'])}** | ${_pct(o['groom'])} | ${_pct(o['bride'])} | ${_pct(o['datetime'])} | ${_pct(o['location'])} | ${_pct(o['venue'])} | ${_pct(o['accounts'])} | ${_pct(o['thumbnail'])} | ${_pct(o['groomLenient'])} | ${_pct(o['brideLenient'])} | ${_pct(o['accountPrecision'])} / ${_pct(o['accountRecall'])} |')
     ..writeln()
     ..writeln(
         '`core` = groom, bride, datetime, location and the full account set all correct — the schedule saves without manual fixes.')
