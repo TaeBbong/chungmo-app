@@ -17,6 +17,8 @@ Fixes the map hand-off for parsed schedules.
   - Already-saved upcoming schedules get their venue backfilled once after the update, in a single batched AI call, so the fix applies to existing schedules too.
 - **Changed**
   - The parsing benchmark scores the new venue field: 38/38 exact on the current run, with core accuracy holding at 100%.
+- **Deployment**
+  - Released on both Google Play and the App Store (2026-09-21).
 
 ---
 
