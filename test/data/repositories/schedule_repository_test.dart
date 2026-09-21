@@ -401,6 +401,29 @@ void main() {
       verifyNever(mockLocalSource.emitAllSchedules());
     });
 
+    test('covers every location across batches; none are dropped', () async {
+      // 60 unique locations: one 50-batch plus a 10-remainder. A truncated
+      // run would strand rows forever behind the permanent done-flag.
+      final many = List.generate(
+          60, (i) => row('l$i', tomorrow, location: '예식장$i 3층'));
+      when(mockLocalSource.getAllSchedulesOnce())
+          .thenAnswer((_) async => many);
+      when(mockRemoteSource.extractVenues(any)).thenAnswer((inv) async => {
+            for (final l in inv.positionalArguments.first as List<String>)
+              l: l.replaceAll(' 3층', '')
+          });
+      when(mockLocalSource.editSchedule(any)).thenAnswer((_) async {});
+      when(mockLocalSource.emitAllSchedules()).thenAnswer((_) async {});
+
+      await repository.backfillVenues();
+
+      final batches =
+          verify(mockRemoteSource.extractVenues(captureAny)).captured;
+      expect(batches.map((b) => (b as List).length).toList(), [50, 10]);
+      verify(mockLocalSource.editSchedule(any)).called(60);
+      verify(mockLocalSource.emitAllSchedules()).called(1);
+    });
+
     test('leaves unresolved locations untouched without emitting', () async {
       when(mockLocalSource.getAllSchedulesOnce()).thenAnswer(
           (_) async => [row('a', tomorrow, location: '어딘가 3층')]);

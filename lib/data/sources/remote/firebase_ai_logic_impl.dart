@@ -38,7 +38,12 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
     final response = await _buildModel(schema: venueBackfillJsonSchema)
         .generateContent([Content.text(venueBackfillPrompt(locations))]);
     final String? text = response.text;
-    if (text == null) return const {};
+    // A missing body is a failed extraction, not "no venues found": it must
+    // propagate so the backfill's done-flag stays unset and a later launch
+    // retries.
+    if (text == null) {
+      throw const FormatException('[-] Venue extraction returned no content');
+    }
     final decoded = jsonDecode(text) as Map<String, dynamic>;
     final venues = <String, String>{};
     for (final entry in (decoded['venues'] as List? ?? const [])) {

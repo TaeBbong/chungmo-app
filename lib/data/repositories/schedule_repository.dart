@@ -119,8 +119,9 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
     await notificationService.cancelNotifySchedule(link: link);
   }
 
-  /// Caps one backfill batch; more than this in one household is unheard of.
-  static const int _maxBackfillLocations = 50;
+  /// Locations sent per extraction call; the loop below covers the rest, so
+  /// this bounds prompt size, never how many rows get backfilled.
+  static const int _backfillBatchSize = 50;
 
   @override
   Future<void> backfillVenues() async {
@@ -137,21 +138,22 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
             .toList();
     if (candidates.isEmpty) return;
 
-    final List<String> locations = candidates
-        .map((m) => m.location.trim())
-        .toSet()
-        .take(_maxBackfillLocations)
-        .toList();
-    final Map<String, String> venues =
-        await remoteSource.extractVenues(locations);
-    if (venues.isEmpty) return;
-
+    final List<String> locations =
+        candidates.map((m) => m.location.trim()).toSet().toList();
     var updated = 0;
-    for (final model in candidates) {
-      final String? venue = venues[model.location.trim()];
-      if (venue == null || venue.isEmpty) continue;
-      await localSource.editSchedule(model.copyWith(venue: venue));
-      updated++;
+    // Batched so no location is ever dropped: the service's done-flag is
+    // permanent, so a truncated run here would strand the remainder forever.
+    for (var start = 0; start < locations.length; start += _backfillBatchSize) {
+      final List<String> batch = locations.sublist(start,
+          (start + _backfillBatchSize).clamp(0, locations.length));
+      final Map<String, String> venues =
+          await remoteSource.extractVenues(batch);
+      for (final model in candidates) {
+        final String? venue = venues[model.location.trim()];
+        if (venue == null || venue.isEmpty) continue;
+        await localSource.editSchedule(model.copyWith(venue: venue));
+        updated++;
+      }
     }
     // One emission at the end: the home preview, calendar and widget all
     // watch this stream and pick the new venues up together.

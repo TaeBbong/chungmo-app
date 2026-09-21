@@ -23,11 +23,14 @@ class VenueBackfillService {
       this._backfillVenues, this._preferences, this._analytics);
 
   Future<void> run() async {
-    if (await _preferences.hasKey(Constants.venueBackfillDoneKey)) return;
     try {
+      if (await _preferences.hasKey(Constants.venueBackfillDoneKey)) return;
       await _backfillVenues.execute();
       await _preferences.setKey(Constants.venueBackfillDoneKey);
     } on Exception catch (error, stack) {
+      // Recoverable failures (offline, model error) retry next launch.
+      // Errors stay uncaught on purpose: the global platformDispatcher
+      // handler reports them to Crashlytics as the bugs they are.
       _analytics.recordError(error, stack, reason: 'venue_backfill');
     }
   }
