@@ -14,6 +14,7 @@ Fixes the map hand-off for parsed schedules.
 
 - **Fixed**
   - Tapping the location opened the map app with the full extracted line ("OOO웨딩홀 3층 OO홀"), which map searches routinely fail to find. The parser now extracts a searchable venue name as its own field and the map queries that instead; hand-editing the location falls back to the edited text.
+  - Already-saved upcoming schedules get their venue backfilled once after the update, in a single batched AI call, so the fix applies to existing schedules too.
 - **Changed**
   - The parsing benchmark scores the new venue field: 38/38 exact on the current run, with core accuracy holding at 100%.
 
