@@ -188,6 +188,40 @@ automatically by Firebase Analytics.
 
 Custom keys attached to reports: `remote_source`, `parse_reason`.
 
+### Bot-induced crash noise
+
+Crash-free rate is not read at face value. Two fatal issues in the Android
+console are produced by an automated APK scanner, not by users, and are muted:
+
+| Issue | Events | Versions |
+| --- | --- | --- |
+| `SignInHubActivity.onCreate` NPE (`play-services-auth@20.7.0`) | 9 | 2.0.0 – 2.0.2 |
+| `ActionTrampolineActivity` `IllegalArgumentException` (`androidx.glance.appwidget`) | 7 | 2.0.0 – 2.0.2 |
+
+Both are activities the app never launches, contributed by transitive
+dependencies: `firebase_ai` → `firebase_auth` →
+`androidx.credentials:credentials-play-services-auth` →
+`play-services-auth` for the first, and `home_widget` → `androidx.glance` for
+the second (the Android widget is classic RemoteViews in
+`ChungmoWidgetProvider.kt`, so the Glance trampoline is dead weight).
+
+What identifies them as scanner traffic:
+
+- Both activities are `android:exported="false"` in the merged release
+  manifest, so no other app can start them; only a privileged shell
+  (`am start` on a rooted emulator) can.
+- Both crash because they were started *without their required intent
+  extras* — the signature of enumerating every activity in the manifest and
+  launching each one blind.
+- Every event comes from one impossible device profile, `OnePlus8Pro` on
+  `X86_64` (the real device is ARM64), on Android 11, in a recurring
+  06:50–08:30 UTC window.
+- Each event carries a fresh installation UUID, which is why 16 events are
+  counted as 16 "impacted users".
+
+Diagnosed 2026-10-01. Revisit only if either issue appears on a plausible
+device or outside that window — that would mean a real user path exists.
+
 ---
 
 ## 8. Architecture
