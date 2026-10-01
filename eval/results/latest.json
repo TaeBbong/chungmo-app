@@ -1,16 +1,16 @@
 {
-  "label": "venue field added",
+  "label": "image fallback (#51)",
   "rescoredFrom": null,
-  "startedAt": "2026-09-21T21:12:35.730800",
-  "durationMs": 80063,
+  "startedAt": "2026-10-01T22:07:50.055609",
+  "durationMs": 88771,
   "model": "gemini-2.5-flash",
   "baseUrl": "https://chung-mo.web.app",
   "crawlOnly": false,
-  "datasetVersion": 2,
-  "caseCount": 38,
+  "datasetVersion": 3,
+  "caseCount": 40,
   "summary": {
     "overall": {
-      "count": 38,
+      "count": 40,
       "core": 1.0,
       "groom": 1.0,
       "bride": 1.0,
@@ -25,6 +25,38 @@
       "accountRecall": 1.0
     },
     "errors": 0,
+    "byTier": {
+      "image": {
+        "count": 2,
+        "core": 1.0,
+        "groom": 1.0,
+        "bride": 1.0,
+        "datetime": 1.0,
+        "location": 1.0,
+        "venue": 1.0,
+        "accounts": 1.0,
+        "thumbnail": 1.0,
+        "groomLenient": 1.0,
+        "brideLenient": 1.0,
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0
+      },
+      "text": {
+        "count": 38,
+        "core": 1.0,
+        "groom": 1.0,
+        "bride": 1.0,
+        "datetime": 1.0,
+        "location": 1.0,
+        "venue": 1.0,
+        "accounts": 1.0,
+        "thumbnail": 1.0,
+        "groomLenient": 1.0,
+        "brideLenient": 1.0,
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0
+      }
+    },
     "byDifficulty": {
       "easy": {
         "count": 15,
@@ -42,7 +74,7 @@
         "accountRecall": 1.0
       },
       "hard": {
-        "count": 9,
+        "count": 11,
         "core": 1.0,
         "groom": 1.0,
         "bride": 1.0,
@@ -149,6 +181,21 @@
         "accountRecall": 1.0
       },
       "iframe-embed": {
+        "count": 2,
+        "core": 1.0,
+        "groom": 1.0,
+        "bride": 1.0,
+        "datetime": 1.0,
+        "location": 1.0,
+        "venue": 1.0,
+        "accounts": 1.0,
+        "thumbnail": 1.0,
+        "groomLenient": 1.0,
+        "brideLenient": 1.0,
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0
+      },
+      "image-only": {
         "count": 2,
         "core": 1.0,
         "groom": 1.0,
@@ -601,6 +648,21 @@
         "accountRecall": 1.0
       },
       "iframe-embed": {
+        "count": 2,
+        "core": 1.0,
+        "groom": 1.0,
+        "bride": 1.0,
+        "datetime": 1.0,
+        "location": 1.0,
+        "venue": 1.0,
+        "accounts": 1.0,
+        "thumbnail": 1.0,
+        "groomLenient": 1.0,
+        "brideLenient": 1.0,
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0
+      },
+      "image-only": {
         "count": 2,
         "core": 1.0,
         "groom": 1.0,
@@ -1126,19 +1188,19 @@
         "accountRecall": 1.0
       }
     },
-    "meanCrawlMs": 166,
-    "meanModelMs": 5952,
-    "promptTokens": 39557
+    "meanCrawlMs": 233,
+    "meanModelMs": 6241,
+    "promptTokens": 43063
   },
   "coverage": {
     "overall": {
-      "count": 38,
-      "all": 1.0,
+      "count": 40,
+      "all": 0.95,
       "groom": 1.0,
       "bride": 1.0,
-      "date": 1.0,
-      "location": 1.0,
-      "accounts": 1.0
+      "date": 0.95,
+      "location": 0.95,
+      "accounts": 0.975
     },
     "byTemplate": {
       "bootstrap-2019": {
@@ -1194,6 +1256,15 @@
         "date": 1.0,
         "location": 1.0,
         "accounts": 1.0
+      },
+      "image-only": {
+        "count": 2,
+        "all": 0.0,
+        "groom": 1.0,
+        "bride": 1.0,
+        "date": 0.0,
+        "location": 0.0,
+        "accounts": 0.5
       },
       "kakao-card": {
         "count": 3,
@@ -1283,6 +1354,7 @@
       "id": "bs-01",
       "url": "https://chung-mo.web.app/eval/bs-01/",
       "template": "bootstrap-2019",
+      "tier": "text",
       "difficulty": "medium",
       "tags": [
         "bootstrap-2019",
@@ -1290,8 +1362,9 @@
         "modal-accounts",
         "reception-distractor"
       ],
-      "crawlMs": 164,
+      "crawlMs": 216,
       "crawlChars": 1273,
+      "crawlHangul": 332,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1299,9 +1372,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1178,
-      "outputTokens": 301,
-      "modelMs": 9463,
+      "outputTokens": 460,
+      "modelMs": 15206,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/bs-01/main.svg",
         "groom": "심경수",
@@ -1312,19 +1386,19 @@
         "groomAccounts": [
           {
             "bank": "신한은행",
-            "number": "110-166724-620",
+            "number": "110-1667246-20",
             "holder": "심경수",
             "relation": "신랑"
           },
           {
             "bank": "신한은행",
-            "number": "110-128697-906",
+            "number": "110-1286979-06",
             "holder": "심광수",
             "relation": "아버지"
           },
           {
             "bank": "케이뱅크",
-            "number": "100-151395-678",
+            "number": "100-1513956-78",
             "holder": "손명희",
             "relation": "어머니"
           }
@@ -1338,13 +1412,13 @@
           },
           {
             "bank": "우체국",
-            "number": "992682-95-42063",
+            "number": "992682-9542063",
             "holder": "최재호",
             "relation": "아버지"
           },
           {
             "bank": "케이뱅크",
-            "number": "100-612251-623",
+            "number": "100-6122516-23",
             "holder": "홍현숙",
             "relation": "어머니"
           }
@@ -1370,14 +1444,16 @@
       "id": "bs-02",
       "url": "https://chung-mo.web.app/eval/bs-02/",
       "template": "bootstrap-2019",
+      "tier": "text",
       "difficulty": "easy",
       "tags": [
         "bootstrap-2019",
         "map-iframe",
         "modal-accounts"
       ],
-      "crawlMs": 191,
+      "crawlMs": 162,
       "crawlChars": 1110,
+      "crawlHangul": 262,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1385,9 +1461,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1038,
-      "outputTokens": 168,
-      "modelMs": 4989,
+      "outputTokens": 250,
+      "modelMs": 5055,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/bs-02/main.svg",
         "groom": "허주원",
@@ -1432,6 +1509,7 @@
       "id": "bs-03",
       "url": "https://chung-mo.web.app/eval/w/ynmtmdm",
       "template": "bootstrap-2019",
+      "tier": "text",
       "difficulty": "medium",
       "tags": [
         "bootstrap-2019",
@@ -1439,8 +1517,9 @@
         "no-year",
         "rewrite-url"
       ],
-      "crawlMs": 33,
+      "crawlMs": 160,
       "crawlChars": 1048,
+      "crawlHangul": 231,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1448,9 +1527,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 978,
-      "outputTokens": 126,
-      "modelMs": 6721,
+      "outputTokens": 129,
+      "modelMs": 9325,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/bs-03/main.svg",
         "groom": "남예준",
@@ -1461,7 +1541,7 @@
         "groomAccounts": [
           {
             "bank": "기업은행",
-            "number": "18333868364930",
+            "number": "183-33-868364-930",
             "holder": "남예준",
             "relation": "신랑"
           }
@@ -1488,6 +1568,7 @@
       "id": "builder-01",
       "url": "https://chung-mo.web.app/eval/builder-01/",
       "template": "site-builder",
+      "tier": "text",
       "difficulty": "medium",
       "tags": [
         "inline-styles",
@@ -1495,8 +1576,9 @@
         "site-builder",
         "span-split"
       ],
-      "crawlMs": 18,
+      "crawlMs": 200,
       "crawlChars": 1048,
+      "crawlHangul": 282,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1504,9 +1586,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1012,
-      "outputTokens": 305,
-      "modelMs": 5600,
+      "outputTokens": 429,
+      "modelMs": 7242,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/builder-01/main.svg",
         "groom": "손현우",
@@ -1575,14 +1658,16 @@
       "id": "builder-02",
       "url": "https://chung-mo.web.app/eval/builder-02/",
       "template": "site-builder",
+      "tier": "text",
       "difficulty": "medium",
       "tags": [
         "lazy-src",
         "site-builder",
         "span-split"
       ],
-      "crawlMs": 22,
+      "crawlMs": 170,
       "crawlChars": 922,
+      "crawlHangul": 227,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1590,9 +1675,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 896,
-      "outputTokens": 239,
-      "modelMs": 5363,
+      "outputTokens": 227,
+      "modelMs": 5891,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/builder-02/main.svg",
         "groom": "양성민",
@@ -1637,14 +1723,16 @@
       "id": "builder-03",
       "url": "https://chung-mo.web.app/eval/builder-03/",
       "template": "site-builder",
+      "tier": "text",
       "difficulty": "medium",
       "tags": [
         "lazy-src",
         "site-builder",
         "span-split"
       ],
-      "crawlMs": 23,
+      "crawlMs": 176,
       "crawlChars": 869,
+      "crawlHangul": 216,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1652,9 +1740,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 859,
       "outputTokens": 98,
-      "modelMs": 5097,
+      "modelMs": 4362,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/builder-03/main.svg",
         "groom": "전태호",
@@ -1685,14 +1774,16 @@
       "id": "euckr-01",
       "url": "https://chung-mo.web.app/eval/euckr-01/",
       "template": "euckr-asp",
+      "tier": "text",
       "difficulty": "hard",
       "tags": [
         "euc-kr",
         "euckr-asp",
         "font-tags"
       ],
-      "crawlMs": 179,
+      "crawlMs": 165,
       "crawlChars": 725,
+      "crawlHangul": 241,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1700,9 +1791,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 865,
-      "outputTokens": 430,
-      "modelMs": 6924,
+      "outputTokens": 476,
+      "modelMs": 7633,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/euckr-01/main.jpg.svg",
         "groom": "송태양",
@@ -1771,14 +1863,16 @@
       "id": "euckr-02",
       "url": "https://chung-mo.web.app/eval/euckr-02/",
       "template": "euckr-asp",
+      "tier": "text",
       "difficulty": "hard",
       "tags": [
         "euc-kr",
         "euckr-asp",
         "nbsp"
       ],
-      "crawlMs": 435,
+      "crawlMs": 360,
       "crawlChars": 567,
+      "crawlHangul": 183,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1786,9 +1880,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 722,
-      "outputTokens": 131,
-      "modelMs": 4154,
+      "outputTokens": 188,
+      "modelMs": 5615,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/euckr-02/main.jpg.svg",
         "groom": "이재현",
@@ -1826,13 +1921,15 @@
       "id": "frame-01",
       "url": "https://chung-mo.web.app/eval/frame-01/",
       "template": "iframe-embed",
+      "tier": "text",
       "difficulty": "hard",
       "tags": [
         "iframe",
         "iframe-embed"
       ],
-      "crawlMs": 527,
+      "crawlMs": 458,
       "crawlChars": 1531,
+      "crawlHangul": 366,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1840,9 +1937,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1237,
-      "outputTokens": 226,
-      "modelMs": 4989,
+      "outputTokens": 166,
+      "modelMs": 4559,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/frame-01/main.svg",
         "groom": "서재원",
@@ -1887,13 +1985,15 @@
       "id": "frame-02",
       "url": "https://chung-mo.web.app/eval/frame-02/",
       "template": "iframe-embed",
+      "tier": "text",
       "difficulty": "hard",
       "tags": [
         "iframe",
         "iframe-embed"
       ],
-      "crawlMs": 134,
+      "crawlMs": 540,
       "crawlChars": 1452,
+      "crawlHangul": 323,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1901,9 +2001,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1168,
-      "outputTokens": 97,
-      "modelMs": 3461,
+      "outputTokens": 129,
+      "modelMs": 3410,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/frame-02/main.svg",
         "groom": "허민준",
@@ -1934,14 +2035,16 @@
       "id": "hanul-01",
       "url": "https://chung-mo.web.app/eval/hanul-01/",
       "template": "classic-jquery",
+      "tier": "text",
       "difficulty": "easy",
       "tags": [
         "calendar-grid",
         "classic-jquery",
         "inline-js-korean"
       ],
-      "crawlMs": 336,
+      "crawlMs": 174,
       "crawlChars": 1808,
+      "crawlHangul": 402,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -1949,9 +2052,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1404,
       "outputTokens": 478,
-      "modelMs": 10613,
+      "modelMs": 8331,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/hanul-01/main.svg",
         "groom": "전형준",
@@ -2020,14 +2124,16 @@
       "id": "hanul-02",
       "url": "https://chung-mo.web.app/eval/hanul-02/",
       "template": "classic-jquery",
+      "tier": "text",
       "difficulty": "easy",
       "tags": [
         "calendar-grid",
         "classic-jquery",
         "gallery-captions"
       ],
-      "crawlMs": 89,
+      "crawlMs": 185,
       "crawlChars": 1321,
+      "crawlHangul": 335,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2035,9 +2141,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1210,
       "outputTokens": 253,
-      "modelMs": 6269,
+      "modelMs": 5722,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/hanul-02/main.svg",
         "groom": "남건우",
@@ -2082,13 +2189,15 @@
       "id": "hanul-03",
       "url": "https://chung-mo.web.app/eval/s/agfudwwt",
       "template": "classic-jquery",
+      "tier": "text",
       "difficulty": "easy",
       "tags": [
         "classic-jquery",
         "short-link"
       ],
-      "crawlMs": 440,
+      "crawlMs": 456,
       "crawlChars": 1270,
+      "crawlHangul": 355,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2096,9 +2205,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1150,
-      "outputTokens": 364,
-      "modelMs": 7230,
+      "outputTokens": 330,
+      "modelMs": 7814,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/hanul-03/main.svg",
         "groom": "송도윤",
@@ -2155,14 +2265,16 @@
       "id": "hanul-04",
       "url": "https://chung-mo.web.app/eval/hanul-04/",
       "template": "classic-jquery",
+      "tier": "text",
       "difficulty": "medium",
       "tags": [
         "classic-jquery",
         "countdown",
         "no-year"
       ],
-      "crawlMs": 249,
+      "crawlMs": 161,
       "crawlChars": 1234,
+      "crawlHangul": 355,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2170,9 +2282,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1110,
-      "outputTokens": 254,
-      "modelMs": 6926,
+      "outputTokens": 232,
+      "modelMs": 4261,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/hanul-04/main.svg",
         "groom": "심영훈",
@@ -2217,13 +2330,15 @@
       "id": "hanul-05",
       "url": "https://chung-mo.web.app/eval/hanul-05/",
       "template": "classic-jquery",
+      "tier": "text",
       "difficulty": "easy",
       "tags": [
         "classic-jquery",
         "no-date"
       ],
-      "crawlMs": 24,
+      "crawlMs": 199,
       "crawlChars": 1173,
+      "crawlHangul": 334,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2231,9 +2346,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1055,
-      "outputTokens": 223,
-      "modelMs": 5422,
+      "outputTokens": 142,
+      "modelMs": 4831,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/hanul-05/main.svg",
         "groom": "서지훈",
@@ -2275,16 +2391,130 @@
       }
     },
     {
+      "id": "img-01",
+      "url": "https://chung-mo.web.app/eval/img-01/",
+      "template": "image-only",
+      "tier": "image",
+      "difficulty": "hard",
+      "tags": [
+        "image-only"
+      ],
+      "crawlMs": 124,
+      "crawlChars": 624,
+      "crawlHangul": 33,
+      "coverage": {
+        "groom": true,
+        "bride": true,
+        "date": false,
+        "location": false,
+        "accounts": false
+      },
+      "imageFallback": 4,
+      "promptTokens": 1753,
+      "outputTokens": 179,
+      "modelMs": 5960,
+      "predicted": {
+        "thumbnail": "https://chung-mo.web.app/eval/img-01/main.png",
+        "groom": "유서준",
+        "bride": "허서윤",
+        "location": "빌라드지디 수서 1층 가든홀 서울특별시 강남구 광평로 281",
+        "venue": "빌라드지디 수서",
+        "datetime": "2027-04-25T13:00:00+09:00",
+        "groomAccounts": [
+          {
+            "bank": "토스뱅크",
+            "number": "1000-4822-4645",
+            "holder": "유서준",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "케이뱅크",
+            "number": "100-623-762698",
+            "holder": "허서윤",
+            "relation": "신부"
+          }
+        ]
+      },
+      "score": {
+        "groom": true,
+        "bride": true,
+        "datetime": true,
+        "location": true,
+        "venue": true,
+        "accounts": true,
+        "thumbnail": true,
+        "core": true,
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0,
+        "groomLenient": true,
+        "brideLenient": true,
+        "mismatches": {}
+      }
+    },
+    {
+      "id": "img-02",
+      "url": "https://chung-mo.web.app/eval/img-02/",
+      "template": "image-only",
+      "tier": "image",
+      "difficulty": "hard",
+      "tags": [
+        "image-only"
+      ],
+      "crawlMs": 135,
+      "crawlChars": 624,
+      "crawlHangul": 33,
+      "coverage": {
+        "groom": true,
+        "bride": true,
+        "date": false,
+        "location": false,
+        "accounts": true
+      },
+      "imageFallback": 4,
+      "promptTokens": 1753,
+      "outputTokens": 115,
+      "modelMs": 5255,
+      "predicted": {
+        "thumbnail": "https://chung-mo.web.app/eval/img-02/main.png",
+        "groom": "정지환",
+        "bride": "허예린",
+        "location": "엘리시안 컨벤션 6층 사파이어홀 경기도 수원시 영통구 광교중앙로 140",
+        "venue": "엘리시안 컨벤션",
+        "datetime": "2027-05-01T13:30:00+09:00",
+        "groomAccounts": [],
+        "brideAccounts": []
+      },
+      "score": {
+        "groom": true,
+        "bride": true,
+        "datetime": true,
+        "location": true,
+        "venue": true,
+        "accounts": true,
+        "thumbnail": true,
+        "core": true,
+        "accountPrecision": 1.0,
+        "accountRecall": 1.0,
+        "groomLenient": true,
+        "brideLenient": true,
+        "mismatches": {}
+      }
+    },
+    {
       "id": "intl-01",
       "url": "https://chung-mo.web.app/eval/intl-01/",
       "template": "english-intl",
+      "tier": "text",
       "difficulty": "easy",
       "tags": [
         "english",
         "english-intl"
       ],
-      "crawlMs": 22,
+      "crawlMs": 163,
       "crawlChars": 814,
+      "crawlHangul": 53,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2292,14 +2522,15 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 738,
-      "outputTokens": 110,
-      "modelMs": 3883,
+      "outputTokens": 97,
+      "modelMs": 3912,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/intl-01/main.svg",
         "groom": "Siwoo Hong",
         "bride": "Suyeon Son",
-        "location": "헤리움 아트홀, 5층 오페라홀 인천광역시 연수구 센트럴로 194",
+        "location": "헤리움 아트홀, 5층 오페라홀",
         "venue": "헤리움 아트홀",
         "datetime": "2027-06-27T17:30:00+09:00",
         "groomAccounts": [],
@@ -2325,14 +2556,16 @@
       "id": "intl-02",
       "url": "https://chung-mo.web.app/eval/intl-02/",
       "template": "english-intl",
+      "tier": "text",
       "difficulty": "easy",
       "tags": [
         "english",
         "english-intl",
         "mixed-language"
       ],
-      "crawlMs": 158,
+      "crawlMs": 150,
       "crawlChars": 1004,
+      "crawlHangul": 105,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2340,14 +2573,15 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 857,
-      "outputTokens": 187,
-      "modelMs": 5206,
+      "outputTokens": 253,
+      "modelMs": 5517,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/intl-02/main.svg",
         "groom": "Sunghoon Baek",
         "bride": "Haram Jeon",
-        "location": "루체스타 웨딩홀, 6층 스텔라홀 경기도 성남시 분당구 판교역로 210",
+        "location": "루체스타 웨딩홀, 6층 스텔라홀",
         "venue": "루체스타 웨딩홀",
         "datetime": "2027-07-03T18:00:00+09:00",
         "groomAccounts": [
@@ -2387,14 +2621,16 @@
       "id": "kakao-01",
       "url": "https://chung-mo.web.app/eval/kakao-01/",
       "template": "kakao-card",
+      "tier": "text",
       "difficulty": "medium",
       "tags": [
         "data-attrs",
         "hidden-accounts",
         "kakao-card"
       ],
-      "crawlMs": 158,
+      "crawlMs": 152,
       "crawlChars": 850,
+      "crawlHangul": 297,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2402,9 +2638,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 966,
-      "outputTokens": 431,
-      "modelMs": 6015,
+      "outputTokens": 477,
+      "modelMs": 9072,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/kakao-01/main.svg",
         "groom": "강유찬",
@@ -2473,14 +2710,16 @@
       "id": "kakao-02",
       "url": "https://chung-mo.web.app/eval/s/a2fryw8t",
       "template": "kakao-card",
+      "tier": "text",
       "difficulty": "medium",
       "tags": [
         "hidden-accounts",
         "kakao-card",
         "short-link"
       ],
-      "crawlMs": 130,
+      "crawlMs": 264,
       "crawlChars": 644,
+      "crawlHangul": 183,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2488,9 +2727,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 813,
       "outputTokens": 254,
-      "modelMs": 3720,
+      "modelMs": 5216,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/kakao-02/main.svg",
         "groom": "장서진",
@@ -2535,13 +2775,15 @@
       "id": "kakao-03",
       "url": "https://chung-mo.web.app/eval/kakao-03/",
       "template": "kakao-card",
+      "tier": "text",
       "difficulty": "medium",
       "tags": [
         "hidden-accounts",
         "kakao-card"
       ],
-      "crawlMs": 17,
+      "crawlMs": 241,
       "crawlChars": 562,
+      "crawlHangul": 168,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2549,9 +2791,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 735,
-      "outputTokens": 100,
-      "modelMs": 3069,
+      "outputTokens": 124,
+      "modelMs": 2836,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/kakao-03/main.svg",
         "groom": "손지호",
@@ -2582,14 +2825,16 @@
       "id": "nextcard-01",
       "url": "https://chung-mo.web.app/eval/nextcard-01/",
       "template": "nextjs-ssr",
+      "tier": "text",
       "difficulty": "easy",
       "tags": [
         "css-modules",
         "next-data",
         "nextjs-ssr"
       ],
-      "crawlMs": 23,
+      "crawlMs": 193,
       "crawlChars": 2244,
+      "crawlHangul": 345,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2597,14 +2842,15 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1587,
-      "outputTokens": 439,
-      "modelMs": 6143,
+      "outputTokens": 428,
+      "modelMs": 8934,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/nextcard-01/main.svg",
         "groom": "유하준",
         "bride": "남가은",
-        "location": "세인트메리 성당 대성전, 서울특별시 중구 명동길 74",
+        "location": "세인트메리 성당 대성전",
         "venue": "세인트메리 성당",
         "datetime": "2026-11-29T17:30:00+09:00",
         "groomAccounts": [
@@ -2668,6 +2914,7 @@
       "id": "nextcard-02",
       "url": "https://chung-mo.web.app/eval/nextcard-02/",
       "template": "nextjs-ssr",
+      "tier": "text",
       "difficulty": "medium",
       "tags": [
         "css-modules",
@@ -2675,8 +2922,9 @@
         "next-data",
         "nextjs-ssr"
       ],
-      "crawlMs": 169,
+      "crawlMs": 158,
       "crawlChars": 1808,
+      "crawlHangul": 294,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2684,9 +2932,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1354,
-      "outputTokens": 168,
-      "modelMs": 5408,
+      "outputTokens": 228,
+      "modelMs": 9584,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/nextcard-02/main.svg",
         "groom": "정수호",
@@ -2731,14 +2980,16 @@
       "id": "nextcard-03",
       "url": "https://chung-mo.web.app/eval/nextcard-03/",
       "template": "nextjs-ssr",
+      "tier": "text",
       "difficulty": "easy",
       "tags": [
         "css-modules",
         "next-data",
         "nextjs-ssr"
       ],
-      "crawlMs": 402,
+      "crawlMs": 152,
       "crawlChars": 1654,
+      "crawlHangul": 239,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2746,9 +2997,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1234,
-      "outputTokens": 189,
-      "modelMs": 5175,
+      "outputTokens": 174,
+      "modelMs": 4587,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/nextcard-03/main.svg",
         "groom": "배승민",
@@ -2786,14 +3038,16 @@
       "id": "nuxtcard-01",
       "url": "https://chung-mo.web.app/eval/nuxtcard-01/",
       "template": "nuxt-ssr",
+      "tier": "text",
       "difficulty": "easy",
       "tags": [
         "nuxt-data",
         "nuxt-ssr",
         "scoped-attrs"
       ],
-      "crawlMs": 46,
+      "crawlMs": 226,
       "crawlChars": 1598,
+      "crawlHangul": 297,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2801,9 +3055,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1252,
-      "outputTokens": 366,
-      "modelMs": 8772,
+      "outputTokens": 332,
+      "modelMs": 6766,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/nuxtcard-01/main.svg",
         "groom": "권승현",
@@ -2860,14 +3115,16 @@
       "id": "nuxtcard-02",
       "url": "https://chung-mo.web.app/eval/nuxtcard-02/",
       "template": "nuxt-ssr",
+      "tier": "text",
       "difficulty": "easy",
       "tags": [
         "nuxt-data",
         "nuxt-ssr",
         "scoped-attrs"
       ],
-      "crawlMs": 24,
+      "crawlMs": 199,
       "crawlChars": 1368,
+      "crawlHangul": 271,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2875,14 +3132,15 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1118,
-      "outputTokens": 202,
-      "modelMs": 7324,
+      "outputTokens": 184,
+      "modelMs": 5793,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/nuxtcard-02/main.svg",
         "groom": "신연우",
         "bride": "남다혜",
-        "location": "그랜드힐 컨벤션 3층 다이아몬드홀",
+        "location": "서울특별시 송파구 올림픽로 300 그랜드힐 컨벤션 3층 다이아몬드홀",
         "venue": "그랜드힐 컨벤션",
         "datetime": "2027-01-16T12:00:00+09:00",
         "groomAccounts": [
@@ -2922,14 +3180,16 @@
       "id": "sc-01",
       "url": "https://chung-mo.web.app/eval/sc-01/",
       "template": "styled-react",
+      "tier": "text",
       "difficulty": "medium",
       "tags": [
         "sc-classes",
         "split-numerals",
         "styled-react"
       ],
-      "crawlMs": 15,
+      "crawlMs": 168,
       "crawlChars": 782,
+      "crawlHangul": 153,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2937,9 +3197,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 830,
       "outputTokens": 170,
-      "modelMs": 6150,
+      "modelMs": 6052,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/sc-01/main.svg",
         "groom": "정정우",
@@ -2984,14 +3245,16 @@
       "id": "sc-02",
       "url": "https://chung-mo.web.app/eval/sc-02/",
       "template": "styled-react",
+      "tier": "text",
       "difficulty": "medium",
       "tags": [
         "sc-classes",
         "split-numerals",
         "styled-react"
       ],
-      "crawlMs": 214,
+      "crawlMs": 172,
       "crawlChars": 898,
+      "crawlHangul": 186,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -2999,14 +3262,15 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 925,
-      "outputTokens": 478,
-      "modelMs": 8454,
+      "outputTokens": 446,
+      "modelMs": 9565,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/sc-02/main.svg",
         "groom": "심상우",
         "bride": "오나연",
-        "location": "노블레스 웨딩 7층 노블홀",
+        "location": "부산광역시 해운대구 센텀중앙로 55 노블레스 웨딩 7층 노블홀",
         "venue": "노블레스 웨딩",
         "datetime": "2027-03-06T18:00:00+09:00",
         "groomAccounts": [
@@ -3070,14 +3334,16 @@
       "id": "self-01",
       "url": "https://chung-mo.web.app/eval/self-01/",
       "template": "notion-export",
+      "tier": "text",
       "difficulty": "easy",
       "tags": [
         "emoji-headings",
         "notion-export",
         "self-made"
       ],
-      "crawlMs": 172,
+      "crawlMs": 170,
       "crawlChars": 816,
+      "crawlHangul": 198,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -3085,9 +3351,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 864,
       "outputTokens": 249,
-      "modelMs": 6579,
+      "modelMs": 5982,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/self-01/main.svg",
         "groom": "김준혁",
@@ -3132,14 +3399,16 @@
       "id": "spa-01",
       "url": "https://chung-mo.web.app/eval/spa-01/",
       "template": "csr-shell",
+      "tier": "text",
       "difficulty": "hard",
       "tags": [
         "csr",
         "csr-shell",
         "og-only"
       ],
-      "crawlMs": 392,
+      "crawlMs": 666,
       "crawlChars": 1252,
+      "crawlHangul": 158,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -3147,9 +3416,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1011,
-      "outputTokens": 229,
-      "modelMs": 4747,
+      "outputTokens": 251,
+      "modelMs": 5556,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/spa-01/main.svg",
         "groom": "고진우",
@@ -3194,14 +3464,16 @@
       "id": "spa-02",
       "url": "https://chung-mo.web.app/eval/spa-02/",
       "template": "csr-shell",
+      "tier": "text",
       "difficulty": "hard",
       "tags": [
         "csr",
         "csr-shell",
         "og-only"
       ],
-      "crawlMs": 445,
+      "crawlMs": 447,
       "crawlChars": 1763,
+      "crawlHangul": 189,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -3209,9 +3481,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1235,
-      "outputTokens": 477,
-      "modelMs": 7427,
+      "outputTokens": 431,
+      "modelMs": 6418,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/spa-02/main.svg",
         "groom": "권명호",
@@ -3280,14 +3553,16 @@
       "id": "spa-03",
       "url": "https://chung-mo.web.app/eval/spa-03/",
       "template": "csr-shell",
+      "tier": "text",
       "difficulty": "hard",
       "tags": [
         "csr",
         "csr-shell",
         "og-only"
       ],
-      "crawlMs": 270,
+      "crawlMs": 598,
       "crawlChars": 971,
+      "crawlHangul": 136,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -3295,9 +3570,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 875,
-      "outputTokens": 118,
-      "modelMs": 3248,
+      "outputTokens": 94,
+      "modelMs": 5100,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/spa-03/main.svg",
         "groom": "배우진",
@@ -3328,13 +3604,15 @@
       "id": "table-01",
       "url": "https://chung-mo.web.app/eval/table-01/",
       "template": "table-legacy",
+      "tier": "text",
       "difficulty": "hard",
       "tags": [
         "table-legacy",
         "table-only"
       ],
-      "crawlMs": 32,
+      "crawlMs": 159,
       "crawlChars": 675,
+      "crawlHangul": 232,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -3342,9 +3620,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 828,
-      "outputTokens": 170,
-      "modelMs": 4911,
+      "outputTokens": 230,
+      "modelMs": 5185,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/table-01/main.svg",
         "groom": "서원준",
@@ -3389,13 +3668,15 @@
       "id": "table-02",
       "url": "https://chung-mo.web.app/eval/table-02/",
       "template": "table-legacy",
+      "tier": "text",
       "difficulty": "hard",
       "tags": [
         "table-legacy",
         "table-only"
       ],
-      "crawlMs": 186,
+      "crawlMs": 168,
       "crawlChars": 605,
+      "crawlHangul": 201,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -3403,9 +3684,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 766,
-      "outputTokens": 134,
-      "modelMs": 5326,
+      "outputTokens": 102,
+      "modelMs": 3701,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/table-02/main.svg",
         "groom": "박선우",
@@ -3436,6 +3718,7 @@
       "id": "tw-01",
       "url": "https://chung-mo.web.app/eval/tw-01/",
       "template": "tailwind-semantic",
+      "tier": "text",
       "difficulty": "easy",
       "tags": [
         "details-accordion",
@@ -3444,8 +3727,9 @@
         "picture-srcset",
         "tailwind-semantic"
       ],
-      "crawlMs": 16,
+      "crawlMs": 179,
       "crawlChars": 1440,
+      "crawlHangul": 282,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -3453,9 +3737,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1202,
-      "outputTokens": 369,
-      "modelMs": 6790,
+      "outputTokens": 308,
+      "modelMs": 8172,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/tw-01/main.svg",
         "groom": "문준서",
@@ -3524,14 +3809,16 @@
       "id": "tw-02",
       "url": "https://chung-mo.web.app/eval/tw-02/",
       "template": "tailwind-semantic",
+      "tier": "text",
       "difficulty": "easy",
       "tags": [
         "details-accordion",
         "json-ld",
         "tailwind-semantic"
       ],
-      "crawlMs": 15,
+      "crawlMs": 157,
       "crawlChars": 1251,
+      "crawlHangul": 217,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -3539,9 +3826,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1064,
-      "outputTokens": 228,
-      "modelMs": 5608,
+      "outputTokens": 168,
+      "modelMs": 4870,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/tw-02/main.svg",
         "groom": "권동현",
@@ -3586,14 +3874,16 @@
       "id": "tw-03",
       "url": "https://chung-mo.web.app/eval/tw-03/",
       "template": "tailwind-semantic",
+      "tier": "text",
       "difficulty": "easy",
       "tags": [
         "json-ld",
         "no-date",
         "tailwind-semantic"
       ],
-      "crawlMs": 354,
+      "crawlMs": 165,
       "crawlChars": 1303,
+      "crawlHangul": 265,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -3601,9 +3891,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1081,
       "outputTokens": 341,
-      "modelMs": 6018,
+      "modelMs": 5378,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/tw-03/main.svg",
         "groom": "윤찬영",
@@ -3660,14 +3951,16 @@
       "id": "wp-01",
       "url": "https://chung-mo.web.app/eval/wp-01/",
       "template": "wordpress-theme",
+      "tier": "text",
       "difficulty": "medium",
       "tags": [
         "guestbook-distractors",
         "time-element",
         "wordpress-theme"
       ],
-      "crawlMs": 187,
+      "crawlMs": 163,
       "crawlChars": 1255,
+      "crawlHangul": 308,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -3675,9 +3968,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1153,
-      "outputTokens": 229,
-      "modelMs": 5057,
+      "outputTokens": 251,
+      "modelMs": 5330,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/wp-01/main.svg",
         "groom": "남규민",
@@ -3722,14 +4016,16 @@
       "id": "wp-02",
       "url": "https://chung-mo.web.app/eval/wp-02/",
       "template": "wordpress-theme",
+      "tier": "text",
       "difficulty": "medium",
       "tags": [
         "guestbook-distractors",
         "time-element",
         "wordpress-theme"
       ],
-      "crawlMs": 16,
+      "crawlMs": 178,
       "crawlChars": 1296,
+      "crawlHangul": 300,
       "coverage": {
         "groom": true,
         "bride": true,
@@ -3737,9 +4033,10 @@
         "location": true,
         "accounts": true
       },
+      "imageFallback": 0,
       "promptTokens": 1187,
-      "outputTokens": 324,
-      "modelMs": 7927,
+      "outputTokens": 358,
+      "modelMs": 5680,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/wp-02/main.svg",
         "groom": "이민석",

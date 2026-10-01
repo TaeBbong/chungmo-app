@@ -1,7 +1,7 @@
 # Link parser eval — gemini-2.5-flash
 
-- Run: 2026-09-21T21:12:35.730800 (venue field added)
-- Cases: 38 · errors: 0 · mean crawl 166 ms · mean model 5952 ms · prompt tokens 39557
+- Run: 2026-10-01T22:07:50.055609 (image fallback (#51))
+- Cases: 40 · errors: 0 · mean crawl 233 ms · mean model 6241 ms · prompt tokens 43063
 
 ## Overall
 
@@ -17,13 +17,14 @@ Whether the crawler's text contains each expected value verbatim; a field missin
 
 | group | n | all | groom | bride | date | location | accounts |
 |---|---|---|---|---|---|---|---|
-| overall | 38 | **100%** | 100% | 100% | 100% | 100% | 100% |
+| overall | 40 | **95%** | 100% | 100% | 95% | 95% | 98% |
 | bootstrap-2019 | 3 | 100% | 100% | 100% | 100% | 100% | 100% |
 | classic-jquery | 5 | 100% | 100% | 100% | 100% | 100% | 100% |
 | csr-shell | 3 | 100% | 100% | 100% | 100% | 100% | 100% |
 | english-intl | 2 | 100% | 100% | 100% | 100% | 100% | 100% |
 | euckr-asp | 2 | 100% | 100% | 100% | 100% | 100% | 100% |
 | iframe-embed | 2 | 100% | 100% | 100% | 100% | 100% | 100% |
+| image-only | 2 | 0% | 100% | 100% | 0% | 0% | 50% |
 | kakao-card | 3 | 100% | 100% | 100% | 100% | 100% | 100% |
 | nextjs-ssr | 3 | 100% | 100% | 100% | 100% | 100% | 100% |
 | notion-export | 1 | 100% | 100% | 100% | 100% | 100% | 100% |
@@ -34,12 +35,19 @@ Whether the crawler's text contains each expected value verbatim; a field missin
 | tailwind-semantic | 3 | 100% | 100% | 100% | 100% | 100% | 100% |
 | wordpress-theme | 2 | 100% | 100% | 100% | 100% | 100% | 100% |
 
+## By tier
+
+| group | n | core | groom | bride | datetime | location | accounts | thumbnail |
+|---|---|---|---|---|---|---|---|---|
+| image | 2 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
+| text | 38 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
+
 ## By difficulty
 
 | group | n | core | groom | bride | datetime | location | accounts | thumbnail |
 |---|---|---|---|---|---|---|---|---|
 | easy | 15 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
-| hard | 9 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
+| hard | 11 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
 | medium | 14 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
 
 ## By template
@@ -52,6 +60,7 @@ Whether the crawler's text contains each expected value verbatim; a field missin
 | english-intl | 2 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
 | euckr-asp | 2 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
 | iframe-embed | 2 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
+| image-only | 2 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
 | kakao-card | 3 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
 | nextjs-ssr | 3 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
 | notion-export | 1 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
@@ -87,6 +96,7 @@ Whether the crawler's text contains each expected value verbatim; a field missin
 | hidden-accounts | 3 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
 | iframe | 2 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
 | iframe-embed | 2 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
+| image-only | 2 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
 | inline-js-korean | 1 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
 | inline-styles | 1 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
 | json-ld | 3 | 100% | 100% | 100% | 100% | 100% | 100% | 100% |
@@ -126,41 +136,43 @@ Whether the crawler's text contains each expected value verbatim; a field missin
 
 | id | template | difficulty | G | B | D | L | A | T | chars | ms | mismatches |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| bs-01 | bootstrap-2019 | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1273 | 164+9463 |  |
-| bs-02 | bootstrap-2019 | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1110 | 191+4989 |  |
-| bs-03 | bootstrap-2019 | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1048 | 33+6721 |  |
-| builder-01 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1048 | 18+5600 |  |
-| builder-02 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 922 | 22+5363 |  |
-| builder-03 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 869 | 23+5097 |  |
-| euckr-01 | euckr-asp | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 725 | 179+6924 |  |
-| euckr-02 | euckr-asp | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 567 | 435+4154 |  |
-| frame-01 | iframe-embed | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1531 | 527+4989 |  |
-| frame-02 | iframe-embed | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1452 | 134+3461 |  |
-| hanul-01 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1808 | 336+10613 |  |
-| hanul-02 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1321 | 89+6269 |  |
-| hanul-03 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1270 | 440+7230 |  |
-| hanul-04 | classic-jquery | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1234 | 249+6926 |  |
-| hanul-05 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1173 | 24+5422 |  |
-| intl-01 | english-intl | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 814 | 22+3883 |  |
-| intl-02 | english-intl | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1004 | 158+5206 |  |
-| kakao-01 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 850 | 158+6015 |  |
-| kakao-02 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 644 | 130+3720 |  |
-| kakao-03 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 562 | 17+3069 |  |
-| nextcard-01 | nextjs-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 2244 | 23+6143 |  |
-| nextcard-02 | nextjs-ssr | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1808 | 169+5408 |  |
-| nextcard-03 | nextjs-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1654 | 402+5175 |  |
-| nuxtcard-01 | nuxt-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1598 | 46+8772 |  |
-| nuxtcard-02 | nuxt-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1368 | 24+7324 |  |
-| sc-01 | styled-react | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 782 | 15+6150 |  |
-| sc-02 | styled-react | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 898 | 214+8454 |  |
-| self-01 | notion-export | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 816 | 172+6579 |  |
-| spa-01 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1252 | 392+4747 |  |
-| spa-02 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1763 | 445+7427 |  |
-| spa-03 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 971 | 270+3248 |  |
-| table-01 | table-legacy | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 675 | 32+4911 |  |
-| table-02 | table-legacy | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 605 | 186+5326 |  |
-| tw-01 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1440 | 16+6790 |  |
-| tw-02 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1251 | 15+5608 |  |
-| tw-03 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1303 | 354+6018 |  |
-| wp-01 | wordpress-theme | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1255 | 187+5057 |  |
-| wp-02 | wordpress-theme | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1296 | 16+7927 |  |
+| bs-01 | bootstrap-2019 | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1273 | 216+15206 |  |
+| bs-02 | bootstrap-2019 | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1110 | 162+5055 |  |
+| bs-03 | bootstrap-2019 | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1048 | 160+9325 |  |
+| builder-01 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1048 | 200+7242 |  |
+| builder-02 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 922 | 170+5891 |  |
+| builder-03 | site-builder | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 869 | 176+4362 |  |
+| euckr-01 | euckr-asp | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 725 | 165+7633 |  |
+| euckr-02 | euckr-asp | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 567 | 360+5615 |  |
+| frame-01 | iframe-embed | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1531 | 458+4559 |  |
+| frame-02 | iframe-embed | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1452 | 540+3410 |  |
+| hanul-01 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1808 | 174+8331 |  |
+| hanul-02 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1321 | 185+5722 |  |
+| hanul-03 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1270 | 456+7814 |  |
+| hanul-04 | classic-jquery | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1234 | 161+4261 |  |
+| hanul-05 | classic-jquery | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1173 | 199+4831 |  |
+| img-01 | image-only | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 624 | 124+5960 |  |
+| img-02 | image-only | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 624 | 135+5255 |  |
+| intl-01 | english-intl | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 814 | 163+3912 |  |
+| intl-02 | english-intl | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1004 | 150+5517 |  |
+| kakao-01 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 850 | 152+9072 |  |
+| kakao-02 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 644 | 264+5216 |  |
+| kakao-03 | kakao-card | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 562 | 241+2836 |  |
+| nextcard-01 | nextjs-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 2244 | 193+8934 |  |
+| nextcard-02 | nextjs-ssr | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1808 | 158+9584 |  |
+| nextcard-03 | nextjs-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1654 | 152+4587 |  |
+| nuxtcard-01 | nuxt-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1598 | 226+6766 |  |
+| nuxtcard-02 | nuxt-ssr | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1368 | 199+5793 |  |
+| sc-01 | styled-react | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 782 | 168+6052 |  |
+| sc-02 | styled-react | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 898 | 172+9565 |  |
+| self-01 | notion-export | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 816 | 170+5982 |  |
+| spa-01 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1252 | 666+5556 |  |
+| spa-02 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1763 | 447+6418 |  |
+| spa-03 | csr-shell | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 971 | 598+5100 |  |
+| table-01 | table-legacy | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 675 | 159+5185 |  |
+| table-02 | table-legacy | hard | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 605 | 168+3701 |  |
+| tw-01 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1440 | 179+8172 |  |
+| tw-02 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1251 | 157+4870 |  |
+| tw-03 | tailwind-semantic | easy | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1303 | 165+5378 |  |
+| wp-01 | wordpress-theme | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1255 | 163+5330 |  |
+| wp-02 | wordpress-theme | medium | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 1296 | 178+5680 |  |
