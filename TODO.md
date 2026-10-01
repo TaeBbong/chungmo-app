@@ -4,51 +4,46 @@
 
 ---
 
-## 🏆 원티드 AI Championship 2026 제출 (마감: 2026-09-18)
+## 🎯 현재 로드맵 (2026-10 ~)
 
-대회 제출을 위한 보완 작업 목록입니다. AI 깊이 강화 → 에이전틱 기능 → 제품 기본기 → 제출물 순으로 우선순위를 둡니다.
+원티드 AI Championship 2026 제출(2026-09 마감)이 끝난 뒤의 제품 개선 계획입니다.
+사용자 가치 → 엔지니어링 → 폴리싱 순으로 우선순위를 둡니다.
 
-### 🤖 AI 핵심 기능 강화 (최우선)
+### A. 링크 파서 이미지 폴백 (#51)
 
-- [x] **이미지 청첩장 파싱**: 카톡 캡처/이미지 청첩장을 Gemini 멀티모달로 분석하여 일정·장소·계좌 추출 (갤러리 선택 + 카메라 촬영) — `feat/image-parsing`
-- [x] **텍스트/문자 파싱**: 청첩장 안내 문자를 붙여넣으면 파싱 (링크 없이 텍스트만으로) — `feat/text-parsing`
-- [x] **공유 시트 연동**: 타 앱(카톡, 문자, 브라우저)에서 "공유 → 청모"로 바로 파싱 시작 (Android Share Intent / iOS Share Extension) — `feat/os-integrations`
-- [x] **구조화 출력 적용**: Gemini `responseJsonSchema` + JSON 응답 강제 — 링크/이미지/텍스트 파서가 공유 스키마 사용
-- [x] **파싱 실패 fallback UX**: 날짜 누락 시 부분 추출(이름·장소·계좌)을 draft로 보존, 폼에 프리필해 빈 필드만 보정 — `feat/manual-schedule-fallback`
-- [x] **파싱 정확도 평가셋**: Firebase Hosting에 40개의 가상 청첩장 픽스처(벤더별 마크업 스타일)를 호스팅하고 `eval/run_eval.dart`로 자동 채점 → `eval/results/latest.md`에 정확도 수치 — `feat/parsing-eval`
-- [x] **링크 파서 커버리지 1단계 (정적 HTML)**: 문서 순서 DOM 워크, `<meta>` OG content, `<td>/<time>/<section>` 텍스트, 순수 Dart CP949 디코더, 최종 URL 기준 상대 경로 해석, lazy `data-src`, iframe 1단계 추적 → 크롤 커버리지 68%→90%, core 63%→85% — `feat/crawler-coverage`, `docs/CRAWLER_COVERAGE.md`
-- [x] **링크 파서 프롬프트 보강** (#50): 기준 날짜(KST) 제공 + 요일 검증 연도 추론으로 해소 — #54에 포함, 이름·썸네일은 100% 달성으로 불필요
-- [ ] **링크 파서 이미지 폴백 (모달리티 전환)** (#51): 크롤 결과가 빈약하면 페이지의 주요 이미지를 내려받아 기존 멀티모달 이미지 파서로 재시도 — 평가셋 스코프에서는 제외(#54), 실사용 이미지 전용 청첩장 대응 기능으로 유효
+크롤 결과가 빈약한 청첩장(이미지 전용 페이지, 텍스트를 거의 내보내지 않는 CSR 셸)을
+기존 멀티모달 이미지 파서로 넘겨 재시도합니다. 평가셋 스코프에서는 제외했지만(#54)
+실사용 실패 모드로는 가장 큰 축입니다.
 
-### 🧠 에이전틱/스마트 기능
+- [ ] `extractContentWithImages`가 본문과 이미지 URL을 분리해 반환하도록 수정 — 현재는 `String?` 하나에 이미지 URL이 본문과 섞여 들어감
+- [ ] 크롤 텍스트가 임계값 미달이면 주요 이미지를 내려받아 `getScheduleFromImage`로 재시도 (모달리티 전환)
+- [ ] 평가셋에 이미지 전용 티어를 별도 집계로 추가 — core 38/38 100%를 깨지 않도록 분리 채점
 
-- [x] **축의금 액수 추천**: 관계(친구/직장/가족)·과거 기록·통계 기반 금액 추천 (LLM + 로컬 축의금 데이터) — `feat/pay-recommendation`
-- [ ] **출발 알림**: 예식장 위치 + 시간 기반 이동 시간을 계산해 "지금 출발" 푸시 알림
-- [x] **기기 캘린더 연동**: 저장한 일정을 기기 기본 캘린더에 등록 (`add_2_calendar` 핸드오프) — `feat/os-integrations`
-- [x] **축의금 통계 대시보드**: 연도별·관계별 지출 합계, 받은/낸 내역 차트 시각화 — `feat/pay-dashboard`
+### C. 환경 변수 관리 개선
 
-### 📱 제품 기본기
+- [ ] `lib/core/env.dart`의 하드코딩된 엔드포인트를 Flutter Flavor 또는 `--dart-define` 방식으로 이전 (파일 상단 TODO 참고)
 
-- [x] 사용자가 직접 일정을 추가하는 기능 (링크 분석 없이) — `feat/manual-schedule-fallback`
-- [x] 온보딩 튜토리얼 개선 (인트로 캐러셀 4장 + `tutorial_coach_mark` 투어 버전 관리, 설정에서 다시 보기) — 신규 AI 기능 소개 포함 — `feat/onboarding-v2`
-- [x] 홈스크린 위젯: 다가오는 예식 D-day 표시 (Android/iOS) — 청첩장 사진 배경 포함 — `feat/home-widget`
-- [ ] 태블릿 및 넓은 화면을 위한 반응형 UI 개선
-- [x] 앱 전반 마이크로 인터랙션/애니메이션 폴리싱 (심사·투표 시 첫인상) — `feat/interaction-polish`
+### D. 테스트 보강
 
-### 🔧 엔지니어링/안정화
+- [ ] `WatchAllSchedulesUsecase`와 로컬 소스 스트림 전용 테스트 추가 — 1.0.2에서 터진 버그가 정확히 이 경로였는데 아직 전용 테스트가 없음
+- [ ] 주요 유스케이스/Bloc 커버리지 확대 (현재 179개 통과)
 
-- [ ] `env.dart`의 환경 변수 관리 방식을 Flutter Flavor 또는 `dart-define` 방식으로 개선 (`lib/core/env.dart`의 TODO 참고)
-- [ ] `Stream` 기반 비동기 로직 테스트 재작성 + 주요 유스케이스/Bloc 테스트 커버리지 확대 (신규 AI 기능 포함)
-- [ ] 파싱 요청 로깅/모니터링: 실패율·응답 시간 수집 (Firebase Analytics/Crashlytics)
-- [x] 성능 최적화를 위해 `Isolate` 활용 검토 (이미지 전처리, Lottie 등) — `feat/interaction-polish`, `docs/ISOLATES.md`
+### E. 태블릿 및 넓은 화면 반응형 UI
 
-### 🎬 제출물/발표 자산
+- [ ] 본문 max-width 클램프, 넓은 화면에서 캘린더·상세 2단 배치 — 현재 `LayoutBuilder`를 쓰는 화면은 `about_page` 하나뿐
 
-- [ ] 1분 데모 영상 제작 (링크/이미지 붙여넣기 → 자동 등록 핵심 플로우)
-- [ ] 프로젝트 소개 자료: 문제 정의 → AI 활용 방식 → 정확도 수치 → 실사용 지표
-- [ ] 스토어 지표 정리 (다운로드 수, 리텐션 등 실서비스 증거)
-- [x] README/스크린샷을 신규 기능 반영하여 업데이트 — 영문·한글 전면 개편 (2026-09-16)
-- [x] v2.0.0 릴리스 (양대 스토어 배포 + RELEASE.md 갱신) — 2026-09-08 배포 완료
+### 🔭 보류·드롭 (판단 근거 포함)
+
+- [ ] **출발 알림** — 2026-10-01 보류. 실제 이동 시간을 쓰려면 Routes API 과금, 위치 권한, API 키를 숨길 서버 경유가 모두 필요하고, 고정 리드타임(예식 N시간 전)으로 줄이면 "출발 알림"이라는 이름값을 못 합니다. 알림 인프라(`flutter_local_notifications` + 기존 D-1 알림)는 이미 있으므로 재개 시 바로 착수 가능.
+- [x] ~~파싱 요청 로깅/모니터링~~ — 이미 구현되어 있었음. `parse_started/succeeded/failed` + `duration_ms` + `ParseFailureReason` 6종 분류가 `create_cubit.dart`에 들어가 있고 측정 계획은 `docs/ANALYTICS.md`에 있습니다. 남은 것은 코드가 아니라 지표를 주기적으로 읽는 운영 습관.
+- [ ] **다국어 지원 (영어)** — 드롭. 한국 경조사 문화에 특화된 앱이라 ROI가 없습니다. `flutter_localizations`가 의존성에 있지만 날짜 포맷용이고 실제 i18n은 되어 있지 않습니다.
+- [ ] **`BaseView`/`BaseViewModel` 공통 추상화** — 드롭. 현재 Bloc 구조가 이미 일관되어 있어 추상화층을 끼우면 순손실입니다.
+
+---
+
+## 🩺 운영 과제
+
+- [ ] Crashlytics에서 봇 유발 FATAL 2건 mute 처리 — `SignInHubActivity.onCreate` NPE(9건)와 `ActionTrampolineActivity` IllegalArgumentException(7건). 둘 다 전이 의존성의 비노출(`exported="false"`) 액티비티를 extras 없이 cold start한 흔적이고, 모든 이벤트가 동일한 위장 에뮬레이터(`OnePlus8Pro / X86_64 / Android 11`)에서 매일 같은 시간대에 발생합니다. 실사용자 경로가 아니므로 코드 수정 대상이 아니지만, 방치하면 crash-free rate를 왜곡합니다. 자세한 분석은 `docs/ANALYTICS.md` §봇 유발 크래시 참고.
 
 ---
 
@@ -57,8 +52,46 @@
 장기적으로 고려해볼 만한 아이디어나 기능 목록입니다.
 
 - [ ] 객체지향 설계 원칙 적극 도입 (Mixin, Factory, Extension 등 활용)
-- [ ] `BaseView` 및 `BaseViewModel` 같은 공통 추상화 클래스 도입 검토
-- [ ] 다국어 지원 (영어)
+
+---
+
+## 🏆 원티드 AI Championship 2026 (종료)
+
+2026-09 제출 완료. 이 기간에 추가된 기능은 모두 2.0.x로 양대 스토어에 배포되었습니다.
+
+### 🤖 AI 핵심 기능 강화
+
+- [x] **이미지 청첩장 파싱**: 카톡 캡처/이미지 청첩장을 Gemini 멀티모달로 분석하여 일정·장소·계좌 추출 (갤러리 선택 + 카메라 촬영) — `feat/image-parsing`
+- [x] **텍스트/문자 파싱**: 청첩장 안내 문자를 붙여넣으면 파싱 (링크 없이 텍스트만으로) — `feat/text-parsing`
+- [x] **공유 시트 연동**: 타 앱(카톡, 문자, 브라우저)에서 "공유 → 청모"로 바로 파싱 시작 (Android Share Intent / iOS Share Extension) — `feat/os-integrations`
+- [x] **구조화 출력 적용**: Gemini `responseJsonSchema` + JSON 응답 강제 — 링크/이미지/텍스트 파서가 공유 스키마 사용
+- [x] **파싱 실패 fallback UX**: 날짜 누락 시 부분 추출(이름·장소·계좌)을 draft로 보존, 폼에 프리필해 빈 필드만 보정 — `feat/manual-schedule-fallback`
+- [x] **파싱 정확도 평가셋**: Firebase Hosting에 가상 청첩장 픽스처(벤더별 마크업 스타일)를 호스팅하고 `eval/run_eval.dart`로 자동 채점 → `eval/results/latest.md`에 정확도 수치 — `feat/parsing-eval`
+- [x] **링크 파서 커버리지 1단계 (정적 HTML)**: 문서 순서 DOM 워크, `<meta>` OG content, `<td>/<time>/<section>` 텍스트, 순수 Dart CP949 디코더, 최종 URL 기준 상대 경로 해석, lazy `data-src`, iframe 1단계 추적 → 크롤 커버리지 68%→90%, core 63%→85% — `feat/crawler-coverage`, `docs/CRAWLER_COVERAGE.md`
+- [x] **링크 파서 프롬프트 보강** (#50): 기준 날짜(KST) 제공 + 요일 검증 연도 추론으로 해소 — #54에 포함, 이름·썸네일은 100% 달성으로 불필요
+
+### 🧠 에이전틱/스마트 기능
+
+- [x] **축의금 액수 추천**: 관계(친구/직장/가족)·과거 기록·통계 기반 금액 추천 (LLM + 로컬 축의금 데이터) — `feat/pay-recommendation`
+- [x] **기기 캘린더 연동**: 저장한 일정을 기기 기본 캘린더에 등록 (`add_2_calendar` 핸드오프) — `feat/os-integrations`
+- [x] **축의금 통계 대시보드**: 연도별·관계별 지출 합계, 받은/낸 내역 차트 시각화 — `feat/pay-dashboard`
+
+### 📱 제품 기본기
+
+- [x] 사용자가 직접 일정을 추가하는 기능 (링크 분석 없이) — `feat/manual-schedule-fallback`
+- [x] 온보딩 튜토리얼 개선 (인트로 캐러셀 4장 + `tutorial_coach_mark` 투어 버전 관리, 설정에서 다시 보기) — 신규 AI 기능 소개 포함 — `feat/onboarding-v2`
+- [x] 홈스크린 위젯: 다가오는 예식 D-day 표시 (Android/iOS) — 청첩장 사진 배경 포함 — `feat/home-widget`
+- [x] 앱 전반 마이크로 인터랙션/애니메이션 폴리싱 (심사·투표 시 첫인상) — `feat/interaction-polish`
+- [x] 성능 최적화를 위해 `Isolate` 활용 (이미지 전처리, Lottie 등) — `feat/interaction-polish`, `docs/ISOLATES.md`
+
+### 🎬 제출물/발표 자산
+
+- [x] README/스크린샷을 신규 기능 반영하여 업데이트 — 영문·한글 전면 개편 (2026-09-16)
+- [x] v2.0.0 릴리스 (양대 스토어 배포 + RELEASE.md 갱신) — 2026-09-08 배포 완료
+- [x] 랜딩 페이지: `chung-mo.web.app` 라이브 데모 — 대회 제출용 서비스 링크 (#53)
+- [ ] 1분 데모 영상 (링크/이미지 붙여넣기 → 자동 등록 핵심 플로우) — 대회용으로는 종료. 스토어 리스팅 프로모 영상으로 재활용 가치 있음
+- [ ] 프로젝트 소개 자료: 문제 정의 → AI 활용 방식 → 정확도 수치 → 실사용 지표 — 포트폴리오용으로 재활용 가치 있음
+- [ ] 스토어 지표 정리 (다운로드 수, 리텐션 등 실서비스 증거) — 포트폴리오용으로 재활용 가치 있음
 
 ---
 
@@ -69,12 +102,11 @@
 - [x] venue 백필: 업데이트 후 1회, 저장된 다가오는 일정의 예식장명을 배치 AI 호출로 채움 — prefs 플래그·실패 시 재시도, 실기기 5/5 정확(주소 혼합 케이스 포함) (#58)
 - [x] venue 필드 분리: 파싱 스키마에서 지도 검색용 장소명을 location과 별도로 추출, DB v5 마이그레이션·직접 수정 시 무효화 규칙 포함 — 지도 앱이 "OOO 3층 OO홀" 대신 예식장명으로 검색, 평가셋 venue 38/38 100% (#56)
 - [x] 링크 파서 평가 100% 달성: 연도 추론 프롬프트, CSR 셸 same-origin JSON 크롤링(오리진 고정 포함), 이미지 전용 케이스 스코프 분리 — 38/38 core 100%, 랜딩·문서 수치 갱신 (#54)
-- [x] 랜딩 페이지 전면 개편: `chung-mo.web.app`에 폰 프레임 라이브 데모(붙여넣기→분석→저장→축의금 추천, 스텝 점프), 실물 아티팩트 입력 카드, 85% 정확도 섹션, 지그재그 기능 소개·스크린샷 캐로셀 — 대회 제출용 서비스 링크 (#53)
+- [x] 랜딩 페이지 전면 개편: `chung-mo.web.app`에 폰 프레임 라이브 데모(붙여넣기→분석→저장→축의금 추천, 스텝 점프), 실물 아티팩트 입력 카드, 정확도 섹션, 지그재그 기능 소개·스크린샷 캐로셀 (#53)
 - [x] **(v2.0.0)** 메이저 릴리스 양대 스토어 배포: 이미지·텍스트 파싱, 공유 시트 연동, AI 축의금 추천, 통계 대시보드, 홈 위젯, 온보딩 개편, 인터랙션 폴리싱·isolate 성능 개선을 묶어 배포 (2026-09-08)
 - [x] 링크 크롤러 재작성: 문서 순서 DOM 워크·OG meta·순수 Dart CP949 디코더·최종 URL 기준 경로 해석·iframe 추적, 본문 타임아웃/4MB 상한 — 크롤 커버리지 68%→90%, core 63%→85%, `docs/CRAWLER_COVERAGE.md` 포함 (#52)
-- [x] 파싱 평가셋: 16가지 벤더 마크업 스타일의 가상 청첩장 40개를 `chung-mo.web.app/eval/`에 호스팅, 앱과 동일한 크롤러·프롬프트로 채점하는 러너와 모델 독립적인 크롤 커버리지 지표 — `docs/PARSING_EVAL.md` 포함 (#47)
+- [x] 파싱 평가셋: 16가지 벤더 마크업 스타일의 가상 청첩장을 `chung-mo.web.app/eval/`에 호스팅, 앱과 동일한 크롤러·프롬프트로 채점하는 러너와 모델 독립적인 크롤 커버리지 지표 — `docs/PARSING_EVAL.md` 포함 (#47)
 - [x] 개인정보처리방침·이용약관을 Notion에서 Firebase Hosting(`chung-mo.web.app/privacy`, `/terms`)으로 이전 — `docs/FIREBASE_HOSTING.md` 포함 (#45)
-
 - [x] 성능: 이미지 해시·다운스케일을 isolate로 이동(업로드 487KB→65KB), Lottie 사전 파싱 — `docs/ISOLATES.md` 기술 문서 포함 (#42)
 - [x] 마이크로 인터랙션 폴리싱: 모션 토큰, 홈 상태 크로스페이드, 눌림 피드백, 통계 카운트업, 햅틱, 키보드 UX, 캘린더 리마운트 제거 — `docs/MICRO_INTERACTIONS.md` 포함 (#43)
 - [x] 홈스크린 위젯: 다가오는 예식 D-day를 자정 롤오버와 함께 표시(Android 알람/iOS 타임라인), 청첩장 사진 배경 + 스크림, 빈 상태·탭 실행 (#39)
