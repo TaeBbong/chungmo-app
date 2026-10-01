@@ -26,7 +26,7 @@
 
 - **AI invitation parsing — link, photo, or text**
   - Paste a mobile invitation URL, share a KakaoTalk capture or paper-invitation photo, or paste the announcement SMS. Gemini (Firebase AI Logic) extracts the couple, date, venue and both families' gift-money accounts through a structured-output schema shared by all three paths (`lib/data/sources/remote/invitation_prompt.dart`).
-  - Links are crawled by a purpose-built extractor (`lib/core/utils/crawler.dart`): document-order text walk, OpenGraph metadata, EUC-KR decoding, same-host iframe follow and a CSR-shell JSON fallback.
+  - Links are crawled by a purpose-built extractor (`lib/core/utils/crawler.dart`): document-order text walk, OpenGraph metadata, EUC-KR decoding, same-host iframe follow and a CSR-shell JSON fallback. When a page turns out to be published as pictures rather than text, its own images go to the multimodal parser instead.
   - When an invitation states no date, the partial extraction pre-fills a manual form instead of failing.
 - **OS share-sheet integration**
   - "Share → 청모" from any app starts the analysis immediately (Android Share Intent / iOS Share Extension).
@@ -39,13 +39,14 @@
 
 ### Measured accuracy
 
-The parser is scored against a self-built benchmark: 38 fixture invitations reproducing 15 real vendor markup styles, hosted at [chung-mo.web.app/eval](https://chung-mo.web.app), with an automatic scorer.
+The parser is scored against a self-built benchmark: 40 fixture invitations reproducing 16 real vendor markup styles, hosted at [chung-mo.web.app/eval](https://chung-mo.web.app), with an automatic scorer.
 
 | | value |
 |---|---|
-| Core accuracy (schedule saves with no manual fix) | **100%** (38/38) |
+| Core accuracy (schedule saves with no manual fix) | **100%** (40/40) |
+| By tier — text pages · image-only pages | 38/38 · 2/2 |
 | Per field — names · datetime · venue · accounts | 100% each |
-| Journey | 63% → 85% (crawler rewrite) → 100% (year inference, CSR JSON follow) |
+| Journey | 63% → 85% (crawler rewrite) → 100% (year inference, CSR JSON follow, image fallback) |
 
 How it is built and scored: [docs/PARSING_EVAL.md](./docs/PARSING_EVAL.md), [docs/CRAWLER_COVERAGE.md](./docs/CRAWLER_COVERAGE.md).
 

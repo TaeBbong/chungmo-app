@@ -124,6 +124,15 @@ python3 eval/generate_fixtures.py          # rewrites hosting/public/eval and ev
 firebase deploy --only hosting --project chung-mo
 ```
 
+The generator is deterministic — one seed, one case list — so a rerun
+reproduces every fixture byte for byte. Case order is therefore load
+bearing: inserting a case shifts the date and names of every case after
+it, so new cases go at the end of their section and removed cases are
+commented out rather than deleted.
+
+Regenerating needs macOS: the `image-only` fixtures are rasterised with
+Quick Look (`qlmanage`) and trimmed with ImageMagick.
+
 The catalogue at `https://chung-mo.web.app/eval/` lists every case with its
 tags and expected values.
 
@@ -332,7 +341,7 @@ crawl-coverage ceiling also at 100%:
    invitation arrives through the image-parsing path, so keeping them in
    a *link*-parser benchmark measured the wrong pipeline.
 
-| | layer 0 | layer 1 | now |
+| | layer 0 | layer 1 | after #54 |
 |---|---|---|---|
 | crawl coverage | 68% | 90% | **100%** |
 | core | 63% | 85% | **100%** (38 cases) |
@@ -340,6 +349,50 @@ crawl-coverage ceiling also at 100%:
 The number to watch for regressions is still the coverage ceiling: a new
 vendor pattern that hides a field from the crawler shows up there first,
 model-independently.
+
+### 6.4 Putting the image-only cases back (issue #51)
+
+Scoping them out was right for a *crawler* benchmark and wrong for a
+*parser* one: a user who pastes an image-only invitation does not care
+which pipeline answers, only whether the schedule saves. The app now
+switches modality instead of failing, so the cases came back (dataset
+version 3, 40 cases) as their own **tier**, scored apart from the text
+tier.
+
+Two things had to change for the cases to test anything:
+
+- **The fixtures are rasters now.** They used to render each section as
+  an SVG, which is markup — the crawler could read the invitation
+  straight out of it, and the model rejects SVG as an image part. They
+  are rendered to PNG at generation time (`rasterize()`), so the content
+  genuinely exists nowhere but in pixels.
+- **The runner mirrors the app's decision**, sending the same images as
+  inline data parts, so the benchmark measures shipped behaviour rather
+  than an idealised version of it.
+
+**The trigger is Hangul count, not character count.** `[IMAGE]` and
+`[ANCHOR]` lines are long URLs, so an image-only page can crawl to 624
+characters while carrying almost no Korean. Measured across the set:
+
+| | hangul | images |
+|---|---|---|
+| `img-01`, `img-02` | 33 | 7 |
+| `intl-01` (lowest text-bearing case) | 53 | 1 |
+| median case | ~260 | 4 |
+
+The threshold sits at 45, between the two populations. It is deliberately
+not a decision to *replace* the text: the crawl text stays in the prompt
+either way, so a page misjudged as text-poor costs an upload rather than
+an answer.
+
+| | after #54 | now |
+|---|---|---|
+| core, text tier | 100% (38) | **100%** (38) |
+| core, image tier | — (out of scope) | **100%** (2) |
+| core, overall | 100% (38) | **100%** (40) |
+
+Crawl coverage for the image tier stays 0% by construction, and that is
+the point: every field those two cases score comes from the pictures.
 
 ---
 
