@@ -177,4 +177,5 @@ A full list of dependencies is available in the [`pubspec.yaml`](./pubspec.yaml)
 
 ## License
 
-Copyright © 2026 TaeBbong. The source is public for reading and reference.
+Copyright © 2026 TaeBbong. The source is public for reading and reference —
+this is not an open-source license. See [`LICENSE`](./LICENSE) for the terms.

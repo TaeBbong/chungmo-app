@@ -177,4 +177,5 @@ class Env {
 
 ## 라이선스
 
-Copyright © 2026 TaeBbong. 소스는 열람·참고용으로 공개되어 있습니다.
+Copyright © 2026 TaeBbong. 소스는 열람·참고용으로 공개되어 있으며, 오픈소스
+라이선스가 아닙니다. 조건은 [`LICENSE`](./LICENSE)를 참고하세요.
