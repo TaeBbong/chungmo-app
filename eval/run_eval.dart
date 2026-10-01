@@ -179,24 +179,42 @@ Future<Map<String, dynamic>> _runCase(
     'tags': c['tags'],
   };
   final sw = Stopwatch()..start();
-  String? parsed;
+  CrawledInvitation? crawled;
   try {
-    parsed = await extractContentWithImages(url);
+    crawled = await crawlInvitation(url);
   } catch (e) {
     result['error'] = 'crawl: $e';
   }
+  final String? parsed = crawled?.text;
   result['crawlMs'] = sw.elapsedMilliseconds;
   result['crawlChars'] = parsed?.length ?? 0;
+  result['crawlHangul'] = parsed == null ? 0 : hangulLength(parsed);
   File('${crawlDir.path}/${c['id']}.txt').writeAsStringSync(parsed ?? '');
   result['coverage'] =
       crawlCoverage(c['expected'] as Map<String, dynamic>, parsed);
   if (crawlOnly || result['error'] != null) return result;
 
+  // Same decision the app makes: a text-poor page is parsed from its own
+  // images as well. Recorded per case so a run shows which cases took it.
+  List<FetchedImage> images = const [];
+  if (crawled != null && needsImageFallback(crawled)) {
+    try {
+      images = await fetchInvitationImages(crawled.images);
+    } catch (e) {
+      result['imageFallbackError'] = '$e';
+    }
+  }
+  result['imageFallback'] = images.length;
+
   sw.reset();
   Map<String, dynamic>? predicted;
   try {
-    final raw = await _generate(linkExtractionPrompt(parsed),
-        model: model, apiKey: apiKey!, result: result);
+    final raw = await _generate(
+        linkExtractionPrompt(parsed, withImages: images.isNotEmpty),
+        model: model,
+        apiKey: apiKey!,
+        result: result,
+        images: images);
     predicted = jsonDecode(raw) as Map<String, dynamic>;
   } catch (e) {
     result['error'] = 'model: $e';
@@ -258,7 +276,8 @@ Map<String, dynamic> _rescoreCase(
 Future<String> _generate(String prompt,
     {required String model,
     required String apiKey,
-    required Map<String, dynamic> result}) async {
+    required Map<String, dynamic> result,
+    List<FetchedImage> images = const []}) async {
   final uri = Uri.parse(
       'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent');
   final body = jsonEncode({
@@ -266,7 +285,17 @@ Future<String> _generate(String prompt,
       {
         'role': 'user',
         'parts': [
-          {'text': prompt}
+          {'text': prompt},
+          // The app downscales these through an isolate before upload; the
+          // runner sends them as fetched, since the fixtures are already
+          // small and `compute` needs Flutter.
+          for (final image in images)
+            {
+              'inline_data': {
+                'mime_type': image.mimeType,
+                'data': base64Encode(image.bytes),
+              }
+            },
         ]
       }
     ],
