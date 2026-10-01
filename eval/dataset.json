@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "baseUrl": "https://chung-mo.web.app",
   "generatedBy": "eval/generate_fixtures.py",
   "cases": [
@@ -13,6 +13,7 @@
         "classic-jquery",
         "inline-js-korean"
       ],
+      "tier": "text",
       "difficulty": "easy",
       "notes": "jQuery/slick PHP-era vendor page: div soup, <br>-heavy text, inline onclick handlers, Korean strings inside inline scripts, a month calendar grid full of distractor numbers.",
       "expected": {
@@ -82,6 +83,7 @@
         "classic-jquery",
         "gallery-captions"
       ],
+      "tier": "text",
       "difficulty": "easy",
       "notes": "jQuery/slick PHP-era vendor page: div soup, <br>-heavy text, inline onclick handlers, Korean strings inside inline scripts, a month calendar grid full of distractor numbers.",
       "expected": {
@@ -126,6 +128,7 @@
         "classic-jquery",
         "short-link"
       ],
+      "tier": "text",
       "difficulty": "easy",
       "notes": "jQuery/slick PHP-era vendor page: div soup, <br>-heavy text, inline onclick handlers, Korean strings inside inline scripts, a month calendar grid full of distractor numbers.",
       "expected": {
@@ -183,6 +186,7 @@
         "countdown",
         "no-year"
       ],
+      "tier": "text",
       "difficulty": "medium",
       "notes": "jQuery/slick PHP-era vendor page: div soup, <br>-heavy text, inline onclick handlers, Korean strings inside inline scripts, a month calendar grid full of distractor numbers.",
       "expected": {
@@ -227,6 +231,7 @@
         "classic-jquery",
         "no-date"
       ],
+      "tier": "text",
       "difficulty": "easy",
       "notes": "jQuery/slick PHP-era vendor page: div soup, <br>-heavy text, inline onclick handlers, Korean strings inside inline scripts, a month calendar grid full of distractor numbers.",
       "expected": {
@@ -272,6 +277,7 @@
         "euckr-asp",
         "font-tags"
       ],
+      "tier": "text",
       "difficulty": "hard",
       "notes": "ASP-era page encoded in EUC-KR and served with charset=euc-kr; <font> tags, align attributes, &nbsp; padding.",
       "expected": {
@@ -341,6 +347,7 @@
         "euckr-asp",
         "nbsp"
       ],
+      "tier": "text",
       "difficulty": "hard",
       "notes": "ASP-era page encoded in EUC-KR and served with charset=euc-kr; <font> tags, align attributes, &nbsp; padding.",
       "expected": {
@@ -378,6 +385,7 @@
         "table-legacy",
         "table-only"
       ],
+      "tier": "text",
       "difficulty": "hard",
       "notes": "XHTML transitional page laid out entirely with <table>/<td>; no <div> or <p> wrappers around the text.",
       "expected": {
@@ -422,6 +430,7 @@
         "table-legacy",
         "table-only"
       ],
+      "tier": "text",
       "difficulty": "hard",
       "notes": "XHTML transitional page laid out entirely with <table>/<td>; no <div> or <p> wrappers around the text.",
       "expected": {
@@ -453,6 +462,7 @@
         "next-data",
         "nextjs-ssr"
       ],
+      "tier": "text",
       "difficulty": "easy",
       "notes": "Next.js SSR: hashed CSS-module class names and a __NEXT_DATA__ JSON blob duplicating the content (with an ISO datetime).",
       "expected": {
@@ -523,6 +533,7 @@
         "next-data",
         "nextjs-ssr"
       ],
+      "tier": "text",
       "difficulty": "medium",
       "notes": "Next.js SSR: hashed CSS-module class names and a __NEXT_DATA__ JSON blob duplicating the content (with an ISO datetime).",
       "expected": {
@@ -568,6 +579,7 @@
         "next-data",
         "nextjs-ssr"
       ],
+      "tier": "text",
       "difficulty": "easy",
       "notes": "Next.js SSR: hashed CSS-module class names and a __NEXT_DATA__ JSON blob duplicating the content (with an ISO datetime).",
       "expected": {
@@ -606,6 +618,7 @@
         "csr-shell",
         "og-only"
       ],
+      "tier": "text",
       "difficulty": "hard",
       "notes": "Vite/CRA-style SPA: the HTML is an empty #root plus OpenGraph meta; content is fetched from data.json at runtime.",
       "expected": {
@@ -651,6 +664,7 @@
         "csr-shell",
         "og-only"
       ],
+      "tier": "text",
       "difficulty": "hard",
       "notes": "Vite/CRA-style SPA: the HTML is an empty #root plus OpenGraph meta; content is fetched from data.json at runtime.",
       "expected": {
@@ -720,6 +734,7 @@
         "csr-shell",
         "og-only"
       ],
+      "tier": "text",
       "difficulty": "hard",
       "notes": "Vite/CRA-style SPA: the HTML is an empty #root plus OpenGraph meta; content is fetched from data.json at runtime.",
       "expected": {
@@ -751,6 +766,7 @@
         "nuxt-ssr",
         "scoped-attrs"
       ],
+      "tier": "text",
       "difficulty": "easy",
       "notes": "Nuxt 2 SSR: data-v-* scoped attributes on every element and a window.__NUXT__ state script.",
       "expected": {
@@ -808,6 +824,7 @@
         "nuxt-ssr",
         "scoped-attrs"
       ],
+      "tier": "text",
       "difficulty": "easy",
       "notes": "Nuxt 2 SSR: data-v-* scoped attributes on every element and a window.__NUXT__ state script.",
       "expected": {
@@ -854,6 +871,7 @@
         "site-builder",
         "span-split"
       ],
+      "tier": "text",
       "difficulty": "medium",
       "notes": "Site-builder export: deep .inline-blocked/.fr-view nesting, inline styles, every word in its own <span>, lazy images with a data: pixel in src and the real URL in data-src.",
       "expected": {
@@ -923,6 +941,7 @@
         "site-builder",
         "span-split"
       ],
+      "tier": "text",
       "difficulty": "medium",
       "notes": "Site-builder export: deep .inline-blocked/.fr-view nesting, inline styles, every word in its own <span>, lazy images with a data: pixel in src and the real URL in data-src.",
       "expected": {
@@ -968,6 +987,7 @@
         "site-builder",
         "span-split"
       ],
+      "tier": "text",
       "difficulty": "medium",
       "notes": "Site-builder export: deep .inline-blocked/.fr-view nesting, inline styles, every word in its own <span>, lazy images with a data: pixel in src and the real URL in data-src.",
       "expected": {
@@ -1001,6 +1021,7 @@
         "picture-srcset",
         "tailwind-semantic"
       ],
+      "tier": "text",
       "difficulty": "easy",
       "notes": "Modern semantic HTML with Tailwind utilities, JSON-LD Event, <time datetime>, <details> accordions for accounts, KakaoPay links.",
       "expected": {
@@ -1070,6 +1091,7 @@
         "json-ld",
         "tailwind-semantic"
       ],
+      "tier": "text",
       "difficulty": "easy",
       "notes": "Modern semantic HTML with Tailwind utilities, JSON-LD Event, <time datetime>, <details> accordions for accounts, KakaoPay links.",
       "expected": {
@@ -1115,6 +1137,7 @@
         "no-date",
         "tailwind-semantic"
       ],
+      "tier": "text",
       "difficulty": "easy",
       "notes": "Modern semantic HTML with Tailwind utilities, JSON-LD Event, <time datetime>, <details> accordions for accounts, KakaoPay links.",
       "expected": {
@@ -1172,6 +1195,7 @@
         "split-numerals",
         "styled-react"
       ],
+      "tier": "text",
       "difficulty": "medium",
       "notes": "React SSR with styled-components hashes; the date is rendered as three bare numerals whose separators are CSS ::before content.",
       "expected": {
@@ -1217,6 +1241,7 @@
         "split-numerals",
         "styled-react"
       ],
+      "tier": "text",
       "difficulty": "medium",
       "notes": "React SSR with styled-components hashes; the date is rendered as three bare numerals whose separators are CSS ::before content.",
       "expected": {
@@ -1286,6 +1311,7 @@
         "time-element",
         "wordpress-theme"
       ],
+      "tier": "text",
       "difficulty": "medium",
       "notes": "WordPress single-post markup with a guestbook whose comments mention other dates and names.",
       "expected": {
@@ -1331,6 +1357,7 @@
         "time-element",
         "wordpress-theme"
       ],
+      "tier": "text",
       "difficulty": "medium",
       "notes": "WordPress single-post markup with a guestbook whose comments mention other dates and names.",
       "expected": {
@@ -1389,6 +1416,7 @@
         "modal-accounts",
         "reception-distractor"
       ],
+      "tier": "text",
       "difficulty": "medium",
       "notes": "Bootstrap 4 + jQuery: FontAwesome icons, Google Maps iframe, accounts inside a hidden modal, account numbers without hyphens, a reception on a different date/venue as a distractor.",
       "expected": {
@@ -1458,6 +1486,7 @@
         "map-iframe",
         "modal-accounts"
       ],
+      "tier": "text",
       "difficulty": "easy",
       "notes": "Bootstrap 4 + jQuery: FontAwesome icons, Google Maps iframe, accounts inside a hidden modal, account numbers without hyphens, a reception on a different date/venue as a distractor.",
       "expected": {
@@ -1504,6 +1533,7 @@
         "no-year",
         "rewrite-url"
       ],
+      "tier": "text",
       "difficulty": "medium",
       "notes": "Bootstrap 4 + jQuery: FontAwesome icons, Google Maps iframe, accounts inside a hidden modal, account numbers without hyphens, a reception on a different date/venue as a distractor.",
       "expected": {
@@ -1541,6 +1571,7 @@
         "iframe",
         "iframe-embed"
       ],
+      "tier": "text",
       "difficulty": "hard",
       "notes": "Outer shell page whose only content is an <iframe> pointing at content.html.",
       "expected": {
@@ -1585,6 +1616,7 @@
         "iframe",
         "iframe-embed"
       ],
+      "tier": "text",
       "difficulty": "hard",
       "notes": "Outer shell page whose only content is an <iframe> pointing at content.html.",
       "expected": {
@@ -1607,6 +1639,80 @@
       }
     },
     {
+      "id": "img-01",
+      "url": "https://chung-mo.web.app/eval/img-01/",
+      "template": "image-only",
+      "vendor": "포토청첩장",
+      "tags": [
+        "image-only"
+      ],
+      "tier": "image",
+      "difficulty": "hard",
+      "notes": "Every section (date, venue, accounts) is an image; the HTML carries only <img> tags and OpenGraph meta.",
+      "expected": {
+        "groom": "유서준",
+        "bride": "허서윤",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-04-25T13:00:00+09:00",
+        "dateText": "2027년 4월 25일 일요일 오후 1시",
+        "location": "빌라드지디 수서 1층 가든홀",
+        "locationKeywords": [
+          "빌라드지디 수서"
+        ],
+        "address": "서울특별시 강남구 광평로 281",
+        "groomAccounts": [
+          {
+            "bank": "토스뱅크",
+            "number": "1000-4822-4645",
+            "holder": "유서준",
+            "relation": "신랑"
+          }
+        ],
+        "brideAccounts": [
+          {
+            "bank": "케이뱅크",
+            "number": "100-623-762698",
+            "holder": "허서윤",
+            "relation": "신부"
+          }
+        ],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/img-01/main.png"
+        ]
+      }
+    },
+    {
+      "id": "img-02",
+      "url": "https://chung-mo.web.app/eval/img-02/",
+      "template": "image-only",
+      "vendor": "포토청첩장",
+      "tags": [
+        "image-only"
+      ],
+      "tier": "image",
+      "difficulty": "hard",
+      "notes": "Every section (date, venue, accounts) is an image; the HTML carries only <img> tags and OpenGraph meta.",
+      "expected": {
+        "groom": "정지환",
+        "bride": "허예린",
+        "groomAliases": [],
+        "brideAliases": [],
+        "datetime": "2027-05-01T13:30:00+09:00",
+        "dateText": "2027.05.01 (토) 13:30",
+        "location": "엘리시안 컨벤션 6층 사파이어홀",
+        "locationKeywords": [
+          "엘리시안 컨벤션"
+        ],
+        "address": "경기도 수원시 영통구 광교중앙로 140",
+        "groomAccounts": [],
+        "brideAccounts": [],
+        "thumbnails": [
+          "https://chung-mo.web.app/eval/img-02/main.png"
+        ]
+      }
+    },
+    {
       "id": "kakao-01",
       "url": "https://chung-mo.web.app/eval/kakao-01/",
       "template": "kakao-card",
@@ -1616,6 +1722,7 @@
         "hidden-accounts",
         "kakao-card"
       ],
+      "tier": "text",
       "difficulty": "medium",
       "notes": "Messenger-style share card: key/value rows, accounts held in data-* attributes and display:none blocks toggled by a button.",
       "expected": {
@@ -1685,6 +1792,7 @@
         "kakao-card",
         "short-link"
       ],
+      "tier": "text",
       "difficulty": "medium",
       "notes": "Messenger-style share card: key/value rows, accounts held in data-* attributes and display:none blocks toggled by a button.",
       "expected": {
@@ -1729,6 +1837,7 @@
         "hidden-accounts",
         "kakao-card"
       ],
+      "tier": "text",
       "difficulty": "medium",
       "notes": "Messenger-style share card: key/value rows, accounts held in data-* attributes and display:none blocks toggled by a button.",
       "expected": {
@@ -1759,6 +1868,7 @@
         "english",
         "english-intl"
       ],
+      "tier": "text",
       "difficulty": "easy",
       "notes": "English-language invitation (romanised names, 'Saturday, October 17, 2026 at 1:30 PM'), optionally with a Korean summary block.",
       "expected": {
@@ -1790,6 +1900,7 @@
         "english-intl",
         "mixed-language"
       ],
+      "tier": "text",
       "difficulty": "easy",
       "notes": "English-language invitation (romanised names, 'Saturday, October 17, 2026 at 1:30 PM'), optionally with a Korean summary block.",
       "expected": {
@@ -1839,6 +1950,7 @@
         "notion-export",
         "self-made"
       ],
+      "tier": "text",
       "difficulty": "easy",
       "notes": "Self-made Notion HTML export: emoji headings, callout blocks, <figure> images.",
       "expected": {
