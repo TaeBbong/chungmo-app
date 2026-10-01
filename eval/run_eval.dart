@@ -175,6 +175,7 @@ Future<Map<String, dynamic>> _runCase(
     'id': c['id'],
     'url': url,
     'template': c['template'],
+    'tier': c['tier'],
     'difficulty': c['difficulty'],
     'tags': c['tags'],
   };
@@ -256,6 +257,7 @@ Map<String, dynamic> _rescoreCase(
     'id': c['id'],
     'url': url,
     'template': c['template'],
+    'tier': c['tier'],
     'difficulty': c['difficulty'],
     'tags': c['tags'],
     'crawlMs': saved?['crawlMs'] ?? 0,
@@ -397,6 +399,9 @@ Map<String, dynamic> _summarize(List<Map<String, dynamic>> results) {
   return {
     'overall': rates(scored),
     'errors': results.where((r) => r['error'] != null).length,
+    // The two modalities are reported apart: a text-tier regression and an
+    // image-tier one have nothing to do with each other.
+    'byTier': groupBy((r) => (r['tier'] as String?) ?? 'text'),
     'byDifficulty': groupBy((r) => r['difficulty'] as String),
     'byTemplate': groupBy((r) => r['template'] as String),
     'byTag': {for (final k in byTag.keys.toList()..sort()) k: rates(byTag[k]!)},
@@ -474,6 +479,8 @@ List<String> _summaryLines(Map<String, dynamic> s) {
   final o = s['overall'] as Map<String, dynamic>;
   return [
     'Overall (${o['count']} cases): core ${_pct(o['core'])} · groom ${_pct(o['groom'])} · bride ${_pct(o['bride'])} · datetime ${_pct(o['datetime'])} · location ${_pct(o['location'])} · venue ${_pct(o['venue'])} · accounts ${_pct(o['accounts'])} · thumbnail ${_pct(o['thumbnail'])}',
+    for (final e in (s['byTier'] as Map<String, dynamic>).entries)
+      '  tier ${e.key}: core ${_pct((e.value as Map)['core'])} (${(e.value as Map)['count']})',
     for (final e in (s['byDifficulty'] as Map<String, dynamic>).entries)
       '  ${e.key}: core ${_pct((e.value as Map)['core'])} (${(e.value as Map)['count']})',
   ];
@@ -536,6 +543,7 @@ String _markdown(Map<String, dynamic> report) {
   }
   b.writeln();
 
+  table('By tier', s['byTier'] as Map<String, dynamic>);
   table('By difficulty', s['byDifficulty'] as Map<String, dynamic>);
   table('By template', s['byTemplate'] as Map<String, dynamic>);
   table('By tag', s['byTag'] as Map<String, dynamic>);
