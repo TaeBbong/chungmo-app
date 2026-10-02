@@ -1,8 +1,8 @@
 {
-  "label": "image fallback (#51)",
+  "label": "image fallback (#51), review fixes",
   "rescoredFrom": null,
-  "startedAt": "2026-10-01T22:07:50.055609",
-  "durationMs": 88771,
+  "startedAt": "2026-10-02T12:08:10.476883",
+  "durationMs": 84545,
   "model": "gemini-2.5-flash",
   "baseUrl": "https://chung-mo.web.app",
   "crawlOnly": false,
@@ -1188,8 +1188,8 @@
         "accountRecall": 1.0
       }
     },
-    "meanCrawlMs": 233,
-    "meanModelMs": 6241,
+    "meanCrawlMs": 290,
+    "meanModelMs": 5884,
     "promptTokens": 43063
   },
   "coverage": {
@@ -1362,7 +1362,7 @@
         "modal-accounts",
         "reception-distractor"
       ],
-      "crawlMs": 216,
+      "crawlMs": 165,
       "crawlChars": 1273,
       "crawlHangul": 332,
       "coverage": {
@@ -1374,8 +1374,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 1178,
-      "outputTokens": 460,
-      "modelMs": 15206,
+      "outputTokens": 471,
+      "modelMs": 9756,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/bs-01/main.svg",
         "groom": "심경수",
@@ -1386,19 +1386,19 @@
         "groomAccounts": [
           {
             "bank": "신한은행",
-            "number": "110-1667246-20",
+            "number": "110-166724-620",
             "holder": "심경수",
             "relation": "신랑"
           },
           {
             "bank": "신한은행",
-            "number": "110-1286979-06",
+            "number": "110-128697-906",
             "holder": "심광수",
             "relation": "아버지"
           },
           {
             "bank": "케이뱅크",
-            "number": "100-1513956-78",
+            "number": "100-151-395678",
             "holder": "손명희",
             "relation": "어머니"
           }
@@ -1412,13 +1412,13 @@
           },
           {
             "bank": "우체국",
-            "number": "992682-9542063",
+            "number": "992682-95-42063",
             "holder": "최재호",
             "relation": "아버지"
           },
           {
             "bank": "케이뱅크",
-            "number": "100-6122516-23",
+            "number": "100-612-251623",
             "holder": "홍현숙",
             "relation": "어머니"
           }
@@ -1451,7 +1451,7 @@
         "map-iframe",
         "modal-accounts"
       ],
-      "crawlMs": 162,
+      "crawlMs": 200,
       "crawlChars": 1110,
       "crawlHangul": 262,
       "coverage": {
@@ -1463,8 +1463,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 1038,
-      "outputTokens": 250,
-      "modelMs": 5055,
+      "outputTokens": 168,
+      "modelMs": 6767,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/bs-02/main.svg",
         "groom": "허주원",
@@ -1517,7 +1517,7 @@
         "no-year",
         "rewrite-url"
       ],
-      "crawlMs": 160,
+      "crawlMs": 329,
       "crawlChars": 1048,
       "crawlHangul": 231,
       "coverage": {
@@ -1529,8 +1529,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 978,
-      "outputTokens": 129,
-      "modelMs": 9325,
+      "outputTokens": 126,
+      "modelMs": 6488,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/bs-03/main.svg",
         "groom": "남예준",
@@ -1541,7 +1541,7 @@
         "groomAccounts": [
           {
             "bank": "기업은행",
-            "number": "183-33-868364-930",
+            "number": "18333868364930",
             "holder": "남예준",
             "relation": "신랑"
           }
@@ -1576,7 +1576,7 @@
         "site-builder",
         "span-split"
       ],
-      "crawlMs": 200,
+      "crawlMs": 175,
       "crawlChars": 1048,
       "crawlHangul": 282,
       "coverage": {
@@ -1588,8 +1588,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 1012,
-      "outputTokens": 429,
-      "modelMs": 7242,
+      "outputTokens": 305,
+      "modelMs": 7402,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/builder-01/main.svg",
         "groom": "손현우",
@@ -1665,7 +1665,7 @@
         "site-builder",
         "span-split"
       ],
-      "crawlMs": 170,
+      "crawlMs": 434,
       "crawlChars": 922,
       "crawlHangul": 227,
       "coverage": {
@@ -1677,8 +1677,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 896,
-      "outputTokens": 227,
-      "modelMs": 5891,
+      "outputTokens": 167,
+      "modelMs": 5541,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/builder-02/main.svg",
         "groom": "양성민",
@@ -1730,7 +1730,7 @@
         "site-builder",
         "span-split"
       ],
-      "crawlMs": 176,
+      "crawlMs": 191,
       "crawlChars": 869,
       "crawlHangul": 216,
       "coverage": {
@@ -1742,8 +1742,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 859,
-      "outputTokens": 98,
-      "modelMs": 4362,
+      "outputTokens": 130,
+      "modelMs": 2919,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/builder-03/main.svg",
         "groom": "전태호",
@@ -1781,7 +1781,7 @@
         "euckr-asp",
         "font-tags"
       ],
-      "crawlMs": 165,
+      "crawlMs": 178,
       "crawlChars": 725,
       "crawlHangul": 241,
       "coverage": {
@@ -1794,7 +1794,7 @@
       "imageFallback": 0,
       "promptTokens": 865,
       "outputTokens": 476,
-      "modelMs": 7633,
+      "modelMs": 5863,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/euckr-01/main.jpg.svg",
         "groom": "송태양",
@@ -1870,7 +1870,7 @@
         "euckr-asp",
         "nbsp"
       ],
-      "crawlMs": 360,
+      "crawlMs": 427,
       "crawlChars": 567,
       "crawlHangul": 183,
       "coverage": {
@@ -1882,8 +1882,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 722,
-      "outputTokens": 188,
-      "modelMs": 5615,
+      "outputTokens": 173,
+      "modelMs": 4515,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/euckr-02/main.jpg.svg",
         "groom": "이재현",
@@ -1927,7 +1927,7 @@
         "iframe",
         "iframe-embed"
       ],
-      "crawlMs": 458,
+      "crawlMs": 448,
       "crawlChars": 1531,
       "crawlHangul": 366,
       "coverage": {
@@ -1940,7 +1940,7 @@
       "imageFallback": 0,
       "promptTokens": 1237,
       "outputTokens": 166,
-      "modelMs": 4559,
+      "modelMs": 4831,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/frame-01/main.svg",
         "groom": "서재원",
@@ -1991,7 +1991,7 @@
         "iframe",
         "iframe-embed"
       ],
-      "crawlMs": 540,
+      "crawlMs": 505,
       "crawlChars": 1452,
       "crawlHangul": 323,
       "coverage": {
@@ -2003,8 +2003,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 1168,
-      "outputTokens": 129,
-      "modelMs": 3410,
+      "outputTokens": 121,
+      "modelMs": 5209,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/frame-02/main.svg",
         "groom": "허민준",
@@ -2042,7 +2042,7 @@
         "classic-jquery",
         "inline-js-korean"
       ],
-      "crawlMs": 174,
+      "crawlMs": 204,
       "crawlChars": 1808,
       "crawlHangul": 402,
       "coverage": {
@@ -2055,7 +2055,7 @@
       "imageFallback": 0,
       "promptTokens": 1404,
       "outputTokens": 478,
-      "modelMs": 8331,
+      "modelMs": 9945,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/hanul-01/main.svg",
         "groom": "전형준",
@@ -2131,7 +2131,7 @@
         "classic-jquery",
         "gallery-captions"
       ],
-      "crawlMs": 185,
+      "crawlMs": 193,
       "crawlChars": 1321,
       "crawlHangul": 335,
       "coverage": {
@@ -2143,8 +2143,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 1210,
-      "outputTokens": 253,
-      "modelMs": 5722,
+      "outputTokens": 171,
+      "modelMs": 4288,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/hanul-02/main.svg",
         "groom": "남건우",
@@ -2195,7 +2195,7 @@
         "classic-jquery",
         "short-link"
       ],
-      "crawlMs": 456,
+      "crawlMs": 280,
       "crawlChars": 1270,
       "crawlHangul": 355,
       "coverage": {
@@ -2207,8 +2207,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 1150,
-      "outputTokens": 330,
-      "modelMs": 7814,
+      "outputTokens": 283,
+      "modelMs": 6010,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/hanul-03/main.svg",
         "groom": "송도윤",
@@ -2272,7 +2272,7 @@
         "countdown",
         "no-year"
       ],
-      "crawlMs": 161,
+      "crawlMs": 361,
       "crawlChars": 1234,
       "crawlHangul": 355,
       "coverage": {
@@ -2285,7 +2285,7 @@
       "imageFallback": 0,
       "promptTokens": 1110,
       "outputTokens": 232,
-      "modelMs": 4261,
+      "modelMs": 6285,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/hanul-04/main.svg",
         "groom": "심영훈",
@@ -2336,7 +2336,7 @@
         "classic-jquery",
         "no-date"
       ],
-      "crawlMs": 199,
+      "crawlMs": 334,
       "crawlChars": 1173,
       "crawlHangul": 334,
       "coverage": {
@@ -2349,7 +2349,7 @@
       "imageFallback": 0,
       "promptTokens": 1055,
       "outputTokens": 142,
-      "modelMs": 4831,
+      "modelMs": 5204,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/hanul-05/main.svg",
         "groom": "서지훈",
@@ -2399,7 +2399,7 @@
       "tags": [
         "image-only"
       ],
-      "crawlMs": 124,
+      "crawlMs": 336,
       "crawlChars": 624,
       "crawlHangul": 33,
       "coverage": {
@@ -2411,8 +2411,8 @@
       },
       "imageFallback": 4,
       "promptTokens": 1753,
-      "outputTokens": 179,
-      "modelMs": 5960,
+      "outputTokens": 261,
+      "modelMs": 5987,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/img-01/main.png",
         "groom": "유서준",
@@ -2462,7 +2462,7 @@
       "tags": [
         "image-only"
       ],
-      "crawlMs": 135,
+      "crawlMs": 146,
       "crawlChars": 624,
       "crawlHangul": 33,
       "coverage": {
@@ -2474,8 +2474,8 @@
       },
       "imageFallback": 4,
       "promptTokens": 1753,
-      "outputTokens": 115,
-      "modelMs": 5255,
+      "outputTokens": 147,
+      "modelMs": 6063,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/img-02/main.png",
         "groom": "정지환",
@@ -2512,7 +2512,7 @@
         "english",
         "english-intl"
       ],
-      "crawlMs": 163,
+      "crawlMs": 299,
       "crawlChars": 814,
       "crawlHangul": 53,
       "coverage": {
@@ -2524,13 +2524,13 @@
       },
       "imageFallback": 0,
       "promptTokens": 738,
-      "outputTokens": 97,
-      "modelMs": 3912,
+      "outputTokens": 110,
+      "modelMs": 4192,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/intl-01/main.svg",
         "groom": "Siwoo Hong",
         "bride": "Suyeon Son",
-        "location": "헤리움 아트홀, 5층 오페라홀",
+        "location": "헤리움 아트홀, 5층 오페라홀 인천광역시 연수구 센트럴로 194",
         "venue": "헤리움 아트홀",
         "datetime": "2027-06-27T17:30:00+09:00",
         "groomAccounts": [],
@@ -2563,7 +2563,7 @@
         "english-intl",
         "mixed-language"
       ],
-      "crawlMs": 150,
+      "crawlMs": 189,
       "crawlChars": 1004,
       "crawlHangul": 105,
       "coverage": {
@@ -2576,7 +2576,7 @@
       "imageFallback": 0,
       "promptTokens": 857,
       "outputTokens": 253,
-      "modelMs": 5517,
+      "modelMs": 4675,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/intl-02/main.svg",
         "groom": "Sunghoon Baek",
@@ -2628,7 +2628,7 @@
         "hidden-accounts",
         "kakao-card"
       ],
-      "crawlMs": 152,
+      "crawlMs": 206,
       "crawlChars": 850,
       "crawlHangul": 297,
       "coverage": {
@@ -2640,8 +2640,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 966,
-      "outputTokens": 477,
-      "modelMs": 9072,
+      "outputTokens": 431,
+      "modelMs": 6674,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/kakao-01/main.svg",
         "groom": "강유찬",
@@ -2717,7 +2717,7 @@
         "kakao-card",
         "short-link"
       ],
-      "crawlMs": 264,
+      "crawlMs": 502,
       "crawlChars": 644,
       "crawlHangul": 183,
       "coverage": {
@@ -2729,8 +2729,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 813,
-      "outputTokens": 254,
-      "modelMs": 5216,
+      "outputTokens": 172,
+      "modelMs": 3881,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/kakao-02/main.svg",
         "groom": "장서진",
@@ -2781,7 +2781,7 @@
         "hidden-accounts",
         "kakao-card"
       ],
-      "crawlMs": 241,
+      "crawlMs": 163,
       "crawlChars": 562,
       "crawlHangul": 168,
       "coverage": {
@@ -2793,8 +2793,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 735,
-      "outputTokens": 124,
-      "modelMs": 2836,
+      "outputTokens": 100,
+      "modelMs": 4989,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/kakao-03/main.svg",
         "groom": "손지호",
@@ -2832,7 +2832,7 @@
         "next-data",
         "nextjs-ssr"
       ],
-      "crawlMs": 193,
+      "crawlMs": 214,
       "crawlChars": 2244,
       "crawlHangul": 345,
       "coverage": {
@@ -2844,8 +2844,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 1587,
-      "outputTokens": 428,
-      "modelMs": 8934,
+      "outputTokens": 474,
+      "modelMs": 8437,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/nextcard-01/main.svg",
         "groom": "유하준",
@@ -2922,7 +2922,7 @@
         "next-data",
         "nextjs-ssr"
       ],
-      "crawlMs": 158,
+      "crawlMs": 167,
       "crawlChars": 1808,
       "crawlHangul": 294,
       "coverage": {
@@ -2934,8 +2934,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 1354,
-      "outputTokens": 228,
-      "modelMs": 9584,
+      "outputTokens": 168,
+      "modelMs": 6501,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/nextcard-02/main.svg",
         "groom": "정수호",
@@ -2987,7 +2987,7 @@
         "next-data",
         "nextjs-ssr"
       ],
-      "crawlMs": 152,
+      "crawlMs": 192,
       "crawlChars": 1654,
       "crawlHangul": 239,
       "coverage": {
@@ -2999,8 +2999,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 1234,
-      "outputTokens": 174,
-      "modelMs": 4587,
+      "outputTokens": 132,
+      "modelMs": 6813,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/nextcard-03/main.svg",
         "groom": "배승민",
@@ -3045,7 +3045,7 @@
         "nuxt-ssr",
         "scoped-attrs"
       ],
-      "crawlMs": 226,
+      "crawlMs": 187,
       "crawlChars": 1598,
       "crawlHangul": 297,
       "coverage": {
@@ -3058,7 +3058,7 @@
       "imageFallback": 0,
       "promptTokens": 1252,
       "outputTokens": 332,
-      "modelMs": 6766,
+      "modelMs": 7138,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/nuxtcard-01/main.svg",
         "groom": "권승현",
@@ -3122,7 +3122,7 @@
         "nuxt-ssr",
         "scoped-attrs"
       ],
-      "crawlMs": 199,
+      "crawlMs": 318,
       "crawlChars": 1368,
       "crawlHangul": 271,
       "coverage": {
@@ -3134,13 +3134,13 @@
       },
       "imageFallback": 0,
       "promptTokens": 1118,
-      "outputTokens": 184,
-      "modelMs": 5793,
+      "outputTokens": 255,
+      "modelMs": 6796,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/nuxtcard-02/main.svg",
         "groom": "신연우",
         "bride": "남다혜",
-        "location": "서울특별시 송파구 올림픽로 300 그랜드힐 컨벤션 3층 다이아몬드홀",
+        "location": "그랜드힐 컨벤션 3층 다이아몬드홀",
         "venue": "그랜드힐 컨벤션",
         "datetime": "2027-01-16T12:00:00+09:00",
         "groomAccounts": [
@@ -3187,7 +3187,7 @@
         "split-numerals",
         "styled-react"
       ],
-      "crawlMs": 168,
+      "crawlMs": 203,
       "crawlChars": 782,
       "crawlHangul": 153,
       "coverage": {
@@ -3199,8 +3199,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 830,
-      "outputTokens": 170,
-      "modelMs": 6052,
+      "outputTokens": 230,
+      "modelMs": 6539,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/sc-01/main.svg",
         "groom": "정정우",
@@ -3252,7 +3252,7 @@
         "split-numerals",
         "styled-react"
       ],
-      "crawlMs": 172,
+      "crawlMs": 125,
       "crawlChars": 898,
       "crawlHangul": 186,
       "coverage": {
@@ -3264,13 +3264,13 @@
       },
       "imageFallback": 0,
       "promptTokens": 925,
-      "outputTokens": 446,
-      "modelMs": 9565,
+      "outputTokens": 478,
+      "modelMs": 8925,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/sc-02/main.svg",
         "groom": "심상우",
         "bride": "오나연",
-        "location": "부산광역시 해운대구 센텀중앙로 55 노블레스 웨딩 7층 노블홀",
+        "location": "노블레스 웨딩 7층 노블홀",
         "venue": "노블레스 웨딩",
         "datetime": "2027-03-06T18:00:00+09:00",
         "groomAccounts": [
@@ -3341,7 +3341,7 @@
         "notion-export",
         "self-made"
       ],
-      "crawlMs": 170,
+      "crawlMs": 372,
       "crawlChars": 816,
       "crawlHangul": 198,
       "coverage": {
@@ -3353,8 +3353,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 864,
-      "outputTokens": 249,
-      "modelMs": 5982,
+      "outputTokens": 167,
+      "modelMs": 3571,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/self-01/main.svg",
         "groom": "김준혁",
@@ -3406,7 +3406,7 @@
         "csr-shell",
         "og-only"
       ],
-      "crawlMs": 666,
+      "crawlMs": 544,
       "crawlChars": 1252,
       "crawlHangul": 158,
       "coverage": {
@@ -3418,8 +3418,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 1011,
-      "outputTokens": 251,
-      "modelMs": 5556,
+      "outputTokens": 169,
+      "modelMs": 3582,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/spa-01/main.svg",
         "groom": "고진우",
@@ -3471,7 +3471,7 @@
         "csr-shell",
         "og-only"
       ],
-      "crawlMs": 447,
+      "crawlMs": 1003,
       "crawlChars": 1763,
       "crawlHangul": 189,
       "coverage": {
@@ -3483,8 +3483,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 1235,
-      "outputTokens": 431,
-      "modelMs": 6418,
+      "outputTokens": 477,
+      "modelMs": 6657,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/spa-02/main.svg",
         "groom": "권명호",
@@ -3560,7 +3560,7 @@
         "csr-shell",
         "og-only"
       ],
-      "crawlMs": 598,
+      "crawlMs": 518,
       "crawlChars": 971,
       "crawlHangul": 136,
       "coverage": {
@@ -3573,7 +3573,7 @@
       "imageFallback": 0,
       "promptTokens": 875,
       "outputTokens": 94,
-      "modelMs": 5100,
+      "modelMs": 4100,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/spa-03/main.svg",
         "groom": "배우진",
@@ -3610,7 +3610,7 @@
         "table-legacy",
         "table-only"
       ],
-      "crawlMs": 159,
+      "crawlMs": 184,
       "crawlChars": 675,
       "crawlHangul": 232,
       "coverage": {
@@ -3622,8 +3622,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 828,
-      "outputTokens": 230,
-      "modelMs": 5185,
+      "outputTokens": 252,
+      "modelMs": 4978,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/table-01/main.svg",
         "groom": "서원준",
@@ -3674,7 +3674,7 @@
         "table-legacy",
         "table-only"
       ],
-      "crawlMs": 168,
+      "crawlMs": 202,
       "crawlChars": 605,
       "crawlHangul": 201,
       "coverage": {
@@ -3687,7 +3687,7 @@
       "imageFallback": 0,
       "promptTokens": 766,
       "outputTokens": 102,
-      "modelMs": 3701,
+      "modelMs": 4403,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/table-02/main.svg",
         "groom": "박선우",
@@ -3727,7 +3727,7 @@
         "picture-srcset",
         "tailwind-semantic"
       ],
-      "crawlMs": 179,
+      "crawlMs": 189,
       "crawlChars": 1440,
       "crawlHangul": 282,
       "coverage": {
@@ -3739,8 +3739,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 1202,
-      "outputTokens": 308,
-      "modelMs": 8172,
+      "outputTokens": 432,
+      "modelMs": 6970,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/tw-01/main.svg",
         "groom": "문준서",
@@ -3816,7 +3816,7 @@
         "json-ld",
         "tailwind-semantic"
       ],
-      "crawlMs": 157,
+      "crawlMs": 180,
       "crawlChars": 1251,
       "crawlHangul": 217,
       "coverage": {
@@ -3828,8 +3828,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 1064,
-      "outputTokens": 168,
-      "modelMs": 4870,
+      "outputTokens": 250,
+      "modelMs": 5523,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/tw-02/main.svg",
         "groom": "권동현",
@@ -3881,7 +3881,7 @@
         "no-date",
         "tailwind-semantic"
       ],
-      "crawlMs": 165,
+      "crawlMs": 178,
       "crawlChars": 1303,
       "crawlHangul": 265,
       "coverage": {
@@ -3893,8 +3893,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 1081,
-      "outputTokens": 341,
-      "modelMs": 5378,
+      "outputTokens": 260,
+      "modelMs": 5680,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/tw-03/main.svg",
         "groom": "윤찬영",
@@ -3958,7 +3958,7 @@
         "time-element",
         "wordpress-theme"
       ],
-      "crawlMs": 163,
+      "crawlMs": 387,
       "crawlChars": 1255,
       "crawlHangul": 308,
       "coverage": {
@@ -3970,8 +3970,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 1153,
-      "outputTokens": 251,
-      "modelMs": 5330,
+      "outputTokens": 198,
+      "modelMs": 4800,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/wp-01/main.svg",
         "groom": "남규민",
@@ -4023,7 +4023,7 @@
         "time-element",
         "wordpress-theme"
       ],
-      "crawlMs": 178,
+      "crawlMs": 183,
       "crawlChars": 1296,
       "crawlHangul": 300,
       "coverage": {
@@ -4035,8 +4035,8 @@
       },
       "imageFallback": 0,
       "promptTokens": 1187,
-      "outputTokens": 358,
-      "modelMs": 5680,
+      "outputTokens": 324,
+      "modelMs": 6476,
       "predicted": {
         "thumbnail": "https://chung-mo.web.app/eval/wp-02/main.svg",
         "groom": "이민석",
