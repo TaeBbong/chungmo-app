@@ -3,7 +3,6 @@ import 'package:chungmo/core/analytics/noop_analytics_service.dart';
 import 'package:chungmo/core/di/di.dart';
 import 'package:chungmo/core/services/preferences_checker.dart';
 import 'package:chungmo/core/services/share_intent_service.dart';
-import 'package:chungmo/core/services/tutorial_manager.dart';
 import 'package:chungmo/data/sources/local/app_preferences_local_source.dart';
 import 'package:chungmo/domain/entities/schedule.dart';
 import 'package:chungmo/domain/usecases/usecases.dart';
