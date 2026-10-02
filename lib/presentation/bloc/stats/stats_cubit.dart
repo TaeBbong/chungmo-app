@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/analytics/analytics_service.dart';
 import '../../../core/di/di.dart';
 import '../../../domain/entities/pay_statistics.dart';
 import '../../../domain/entities/schedule.dart';
@@ -24,12 +25,17 @@ class StatsCubit extends Cubit<StatsState> {
         super(const StatsState());
 
   void watchStatistics() {
-    _subscription = watchAllSchedulesUsecase.execute().listen((schedules) {
-      emit(StatsState(
-        loaded: true,
-        statistics: PayStatistics.fromSchedules(schedules),
-      ));
-    });
+    _subscription = watchAllSchedulesUsecase.execute().listen(
+      (schedules) {
+        emit(StatsState(
+          loaded: true,
+          statistics: PayStatistics.fromSchedules(schedules),
+        ));
+      },
+      // Leaves the page on its last good statistics rather than crashing.
+      onError: (Object error, StackTrace stack) => getIt<AnalyticsService>()
+          .recordError(error, stack, reason: 'schedule_stream'),
+    );
   }
 
   @override

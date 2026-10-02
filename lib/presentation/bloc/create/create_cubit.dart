@@ -51,14 +51,20 @@ class CreateCubit extends Cubit<CreateState> {
   /// Feeds the home screen's preview of what is coming up.
   void watchUpcomingSchedules() {
     _schedulesSub?.cancel();
-    _schedulesSub = watchAllSchedulesUseCase.execute().listen((schedules) {
-      // By calendar day, matching the D-day badge and the calendar list.
-      final List<Schedule> upcoming = schedules
-          .where((schedule) => !schedule.date.isPastDay)
-          .sorted((a, b) => a.date.compareTo(b.date));
+    _schedulesSub = watchAllSchedulesUseCase.execute().listen(
+      (schedules) {
+        // By calendar day, matching the D-day badge and the calendar list.
+        final List<Schedule> upcoming = schedules
+            .where((schedule) => !schedule.date.isPastDay)
+            .sorted((a, b) => a.date.compareTo(b.date));
 
-      emit(state.copyWith(upcomingSchedules: upcoming));
-    });
+        emit(state.copyWith(upcomingSchedules: upcoming));
+      },
+      // The preview keeps whatever it last showed; the paste field, which
+      // is the point of this screen, goes on working.
+      onError: (Object error, StackTrace stack) =>
+          analytics.recordError(error, stack, reason: 'schedule_stream'),
+    );
   }
 
   @override

@@ -5,6 +5,7 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -24,8 +25,6 @@ abstract class ScheduleLocalSource {
   /// Deletes `schedule` from db by key `link`.
   Future<void> deleteScheduleByLink(String link);
 
-  Stream<List<ScheduleModel>> get allSchedulesStream;
-
   Future<ScheduleModel?> getScheduleByLink(String link);
 
   /// One-shot read of every schedule, for aggregations that don't need
@@ -37,12 +36,29 @@ abstract class ScheduleLocalSource {
 
 @LazySingleton(as: ScheduleLocalSource)
 class ScheduleLocalSourceImpl implements ScheduleLocalSource {
-  static Database? _database;
+  /// Overrides where the database file lives. Tests point it at a temporary
+  /// directory; production leaves it null and uses the platform default.
+  /// Kept off the constructor so the injectable registration stays a plain
+  /// zero-argument one.
+  @visibleForTesting
+  static String? databasePathOverride;
+
+  Database? _database;
 
   final _controller = StreamController<List<ScheduleModel>>.broadcast();
 
-  @override
-  Stream<List<ScheduleModel>> get allSchedulesStream => _controller.stream;
+  /// The last list handed out, replayed to every new subscriber.
+  ///
+  /// A broadcast controller does not replay, so without this a subscriber
+  /// that attaches after the first read — anything with an `await` before
+  /// its `listen` — would see nothing until the next write. Every write
+  /// goes through this class, so the cached list cannot go stale.
+  List<ScheduleModel>? _latest;
+
+  /// The first read, while it is still in flight. Screens are built together,
+  /// so all four subscribers ask before any of them has an answer; without
+  /// this they would each start their own read of the same table.
+  Future<void>? _firstRead;
 
   /// Getter for internal `_database`.
   ///
@@ -55,7 +71,8 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
 
   /// Initialize DB with `CREATE TABLE schedules`.
   Future<Database> _initDB() async {
-    final path = join(await getDatabasesPath(), 'schedule_database.db');
+    final path = databasePathOverride ??
+        join(await getDatabasesPath(), 'schedule_database.db');
     return await openDatabase(
       path,
       version: 5,
@@ -112,14 +129,47 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
 
   @override
   Future<void> emitAllSchedules() async {
-    _controller.add(await getAllSchedulesOnce());
+    final schedules = await getAllSchedulesOnce();
+    _latest = schedules;
+    // A read started before dispose can land after it; there is nobody left
+    // to tell, and adding to a closed controller throws.
+    if (_controller.isClosed) return;
+    _controller.add(schedules);
   }
 
   @override
   Stream<List<ScheduleModel>> watchAllSchedules() {
-    refresh();
-    return _controller.stream;
+    // Only the first subscriber pays for a read. Later ones are seeded with
+    // what that read produced, which is current because every write emits.
+    if (_latest == null) {
+      // The interface is synchronous, so this read cannot be awaited and its
+      // failure has nowhere to go but the stream subscribers already listen
+      // to. Left unhandled it reaches the zone handler, which reports a
+      // still-running app as a fatal crash. `_latest` stays null either way,
+      // so the next subscriber retries the read.
+      _firstRead ??= refresh().catchError((Object error, StackTrace stack) {
+        if (!_controller.isClosed) _controller.addError(error, stack);
+      }).whenComplete(() => _firstRead = null);
+    }
+    return _seeded();
   }
+
+  /// The broadcast stream with the last known list prepended, per subscriber.
+  ///
+  /// The listener is attached before the seed is added so no event can slip
+  /// through the gap, and broadcast events are delivered asynchronously, so
+  /// the synchronous seed is always the first thing a subscriber sees.
+  Stream<List<ScheduleModel>> _seeded() =>
+      Stream<List<ScheduleModel>>.multi((controller) {
+        final subscription = _controller.stream.listen(
+          controller.add,
+          onError: controller.addError,
+          onDone: controller.close,
+        );
+        controller.onCancel = subscription.cancel;
+        final seed = _latest;
+        if (seed != null) controller.add(seed);
+      });
 
   /// Create `schedule` data row from model `ScheduleModel`.
   @override
@@ -189,7 +239,14 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     await emitAllSchedules();
   }
 
-  void dispose() {
-    _controller.close();
+  /// Releases the stream and the database handle.
+  ///
+  /// Idempotent: a second call is a no-op, so a caller that disposes early
+  /// and a tear-down that disposes again both work.
+  Future<void> dispose() async {
+    if (!_controller.isClosed) await _controller.close();
+    final db = _database;
+    _database = null;
+    await db?.close();
   }
 }

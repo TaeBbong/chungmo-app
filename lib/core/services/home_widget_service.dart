@@ -66,8 +66,13 @@ class HomeWidgetServiceImpl implements HomeWidgetService {
     // emission can no longer finish after a later one and leave the store
     // mixing two schedules. The stream emits the full list every time, so
     // in order, the last publish is always the final state.
-    _subscription ??=
-        watchAllSchedulesUsecase.execute().asyncMap(publish).listen(null);
+    _subscription ??= watchAllSchedulesUsecase.execute().asyncMap(publish).listen(
+      null,
+      // The widget keeps the schedule it last drew. The three screens on the
+      // same stream report the failure, so there is nothing to add here —
+      // but the handler has to exist, or the error reaches the zone.
+      onError: (Object _, StackTrace __) {},
+    );
   }
 
   /// Writes the nearest upcoming wedding to the shared store and asks the
