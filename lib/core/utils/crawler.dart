@@ -69,7 +69,12 @@ class _RawResponse {
   final Uri finalUri;
   final String? contentType;
 
-  const _RawResponse(this.bytes, this.finalUri, this.contentType);
+  /// Whether the body hit [_maxBodyBytes] and is only a prefix of what the
+  /// server was sending.
+  final bool truncated;
+
+  const _RawResponse(this.bytes, this.finalUri, this.contentType,
+      {this.truncated = false});
 }
 
 /// The redirect-following fetch both [fetchPage] and [fetchImage] share.
@@ -100,8 +105,9 @@ Future<_RawResponse?> _fetchRaw(String url,
         continue;
       }
       if (streamed.statusCode != 200) return null;
-      final bytes = await _readBody(streamed.stream, timeout);
-      return _RawResponse(bytes, uri, streamed.headers['content-type']);
+      final body = await _readBody(streamed.stream, timeout);
+      return _RawResponse(body.bytes, uri, streamed.headers['content-type'],
+          truncated: body.truncated);
     }
     return null;
   } catch (_) {
@@ -114,12 +120,19 @@ Future<_RawResponse?> _fetchRaw(String url,
 /// Collects [stream] into bytes, giving up after [timeout] and truncating
 /// at [_maxBodyBytes]. The subscription is cancelled on both exits, so a
 /// never-ending body does not keep the connection alive.
-Future<List<int>> _readBody(Stream<List<int>> stream, Duration timeout) {
-  final completer = Completer<List<int>>();
+///
+/// Reports whether the cap was hit: half of an HTML page is still worth
+/// reading, but half of a JPEG is not an image.
+Future<({List<int> bytes, bool truncated})> _readBody(
+    Stream<List<int>> stream, Duration timeout) {
+  final completer = Completer<({List<int> bytes, bool truncated})>();
   final bytes = <int>[];
+  var truncated = false;
   late final StreamSubscription<List<int>> sub;
   void finish() {
-    if (!completer.isCompleted) completer.complete(bytes);
+    if (!completer.isCompleted) {
+      completer.complete((bytes: bytes, truncated: truncated));
+    }
     sub.cancel();
   }
 
@@ -128,6 +141,7 @@ Future<List<int>> _readBody(Stream<List<int>> stream, Duration timeout) {
         final room = _maxBodyBytes - bytes.length;
         if (chunk.length >= room) {
           bytes.addAll(chunk.take(room));
+          truncated = true;
           finish();
           return;
         }
@@ -328,24 +342,35 @@ const int _minImageBytes = 10 << 10;
 /// At most [attempts] URLs are tried, so a page leading with a row of icons
 /// cannot turn one parse into a dozen round trips. Anything that fails to
 /// download, is too small, or is not a format the model reads is skipped.
+///
+/// [budget] bounds the whole run, not each download: the user is watching a
+/// spinner, and one unresponsive host must not be able to hold the parse for
+/// as long as every attempt's own timeout added together. When the budget
+/// runs out, whatever has already downloaded is returned — an empty list
+/// simply puts the parse back on the text-only prompt.
 Future<List<FetchedImage>> fetchInvitationImages(
   List<Uri> urls, {
   http.Client? client,
   int max = _maxFallbackImages,
   int attempts = _maxImageAttempts,
-  Duration timeout = _defaultTimeout,
+  Duration timeout = _imageFetchTimeout,
+  Duration budget = _imageFallbackBudget,
 }) async {
   if (urls.isEmpty || max <= 0) return const [];
   final owned = client == null;
   final c = client ?? http.Client();
   final found = <FetchedImage>[];
+  final spent = Stopwatch()..start();
   try {
     var tried = 0;
     for (final url in urls) {
       if (found.length >= max || tried >= attempts) break;
       if (url.scheme != 'http' && url.scheme != 'https') continue;
+      final left = budget - spent.elapsed;
+      if (left <= Duration.zero) break;
       tried++;
-      final image = await fetchImage(url, client: c, timeout: timeout);
+      final image = await fetchImage(url,
+          client: c, timeout: left < timeout ? left : timeout);
       if (image != null) found.add(image);
     }
     return found;
@@ -355,12 +380,18 @@ Future<List<FetchedImage>> fetchInvitationImages(
 }
 
 /// Downloads one image; `null` when it cannot be fetched, is too small to
-/// be content, or is not a format the model reads.
+/// be content, is not a format the model reads, or arrived truncated.
+///
+/// A body that hit the size cap is refused rather than sent: the preprocessor
+/// passes undecodable bytes straight through, so a half-downloaded invitation
+/// would otherwise reach the model looking like a whole one, missing exactly
+/// the lower part of the page where the account details sit.
 Future<FetchedImage?> fetchImage(Uri url,
-    {http.Client? client, Duration timeout = _defaultTimeout}) async {
+    {http.Client? client, Duration timeout = _imageFetchTimeout}) async {
   final raw =
       await _fetchRaw(url.toString(), client: client, timeout: timeout);
-  if (raw == null || raw.bytes.length < _minImageBytes) return null;
+  if (raw == null || raw.truncated) return null;
+  if (raw.bytes.length < _minImageBytes) return null;
   final mimeType = _imageMimeType(raw.bytes, raw.contentType);
   if (mimeType == null) return null;
   return FetchedImage(
@@ -418,6 +449,12 @@ const int _maxDataFiles = 2;
 /// parse into a dozen round trips.
 const int _maxFallbackImages = 5;
 const int _maxImageAttempts = 8;
+
+/// Per-image and whole-fallback time limits. Shorter than the page timeout:
+/// the page is the parse, an image is an extra, and the whole detour has to
+/// stay inside what someone will wait for on top of the model call.
+const Duration _imageFetchTimeout = Duration(seconds: 8);
+const Duration _imageFallbackBudget = Duration(seconds: 20);
 
 /// A JSON resource mentioned inside a script bundle, e.g. fetch('./data.json').
 final RegExp _jsonRefPattern =

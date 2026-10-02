@@ -423,6 +423,34 @@ void _imageFallbackTests() {
       expect(requests, 5);
     });
 
+    test('refuses a body that hit the size cap', () async {
+      // 4 MiB is the body ceiling; a bigger image arrives as a prefix, and
+      // half a JPEG must not be presented to the model as the invitation.
+      final oversized = _png((5 << 20));
+      final client = MockClient(
+          (request) async => http.Response.bytes(oversized, 200));
+      final images =
+          await fetchInvitationImages([u('huge.png')], client: client);
+      expect(images, isEmpty);
+    });
+
+    test('stops when the overall budget runs out', () async {
+      var requests = 0;
+      final client = MockClient((request) async {
+        requests++;
+        await Future<void>.delayed(const Duration(milliseconds: 120));
+        return http.Response.bytes(_png(), 200);
+      });
+      final images = await fetchInvitationImages(
+          List.generate(8, (i) => u('$i.png')),
+          client: client,
+          budget: const Duration(milliseconds: 250));
+      // Without a shared budget all 5 keepers would be fetched; the clock
+      // cuts it short instead, and what arrived still gets used.
+      expect(requests, lessThan(5));
+      expect(images, isNotEmpty);
+    });
+
     test('gives up after the attempt cap when nothing is usable', () async {
       var requests = 0;
       final client = MockClient((request) async {

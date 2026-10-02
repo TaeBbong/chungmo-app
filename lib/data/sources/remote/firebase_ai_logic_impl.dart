@@ -98,12 +98,20 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
       TextPart(linkExtractionPrompt(text, withImages: true))
     ];
     for (final image in images) {
-      // Same downscaling contract as the picked-image path: a vendor's
-      // full-resolution section image is often several MB.
-      final prepared = await ImagePreprocessor.downscale(
-          InvitationImage(bytes: image.bytes, mimeType: image.mimeType));
-      parts.add(InlineDataPart(prepared.mimeType, prepared.bytes));
+      try {
+        // Same downscaling contract as the picked-image path: a vendor's
+        // full-resolution section image is often several MB.
+        final prepared = await ImagePreprocessor.downscale(
+            InvitationImage(bytes: image.bytes, mimeType: image.mimeType));
+        parts.add(InlineDataPart(prepared.mimeType, prepared.bytes));
+      } on Exception {
+        // One picture we cannot prepare — over the decode pixel limit, or a
+        // frame that will not decode — drops out of the prompt. Letting it
+        // escape would turn a page the text-only prompt could have parsed
+        // into a hard failure, since the caller rethrows FormatException.
+      }
     }
+    if (parts.length == 1) return [Content.text(linkExtractionPrompt(text))];
     return [Content.multi(parts)];
   }
 
