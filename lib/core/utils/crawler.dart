@@ -12,6 +12,7 @@ library;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' as html_parser;
@@ -55,6 +56,33 @@ Future<FetchedPage?> fetchPage(String url,
     {http.Client? client,
     Duration timeout = _defaultTimeout,
     Uri? sameOriginAs}) async {
+  final raw = await _fetchRaw(url,
+      client: client, timeout: timeout, sameOriginAs: sameOriginAs);
+  if (raw == null) return null;
+  return FetchedPage(decodeBody(raw.bytes, raw.contentType), raw.finalUri);
+}
+
+/// A fetched body before any decoding: the bytes, the URL they came from
+/// and the declared content type.
+class _RawResponse {
+  final List<int> bytes;
+  final Uri finalUri;
+  final String? contentType;
+
+  /// Whether the body hit [_maxBodyBytes] and is only a prefix of what the
+  /// server was sending.
+  final bool truncated;
+
+  const _RawResponse(this.bytes, this.finalUri, this.contentType,
+      {this.truncated = false});
+}
+
+/// The redirect-following fetch both [fetchPage] and [fetchImage] share.
+/// Text callers decode the bytes by charset; image callers keep them raw.
+Future<_RawResponse?> _fetchRaw(String url,
+    {http.Client? client,
+    Duration timeout = _defaultTimeout,
+    Uri? sameOriginAs}) async {
   final owned = client == null;
   final c = client ?? http.Client();
   try {
@@ -77,9 +105,9 @@ Future<FetchedPage?> fetchPage(String url,
         continue;
       }
       if (streamed.statusCode != 200) return null;
-      final bytes = await _readBody(streamed.stream, timeout);
-      return FetchedPage(
-          decodeBody(bytes, streamed.headers['content-type']), uri);
+      final body = await _readBody(streamed.stream, timeout);
+      return _RawResponse(body.bytes, uri, streamed.headers['content-type'],
+          truncated: body.truncated);
     }
     return null;
   } catch (_) {
@@ -92,12 +120,19 @@ Future<FetchedPage?> fetchPage(String url,
 /// Collects [stream] into bytes, giving up after [timeout] and truncating
 /// at [_maxBodyBytes]. The subscription is cancelled on both exits, so a
 /// never-ending body does not keep the connection alive.
-Future<List<int>> _readBody(Stream<List<int>> stream, Duration timeout) {
-  final completer = Completer<List<int>>();
+///
+/// Reports whether the cap was hit: half of an HTML page is still worth
+/// reading, but half of a JPEG is not an image.
+Future<({List<int> bytes, bool truncated})> _readBody(
+    Stream<List<int>> stream, Duration timeout) {
+  final completer = Completer<({List<int> bytes, bool truncated})>();
   final bytes = <int>[];
+  var truncated = false;
   late final StreamSubscription<List<int>> sub;
   void finish() {
-    if (!completer.isCompleted) completer.complete(bytes);
+    if (!completer.isCompleted) {
+      completer.complete((bytes: bytes, truncated: truncated));
+    }
     sub.cancel();
   }
 
@@ -106,6 +141,7 @@ Future<List<int>> _readBody(Stream<List<int>> stream, Duration timeout) {
         final room = _maxBodyBytes - bytes.length;
         if (chunk.length >= room) {
           bytes.addAll(chunk.take(room));
+          truncated = true;
           finish();
           return;
         }
@@ -173,9 +209,23 @@ String? _charsetParam(String? contentType) {
   return m?.group(1);
 }
 
-/// Extracts the prompt text for [url]; `null` when the page cannot be
-/// fetched. Same-host iframes are fetched once and appended.
-Future<String?> extractContentWithImages(String url,
+/// What a crawl produced: the prompt text, and the page's images in the
+/// order a reader meets them (`og:image` first, then document order).
+///
+/// The images are carried separately from [text] — which already names them
+/// on `[IMAGE]` lines — so a caller can hand them to the multimodal parser
+/// when the page turns out to be a picture of an invitation rather than an
+/// invitation in text.
+class CrawledInvitation {
+  final String text;
+  final List<Uri> images;
+
+  const CrawledInvitation(this.text, this.images);
+}
+
+/// Crawls [url]; `null` when the page cannot be fetched. Same-host iframes
+/// are fetched once and appended.
+Future<CrawledInvitation?> crawlInvitation(String url,
     {http.Client? client}) async {
   final owned = client == null;
   final c = client ?? http.Client();
@@ -183,6 +233,7 @@ Future<String?> extractContentWithImages(String url,
     final page = await fetchPage(url, client: c);
     if (page == null || page.html.isEmpty) return null;
     final extracted = extractContentFromHtml(page.html, page.finalUri);
+    final images = <Uri>[...extracted.images];
     final buffer = StringBuffer(extracted.text);
     final frames = extracted.iframes
         .where((f) => f.host == page.finalUri.host)
@@ -191,12 +242,14 @@ Future<String?> extractContentWithImages(String url,
     for (final frame in frames) {
       final inner = await fetchPage(frame.toString(), client: c);
       if (inner == null || inner.html.isEmpty) continue;
-      final innerText = extractContentFromHtml(inner.html, inner.finalUri).text;
-      if (innerText.isEmpty) continue;
+      final innerContent = extractContentFromHtml(inner.html, inner.finalUri);
+      // An embed carrying the whole invitation carries its images too.
+      images.addAll(innerContent.images);
+      if (innerContent.text.isEmpty) continue;
       buffer
         ..writeln()
         ..writeln('[IFRAME] $frame')
-        ..write(innerText);
+        ..write(innerContent.text);
     }
     // CSR shell fallback: a page whose rendered HTML carries almost no
     // text usually builds itself at runtime from a same-origin JSON that
@@ -235,10 +288,144 @@ Future<String?> extractContentWithImages(String url,
         }
       }
     }
-    return buffer.toString();
+    return CrawledInvitation(
+        buffer.toString(), images.toSet().toList(growable: false));
   } finally {
     if (owned) c.close();
   }
+}
+
+/// Number of Hangul syllables in [text].
+///
+/// How much Korean a crawl produced separates an invitation written in text
+/// from one that is only a stack of pictures far better than a raw character
+/// count does, because `[IMAGE]`/`[ANCHOR]` lines are long URLs that inflate
+/// the latter. Measured over the eval set, the image-only fixtures land at 33
+/// while the lowest text-bearing case sits at 53 and the median near 260.
+int hangulLength(String text) => _hangul.allMatches(text).length;
+
+final RegExp _hangul = RegExp(r'[가-힣]');
+
+/// Below this many Hangul syllables, a page is treated as carrying too
+/// little Korean to parse from text alone and its images are attached to
+/// the prompt as well. Set above the image-only fixtures (33) and below the
+/// lowest text-bearing case (53), with the crawl text kept in the prompt
+/// either way so that a false positive costs an upload, never an answer.
+const int _textPoorHangulThreshold = 45;
+
+/// Whether [crawled] should also be parsed as pictures.
+bool needsImageFallback(CrawledInvitation crawled) =>
+    crawled.images.isNotEmpty &&
+    hangulLength(crawled.text) < _textPoorHangulThreshold;
+
+/// An image downloaded for the multimodal fallback.
+class FetchedImage {
+  final Uint8List bytes;
+  final String mimeType;
+  final Uri uri;
+
+  const FetchedImage(this.bytes, this.mimeType, this.uri);
+}
+
+/// MIME types Gemini accepts as image parts. GIF and SVG are left out: the
+/// model rejects them, and an SVG is markup the crawler has already read.
+const _imageMimeTypes = {'image/jpeg', 'image/png', 'image/webp'};
+
+/// Smallest image worth sending. Icons, bullets, spacers and sprites sit
+/// far below this; an invitation section rendered as a picture sits far
+/// above it. Judged on the downloaded bytes rather than on the file name,
+/// so no vendor's naming convention has to be guessed at.
+const int _minImageBytes = 10 << 10;
+
+/// Downloads up to [max] usable images from [urls], in order.
+///
+/// At most [attempts] URLs are tried, so a page leading with a row of icons
+/// cannot turn one parse into a dozen round trips. Anything that fails to
+/// download, is too small, or is not a format the model reads is skipped.
+///
+/// [budget] bounds the whole run, not each download: the user is watching a
+/// spinner, and one unresponsive host must not be able to hold the parse for
+/// as long as every attempt's own timeout added together. When the budget
+/// runs out, whatever has already downloaded is returned — an empty list
+/// simply puts the parse back on the text-only prompt.
+Future<List<FetchedImage>> fetchInvitationImages(
+  List<Uri> urls, {
+  http.Client? client,
+  int max = _maxFallbackImages,
+  int attempts = _maxImageAttempts,
+  Duration timeout = _imageFetchTimeout,
+  Duration budget = _imageFallbackBudget,
+}) async {
+  if (urls.isEmpty || max <= 0) return const [];
+  final owned = client == null;
+  final c = client ?? http.Client();
+  final found = <FetchedImage>[];
+  final spent = Stopwatch()..start();
+  try {
+    var tried = 0;
+    for (final url in urls) {
+      if (found.length >= max || tried >= attempts) break;
+      if (url.scheme != 'http' && url.scheme != 'https') continue;
+      final left = budget - spent.elapsed;
+      if (left <= Duration.zero) break;
+      tried++;
+      final image = await fetchImage(url,
+          client: c, timeout: left < timeout ? left : timeout);
+      if (image != null) found.add(image);
+    }
+    return found;
+  } finally {
+    if (owned) c.close();
+  }
+}
+
+/// Downloads one image; `null` when it cannot be fetched, is too small to
+/// be content, is not a format the model reads, or arrived truncated.
+///
+/// A body that hit the size cap is refused rather than sent: the preprocessor
+/// passes undecodable bytes straight through, so a half-downloaded invitation
+/// would otherwise reach the model looking like a whole one, missing exactly
+/// the lower part of the page where the account details sit.
+Future<FetchedImage?> fetchImage(Uri url,
+    {http.Client? client, Duration timeout = _imageFetchTimeout}) async {
+  final raw =
+      await _fetchRaw(url.toString(), client: client, timeout: timeout);
+  if (raw == null || raw.truncated) return null;
+  if (raw.bytes.length < _minImageBytes) return null;
+  final mimeType = _imageMimeType(raw.bytes, raw.contentType);
+  if (mimeType == null) return null;
+  return FetchedImage(
+      Uint8List.fromList(raw.bytes), mimeType, raw.finalUri);
+}
+
+/// The image type of [bytes], preferring the magic number over the declared
+/// [contentType] — vendors serve images as `application/octet-stream` and
+/// occasionally mislabel them outright.
+String? _imageMimeType(List<int> bytes, String? contentType) {
+  if (bytes.length >= 12) {
+    if (bytes[0] == 0xFF && bytes[1] == 0xD8 && bytes[2] == 0xFF) {
+      return 'image/jpeg';
+    }
+    if (bytes[0] == 0x89 &&
+        bytes[1] == 0x50 &&
+        bytes[2] == 0x4E &&
+        bytes[3] == 0x47) {
+      return 'image/png';
+    }
+    // RIFF....WEBP
+    if (bytes[0] == 0x52 &&
+        bytes[1] == 0x49 &&
+        bytes[2] == 0x46 &&
+        bytes[3] == 0x46 &&
+        bytes[8] == 0x57 &&
+        bytes[9] == 0x45 &&
+        bytes[10] == 0x42 &&
+        bytes[11] == 0x50) {
+      return 'image/webp';
+    }
+  }
+  final declared = contentType?.split(';').first.trim().toLowerCase();
+  return _imageMimeTypes.contains(declared) ? declared : null;
 }
 
 const int _maxIframes = 2;
@@ -251,18 +438,39 @@ const int _csrShellTextThreshold = 600;
 const int _maxScripts = 2;
 const int _maxDataFiles = 2;
 
+/// How many images the multimodal fallback sends, and how many URLs it may
+/// try to find them.
+///
+/// An image-only invitation is not one picture: vendors cut it into a cover
+/// photo and a panel per section — greeting, date and venue, directions,
+/// accounts — so a cap of two or three reads the couple's names and misses
+/// where to send the money. Five covers the sections while the attempt cap
+/// keeps a page that leads with a row of decorative images from turning one
+/// parse into a dozen round trips.
+const int _maxFallbackImages = 5;
+const int _maxImageAttempts = 8;
+
+/// Per-image and whole-fallback time limits. Shorter than the page timeout:
+/// the page is the parse, an image is an extra, and the whole detour has to
+/// stay inside what someone will wait for on top of the model call.
+const Duration _imageFetchTimeout = Duration(seconds: 8);
+const Duration _imageFallbackBudget = Duration(seconds: 20);
+
 /// A JSON resource mentioned inside a script bundle, e.g. fetch('./data.json').
 final RegExp _jsonRefPattern =
     RegExp('''['"]([^'"\\s]+\\.json(?:\\?[^'"\\s]*)?)['"]''');
 
 /// What [extractContentFromHtml] found: the prompt text, the iframe
-/// sources and the external script bundles the caller may want to follow.
+/// sources, the external script bundles the caller may want to follow and
+/// the page's images in reading order.
 class ExtractedContent {
   final String text;
   final List<Uri> iframes;
   final List<Uri> scripts;
+  final List<Uri> images;
 
-  const ExtractedContent(this.text, this.iframes, [this.scripts = const []]);
+  const ExtractedContent(this.text, this.iframes,
+      [this.scripts = const [], this.images = const []]);
 }
 
 /// Pure extraction from an HTML string, with URLs resolved against [base].
@@ -279,7 +487,8 @@ ExtractedContent extractContentFromHtml(String html, Uri base) {
   final root = doc.documentElement;
   if (root != null) walker._walk(root);
   walker._flush();
-  return ExtractedContent(walker._output(), walker.iframes, walker.scripts);
+  return ExtractedContent(
+      walker._output(), walker.iframes, walker.scripts, walker.images);
 }
 
 /// The first valid `<base href>` resolved against [fetched], else
@@ -373,6 +582,7 @@ class _Walker {
   final Set<String> _seen = {};
   final List<Uri> iframes = [];
   final List<Uri> scripts = [];
+  final List<Uri> images = [];
   final StringBuffer _current = StringBuffer();
 
   _Walker(this.base);
@@ -385,10 +595,11 @@ class _Walker {
       final content = meta.attributes['content']?.trim();
       if (key == null || content == null || content.isEmpty) continue;
       if (!_metaKeys.contains(key)) continue;
-      final value =
-          key.endsWith('image') || key.endsWith('image:url') || key == 'og:url'
-              ? _resolve(content)
-              : content;
+      final bool isImage = key.endsWith('image') || key.endsWith('image:url');
+      final value = isImage || key == 'og:url' ? _resolve(content) : content;
+      // The share-card image is the one picture a vendor guarantees is the
+      // invitation itself, so it leads the list the fallback reads from.
+      if (isImage) _collectImage(value);
       _emit('[META] $key → $value');
     }
   }
@@ -414,7 +625,10 @@ class _Walker {
       case 'img':
         _flush();
         final src = _imageSource(node);
-        if (src != null) _emit('[IMAGE] $src');
+        if (src != null) {
+          _emit('[IMAGE] $src');
+          _collectImage(src);
+        }
         return;
       case 'iframe':
         _flush();
@@ -497,6 +711,17 @@ class _Walker {
       return _resolve(v);
     }
     return null;
+  }
+
+  /// Records a resolved image URL once, keeping reading order. Data URIs
+  /// never reach here ([_imageSource] drops them) and anything that is not
+  /// an http(s) URL is of no use to the fallback.
+  void _collectImage(String resolved) {
+    final uri = _resolveUri(resolved);
+    if (uri == null) return;
+    if (uri.scheme != 'http' && uri.scheme != 'https') return;
+    if (images.contains(uri)) return;
+    images.add(uri);
   }
 
   Uri? _resolveUri(String ref) {

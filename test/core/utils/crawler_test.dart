@@ -12,6 +12,8 @@ void main() {
 
   String extract(String html) => extractContentFromHtml(html, base).text;
 
+  _imageFallbackTests();
+
   group('extractContentFromHtml', () {
     test('emits visible text in document order without nested duplicates', () {
       final text = extract('''
@@ -221,9 +223,9 @@ fetch('./data.json').then(r => r.json()).then(render);''';
         }
         return http.Response('nope', 404);
       });
-      final text = await extractContentWithImages(
-          'https://vendor.example/card/',
-          client: client);
+      final text = (await crawlInvitation('https://vendor.example/card/',
+              client: client))!
+          .text;
       expect(text, contains('[DATA] https://vendor.example/card/data.json'));
       expect(text, contains('부산은행'));
       expect(requested, contains('/card/app.js'));
@@ -241,8 +243,7 @@ fetch('./data.json').then(r => r.json()).then(render);''';
             200,
             headers: {'content-type': 'text/html; charset=utf-8'});
       });
-      await extractContentWithImages('https://vendor.example/card/',
-          client: client);
+      await crawlInvitation('https://vendor.example/card/', client: client);
       expect(requested, isNot(contains('/card/app.js')));
     });
 
@@ -258,8 +259,7 @@ fetch('./data.json').then(r => r.json()).then(render);''';
             200,
             headers: {'content-type': 'text/html; charset=utf-8'});
       });
-      await extractContentWithImages('https://vendor.example/card/',
-          client: client);
+      await crawlInvitation('https://vendor.example/card/', client: client);
       expect(requested,
           isNot(contains('https://vendor.example:8443/app.js')));
       expect(requested, isNot(contains('http://vendor.example/plain.js')));
@@ -281,9 +281,9 @@ fetch('./data.json').then(r => r.json()).then(render);''';
         }
         return http.Response('secret', 200);
       });
-      final text = await extractContentWithImages(
-          'https://vendor.example/card/',
-          client: client);
+      final text = (await crawlInvitation('https://vendor.example/card/',
+              client: client))!
+          .text;
       expect(requested, isNot(contains('http://169.254.169.254/meta.json')));
       expect(text, isNot(contains('secret')));
     });
@@ -307,11 +307,177 @@ fetch('./data.json').then(r => r.json()).then(render);''';
         }
         return http.Response('nope', 404);
       });
-      await extractContentWithImages('https://vendor.example/card/',
-          client: client);
+      await crawlInvitation('https://vendor.example/card/', client: client);
       expect(requested, isNot(contains('https://cdn.other.example/app.js')));
       expect(
           requested, isNot(contains('https://api.other.example/data.json')));
+    });
+  });
+}
+
+/// A minimal PNG: the 8-byte signature padded past the content-size floor,
+/// so the type sniffer and the size filter both see a real image.
+List<int> _png([int size = 20 << 10]) =>
+    [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, ...List.filled(size, 0)];
+
+void _imageFallbackTests() {
+  group('image collection', () {
+    final base = Uri.parse('https://vendor.example/card/');
+
+    test('collects og:image first, then images in document order', () {
+      final content = extractContentFromHtml('''
+<html><head><meta property="og:image" content="./share.jpg"></head>
+<body><img src="./a.jpg"><img data-src="./b.jpg"><img src="data:image/gif;base64,R0lGOD"></body></html>
+''', base);
+      expect(
+          content.images.map((u) => u.toString()),
+          [
+            'https://vendor.example/card/share.jpg',
+            'https://vendor.example/card/a.jpg',
+            'https://vendor.example/card/b.jpg',
+          ]);
+    });
+
+    test('keeps one entry when og:image repeats a document image', () {
+      final content = extractContentFromHtml('''
+<html><head><meta property="og:image" content="https://vendor.example/card/a.jpg"></head>
+<body><img src="./a.jpg"></body></html>
+''', base);
+      expect(content.images, hasLength(1));
+    });
+  });
+
+  group('needsImageFallback', () {
+    CrawledInvitation crawled(String text, {int images = 1}) =>
+        CrawledInvitation(
+            text,
+            List.generate(
+                images, (i) => Uri.parse('https://vendor.example/$i.jpg')));
+
+    test('fires on a page that is pictures with almost no Korean', () {
+      // The shape of the image-only fixtures: a title and a wall of URLs.
+      final text = StringBuffer('김민준♥이서연 청첩장\n');
+      for (var i = 0; i < 7; i++) {
+        text.writeln('[IMAGE] https://vendor.example/card/section-$i.png');
+      }
+      expect(hangulLength(text.toString()), lessThan(45));
+      expect(needsImageFallback(crawled(text.toString(), images: 7)), isTrue);
+    });
+
+    test('leaves a page carrying real Korean text alone', () {
+      final text = '결혼식에 초대합니다 ' * 10;
+      expect(needsImageFallback(crawled(text, images: 7)), isFalse);
+    });
+
+    test('does not fire when the page has no images to send', () {
+      expect(needsImageFallback(crawled('김민준', images: 0)), isFalse);
+    });
+  });
+
+  group('fetchInvitationImages', () {
+    Uri u(String p) => Uri.parse('https://vendor.example/$p');
+
+    test('keeps content images and skips icons, SVG and failures', () async {
+      final client = MockClient((request) async {
+        switch (request.url.path) {
+          case '/icon.png':
+            // A real PNG, but sprite-sized: below the content floor.
+            return http.Response.bytes(_png(200), 200);
+          case '/logo.svg':
+            return http.Response.bytes(List.filled(20 << 10, 0x3C), 200,
+                headers: {'content-type': 'image/svg+xml'});
+          case '/gone.jpg':
+            return http.Response('', 404);
+          case '/main.png':
+            return http.Response.bytes(_png(), 200);
+        }
+        return http.Response('', 404);
+      });
+      final images = await fetchInvitationImages(
+          [u('icon.png'), u('logo.svg'), u('gone.jpg'), u('main.png')],
+          client: client);
+      expect(images.map((i) => i.uri.path), ['/main.png']);
+      expect(images.single.mimeType, 'image/png');
+    });
+
+    test('sniffs the type when the server mislabels it', () async {
+      final client = MockClient((request) async => http.Response.bytes(
+          _png(), 200,
+          headers: {'content-type': 'application/octet-stream'}));
+      final images =
+          await fetchInvitationImages([u('a.bin')], client: client);
+      expect(images.single.mimeType, 'image/png');
+    });
+
+    test('stops at the send limit instead of downloading every image',
+        () async {
+      var requests = 0;
+      final client = MockClient((request) async {
+        requests++;
+        return http.Response.bytes(_png(), 200);
+      });
+      final images = await fetchInvitationImages(
+          List.generate(9, (i) => u('$i.png')),
+          client: client);
+      expect(images, hasLength(5));
+      expect(requests, 5);
+    });
+
+    test('refuses a body that hit the size cap', () async {
+      // 4 MiB is the body ceiling; a bigger image arrives as a prefix, and
+      // half a JPEG must not be presented to the model as the invitation.
+      final oversized = _png((5 << 20));
+      final client = MockClient(
+          (request) async => http.Response.bytes(oversized, 200));
+      final images =
+          await fetchInvitationImages([u('huge.png')], client: client);
+      expect(images, isEmpty);
+    });
+
+    test('stops when the overall budget runs out', () async {
+      var requests = 0;
+      final client = MockClient((request) async {
+        requests++;
+        await Future<void>.delayed(const Duration(milliseconds: 120));
+        return http.Response.bytes(_png(), 200);
+      });
+      final images = await fetchInvitationImages(
+          List.generate(8, (i) => u('$i.png')),
+          client: client,
+          budget: const Duration(milliseconds: 250));
+      // Without a shared budget all 5 keepers would be fetched; the clock
+      // cuts it short instead, and what arrived still gets used.
+      expect(requests, lessThan(5));
+      expect(images, isNotEmpty);
+    });
+
+    test('gives up after the attempt cap when nothing is usable', () async {
+      var requests = 0;
+      final client = MockClient((request) async {
+        requests++;
+        return http.Response('', 404);
+      });
+      final images = await fetchInvitationImages(
+          List.generate(20, (i) => u('$i.png')),
+          client: client);
+      expect(images, isEmpty);
+      expect(requests, 8);
+    });
+  });
+
+  group('crawlInvitation', () {
+    test('carries the page images alongside the text', () async {
+      final client = MockClient((request) async => http.Response(
+          '<html><head><title>김민준♥이서연 청첩장</title>'
+          '<meta property="og:image" content="./share.jpg"></head>'
+          '<body><img src="./main.png"></body></html>',
+          200,
+          headers: {'content-type': 'text/html; charset=utf-8'}));
+      final crawled =
+          await crawlInvitation('https://vendor.example/card/', client: client);
+      expect(crawled!.images.map((u) => u.path),
+          ['/card/share.jpg', '/card/main.png']);
+      expect(crawled.text, contains('[IMAGE] https://vendor.example/card/main.png'));
     });
   });
 }

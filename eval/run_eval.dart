@@ -175,28 +175,47 @@ Future<Map<String, dynamic>> _runCase(
     'id': c['id'],
     'url': url,
     'template': c['template'],
+    'tier': c['tier'],
     'difficulty': c['difficulty'],
     'tags': c['tags'],
   };
   final sw = Stopwatch()..start();
-  String? parsed;
+  CrawledInvitation? crawled;
   try {
-    parsed = await extractContentWithImages(url);
+    crawled = await crawlInvitation(url);
   } catch (e) {
     result['error'] = 'crawl: $e';
   }
+  final String? parsed = crawled?.text;
   result['crawlMs'] = sw.elapsedMilliseconds;
   result['crawlChars'] = parsed?.length ?? 0;
+  result['crawlHangul'] = parsed == null ? 0 : hangulLength(parsed);
   File('${crawlDir.path}/${c['id']}.txt').writeAsStringSync(parsed ?? '');
   result['coverage'] =
       crawlCoverage(c['expected'] as Map<String, dynamic>, parsed);
   if (crawlOnly || result['error'] != null) return result;
 
+  // Same decision the app makes: a text-poor page is parsed from its own
+  // images as well. Recorded per case so a run shows which cases took it.
+  List<FetchedImage> images = const [];
+  if (crawled != null && needsImageFallback(crawled)) {
+    try {
+      images = await fetchInvitationImages(crawled.images);
+    } catch (e) {
+      result['imageFallbackError'] = '$e';
+    }
+  }
+  result['imageFallback'] = images.length;
+
   sw.reset();
   Map<String, dynamic>? predicted;
   try {
-    final raw = await _generate(linkExtractionPrompt(parsed),
-        model: model, apiKey: apiKey!, result: result);
+    final raw = await _generate(
+        linkExtractionPrompt(parsed, withImages: images.isNotEmpty),
+        model: model,
+        apiKey: apiKey!,
+        result: result,
+        images: images);
     predicted = jsonDecode(raw) as Map<String, dynamic>;
   } catch (e) {
     result['error'] = 'model: $e';
@@ -238,6 +257,7 @@ Map<String, dynamic> _rescoreCase(
     'id': c['id'],
     'url': url,
     'template': c['template'],
+    'tier': c['tier'],
     'difficulty': c['difficulty'],
     'tags': c['tags'],
     'crawlMs': saved?['crawlMs'] ?? 0,
@@ -258,7 +278,8 @@ Map<String, dynamic> _rescoreCase(
 Future<String> _generate(String prompt,
     {required String model,
     required String apiKey,
-    required Map<String, dynamic> result}) async {
+    required Map<String, dynamic> result,
+    List<FetchedImage> images = const []}) async {
   final uri = Uri.parse(
       'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent');
   final body = jsonEncode({
@@ -266,7 +287,17 @@ Future<String> _generate(String prompt,
       {
         'role': 'user',
         'parts': [
-          {'text': prompt}
+          {'text': prompt},
+          // The app downscales these through an isolate before upload; the
+          // runner sends them as fetched, since the fixtures are already
+          // small and `compute` needs Flutter.
+          for (final image in images)
+            {
+              'inline_data': {
+                'mime_type': image.mimeType,
+                'data': base64Encode(image.bytes),
+              }
+            },
         ]
       }
     ],
@@ -368,6 +399,9 @@ Map<String, dynamic> _summarize(List<Map<String, dynamic>> results) {
   return {
     'overall': rates(scored),
     'errors': results.where((r) => r['error'] != null).length,
+    // The two modalities are reported apart: a text-tier regression and an
+    // image-tier one have nothing to do with each other.
+    'byTier': groupBy((r) => (r['tier'] as String?) ?? 'text'),
     'byDifficulty': groupBy((r) => r['difficulty'] as String),
     'byTemplate': groupBy((r) => r['template'] as String),
     'byTag': {for (final k in byTag.keys.toList()..sort()) k: rates(byTag[k]!)},
@@ -445,6 +479,8 @@ List<String> _summaryLines(Map<String, dynamic> s) {
   final o = s['overall'] as Map<String, dynamic>;
   return [
     'Overall (${o['count']} cases): core ${_pct(o['core'])} · groom ${_pct(o['groom'])} · bride ${_pct(o['bride'])} · datetime ${_pct(o['datetime'])} · location ${_pct(o['location'])} · venue ${_pct(o['venue'])} · accounts ${_pct(o['accounts'])} · thumbnail ${_pct(o['thumbnail'])}',
+    for (final e in (s['byTier'] as Map<String, dynamic>).entries)
+      '  tier ${e.key}: core ${_pct((e.value as Map)['core'])} (${(e.value as Map)['count']})',
     for (final e in (s['byDifficulty'] as Map<String, dynamic>).entries)
       '  ${e.key}: core ${_pct((e.value as Map)['core'])} (${(e.value as Map)['count']})',
   ];
@@ -507,6 +543,7 @@ String _markdown(Map<String, dynamic> report) {
   }
   b.writeln();
 
+  table('By tier', s['byTier'] as Map<String, dynamic>);
   table('By difficulty', s['byDifficulty'] as Map<String, dynamic>);
   table('By template', s['byTemplate'] as Map<String, dynamic>);
   table('By tag', s['byTag'] as Map<String, dynamic>);

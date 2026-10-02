@@ -26,7 +26,7 @@
 
 - **AI 청첩장 파싱 — 링크·사진·텍스트**
   - 모바일 청첩장 URL을 붙여넣거나, 카톡 캡처·종이 청첩장 사진을 공유하거나, 안내 문자를 그대로 붙여넣으면 Gemini(Firebase AI Logic)가 신랑·신부, 일시, 장소, 양가 축의금 계좌를 추출합니다. 세 경로가 하나의 구조화 출력 스키마를 공유합니다 (`lib/data/sources/remote/invitation_prompt.dart`).
-  - 링크는 자체 크롤러(`lib/core/utils/crawler.dart`)가 처리합니다: 문서 순서 텍스트 워크, OpenGraph 메타, EUC-KR 디코딩, 같은 호스트 iframe 추적, CSR 셸 JSON 폴백.
+  - 링크는 자체 크롤러(`lib/core/utils/crawler.dart`)가 처리합니다: 문서 순서 텍스트 워크, OpenGraph 메타, EUC-KR 디코딩, 같은 호스트 iframe 추적, CSR 셸 JSON 폴백. 텍스트가 아니라 이미지로만 발행된 청첩장은 페이지의 이미지를 멀티모달 파서로 넘겨 읽습니다.
   - 날짜가 없는 청첩장은 실패 대신 부분 추출 결과가 직접 입력 폼에 프리필됩니다.
 - **OS 공유 시트 연동**
   - 다른 앱에서 "공유 → 청모"로 바로 분석을 시작합니다 (Android Share Intent / iOS Share Extension).
@@ -39,13 +39,14 @@
 
 ### 측정된 정확도
 
-파서는 직접 구축한 벤치마크로 검증합니다: 실제 벤더 마크업 스타일 15종을 재현한 가상 청첩장 38건을 [chung-mo.web.app/eval](https://chung-mo.web.app)에 호스팅하고 자동 채점기로 채점합니다.
+파서는 직접 구축한 벤치마크로 검증합니다: 실제 벤더 마크업 스타일 16종을 재현한 가상 청첩장 40건을 [chung-mo.web.app/eval](https://chung-mo.web.app)에 호스팅하고 자동 채점기로 채점합니다.
 
 | | 수치 |
 |---|---|
-| 핵심 필드 완전 정확도 (수정 없이 저장되는 비율) | **100%** (38/38) |
+| 핵심 필드 완전 정확도 (수정 없이 저장되는 비율) | **100%** (40/40) |
+| 티어별 — 텍스트 페이지 · 이미지 전용 페이지 | 38/38 · 2/2 |
 | 필드별 — 이름 · 일시 · 장소 · 계좌 | 각 100% |
-| 여정 | 63% → 85% (크롤러 재작성) → 100% (연도 추론, CSR JSON 추적) |
+| 여정 | 63% → 85% (크롤러 재작성) → 100% (연도 추론, CSR JSON 추적, 이미지 폴백) |
 
 구축·채점 방식: [docs/PARSING_EVAL.md](./docs/PARSING_EVAL.md), [docs/CRAWLER_COVERAGE.md](./docs/CRAWLER_COVERAGE.md).
 

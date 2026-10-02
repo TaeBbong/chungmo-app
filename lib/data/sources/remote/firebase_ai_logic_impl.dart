@@ -12,7 +12,9 @@ import 'package:firebase_ai/firebase_ai.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../core/utils/constants.dart';
+import '../../../core/utils/image_preprocessor.dart';
 import '../../../core/utils/string_extension.dart';
+import '../../../domain/entities/invitation_image.dart';
 import '../../../domain/entities/schedule_draft.dart';
 import '../../mapper/schedule_mapper.dart';
 import '../../models/schedule/schedule_model.dart';
@@ -63,8 +65,8 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
   @override
   Future<ScheduleModel> fetchScheduleFromServer(String link) async {
     try {
-      final parsed = await extractContentWithImages(link);
-      final prompt = [Content.text(linkExtractionPrompt(parsed))];
+      final crawled = await crawlInvitation(link);
+      final prompt = await _linkPrompt(crawled);
       return await _generate(prompt, link);
     } on FormatException {
       rethrow;
@@ -73,6 +75,44 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
     } catch (e) {
       throw Exception('[-] Failed to fetch data from server: $e');
     }
+  }
+
+  /// Builds the link prompt, switching to multimodal input when the crawl
+  /// came back text-poor.
+  ///
+  /// Image-only invitations and client-rendered shells publish the wedding
+  /// as pictures, so no crawler or prompt change can reach the fields; the
+  /// page's own images go to the multimodal parser instead. Downloading
+  /// them can fail or find nothing usable, in which case the text-only
+  /// prompt still runs — the fallback may not turn a parseable page into a
+  /// failed one.
+  Future<List<Content>> _linkPrompt(CrawledInvitation? crawled) async {
+    final String text = crawled?.text ?? '';
+    if (crawled == null || !needsImageFallback(crawled)) {
+      return [Content.text(linkExtractionPrompt(text))];
+    }
+    final List<FetchedImage> images =
+        await fetchInvitationImages(crawled.images);
+    if (images.isEmpty) return [Content.text(linkExtractionPrompt(text))];
+    final parts = <Part>[
+      TextPart(linkExtractionPrompt(text, withImages: true))
+    ];
+    for (final image in images) {
+      try {
+        // Same downscaling contract as the picked-image path: a vendor's
+        // full-resolution section image is often several MB.
+        final prepared = await ImagePreprocessor.downscale(
+            InvitationImage(bytes: image.bytes, mimeType: image.mimeType));
+        parts.add(InlineDataPart(prepared.mimeType, prepared.bytes));
+      } on Exception {
+        // One picture we cannot prepare — over the decode pixel limit, or a
+        // frame that will not decode — drops out of the prompt. Letting it
+        // escape would turn a page the text-only prompt could have parsed
+        // into a hard failure, since the caller rethrows FormatException.
+      }
+    }
+    if (parts.length == 1) return [Content.text(linkExtractionPrompt(text))];
+    return [Content.multi(parts)];
   }
 
   /// Parse a wedding invitation image with Gemini's multimodal input.

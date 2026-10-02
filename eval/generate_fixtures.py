@@ -30,6 +30,8 @@ import html
 import json
 import random
 import shutil
+import subprocess
+import tempfile
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -159,6 +161,8 @@ CASES = [
     ("frame-01", "iframe-embed", dict(date_style="kor_full", accounts="couple", quirks=["iframe"])),
     ("frame-02", "iframe-embed", dict(date_style="kor_dot", accounts="none", quirks=["iframe"])),
     # Image-only invitations
+    ("img-01", "image-only", dict(date_style="kor_full", accounts="couple", quirks=["image-only"])),
+    ("img-02", "image-only", dict(date_style="kor_dot", accounts="none", quirks=["image-only"])),
     # Messenger-style share card, accounts in hidden DOM
     ("kakao-01", "kakao-card", dict(date_style="kor_full", accounts="full", quirks=["hidden-accounts", "data-attrs"])),
     ("kakao-02", "kakao-card", dict(date_style="kor_dot", accounts="couple", quirks=["hidden-accounts", "short-link"])),
@@ -400,6 +404,28 @@ def photo_svg(c: dict, label: str, w: int = 720, h: int = 960, seed: int = 0) ->
 <text x="50%" y="{h * 0.72:.0f}" text-anchor="middle" font-family="sans-serif" font-size="{w * 0.06:.0f}" fill="#fff">{e(label)}</text>
 </svg>
 '''
+
+
+def rasterize(svg: str, width: int = 1440) -> bytes:
+    """Render an SVG to PNG bytes.
+
+    The image-only fixtures have to be real rasters: their whole point is
+    that the invitation exists nowhere but inside a picture, and the parser
+    under test hands those pictures to a multimodal model that reads PNG and
+    JPEG, not markup. macOS renders the SVG (Quick Look) and ImageMagick
+    trims the square canvas Quick Look pads it onto.
+    """
+    with tempfile.TemporaryDirectory() as tmp:
+        d = Path(tmp)
+        (d / "in.svg").write_text(svg, encoding="utf-8")
+        subprocess.run(["qlmanage", "-t", "-s", str(width), "-o", str(d), str(d / "in.svg")],
+                       check=True, capture_output=True)
+        thumb = d / "in.svg.png"
+        if not thumb.exists():
+            raise RuntimeError("qlmanage produced no thumbnail; image-only fixtures need macOS")
+        subprocess.run(["magick", str(thumb), "-trim", "+repage", str(d / "out.png")],
+                       check=True, capture_output=True)
+        return (d / "out.png").read_bytes()
 
 
 def text_svg(lines: list[str], w: int = 720) -> str:
@@ -1026,11 +1052,13 @@ def t_image_only(c: dict) -> dict:
     dtxt = date_text(c)
     info_lines = [f'{g["name"]} ♥ {b["name"]}', dtxt, f'{v["name"]} {v["hall"]}', v["address"]]
     acc_lines = ["마음 전하실 곳"] + [f'신랑측 {l}' for l in account_lines(c["accounts"]["groom"], "short")] + [f'신부측 {l}' for l in account_lines(c["accounts"]["bride"], "short")]
+    # Rasters, not SVG: an SVG would put the invitation back into markup the
+    # crawler can read, which is the opposite of what this case tests.
     files = {
-        "main.svg": photo_svg(c, f'{g["name"]} & {b["name"]}'),
-        "section-info.svg": text_svg(info_lines),
-        "section-greeting.svg": text_svg(["초대합니다", "저희 두 사람이 사랑으로 하나 되는 날", "귀한 걸음으로 축복해 주세요", f'{g["father"]} · {g["mother"]}의 {g["order"]} {g["name"][1:]}', f'{b["father"]} · {b["mother"]}의 {b["order"]} {b["name"][1:]}']),
-        "section-account.svg": text_svg(acc_lines if len(acc_lines) > 1 else ["마음 전하실 곳", "축하의 마음만으로 충분합니다"]),
+        "main.png": rasterize(photo_svg(c, f'{g["name"]} & {b["name"]}')),
+        "section-info.png": rasterize(text_svg(info_lines)),
+        "section-greeting.png": rasterize(text_svg(["초대합니다", "저희 두 사람이 사랑으로 하나 되는 날", "귀한 걸음으로 축복해 주세요", f'{g["father"]} · {g["mother"]}의 {g["order"]} {g["name"][1:]}', f'{b["father"]} · {b["mother"]}의 {b["order"]} {b["name"][1:]}'])),
+        "section-account.png": rasterize(text_svg(acc_lines if len(acc_lines) > 1 else ["마음 전하실 곳", "축하의 마음만으로 충분합니다"])),
     }
     page = f'''<!DOCTYPE html>
 <html lang="ko">
@@ -1038,17 +1066,17 @@ def t_image_only(c: dict) -> dict:
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(g["name"])}♥{e(b["name"])} 청첩장</title>
-{og_meta(c, description="모바일 청첩장이 도착했습니다")}
+{og_meta(c, description="모바일 청첩장이 도착했습니다", image="main.png")}
 <style>body{{margin:0;background:#fbf7f2}}.card{{max-width:480px;margin:0 auto}}.card img{{display:block;width:100%}}</style>
 </head>
 <body>
 <div class="card">
-<img src="./main.svg" alt="">
-<img src="./section-info.svg" alt="예식 안내">
-<img src="./section-greeting.svg" alt="인사말">
+<img src="./main.png" alt="">
+<img src="./section-info.png" alt="예식 안내">
+<img src="./section-greeting.png" alt="인사말">
 <img src="../_assets/gallery-1.svg" alt="">
 <img src="../_assets/gallery-2.svg" alt="">
-<img src="./section-account.svg" alt="계좌 안내">
+<img src="./section-account.png" alt="계좌 안내">
 <img src="../_assets/map.svg" alt="약도">
 </div>
 <script>document.querySelectorAll('img').forEach(function(i){{i.oncontextmenu=function(){{return false}}}});</script>
@@ -1231,7 +1259,7 @@ def expected_of(c: dict) -> dict:
         url = f"{BASE_URL}/eval/s/{short_code(c)}"
     elif "rewrite-url" in quirks:
         url = f"{BASE_URL}/eval/w/{short_code(c)}"
-    thumb_file = "main.jpg.svg" if c["template"] == "euckr-asp" else "main.svg"
+    thumb_file = {"euckr-asp": "main.jpg.svg", "image-only": "main.png"}.get(c["template"], "main.svg")
     tags = sorted(set(quirks) | {c["template"]})
     difficulty = "hard" if HARD_QUIRKS & set(quirks) else ("medium" if {"no-year", "split-numerals", "lazy-src", "guestbook-distractors", "reception-distractor", "extra-event-date", "hidden-accounts"} & set(quirks) else "easy")
     english_only = c["template"] == "english-intl" and "mixed-language" not in quirks
@@ -1245,6 +1273,7 @@ def expected_of(c: dict) -> dict:
         "template": c["template"],
         "vendor": c["vendor"],
         "tags": tags,
+        "tier": "image" if c["template"] == "image-only" else "text",
         "difficulty": difficulty,
         "notes": TEMPLATE_NOTES[c["template"]],
         "expected": {
@@ -1353,7 +1382,7 @@ def main() -> None:
 
     (OUT / "index.html").write_text(catalogue(dataset), encoding="utf-8")
     (ROOT / "eval" / "dataset.json").write_text(
-        json.dumps({"version": 2, "baseUrl": BASE_URL, "generatedBy": "eval/generate_fixtures.py", "cases": dataset}, ensure_ascii=False, indent=2) + "\n",
+        json.dumps({"version": 3, "baseUrl": BASE_URL, "generatedBy": "eval/generate_fixtures.py", "cases": dataset}, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8")
     (ROOT / "eval" / "hosting_rules.json").write_text(json.dumps(hosting_rules(cases), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"generated {len(dataset)} fixtures under {OUT}")

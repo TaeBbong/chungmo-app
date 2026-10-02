@@ -153,14 +153,28 @@ $lines
 }
 
 /// Prompt for HTML text crawled from an invitation link ([parsed] is the
-/// output of `extractContentWithImages`).
-String linkExtractionPrompt(String? parsed, {DateTime? now}) =>
+/// text of a `CrawledInvitation`).
+///
+/// Set [withImages] when the page's own images are attached as parts: some
+/// invitations are published as a stack of pictures with almost no text, so
+/// the crawl alone cannot answer. The text still comes along — it carries
+/// the title, the share-card description and the image URLs — and the note
+/// below tells the model which of the two to trust.
+String linkExtractionPrompt(String? parsed,
+        {DateTime? now, bool withImages = false}) =>
     '''Extract the required wedding data from the given text and return it in pure JSON format, without any additional text or snippet tags.
           ${extractionGuidelines(now ?? _kstNow())}
-
+${withImages ? _attachedImagesNote : ''}
           Given text:
           $parsed
           ''';
+
+const String _attachedImagesNote = '''
+          The page carried almost no text, so its own images are attached.
+          They are the invitation itself: read them for every field, and use
+          the text below only for what they do not show. Keep thumbnail as
+          the URL of the main invitation image found in the text.
+''';
 
 /// Prompt paired with an invitation image part.
 String imageExtractionPrompt({DateTime? now}) =>
