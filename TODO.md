@@ -9,21 +9,13 @@
 원티드 AI Championship 2026 제출(2026-09 마감)이 끝난 뒤의 제품 개선 계획입니다.
 사용자 가치 → 엔지니어링 → 폴리싱 순으로 우선순위를 둡니다.
 
-### C. 환경 변수 관리 개선
-
-- [ ] `lib/core/env.dart`의 하드코딩된 엔드포인트를 Flutter Flavor 또는 `--dart-define` 방식으로 이전 (파일 상단 TODO 참고)
-
-### D. 테스트 보강
-
-- [ ] `WatchAllSchedulesUsecase`와 로컬 소스 스트림 전용 테스트 추가 — 1.0.2에서 터진 버그가 정확히 이 경로였는데 아직 전용 테스트가 없음
-- [ ] 주요 유스케이스/Bloc 커버리지 확대 (현재 179개 통과)
-
 ### E. 태블릿 및 넓은 화면 반응형 UI
 
 - [ ] 본문 max-width 클램프, 넓은 화면에서 캘린더·상세 2단 배치 — 현재 `LayoutBuilder`를 쓰는 화면은 `about_page` 하나뿐
 
 ### 🔭 보류·드롭 (판단 근거 포함)
 
+- [ ] **`env.dart` → Flavor/`dart-define`** — 2026-10-02 보류. 옮길 살아있는 설정이 없습니다: `Env.env`와 `Env.remoteSourceEnv`는 아무도 읽지 않고, `Env.url`은 `CloudFunctionImpl`만 읽는데 `main.dart`가 양쪽 빌드 모드 모두 `RemoteSourceEnv.firebase`를 하드코딩해서 그 구현체가 생성되지 않습니다. 실제로 사는 값은 항상 `'firebase'`인 `Env.backendType` 하나뿐입니다. dart-define의 이점(같은 커밋으로 다른 빌드, 디버그 빌드로 프로덕션 백엔드 호출)은 **두 번째 환경이 생길 때** 발생하므로, staging Firebase 프로젝트를 만들거나 레거시 cloud 백엔드를 다시 쓰거나 CI 빌드를 자동화할 때 재개합니다. 참고로 dart-define은 비밀값 보관 수단이 아닙니다 — 값이 바이너리에 평문으로 남습니다.
 - [ ] **출발 알림** — 2026-10-01 보류. 실제 이동 시간을 쓰려면 Routes API 과금, 위치 권한, API 키를 숨길 서버 경유가 모두 필요하고, 고정 리드타임(예식 N시간 전)으로 줄이면 "출발 알림"이라는 이름값을 못 합니다. 알림 인프라(`flutter_local_notifications` + 기존 D-1 알림)는 이미 있으므로 재개 시 바로 착수 가능.
 - [x] ~~파싱 요청 로깅/모니터링~~ — 이미 구현되어 있었음. `parse_started/succeeded/failed` + `duration_ms` + `ParseFailureReason` 6종 분류가 `create_cubit.dart`에 들어가 있고 측정 계획은 `docs/ANALYTICS.md`에 있습니다. 남은 것은 코드가 아니라 지표를 주기적으로 읽는 운영 습관.
 - [ ] **다국어 지원 (영어)** — 드롭. 한국 경조사 문화에 특화된 앱이라 ROI가 없습니다. `flutter_localizations`가 의존성에 있지만 날짜 포맷용이고 실제 i18n은 되어 있지 않습니다.
@@ -89,6 +81,7 @@
 
 최근에 완료된 주요 작업 목록입니다.
 
+- [x] 일정 스트림 테스트·시딩: `sqflite_common_ffi`로 로컬 소스를 단위 테스트 가능하게 만들고(기존 0건), broadcast 스트림에 마지막 값을 시딩해 늦게 붙는 구독자가 빈 화면을 보지 않도록 수정 — 첫 읽기를 구독자 간 공유(기동 시 4회 읽기 → 1회), dispose 이후 emit 무시, v3→v5 마이그레이션을 실제 DB로 검증(실기기 수동 확인을 테스트로 이전), DetailCubit·CalendarBloc·WatchAllSchedulesUsecase 커버리지 추가 → 179 → 216개 (#62)
 - [x] 링크 파서 이미지 폴백: 크롤 결과의 한글 수가 임계값(45) 미만이면 페이지의 이미지를 멀티모달 파서로 넘겨 재시도 — 크롤러가 이미지 URL을 본문과 분리해 반환, 매직넘버 기반 포맷 판별·10KB 미만 제외, 평가셋에 이미지 티어 복원(PNG 래스터) → 40/40 core 100%, 텍스트 38/38 · 이미지 2/2 (#51)
 - [x] venue 백필: 업데이트 후 1회, 저장된 다가오는 일정의 예식장명을 배치 AI 호출로 채움 — prefs 플래그·실패 시 재시도, 실기기 5/5 정확(주소 혼합 케이스 포함) (#58)
 - [x] venue 필드 분리: 파싱 스키마에서 지도 검색용 장소명을 location과 별도로 추출, DB v5 마이그레이션·직접 수정 시 무효화 규칙 포함 — 지도 앱이 "OOO 3층 OO홀" 대신 예식장명으로 검색, 평가셋 venue 38/38 100% (#56)
