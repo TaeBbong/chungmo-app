@@ -205,13 +205,6 @@ class MockScheduleLocalSource extends _i1.Mock
   }
 
   @override
-  _i13.Stream<List<_i2.ScheduleModel>> get allSchedulesStream =>
-      (super.noSuchMethod(
-        Invocation.getter(#allSchedulesStream),
-        returnValue: _i13.Stream<List<_i2.ScheduleModel>>.empty(),
-      ) as _i13.Stream<List<_i2.ScheduleModel>>);
-
-  @override
   _i13.Stream<List<_i2.ScheduleModel>> watchAllSchedules() =>
       (super.noSuchMethod(
         Invocation.method(
