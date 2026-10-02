@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chungmo/core/analytics/analytics_service.dart';
 import 'package:chungmo/core/di/di.dart';
 import 'package:chungmo/domain/entities/schedule.dart';
 import 'package:chungmo/domain/usecases/usecases.dart';
@@ -27,14 +28,17 @@ DateTime _day(DateTime d) => DateTime(d.year, d.month, d.day);
 
 void main() {
   late MockWatchAllSchedulesUsecase watch;
+  late MockAnalyticsService analytics;
   late StreamController<List<Schedule>> schedules;
   late CalendarBloc bloc;
 
   setUp(() {
     watch = MockWatchAllSchedulesUsecase();
+    analytics = MockAnalyticsService();
     schedules = StreamController<List<Schedule>>.broadcast();
     when(watch.execute()).thenAnswer((_) => schedules.stream);
     getIt.registerSingleton<WatchAllSchedulesUsecase>(watch);
+    getIt.registerSingleton<AnalyticsService>(analytics);
     bloc = CalendarBloc();
   });
 
@@ -133,6 +137,20 @@ void main() {
     await pumpEventQueue();
 
     expect(active, 1);
+  });
+
+  test('a stream error is reported, not thrown at the zone', () async {
+    bloc.add(CalendarStarted());
+    await pumpEventQueue();
+
+    // Without an onError the failure escapes to platformDispatcher.onError,
+    // which files a still-running app as a fatal crash.
+    schedules.addError(StateError('database unavailable'));
+    await pumpEventQueue();
+
+    verify(analytics.recordError(any, any, reason: 'schedule_stream'))
+        .called(1);
+    expect(bloc.state.allSchedules, isEmpty);
   });
 
   test('closing cancels the subscription', () async {

@@ -23,6 +23,14 @@ ScheduleModel _model(String link, {String groom = '김민준'}) => ScheduleModel
       venue: '라온컨벤션',
     );
 
+/// Fails every read, to exercise the path where the database cannot be
+/// opened or the migration throws.
+class _FailingSource extends ScheduleLocalSourceImpl {
+  @override
+  Future<List<ScheduleModel>> getAllSchedulesOnce() async =>
+      throw StateError('database unavailable');
+}
+
 /// Counts how often the table is actually read, which is the claim the
 /// seeding makes: later subscribers are served from the cached list.
 class _CountingSource extends ScheduleLocalSourceImpl {
@@ -49,18 +57,44 @@ void main() {
   });
 
   tearDown(() async {
-    source.dispose();  // idempotent: a test may have disposed already
+    // Close the database too, not just the stream: an open SQLite handle
+    // blocks deleting the temp directory on platforms that lock files.
+    await source.dispose();  // idempotent: a test may have disposed already
     ScheduleLocalSourceImpl.databasePathOverride = null;
     await tempDir.delete(recursive: true);
   });
 
   group('lifecycle', () {
+    test('a failed first read reaches subscribers as a stream error',
+        () async {
+      // The read is fire-and-forget because the interface is synchronous.
+      // Unhandled, its rejection would reach the zone handler and be filed
+      // as a fatal crash while the app is still running.
+      final failing = _FailingSource();
+      addTearDown(failing.dispose);
+
+      await expectLater(
+          failing.watchAllSchedules(), emitsError(isA<StateError>()));
+    });
+
+    test('a later subscriber retries after a failed read', () async {
+      final failing = _FailingSource();
+      addTearDown(failing.dispose);
+
+      await expectLater(
+          failing.watchAllSchedules(), emitsError(isA<StateError>()));
+      // Nothing was cached, so the next subscriber must try again rather
+      // than wait forever on a read that already failed.
+      await expectLater(
+          failing.watchAllSchedules(), emitsError(isA<StateError>()));
+    });
+
     test('an emit that lands after dispose is dropped, not thrown', () async {
       // dispose closes the controller. A read started before it finishes
       // afterwards, and adding to a closed controller throws into the zone;
       // awaiting the emit directly makes that deterministic.
       await source.saveSchedule(_model('https://invite.test/a'));
-      source.dispose();
+      await source.dispose();
 
       await expectLater(source.emitAllSchedules(), completes);
     });
@@ -173,7 +207,7 @@ void main() {
       for (final s in subs) {
         await s.cancel();
       }
-      counting.dispose();
+      await counting.dispose();
     });
   });
 
@@ -216,6 +250,67 @@ void main() {
       await db.close();
     }
 
+    /// The schema as of v4, the version 2.0.1 shipped: everything but
+    /// `venue`.
+    Future<void> createV4Database(String path) async {
+      final db = await databaseFactory.openDatabase(path,
+          options: OpenDatabaseOptions(
+            version: 4,
+            onCreate: (db, version) async {
+              await db.execute('''
+                CREATE TABLE schedules (
+                  link TEXT PRIMARY KEY,
+                  thumbnail TEXT,
+                  groom TEXT,
+                  bride TEXT,
+                  datetime TEXT,
+                  location TEXT,
+                  groom_accounts TEXT,
+                  bride_accounts TEXT,
+                  attendance TEXT,
+                  pay INTEGER,
+                  relation TEXT,
+                  relation_note TEXT
+                )
+              ''');
+            },
+          ));
+      await db.insert('schedules', {
+        'link': 'https://invite.test/v4',
+        'thumbnail': 'https://example.test/thumb.png',
+        'groom': '김민준',
+        'bride': '이서연',
+        'datetime': '2026-10-17T13:30:00.000+09:00',
+        'location': '라온컨벤션 3층 그랜드홀',
+        'groom_accounts': '[]',
+        'bride_accounts': '[]',
+        'attendance': 'attending',
+        'pay': 100000,
+        'relation': 'friend',
+        'relation_note': '대학 동기',
+      });
+      await db.close();
+    }
+
+    test('upgrading from v4 adds venue without disturbing the v4 columns',
+        () async {
+      // The upgrade users actually took on 2.0.2, and the one checked by
+      // hand on a device at the time.
+      final path = '${tempDir.path}/upgrade_v4.db';
+      await createV4Database(path);
+      ScheduleLocalSourceImpl.databasePathOverride = path;
+      final upgraded = ScheduleLocalSourceImpl();
+      addTearDown(upgraded.dispose);
+
+      final row = (await upgraded.getScheduleByLink('https://invite.test/v4'))!;
+
+      expect(row.venue, '');
+      expect(row.relation, 'friend');
+      expect(row.relationNote, '대학 동기');
+      expect(row.attendance, 'attending');
+      expect(row.pay, 100000);
+    });
+
     test('upgrading from v3 keeps existing rows and adds the new columns',
         () async {
       final path = '${tempDir.path}/upgrade.db';
@@ -233,7 +328,7 @@ void main() {
       expect(rows.single.venue, '');
       expect(rows.single.relationNote, '');
       expect(rows.single.relation, 'unset');
-      upgraded.dispose();
+      await upgraded.dispose();
     });
 
     test('an upgraded database accepts a venue on the next write', () async {
@@ -249,7 +344,7 @@ void main() {
       expect(
           (await upgraded.getScheduleByLink('https://invite.test/old'))?.venue,
           '라온컨벤션');
-      upgraded.dispose();
+      await upgraded.dispose();
     });
   });
 }

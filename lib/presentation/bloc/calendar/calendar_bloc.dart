@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/analytics/analytics_service.dart';
 import '../../../core/di/di.dart';
 import '../../../domain/entities/schedule.dart';
 import '../../../domain/usecases/usecases.dart';
@@ -22,9 +23,16 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
   void _onStarted(CalendarStarted event, Emitter<CalendarState> emit) {
     _allSub?.cancel();
-    _allSub = watchAllSchedulesUsecase.execute().listen((list) {
-      add(SchedulesUpdated(list));
-    });
+    _allSub = watchAllSchedulesUsecase.execute().listen(
+      (list) {
+        add(SchedulesUpdated(list));
+      },
+      // A failed database read leaves the calendar on whatever it already
+      // had. Handling it here is what keeps it off the zone handler, which
+      // would file a still-running app as a fatal crash.
+      onError: (Object error, StackTrace stack) => getIt<AnalyticsService>()
+          .recordError(error, stack, reason: 'schedule_stream'),
+    );
   }
 
   void _onSchedulesUpdated(

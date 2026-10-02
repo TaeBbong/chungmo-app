@@ -142,7 +142,14 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     // Only the first subscriber pays for a read. Later ones are seeded with
     // what that read produced, which is current because every write emits.
     if (_latest == null) {
-      _firstRead ??= refresh().whenComplete(() => _firstRead = null);
+      // The interface is synchronous, so this read cannot be awaited and its
+      // failure has nowhere to go but the stream subscribers already listen
+      // to. Left unhandled it reaches the zone handler, which reports a
+      // still-running app as a fatal crash. `_latest` stays null either way,
+      // so the next subscriber retries the read.
+      _firstRead ??= refresh().catchError((Object error, StackTrace stack) {
+        if (!_controller.isClosed) _controller.addError(error, stack);
+      }).whenComplete(() => _firstRead = null);
     }
     return _seeded();
   }
@@ -232,7 +239,14 @@ class ScheduleLocalSourceImpl implements ScheduleLocalSource {
     await emitAllSchedules();
   }
 
-  void dispose() {
-    _controller.close();
+  /// Releases the stream and the database handle.
+  ///
+  /// Idempotent: a second call is a no-op, so a caller that disposes early
+  /// and a tear-down that disposes again both work.
+  Future<void> dispose() async {
+    if (!_controller.isClosed) await _controller.close();
+    final db = _database;
+    _database = null;
+    await db?.close();
   }
 }
