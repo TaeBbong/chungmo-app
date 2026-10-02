@@ -21,6 +21,7 @@ import 'package:chungmo/core/analytics/analytics_service.dart';
   AnalyzeLinkUsecase,
   AnalyzeImageUsecase,
   AnalyzeTextUsecase,
+  DeleteScheduleUsecase,
   EditScheduleUsecase,
   RecommendPayUsecase,
   SaveScheduleUsecase,

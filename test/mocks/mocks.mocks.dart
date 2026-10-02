@@ -882,6 +882,35 @@ class MockAnalyzeTextUsecase extends _i1.Mock
       ) as _i13.Future<_i3.Schedule>);
 }
 
+/// A class which mocks [DeleteScheduleUsecase].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockDeleteScheduleUsecase extends _i1.Mock
+    implements _i8.DeleteScheduleUsecase {
+  MockDeleteScheduleUsecase() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i6.ScheduleRepository get repository => (super.noSuchMethod(
+        Invocation.getter(#repository),
+        returnValue: _FakeScheduleRepository_4(
+          this,
+          Invocation.getter(#repository),
+        ),
+      ) as _i6.ScheduleRepository);
+
+  @override
+  _i13.Future<void> execute(String? link) => (super.noSuchMethod(
+        Invocation.method(
+          #execute,
+          [link],
+        ),
+        returnValue: _i13.Future<void>.value(),
+        returnValueForMissingStub: _i13.Future<void>.value(),
+      ) as _i13.Future<void>);
+}
+
 /// A class which mocks [EditScheduleUsecase].
 ///
 /// See the documentation for Mockito's code generation for more information.
