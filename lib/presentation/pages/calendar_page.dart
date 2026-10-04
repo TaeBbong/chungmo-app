@@ -7,6 +7,7 @@ import '../../core/di/di.dart';
 import '../bloc/calendar/calendar_bloc.dart';
 import '../bloc/calendar/calendar_event.dart';
 import '../bloc/calendar/calendar_state.dart';
+import '../widgets/adaptive_body.dart';
 import '../widgets/calendar_list_view.dart';
 import '../widgets/calendar_view.dart';
 
@@ -59,11 +60,17 @@ class _CalendarPageState extends State<CalendarPage> {
           ),
           body: BlocBuilder<CalendarBloc, CalendarState>(
               builder: (context, state) {
-            return state.isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _isCalendarView
-                    ? const CalendarView()
-                    : const CalendarListView();
+            if (state.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (!_isCalendarView) {
+              return const AdaptiveBody(child: CalendarListView());
+            }
+            // Stacked, the month leaves most of a tablet empty; given room
+            // for two panes, the space beside it becomes the selected day.
+            return hasRoomForTwoPanes(context)
+                ? const CalendarSplitView()
+                : const AdaptiveBody(child: CalendarView());
           }),
         ),
       ),
