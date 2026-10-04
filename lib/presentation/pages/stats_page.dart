@@ -11,6 +11,7 @@ import '../../domain/entities/relation.dart';
 import '../bloc/stats/stats_cubit.dart';
 import '../theme/motions.dart';
 import '../theme/palette.dart';
+import '../widgets/adaptive_body.dart';
 
 /// Gift-money statistics dashboard: headline totals, yearly spending and
 /// a per-relation breakdown, aggregated from the local records.
@@ -46,7 +47,7 @@ class _StatsPageState extends State<StatsPage> {
         top: false,
         child: Scaffold(
           appBar: AppBar(title: const Text('축의금 통계')),
-          body: BlocBuilder<StatsCubit, StatsState>(
+          body: AdaptiveBody(child: BlocBuilder<StatsCubit, StatsState>(
             builder: (context, state) {
               if (!state.loaded) {
                 return const Center(child: CircularProgressIndicator());
@@ -56,7 +57,7 @@ class _StatsPageState extends State<StatsPage> {
               }
               return _Dashboard(statistics: state.statistics);
             },
-          ),
+          )),
         ),
       ),
     );
