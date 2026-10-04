@@ -12,7 +12,8 @@ class FadeSlideIn extends StatelessWidget {
   final Widget child;
   final Duration delay;
 
-  const FadeSlideIn({super.key, required this.child, this.delay = Duration.zero});
+  const FadeSlideIn(
+      {super.key, required this.child, this.delay = Duration.zero});
 
   @override
   Widget build(BuildContext context) {

@@ -48,8 +48,7 @@ void main() {
     blocTest<RecordCubit, RecordState>(
       'shows the model result after a successful recommendation',
       build: () {
-        when(recommend.execute(any))
-            .thenAnswer((_) async => tRecommendation);
+        when(recommend.execute(any)).thenAnswer((_) async => tRecommendation);
         return cubit;
       },
       act: (cubit) => cubit.recommend(tSchedule),
@@ -101,8 +100,7 @@ void main() {
     blocTest<RecordCubit, RecordState>(
       'clears the shown recommendation on invalidation',
       build: () {
-        when(recommend.execute(any))
-            .thenAnswer((_) async => tRecommendation);
+        when(recommend.execute(any)).thenAnswer((_) async => tRecommendation);
         return cubit;
       },
       act: (cubit) async {

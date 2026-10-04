@@ -87,5 +87,4 @@ class ShareIntentServiceImpl implements ShareIntentService {
         return null;
     }
   }
-
 }

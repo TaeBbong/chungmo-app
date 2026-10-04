@@ -144,8 +144,8 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
     // Batched so no location is ever dropped: the service's done-flag is
     // permanent, so a truncated run here would strand the remainder forever.
     for (var start = 0; start < locations.length; start += _backfillBatchSize) {
-      final List<String> batch = locations.sublist(start,
-          (start + _backfillBatchSize).clamp(0, locations.length));
+      final List<String> batch = locations.sublist(
+          start, (start + _backfillBatchSize).clamp(0, locations.length));
       final Map<String, String> venues =
           await remoteSource.extractVenues(batch);
       for (final model in candidates) {

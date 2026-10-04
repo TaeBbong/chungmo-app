@@ -36,8 +36,8 @@ void main() {
     });
 
     test('link prompt still embeds the crawled text', () {
-      expect(linkExtractionPrompt('김민준 ♥ 이서연', now: now),
-          contains('김민준 ♥ 이서연'));
+      expect(
+          linkExtractionPrompt('김민준 ♥ 이서연', now: now), contains('김민준 ♥ 이서연'));
     });
   });
 }

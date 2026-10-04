@@ -181,8 +181,8 @@ void main() {
       final result = await repository.recommendPay(target);
 
       expect(result, expected);
-      verify(mockRecommendationSource.fetchRecommendation(
-          target: target, history: [])).called(1);
+      verify(mockRecommendationSource
+          .fetchRecommendation(target: target, history: [])).called(1);
     });
   });
 }

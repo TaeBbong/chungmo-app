@@ -84,8 +84,8 @@ void main() {
 
     test('drops an empty name instead of leaving a dangling ampersand', () {
       expect(
-        HomeWidgetServiceImpl.formatCouple(buildSchedule(
-            link: 'a', date: DateTime(2026, 10, 1), bride: '')),
+        HomeWidgetServiceImpl.formatCouple(
+            buildSchedule(link: 'a', date: DateTime(2026, 10, 1), bride: '')),
         '김철수',
       );
     });

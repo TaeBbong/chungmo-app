@@ -388,14 +388,12 @@ Future<List<FetchedImage>> fetchInvitationImages(
 /// the lower part of the page where the account details sit.
 Future<FetchedImage?> fetchImage(Uri url,
     {http.Client? client, Duration timeout = _imageFetchTimeout}) async {
-  final raw =
-      await _fetchRaw(url.toString(), client: client, timeout: timeout);
+  final raw = await _fetchRaw(url.toString(), client: client, timeout: timeout);
   if (raw == null || raw.truncated) return null;
   if (raw.bytes.length < _minImageBytes) return null;
   final mimeType = _imageMimeType(raw.bytes, raw.contentType);
   if (mimeType == null) return null;
-  return FetchedImage(
-      Uint8List.fromList(raw.bytes), mimeType, raw.finalUri);
+  return FetchedImage(Uint8List.fromList(raw.bytes), mimeType, raw.finalUri);
 }
 
 /// The image type of [bytes], preferring the magic number over the declared

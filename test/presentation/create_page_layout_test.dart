@@ -26,8 +26,8 @@ class _FakePrefsSource extends Fake implements AppPreferencesLocalSource {
 class _FakeLocalNotifications extends Fake
     implements FlutterLocalNotificationsPlugin {
   @override
-  Future<NotificationAppLaunchDetails?> getNotificationAppLaunchDetails()
-      async => null;
+  Future<NotificationAppLaunchDetails?>
+      getNotificationAppLaunchDetails() async => null;
 }
 
 /// No shares arrive during the test.
@@ -122,13 +122,10 @@ void main() {
         reason: 'the empty-state column must fit or scroll, not overflow');
   });
 
-  testWidgets(
-      'empty home does not overflow on a small phone with large fonts',
+  testWidgets('empty home does not overflow on a small phone with large fonts',
       (tester) async {
     await pumpSqueezed(tester,
-        logicalSize: const Size(360, 740),
-        keyboardInset: 300,
-        textScale: 1.3);
+        logicalSize: const Size(360, 740), keyboardInset: 300, textScale: 1.3);
 
     expect(tester.takeException(), isNull,
         reason: 'the empty-state column must fit or scroll, not overflow');

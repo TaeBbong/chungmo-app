@@ -44,8 +44,7 @@ void main() {
 
     await service.run();
 
-    verify(analytics.recordError(any, any, reason: 'venue_backfill'))
-        .called(1);
+    verify(analytics.recordError(any, any, reason: 'venue_backfill')).called(1);
     verifyNever(preferences.setKey(any));
   });
 }

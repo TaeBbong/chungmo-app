@@ -27,7 +27,8 @@ void main() {
     test('keeps the invitation URL in the description', () {
       final Event event = CalendarServiceImpl.buildEvent(schedule);
 
-      expect(event.description, contains('https://invitation.example.com/card'));
+      expect(
+          event.description, contains('https://invitation.example.com/card'));
     });
 
     test('drops synthetic keys (image://, text://, manual://) from the note',
