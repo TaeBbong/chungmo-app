@@ -80,7 +80,9 @@ class FirebaseAiPayRecommendationImpl implements PayRecommendationSource {
     required List<Schedule> history,
   }) async {
     try {
-      final prompt = [Content.text(buildPrompt(target: target, history: history))];
+      final prompt = [
+        Content.text(buildPrompt(target: target, history: history))
+      ];
       final response = await _buildModel().generateContent(prompt);
       final String? text = response.text;
       if (text == null) {
@@ -178,9 +180,8 @@ Rules:
   /// anchor the recommendation.
   static String buildHistoryBlock(List<Schedule> history,
       {String? excludeLink}) {
-    final List<Schedule> paid = history
-        .where((s) => s.pay > 0 && s.link != excludeLink)
-        .toList();
+    final List<Schedule> paid =
+        history.where((s) => s.pay > 0 && s.link != excludeLink).toList();
     if (paid.isEmpty) {
       return '- No records yet.';
     }
@@ -198,7 +199,8 @@ Rules:
   }
 
   static String _formatKrw(int amount) {
-    return amount.toString().replaceAllMapped(
-        RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => ',');
+    return amount
+        .toString()
+        .replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => ',');
   }
 }

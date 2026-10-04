@@ -10,6 +10,7 @@ import '../../domain/entities/relation.dart';
 import '../../domain/entities/schedule.dart';
 import '../bloc/record/record_cubit.dart';
 import '../theme/palette.dart';
+import '../widgets/adaptive_body.dart';
 import '../widgets/selectable_chip.dart';
 
 /// Records the user's side of a schedule: attendance, relationship and
@@ -95,9 +96,8 @@ class _RecordPageState extends State<RecordPage> {
   /// rebuilds but still varies across schedules. Relies on String.hashCode
   /// being stable within a run (true on the Dart VM, though not a language
   /// guarantee) — an off-by-one hint would be harmless anyway.
-  String get _relationNoteHint =>
-      relationNoteHints[widget.schedule.link.hashCode.abs() %
-          relationNoteHints.length];
+  String get _relationNoteHint => relationNoteHints[
+      widget.schedule.link.hashCode.abs() % relationNoteHints.length];
 
   /// The schedule with the form's current values applied.
   Schedule get _editedSchedule => widget.schedule.copyWith(
@@ -198,7 +198,8 @@ class _RecordPageState extends State<RecordPage> {
           top: false,
           child: Scaffold(
             appBar: AppBar(title: const Text('참석·축의금 기록')),
-            body: SingleChildScrollView(
+            body: AdaptiveBody(
+                child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -295,8 +296,7 @@ class _RecordPageState extends State<RecordPage> {
                         (amount) => SelectableChip(
                           label: '${amount ~/ 10000}만원',
                           selected: !customPay &&
-                              int.tryParse(payController.text.trim()) ==
-                                  amount,
+                              int.tryParse(payController.text.trim()) == amount,
                           onSelected: () => setState(() {
                             customPay = false;
                             payController.text = amount.toString();
@@ -314,8 +314,9 @@ class _RecordPageState extends State<RecordPage> {
                   _buildRecommendationSection(state),
                 ],
               ),
-            ),
-            bottomNavigationBar: Padding(
+            )),
+            bottomNavigationBar: AdaptiveBody(
+                child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
               child: ElevatedButton(
                 key: const ValueKey('record-save'),
@@ -323,7 +324,7 @@ class _RecordPageState extends State<RecordPage> {
                 onPressed: state.isSaving ? null : _save,
                 child: const Text('저장'),
               ),
-            ),
+            )),
           ),
         ),
       ),
@@ -348,8 +349,7 @@ class _RecordPageState extends State<RecordPage> {
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
             : const Icon(Icons.auto_awesome, size: 18),
-        label:
-            Text(state.recommending ? '얼마가 좋을지 고민하는 중...' : 'AI에게 축의금 추천받기'),
+        label: Text(state.recommending ? '얼마가 좋을지 고민하는 중...' : 'AI에게 축의금 추천받기'),
       );
     }
 

@@ -113,8 +113,9 @@ class RecordCubit extends Cubit<RecordState> {
     analytics.logEvent(AnalyticsEvents.attendanceRecorded,
         parameters: {AnalyticsParams.status: edited.attendance.name});
     if (edited.pay > 0) {
-      analytics.logEvent(AnalyticsEvents.giftRecorded,
-          parameters: {AnalyticsParams.amountBucket: _amountBucket(edited.pay)});
+      analytics.logEvent(AnalyticsEvents.giftRecorded, parameters: {
+        AnalyticsParams.amountBucket: _amountBucket(edited.pay)
+      });
     }
     emit(state.copyWith(saveStatus: RecordSaveStatus.success));
   }

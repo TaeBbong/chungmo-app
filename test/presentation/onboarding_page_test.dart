@@ -44,8 +44,8 @@ void main() {
 
     testWidgets('review mode closes instead of starting the app',
         (tester) async {
-      await tester.pumpWidget(
-          const MaterialApp(home: OnboardingPage(review: true)));
+      await tester
+          .pumpWidget(const MaterialApp(home: OnboardingPage(review: true)));
 
       await tapNext(tester);
       await tapNext(tester);
@@ -55,8 +55,7 @@ void main() {
       expect(find.text('시작하기'), findsNothing);
     });
 
-    testWidgets('review mode pops back to the page underneath',
-        (tester) async {
+    testWidgets('review mode pops back to the page underneath', (tester) async {
       // The page pops through the app's global navigator key.
       await tester.pumpWidget(MaterialApp(
         navigatorKey: navigatorKey,

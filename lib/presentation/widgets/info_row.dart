@@ -149,8 +149,8 @@ class InfoRow extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 2),
                         child: Text(
                           hint!,
-                          style: InfoRowMetrics.hintStyle
-                              .copyWith(color: InfoRowMetrics.faintColor(context)),
+                          style: InfoRowMetrics.hintStyle.copyWith(
+                              color: InfoRowMetrics.faintColor(context)),
                         ),
                       ),
                   ],

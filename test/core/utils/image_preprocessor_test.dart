@@ -119,8 +119,8 @@ void main() {
         mimeType: 'image/png',
       );
 
-      expect(() => ImagePreprocessor.downscaleSync(input),
-          throwsFormatException);
+      expect(
+          () => ImagePreprocessor.downscaleSync(input), throwsFormatException);
     });
 
     test('the over-limit rejection survives the isolate hop', () async {
@@ -143,8 +143,7 @@ void main() {
     });
   });
 
-  test('downscale runs the same logic through a background isolate',
-      () async {
+  test('downscale runs the same logic through a background isolate', () async {
     final InvitationImage result = await ImagePreprocessor.downscale(
       InvitationImage(
         bytes: buildPng(width: 2000, height: 2000),
@@ -152,7 +151,7 @@ void main() {
       ),
     );
 
-    expect(img.decodeImage(result.bytes)!.width,
-        ImagePreprocessor.maxDimension);
+    expect(
+        img.decodeImage(result.bytes)!.width, ImagePreprocessor.maxDimension);
   });
 }

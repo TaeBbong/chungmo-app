@@ -25,6 +25,7 @@ import '../bloc/create/create_cubit.dart';
 import '../theme/dimens.dart';
 import '../theme/motions.dart';
 import '../theme/palette.dart';
+import '../widgets/adaptive_body.dart';
 import '../widgets/analyze_animation.dart';
 import '../widgets/fade_slide_in.dart';
 import '../widgets/schedule_detail_column.dart';
@@ -450,8 +451,8 @@ class _CreatePageState extends State<CreatePage>
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
             child: Stack(
               children: [
-                Center(
-                  child: BlocBuilder<CreateCubit, CreateState>(
+                AdaptiveBody(
+                  child: Center(child: BlocBuilder<CreateCubit, CreateState>(
                       builder: (context, state) {
                     if (state.isLoading) {
                       return _analyzeBranch(
@@ -626,59 +627,61 @@ class _CreatePageState extends State<CreatePage>
                                   ),
                                 ],
                               ));
-                  }),
+                  })),
                 ),
               ],
             ),
           ),
           bottomSheet:
               BlocBuilder<CreateCubit, CreateState>(builder: (context, state) {
-            return state.schedule != null
-                ? Padding(
-                    padding: const EdgeInsets.fromLTRB(Dimens.screenPadding,
-                        Dimens.md, Dimens.screenPadding, Dimens.md),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Physical confirmation for the flow's terminal step.
-                        HapticFeedback.mediumImpact();
-                        cubit.resetState();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('일정을 캘린더에 저장했습니다.')),
-                        );
-                      },
-                      child: const Text('확인'),
-                    ),
-                  )
-                : Padding(
-                    key: linkInputKey,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: Dimens.md, vertical: Dimens.sm + 2),
-                    // The input surface comes from the theme's
-                    // InputDecorationTheme, so it adapts to dark mode.
-                    child: TextField(
-                      controller: _textEditingController,
-                      onSubmitted: (value) => _onSubmit(),
-                      // Invitation SMS pastes span multiple lines.
-                      keyboardType: TextInputType.multiline,
-                      minLines: 1,
-                      maxLines: 4,
-                      style: const TextStyle(fontSize: 14),
-                      decoration: InputDecoration(
-                        hintText: '링크 또는 청첩장 문자 붙여넣기...',
-                        prefixIcon: IconButton(
-                          tooltip: '청첩장 이미지 첨부',
-                          icon: const Icon(Icons.add_photo_alternate_outlined,
-                              size: 22),
-                          onPressed: _onAttachImage,
+            return AdaptiveBody(
+                child: state.schedule != null
+                    ? Padding(
+                        padding: const EdgeInsets.fromLTRB(Dimens.screenPadding,
+                            Dimens.md, Dimens.screenPadding, Dimens.md),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Physical confirmation for the flow's terminal step.
+                            HapticFeedback.mediumImpact();
+                            cubit.resetState();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('일정을 캘린더에 저장했습니다.')),
+                            );
+                          },
+                          child: const Text('확인'),
                         ),
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.arrow_upward_rounded,
-                              size: 22, color: Palette.burgundy),
-                          onPressed: _onSubmit,
+                      )
+                    : Padding(
+                        key: linkInputKey,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: Dimens.md, vertical: Dimens.sm + 2),
+                        // The input surface comes from the theme's
+                        // InputDecorationTheme, so it adapts to dark mode.
+                        child: TextField(
+                          controller: _textEditingController,
+                          onSubmitted: (value) => _onSubmit(),
+                          // Invitation SMS pastes span multiple lines.
+                          keyboardType: TextInputType.multiline,
+                          minLines: 1,
+                          maxLines: 4,
+                          style: const TextStyle(fontSize: 14),
+                          decoration: InputDecoration(
+                            hintText: '링크 또는 청첩장 문자 붙여넣기...',
+                            prefixIcon: IconButton(
+                              tooltip: '청첩장 이미지 첨부',
+                              icon: const Icon(
+                                  Icons.add_photo_alternate_outlined,
+                                  size: 22),
+                              onPressed: _onAttachImage,
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.arrow_upward_rounded,
+                                  size: 22, color: Palette.burgundy),
+                              onPressed: _onSubmit,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  );
+                      ));
           }),
         ),
       ),

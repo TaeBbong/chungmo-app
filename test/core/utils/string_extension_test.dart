@@ -22,7 +22,8 @@ void main() {
 
   group('hashBytes', () {
     test('is deterministic and content-sensitive', () async {
-      final Uint8List a = Uint8List.fromList(List.generate(1024, (i) => i % 251));
+      final Uint8List a =
+          Uint8List.fromList(List.generate(1024, (i) => i % 251));
       final Uint8List sameAsA = Uint8List.fromList(a);
       final Uint8List b = Uint8List.fromList(a)..[0] = 42;
 

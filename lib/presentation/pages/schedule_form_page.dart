@@ -9,6 +9,7 @@ import '../../core/utils/date_extension.dart';
 import '../../domain/entities/schedule_draft.dart';
 import '../bloc/schedule_form/schedule_form_cubit.dart';
 import '../theme/dimens.dart';
+import '../widgets/adaptive_body.dart';
 
 /// Manual schedule entry, shared by two flows:
 ///
@@ -119,7 +120,8 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
               appBar: AppBar(
                 title: Text(_isFallback ? '일정 완성하기' : '일정 직접 추가'),
               ),
-              body: SingleChildScrollView(
+              body: AdaptiveBody(
+                  child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(Dimens.screenPadding,
                     Dimens.sm, Dimens.screenPadding, Dimens.lg),
                 child: Column(
@@ -164,15 +166,16 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                     ),
                   ],
                 ),
-              ),
-              bottomNavigationBar: SafeArea(
+              )),
+              bottomNavigationBar: AdaptiveBody(
+                  child: SafeArea(
                 minimum: const EdgeInsets.fromLTRB(Dimens.screenPadding,
                     Dimens.sm, Dimens.screenPadding, Dimens.md),
                 child: ElevatedButton(
                   onPressed: _date == null || state.isSaving ? null : _save,
                   child: Text(_date == null ? '예식 일시를 선택해주세요' : '저장'),
                 ),
-              ),
+              )),
             ),
           );
         },

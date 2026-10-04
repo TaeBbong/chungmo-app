@@ -35,11 +35,14 @@ abstract class LightTheme {
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
       }),
       textTheme: TextTheme(
-        headlineMedium: AppTypography.display.copyWith(color: Palette.textPrimary),
-        headlineSmall: AppTypography.headline.copyWith(color: Palette.textPrimary),
+        headlineMedium:
+            AppTypography.display.copyWith(color: Palette.textPrimary),
+        headlineSmall:
+            AppTypography.headline.copyWith(color: Palette.textPrimary),
         titleMedium: AppTypography.title.copyWith(color: Palette.textPrimary),
         bodyLarge: AppTypography.body.copyWith(color: Palette.textPrimary),
-        bodyMedium: AppTypography.bodySmall.copyWith(color: Palette.textSecondary),
+        bodyMedium:
+            AppTypography.bodySmall.copyWith(color: Palette.textSecondary),
         bodySmall: AppTypography.caption.copyWith(color: Palette.textTertiary),
         labelLarge: AppTypography.label,
       ),
@@ -49,7 +52,8 @@ abstract class LightTheme {
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
-        titleTextStyle: AppTypography.title.copyWith(color: Palette.textPrimary),
+        titleTextStyle:
+            AppTypography.title.copyWith(color: Palette.textPrimary),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -98,6 +102,9 @@ abstract class LightTheme {
         backgroundColor: Palette.surface,
         showDragHandle: true,
         dragHandleColor: Palette.grey250,
+        // Capped so a sheet does not run the width of a tablet; Material
+        // centres it once it is narrower than the window.
+        constraints: const BoxConstraints(maxWidth: Dimens.maxContentWidth),
         shape: const RoundedRectangleBorder(
           borderRadius:
               BorderRadius.vertical(top: Radius.circular(Dimens.radiusSheet)),
@@ -118,7 +125,8 @@ abstract class LightTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Dimens.radiusXl),
         ),
-        titleTextStyle: AppTypography.title.copyWith(color: Palette.textPrimary),
+        titleTextStyle:
+            AppTypography.title.copyWith(color: Palette.textPrimary),
         contentTextStyle:
             AppTypography.body.copyWith(color: Palette.textSecondary),
       ),
@@ -128,8 +136,8 @@ abstract class LightTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: Palette.surfaceMuted,
-        contentPadding: const EdgeInsets.symmetric(
-            vertical: 14, horizontal: Dimens.md),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 14, horizontal: Dimens.md),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Dimens.radiusMd),
           borderSide: BorderSide.none,

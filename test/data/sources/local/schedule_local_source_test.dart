@@ -59,14 +59,13 @@ void main() {
   tearDown(() async {
     // Close the database too, not just the stream: an open SQLite handle
     // blocks deleting the temp directory on platforms that lock files.
-    await source.dispose();  // idempotent: a test may have disposed already
+    await source.dispose(); // idempotent: a test may have disposed already
     ScheduleLocalSourceImpl.databasePathOverride = null;
     await tempDir.delete(recursive: true);
   });
 
   group('lifecycle', () {
-    test('a failed first read reaches subscribers as a stream error',
-        () async {
+    test('a failed first read reaches subscribers as a stream error', () async {
       // The read is fire-and-forget because the interface is synchronous.
       // Unhandled, its rejection would reach the zone handler and be filed
       // as a fatal crash while the app is still running.
@@ -116,8 +115,7 @@ void main() {
 
     test('an edit replaces the row rather than adding one', () async {
       await source.saveSchedule(_model('https://invite.test/a'));
-      await source
-          .editSchedule(_model('https://invite.test/a', groom: '박도윤'));
+      await source.editSchedule(_model('https://invite.test/a', groom: '박도윤'));
 
       final all = await source.getAllSchedulesOnce();
       expect(all, hasLength(1));

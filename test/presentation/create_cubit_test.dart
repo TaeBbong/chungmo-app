@@ -95,8 +95,7 @@ void main() {
     blocTest<CreateCubit, CreateState>(
       'emits loading and error when image analyze fails',
       build: () {
-        when(analyzeImage.execute(tImage))
-            .thenThrow(Exception('parse failed'));
+        when(analyzeImage.execute(tImage)).thenThrow(Exception('parse failed'));
         return cubit;
       },
       act: (cubit) => cubit.analyzeImage(tImage),
@@ -119,8 +118,7 @@ void main() {
     blocTest<CreateCubit, CreateState>(
       'emits loading and success when text analyze succeeds',
       build: () {
-        when(analyzeText.execute(tText))
-            .thenAnswer((_) async => tTextSchedule);
+        when(analyzeText.execute(tText)).thenAnswer((_) async => tTextSchedule);
         when(save.execute(tTextSchedule)).thenAnswer((_) async {});
         return cubit;
       },

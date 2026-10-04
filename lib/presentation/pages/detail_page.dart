@@ -18,6 +18,7 @@ import '../../core/navigation/app_navigation.dart';
 import '../theme/motions.dart';
 import '../theme/palette.dart';
 import '../widgets/account_section.dart';
+import '../widgets/adaptive_body.dart';
 import '../widgets/dday_badge.dart';
 import '../widgets/fade_slide_in.dart';
 import '../widgets/info_row.dart';
@@ -77,9 +78,8 @@ class _DetailPageState extends State<DetailPage> {
 
   void _onScroll() {
     // The header counts as collapsed once only the toolbar strip remains.
-    final double threshold = _heroHeight -
-        kToolbarHeight -
-        MediaQuery.of(context).padding.top;
+    final double threshold =
+        _heroHeight - kToolbarHeight - MediaQuery.of(context).padding.top;
     final bool collapsed = _scrollController.offset >= threshold;
     if (collapsed != _collapsed) {
       setState(() => _collapsed = collapsed);
@@ -270,7 +270,8 @@ class _DetailPageState extends State<DetailPage> {
         child: SafeArea(
           top: false,
           child: Scaffold(
-            body: CustomScrollView(
+            body: AdaptiveBody(
+                child: CustomScrollView(
               controller: _scrollController,
               slivers: [
                 SliverAppBar(
@@ -336,7 +337,7 @@ class _DetailPageState extends State<DetailPage> {
                   ),
                 ),
               ],
-            ),
+            )),
           ),
         ),
       ),

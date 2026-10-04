@@ -206,8 +206,7 @@ fetch('./data.json').then(r => r.json()).then(render);''';
     const data =
         '{"accounts":{"groom":[{"bank":"부산은행","number":"271068-41-392679"}]}}';
 
-    test('follows a same-origin JSON referenced by the shell bundle',
-        () async {
+    test('follows a same-origin JSON referenced by the shell bundle', () async {
       final requested = <String>[];
       final client = MockClient((request) async {
         requested.add(request.url.path);
@@ -232,8 +231,9 @@ fetch('./data.json').then(r => r.json()).then(render);''';
     });
 
     test('leaves pages with real text content alone', () async {
-      final filler = List.generate(
-          60, (i) => '<p>결혼식에 초대합니다 좋은 날 함께해 주세요 $i번째 안내</p>').join();
+      final filler =
+          List.generate(60, (i) => '<p>결혼식에 초대합니다 좋은 날 함께해 주세요 $i번째 안내</p>')
+              .join();
       final requested = <String>[];
       final client = MockClient((request) async {
         requested.add(request.url.path);
@@ -260,8 +260,7 @@ fetch('./data.json').then(r => r.json()).then(render);''';
             headers: {'content-type': 'text/html; charset=utf-8'});
       });
       await crawlInvitation('https://vendor.example/card/', client: client);
-      expect(requested,
-          isNot(contains('https://vendor.example:8443/app.js')));
+      expect(requested, isNot(contains('https://vendor.example:8443/app.js')));
       expect(requested, isNot(contains('http://vendor.example/plain.js')));
     });
 
@@ -309,8 +308,7 @@ fetch('./data.json').then(r => r.json()).then(render);''';
       });
       await crawlInvitation('https://vendor.example/card/', client: client);
       expect(requested, isNot(contains('https://cdn.other.example/app.js')));
-      expect(
-          requested, isNot(contains('https://api.other.example/data.json')));
+      expect(requested, isNot(contains('https://api.other.example/data.json')));
     });
   });
 }
@@ -329,13 +327,11 @@ void _imageFallbackTests() {
 <html><head><meta property="og:image" content="./share.jpg"></head>
 <body><img src="./a.jpg"><img data-src="./b.jpg"><img src="data:image/gif;base64,R0lGOD"></body></html>
 ''', base);
-      expect(
-          content.images.map((u) => u.toString()),
-          [
-            'https://vendor.example/card/share.jpg',
-            'https://vendor.example/card/a.jpg',
-            'https://vendor.example/card/b.jpg',
-          ]);
+      expect(content.images.map((u) => u.toString()), [
+        'https://vendor.example/card/share.jpg',
+        'https://vendor.example/card/a.jpg',
+        'https://vendor.example/card/b.jpg',
+      ]);
     });
 
     test('keeps one entry when og:image repeats a document image', () {
@@ -404,8 +400,7 @@ void _imageFallbackTests() {
       final client = MockClient((request) async => http.Response.bytes(
           _png(), 200,
           headers: {'content-type': 'application/octet-stream'}));
-      final images =
-          await fetchInvitationImages([u('a.bin')], client: client);
+      final images = await fetchInvitationImages([u('a.bin')], client: client);
       expect(images.single.mimeType, 'image/png');
     });
 
@@ -427,8 +422,8 @@ void _imageFallbackTests() {
       // 4 MiB is the body ceiling; a bigger image arrives as a prefix, and
       // half a JPEG must not be presented to the model as the invitation.
       final oversized = _png((5 << 20));
-      final client = MockClient(
-          (request) async => http.Response.bytes(oversized, 200));
+      final client =
+          MockClient((request) async => http.Response.bytes(oversized, 200));
       final images =
           await fetchInvitationImages([u('huge.png')], client: client);
       expect(images, isEmpty);
@@ -477,7 +472,8 @@ void _imageFallbackTests() {
           await crawlInvitation('https://vendor.example/card/', client: client);
       expect(crawled!.images.map((u) => u.path),
           ['/card/share.jpg', '/card/main.png']);
-      expect(crawled.text, contains('[IMAGE] https://vendor.example/card/main.png'));
+      expect(crawled.text,
+          contains('[IMAGE] https://vendor.example/card/main.png'));
     });
   });
 }

@@ -7,6 +7,7 @@ import '../../core/navigation/app_navigation.dart';
 import '../../core/services/preferences_checker.dart';
 import '../../core/utils/constants.dart';
 import '../theme/dimens.dart';
+import '../widgets/adaptive_body.dart';
 
 /// First-run intro carousel shown before the home screen.
 ///
@@ -84,7 +85,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+      body: AdaptiveBody(
+          child: SafeArea(
         child: Column(
           children: [
             Align(
@@ -110,17 +112,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
             ),
             _Dots(count: _slides.length, index: _page),
             Padding(
-              padding: const EdgeInsets.fromLTRB(
-                  Dimens.screenPadding, Dimens.lg, Dimens.screenPadding, Dimens.md),
+              padding: const EdgeInsets.fromLTRB(Dimens.screenPadding,
+                  Dimens.lg, Dimens.screenPadding, Dimens.md),
               child: ElevatedButton(
                 onPressed: _next,
-                child: Text(
-                    _isLast ? (widget.review ? '닫기' : '시작하기') : '다음'),
+                child: Text(_isLast ? (widget.review ? '닫기' : '시작하기') : '다음'),
               ),
             ),
           ],
         ),
-      ),
+      )),
     );
   }
 }
@@ -190,9 +191,7 @@ class _Dots extends StatelessWidget {
           width: active ? 24 : 8,
           height: 8,
           decoration: BoxDecoration(
-            color: active
-                ? colorScheme.primary
-                : colorScheme.outlineVariant,
+            color: active ? colorScheme.primary : colorScheme.outlineVariant,
             borderRadius: BorderRadius.circular(4),
           ),
         );

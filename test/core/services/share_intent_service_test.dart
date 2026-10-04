@@ -9,8 +9,7 @@ void main() {
     });
 
     test('maps an image share with its mime type', () {
-      final SharedInvitation? invitation =
-          ShareIntentServiceImpl.toInvitation([
+      final SharedInvitation? invitation = ShareIntentServiceImpl.toInvitation([
         SharedMediaFile(
           path: '/cache/shared.png',
           type: SharedMediaType.image,
@@ -24,8 +23,7 @@ void main() {
     });
 
     test('maps a url share onto the link parser', () {
-      final SharedInvitation? invitation =
-          ShareIntentServiceImpl.toInvitation([
+      final SharedInvitation? invitation = ShareIntentServiceImpl.toInvitation([
         SharedMediaFile(
           path: 'https://invitation.example.com/card',
           type: SharedMediaType.url,
@@ -38,8 +36,7 @@ void main() {
 
     test('re-classifies a bare URL shared as plain text onto the link parser',
         () {
-      final SharedInvitation? invitation =
-          ShareIntentServiceImpl.toInvitation([
+      final SharedInvitation? invitation = ShareIntentServiceImpl.toInvitation([
         SharedMediaFile(
           path: 'https://invitation.example.com/card',
           type: SharedMediaType.text,

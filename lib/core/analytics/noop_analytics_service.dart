@@ -9,7 +9,8 @@ class NoopAnalyticsService implements AnalyticsService {
   const NoopAnalyticsService();
 
   @override
-  Future<void> logEvent(String name, {Map<String, Object?>? parameters}) async {}
+  Future<void> logEvent(String name,
+      {Map<String, Object?>? parameters}) async {}
 
   @override
   Future<void> setCurrentScreen(String screenName) async {}

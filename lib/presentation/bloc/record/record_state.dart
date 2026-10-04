@@ -33,9 +33,8 @@ class RecordState extends Equatable {
   }) {
     return RecordState(
       saveStatus: saveStatus ?? this.saveStatus,
-      recommendation: clearRecommendation
-          ? null
-          : (recommendation ?? this.recommendation),
+      recommendation:
+          clearRecommendation ? null : (recommendation ?? this.recommendation),
       recommending: recommending ?? this.recommending,
       recommendationFromFallback:
           recommendationFromFallback ?? this.recommendationFromFallback,

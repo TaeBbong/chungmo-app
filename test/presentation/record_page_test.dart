@@ -142,7 +142,8 @@ void main() {
     await requestRecommendation(tester);
     expect(payFieldText(tester), '120000'); // typed text is protected
 
-    await tester.ensureVisible(find.byKey(const ValueKey('apply-recommendation')));
+    await tester
+        .ensureVisible(find.byKey(const ValueKey('apply-recommendation')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('apply-recommendation')));
     await tester.pumpAndSettle();
@@ -156,7 +157,8 @@ void main() {
     expect(payFieldText(tester), '100000');
   });
 
-  testWidgets('autofills again when the same instance returns after invalidation',
+  testWidgets(
+      'autofills again when the same instance returns after invalidation',
       (tester) async {
     // Fallback recommendations are canonicalized consts: a re-request can
     // hand back the identical object, which must still count as an arrival

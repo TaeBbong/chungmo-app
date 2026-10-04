@@ -95,8 +95,7 @@ void main() {
             // on-screen, as it does around the real home layout.
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              for (final key in keys)
-                SizedBox(key: key, width: 40, height: 40),
+              for (final key in keys) SizedBox(key: key, width: 40, height: 40),
             ],
           ),
         ),

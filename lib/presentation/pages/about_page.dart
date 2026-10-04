@@ -8,6 +8,7 @@ import '../../core/navigation/app_navigation.dart';
 import '../../core/utils/constants.dart';
 import '../theme/dimens.dart';
 import '../theme/palette.dart';
+import '../widgets/adaptive_body.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
@@ -25,7 +26,8 @@ class AboutPage extends StatelessWidget {
       top: false,
       child: Scaffold(
         appBar: AppBar(title: const Text('앱 정보')),
-        body: FutureBuilder<PackageInfo>(
+        body: AdaptiveBody(
+            child: FutureBuilder<PackageInfo>(
           future: PackageInfo.fromPlatform(),
           builder: (context, snapshot) {
             final String version = snapshot.hasData
@@ -89,7 +91,7 @@ class AboutPage extends StatelessWidget {
               ],
             );
           },
-        ),
+        )),
       ),
     );
   }
@@ -228,7 +230,7 @@ class DeveloperInfoPage extends StatelessWidget {
       appBar: AppBar(title: const Text('개발자 정보')),
       // Scrolls when the viewport is short (landscape, large system text),
       // while the copyright stays pinned to the bottom otherwise.
-      body: LayoutBuilder(builder: (context, constraints) {
+      body: AdaptiveBody(child: LayoutBuilder(builder: (context, constraints) {
         return SingleChildScrollView(
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
@@ -284,7 +286,7 @@ class DeveloperInfoPage extends StatelessWidget {
             ),
           ),
         );
-      }),
+      })),
     );
   }
 }

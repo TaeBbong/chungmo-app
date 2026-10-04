@@ -74,8 +74,7 @@ void main() {
 
   group('analyzeImage', () {
     final tImage = InvitationImage(bytes: Uint8List.fromList([1, 2, 3]));
-    final tImageScheduleModel =
-        tScheduleModel.copyWith(link: 'image://12345');
+    final tImageScheduleModel = tScheduleModel.copyWith(link: 'image://12345');
     final tImageSchedule = ScheduleMapper.toEntity(tImageScheduleModel);
 
     test('should return Schedule when remote source call is successful',
@@ -153,8 +152,8 @@ void main() {
           .thenThrow(const FormatException('no datetime'));
 
       // When & Then
-      expect(() => repository.analyzeText(tText),
-          throwsA(isA<FormatException>()));
+      expect(
+          () => repository.analyzeText(tText), throwsA(isA<FormatException>()));
     });
 
     test('should rethrow IncompleteScheduleException with its draft intact',
@@ -326,11 +325,9 @@ void main() {
     test('fills only upcoming rows with an empty venue, then emits once',
         () async {
       // Given: one of each — eligible, past, already filled, no location.
-      final eligible =
-          row('a', tomorrow, location: '더채플앳청담 3층 채플홀');
+      final eligible = row('a', tomorrow, location: '더채플앳청담 3층 채플홀');
       final past = row('b', yesterday, location: '아펠가모 공덕 라로브홀');
-      final filled =
-          row('c', farFuture, location: '라온컨벤션 3층', venue: '라온컨벤션');
+      final filled = row('c', farFuture, location: '라온컨벤션 3층', venue: '라온컨벤션');
       final blank = row('d', farFuture);
       when(mockLocalSource.getAllSchedulesOnce())
           .thenAnswer((_) async => [eligible, past, filled, blank]);
@@ -343,8 +340,7 @@ void main() {
       await repository.backfillVenues();
 
       // Then: only the eligible location was sent and only it was written.
-      expect(
-          verify(mockRemoteSource.extractVenues(captureAny)).captured.single,
+      expect(verify(mockRemoteSource.extractVenues(captureAny)).captured.single,
           ['더채플앳청담 3층 채플홀']);
       final ScheduleModel written =
           verify(mockLocalSource.editSchedule(captureAny)).captured.single
@@ -367,10 +363,9 @@ void main() {
     test('covers every location across batches; none are dropped', () async {
       // 60 unique locations: one 50-batch plus a 10-remainder. A truncated
       // run would strand rows forever behind the permanent done-flag.
-      final many = List.generate(
-          60, (i) => row('l$i', tomorrow, location: '예식장$i 3층'));
-      when(mockLocalSource.getAllSchedulesOnce())
-          .thenAnswer((_) async => many);
+      final many =
+          List.generate(60, (i) => row('l$i', tomorrow, location: '예식장$i 3층'));
+      when(mockLocalSource.getAllSchedulesOnce()).thenAnswer((_) async => many);
       when(mockRemoteSource.extractVenues(any)).thenAnswer((inv) async => {
             for (final l in inv.positionalArguments.first as List<String>)
               l: l.replaceAll(' 3층', '')
@@ -388,8 +383,8 @@ void main() {
     });
 
     test('leaves unresolved locations untouched without emitting', () async {
-      when(mockLocalSource.getAllSchedulesOnce()).thenAnswer(
-          (_) async => [row('a', tomorrow, location: '어딘가 3층')]);
+      when(mockLocalSource.getAllSchedulesOnce())
+          .thenAnswer((_) async => [row('a', tomorrow, location: '어딘가 3층')]);
       when(mockRemoteSource.extractVenues(any))
           .thenAnswer((_) async => const {});
 

@@ -100,10 +100,8 @@ class _YearlyTotal extends StatelessWidget {
           const SizedBox(width: 12),
           Text(
             '$year년에 낸 축의금',
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(fontSize: 13),
+            style:
+                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 13),
           ),
           const Spacer(),
           Text(
