@@ -5,10 +5,10 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:chungmo/core/utils/crawler.dart';
 import 'package:firebase_ai/firebase_ai.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../core/utils/constants.dart';
@@ -21,25 +21,62 @@ import '../../models/schedule/schedule_model.dart';
 import 'invitation_prompt.dart';
 import 'schedule_remote_source.dart';
 
+/// Sends [prompt] to the model under [schema] and returns its text.
+///
+/// The seam this class is tested through. `GenerativeModel` and `Content`
+/// are `final` in firebase_ai, so neither can be mocked; handing back a
+/// plain string instead lets a test drive every branch below without
+/// constructing an SDK object at all.
+typedef GenerateJson = Future<String?> Function(
+    List<Content> prompt, Map<String, Object> schema);
+
+/// Crawls an invitation link. Defaults to [crawlInvitation].
+typedef CrawlPage = Future<CrawledInvitation?> Function(String url);
+
+/// Downloads a page's images. Defaults to [fetchInvitationImages].
+typedef FetchImages = Future<List<FetchedImage>> Function(List<Uri> urls);
+
 @LazySingleton(as: ScheduleRemoteSource, env: ['firebase'])
 class FirebaseAiLogicImpl implements ScheduleRemoteSource {
-  FirebaseAiLogicImpl();
+  final GenerateJson _generateJson;
+  final CrawlPage _crawl;
+  final FetchImages _fetchImages;
 
-  GenerativeModel _buildModel({Map<String, Object>? schema}) {
-    return FirebaseAI.googleAI().generativeModel(
-      model: Constants.geminiModel,
-      generationConfig: GenerationConfig(
-          responseJsonSchema: schema ?? scheduleResponseJsonSchema,
-          responseMimeType: "application/json"),
-    );
+  /// The shipping constructor; injectable builds this one.
+  FirebaseAiLogicImpl()
+      : _generateJson = _callFirebaseAi,
+        _crawl = crawlInvitation,
+        _fetchImages = fetchInvitationImages;
+
+  /// Replaces the three calls that leave the process — the model and the
+  /// two network fetches — leaving the decisions between them intact.
+  @visibleForTesting
+  FirebaseAiLogicImpl.withSeams({
+    required GenerateJson generateJson,
+    CrawlPage? crawl,
+    FetchImages? fetchImages,
+  })  : _generateJson = generateJson,
+        _crawl = crawl ?? crawlInvitation,
+        _fetchImages = fetchImages ?? fetchInvitationImages;
+
+  static Future<String?> _callFirebaseAi(
+      List<Content> prompt, Map<String, Object> schema) async {
+    final response = await FirebaseAI.googleAI()
+        .generativeModel(
+          model: Constants.geminiModel,
+          generationConfig: GenerationConfig(
+              responseJsonSchema: schema, responseMimeType: "application/json"),
+        )
+        .generateContent(prompt);
+    return response.text;
   }
 
   @override
   Future<Map<String, String>> extractVenues(List<String> locations) async {
     if (locations.isEmpty) return const {};
-    final response = await _buildModel(schema: venueBackfillJsonSchema)
-        .generateContent([Content.text(venueBackfillPrompt(locations))]);
-    final String? text = response.text;
+    final String? text = await _generateJson(
+        [Content.text(venueBackfillPrompt(locations))],
+        venueBackfillJsonSchema);
     // A missing body is a failed extraction, not "no venues found": it must
     // propagate so the backfill's done-flag stays unset and a later launch
     // retries.
@@ -65,7 +102,7 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
   @override
   Future<ScheduleModel> fetchScheduleFromServer(String link) async {
     try {
-      final crawled = await crawlInvitation(link);
+      final crawled = await _crawl(link);
       final prompt = await _linkPrompt(crawled);
       return await _generate(prompt, link);
     } on FormatException {
@@ -91,8 +128,7 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
     if (crawled == null || !needsImageFallback(crawled)) {
       return [Content.text(linkExtractionPrompt(text))];
     }
-    final List<FetchedImage> images =
-        await fetchInvitationImages(crawled.images);
+    final List<FetchedImage> images = await _fetchImages(crawled.images);
     if (images.isEmpty) return [Content.text(linkExtractionPrompt(text))];
     final parts = <Part>[
       TextPart(linkExtractionPrompt(text, withImages: true))
@@ -163,10 +199,10 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
   /// Runs the model and adapts the response into a [ScheduleModel] keyed
   /// by [link], falling back to the default thumbnail.
   Future<ScheduleModel> _generate(List<Content> prompt, String link) async {
-    final response = await _buildModel().generateContent(prompt);
-    if (response.text != null) {
-      ScheduleModel model =
-          ScheduleModel.fromJson(_toModelJson(response.text!, link));
+    final String? text =
+        await _generateJson(prompt, scheduleResponseJsonSchema);
+    if (text != null) {
+      ScheduleModel model = ScheduleModel.fromJson(_toModelJson(text, link));
       if (model.thumbnail.isEmpty) {
         model = model.copyWith(thumbnail: Constants.defaultThumbnail);
       }
