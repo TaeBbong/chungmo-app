@@ -58,6 +58,9 @@ migrate_working_dir/
 .pub/
 /build/
 
+# Test coverage reports (regenerate with tool/coverage.dart)
+/coverage/
+
 # Symbolication related
 app.*.symbols
 
