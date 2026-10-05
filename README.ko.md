@@ -85,6 +85,11 @@
     fvm dart run build_runner build --delete-conflicting-outputs
     ```
 
+    테스트는 `fvm flutter test`로 돌리고, 커버리지는
+    `fvm dart run tool/coverage.dart`로 측정합니다. 기본 `--coverage` 수치가
+    왜 높게 나오는지는 [docs/TEST_COVERAGE.md](./docs/TEST_COVERAGE.md)에
+    적어뒀습니다.
+
 4.  앱 실행:
     ```bash
     fvm flutter run
@@ -143,7 +148,7 @@ class Env {
 📂 main.dart      (애플리케이션 진입점)
 ```
 
-`lib/` 밖에는 파싱 벤치마크(`eval/` — 데이터셋, 러너, 채점기), Firebase Hosting으로 서빙되는 정적 사이트와 평가 픽스처(`hosting/public/`, [chung-mo.web.app](https://chung-mo.web.app)), 그리고 `docs/` 아래의 기술 문서(isolate, 마이크로 인터랙션, 크롤러 커버리지, 파싱 평가, 호스팅, 애널리틱스, 릴리스 체크리스트)가 있습니다.
+`lib/` 밖에는 파싱 벤치마크(`eval/` — 데이터셋, 러너, 채점기), Firebase Hosting으로 서빙되는 정적 사이트와 평가 픽스처(`hosting/public/`, [chung-mo.web.app](https://chung-mo.web.app)), 그리고 `docs/` 아래의 기술 문서(isolate, 마이크로 인터랙션, 크롤러 커버리지, 파싱 평가, 테스트 커버리지, 호스팅, 애널리틱스, 릴리스 체크리스트)가 있습니다.
 
 데이터 흐름은 의존성 주입(`get_it` 및 `injectable`)에 의해 조율되며, UI에서 데이터 레이어로 명확한 단방향 패턴을 따릅니다.
 

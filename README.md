@@ -85,6 +85,10 @@ How it is built and scored: [docs/PARSING_EVAL.md](./docs/PARSING_EVAL.md), [doc
     fvm dart run build_runner build --delete-conflicting-outputs
     ```
 
+    Tests run with `fvm flutter test`; `fvm dart run tool/coverage.dart`
+    reports coverage ([docs/TEST_COVERAGE.md](./docs/TEST_COVERAGE.md)
+    explains why the plain `--coverage` figure reads high).
+
 4.  Run the app:
     ```bash
     fvm flutter run
@@ -143,7 +147,7 @@ This project is based on **Clean Architecture** to separate concerns and create 
 📂 main.dart      (Application entry point)
 ```
 
-Beyond `lib/`, the repository carries the parsing benchmark (`eval/` — dataset, runner, scorer), the static site and eval fixtures served from Firebase Hosting (`hosting/public/`, [chung-mo.web.app](https://chung-mo.web.app)), and engineering write-ups under `docs/` (isolates, micro-interactions, crawler coverage, parsing eval, hosting, analytics, release checklist).
+Beyond `lib/`, the repository carries the parsing benchmark (`eval/` — dataset, runner, scorer), the static site and eval fixtures served from Firebase Hosting (`hosting/public/`, [chung-mo.web.app](https://chung-mo.web.app)), and engineering write-ups under `docs/` (isolates, micro-interactions, crawler coverage, parsing eval, test coverage, hosting, analytics, release checklist).
 
 The data flow follows a clear, unidirectional pattern from the UI to the data layer, orchestrated by dependency injection (`get_it` and `injectable`).
 
