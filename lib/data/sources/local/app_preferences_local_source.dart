@@ -14,7 +14,9 @@ abstract class AppPreferencesLocalSource {
 
 @LazySingleton(as: AppPreferencesLocalSource)
 class AppPreferencesSourceImpl implements AppPreferencesLocalSource {
-  static SharedPreferences? _prefs;
+  /// Per instance, not static: there is one of these, so a static adds
+  /// nothing except state that outlives it and leaks between tests.
+  SharedPreferences? _prefs;
 
   /// Internal getter for SharedPreferences instance.
   Future<SharedPreferences> get prefs async {
@@ -35,9 +37,18 @@ class AppPreferencesSourceImpl implements AppPreferencesLocalSource {
     return instance.containsKey(key);
   }
 
-  /// Sets given [key] with [value].
+  /// Records that [key] happened.
+  ///
+  /// Only the key's presence is ever read back — `containsKey` is the whole
+  /// interface — so the stored value carries no meaning.
+  ///
+  /// Goes through the getter rather than `_prefs!`: nothing calls
+  /// [initPrefs], and this is only safe today because `main` happens to ask
+  /// `containsKey` first. A caller that marked a key before reading one
+  /// would have thrown on a null check.
   @override
   Future<void> setBooleanKey(String key) async {
-    await _prefs!.setBool(key, false);
+    final instance = await prefs;
+    await instance.setBool(key, false);
   }
 }
