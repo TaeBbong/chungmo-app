@@ -66,7 +66,11 @@ void main() {
   }
 
   test('reminds the morning before the wedding', () async {
-    await service.checkPreviousDayForNotify(schedule: _wedding(weddingIn(5)));
+    // Read once: asking weddingIn twice would straddle Seoul midnight on
+    // one run in a very long while and compare against a different day.
+    final DateTime wedding = weddingIn(5);
+
+    await service.checkPreviousDayForNotify(schedule: _wedding(wedding));
 
     expect(service.scheduled, hasLength(1));
     final reminder = service.scheduled.single;
@@ -74,12 +78,12 @@ void main() {
     expect(reminder.at.minute, 0);
     expect(reminder.at.location.name, 'Asia/Seoul');
     // The day before the wedding, whatever the wedding's own time.
-    final wedding = weddingIn(5);
-    expect(
-        reminder.at.day,
+    final DateTime dayBefore =
         DateTime(wedding.year, wedding.month, wedding.day)
-            .subtract(const Duration(days: 1))
-            .day);
+            .subtract(const Duration(days: 1));
+    expect(reminder.at.year, dayBefore.year);
+    expect(reminder.at.month, dayBefore.month);
+    expect(reminder.at.day, dayBefore.day);
   });
 
   test('names the couple and carries the link back to the detail page',
