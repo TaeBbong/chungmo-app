@@ -23,6 +23,8 @@ class _Scheduled {
 class _RecordingService extends NotificationServiceImpl {
   final List<_Scheduled> scheduled = [];
 
+  _RecordingService(super.fixedNow) : super.withClock();
+
   @override
   Future<void> addNotifySchedule({
     required int id,
@@ -48,7 +50,6 @@ Schedule _wedding(DateTime date) => Schedule(
     );
 
 void main() {
-  late _RecordingService service;
   late tz.Location seoul;
 
   setUpAll(() {
@@ -56,92 +57,112 @@ void main() {
     seoul = tz.getLocation('Asia/Seoul');
   });
 
-  setUp(() => service = _RecordingService());
+  /// A clock stopped at the given Seoul wall time.
+  tz.TZDateTime at(int day, int hour, [int minute = 0]) =>
+      tz.TZDateTime(seoul, 2026, 11, day, hour, minute);
 
-  /// A wedding [days] from now, at noon Seoul time.
-  DateTime weddingIn(int days) {
-    final now = tz.TZDateTime.now(seoul);
-    final day = now.add(Duration(days: days));
-    return DateTime(day.year, day.month, day.day, 12, 0);
-  }
+  /// A wedding on 2026-11-[day] at noon.
+  Schedule wedding(int day) => _wedding(DateTime(2026, 11, day, 12, 0));
 
-  test('reminds the morning before the wedding', () async {
-    // Read once: asking weddingIn twice would straddle Seoul midnight on
-    // one run in a very long while and compare against a different day.
-    final DateTime wedding = weddingIn(5);
+  group('the morning before', () {
+    test('reminds at 09:00 the day before', () async {
+      final service = _RecordingService(at(10, 15));
 
-    await service.checkPreviousDayForNotify(schedule: _wedding(wedding));
+      await service.checkPreviousDayForNotify(schedule: wedding(15));
 
-    expect(service.scheduled, hasLength(1));
-    final reminder = service.scheduled.single;
-    expect(reminder.at.hour, 9);
-    expect(reminder.at.minute, 0);
-    expect(reminder.at.location.name, 'Asia/Seoul');
-    // The day before the wedding, whatever the wedding's own time.
-    final DateTime dayBefore =
-        DateTime(wedding.year, wedding.month, wedding.day)
-            .subtract(const Duration(days: 1));
-    expect(reminder.at.year, dayBefore.year);
-    expect(reminder.at.month, dayBefore.month);
-    expect(reminder.at.day, dayBefore.day);
+      final reminder = service.scheduled.single;
+      expect(reminder.at, at(14, 9));
+      expect(reminder.title, startsWith('내일'));
+      expect(reminder.at.location.name, 'Asia/Seoul');
+    });
+
+    test('names the couple and carries the link to the detail page', () async {
+      final service = _RecordingService(at(10, 15));
+
+      await service.checkPreviousDayForNotify(schedule: wedding(15));
+
+      final reminder = service.scheduled.single;
+      expect(reminder.title, contains('김민준'));
+      expect(reminder.title, contains('이서연'));
+      expect(reminder.payload, 'https://invite.test/a');
+    });
+
+    test('takes the slot with minutes to spare', () async {
+      // The old guard compared against a fixed 11:00, so it threw this away
+      // even though the reminder was still an hour off (#67).
+      final service = _RecordingService(at(14, 8));
+
+      await service.checkPreviousDayForNotify(schedule: wedding(15));
+
+      expect(service.scheduled.single.at, at(14, 9));
+      expect(service.scheduled.single.title, startsWith('내일'));
+    });
   });
 
-  test('names the couple and carries the link back to the detail page',
-      () async {
-    await service.checkPreviousDayForNotify(schedule: _wedding(weddingIn(5)));
+  group('the morning of', () {
+    test('reminds on the day when the invitation arrives the night before',
+        () async {
+      // Saved at 22:00 for tomorrow: the day-before slot has gone, the
+      // wedding has not. This wording had never been sent (#67).
+      final service = _RecordingService(at(14, 22));
 
-    final reminder = service.scheduled.single;
-    expect(reminder.title, contains('김민준'));
-    expect(reminder.title, contains('이서연'));
-    expect(reminder.title, startsWith('내일'));
-    // The payload is what the tap handler looks the schedule up by.
-    expect(reminder.payload, 'https://invite.test/a');
+      await service.checkPreviousDayForNotify(schedule: wedding(15));
+
+      final reminder = service.scheduled.single;
+      expect(reminder.at, at(15, 9));
+      expect(reminder.title, startsWith('오늘'));
+    });
+
+    test('standing exactly on the day-before slot moves to the day itself',
+        () async {
+      // A notification scheduled for the current instant would fire at
+      // once, which is not a reminder — so the slot counts as gone.
+      final service = _RecordingService(at(14, 9));
+
+      await service.checkPreviousDayForNotify(schedule: wedding(15));
+
+      expect(service.scheduled.single.at, at(15, 9));
+      expect(service.scheduled.single.title, startsWith('오늘'));
+    });
+
+    test('reminds for a wedding later today', () async {
+      final service = _RecordingService(at(15, 8));
+
+      await service.checkPreviousDayForNotify(schedule: wedding(15));
+
+      expect(service.scheduled.single.at, at(15, 9));
+      expect(service.scheduled.single.title, startsWith('오늘'));
+    });
   });
 
-  test('schedules nothing for a wedding that has already happened', () async {
-    await service.checkPreviousDayForNotify(schedule: _wedding(weddingIn(-3)));
+  group('nothing left to remind about', () {
+    test('both slots gone on the wedding day', () async {
+      final service = _RecordingService(at(15, 10));
 
-    expect(service.scheduled, isEmpty);
-  });
+      await service.checkPreviousDayForNotify(schedule: wedding(15));
 
-  test('schedules nothing for a wedding held today', () async {
-    // The reminder slot was yesterday morning; there is nothing left to
-    // schedule for it.
-    await service.checkPreviousDayForNotify(schedule: _wedding(weddingIn(0)));
+      expect(service.scheduled, isEmpty);
+    });
 
-    expect(service.scheduled, isEmpty);
-  });
+    test('the wedding has already happened', () async {
+      final service = _RecordingService(at(20, 9));
 
-  test('schedules nothing for a wedding tomorrow — a known defect', () async {
-    // Recorded, not endorsed. The reminder slot for a wedding tomorrow is
-    // today at 09:00, and the guard drops it by comparing against a fixed
-    // 11:00 rather than against now — so the slot is discarded even at
-    // 08:00, when it is still an hour away. See issue #67.
-    await service.checkPreviousDayForNotify(schedule: _wedding(weddingIn(1)));
+      await service.checkPreviousDayForNotify(schedule: wedding(15));
 
-    expect(service.scheduled, isEmpty);
-  });
-
-  test('never produces the same-day wording — a known defect', () async {
-    // The branch that would say '오늘 ... 결혼식이 있습니다' asks whether the
-    // 09:00 slot is the same instant as 11:00 today, which it cannot be.
-    // Nothing the caller passes can reach it. See issue #67.
-    for (final days in [0, 1, 2, 5, 30]) {
-      await service.checkPreviousDayForNotify(
-          schedule: _wedding(weddingIn(days)));
-    }
-
-    expect(
-        service.scheduled.map((s) => s.title), everyElement(startsWith('내일')));
+      expect(service.scheduled, isEmpty);
+    });
   });
 
   test('two weddings get two reminders, keyed apart by link', () async {
-    await service.checkPreviousDayForNotify(schedule: _wedding(weddingIn(5)));
+    final service = _RecordingService(at(10, 15));
+
+    await service.checkPreviousDayForNotify(schedule: wedding(15));
     await service.checkPreviousDayForNotify(
-        schedule: _wedding(weddingIn(9)).copyWith(
+        schedule: wedding(20).copyWith(
             link: 'https://invite.test/b', groom: '박도윤', bride: '최서윤'));
 
     expect(service.scheduled, hasLength(2));
+    expect(service.scheduled.last.at, at(19, 9));
     expect(service.scheduled.last.payload, 'https://invite.test/b');
     expect(service.scheduled.last.title, contains('박도윤'));
   });
