@@ -41,6 +41,9 @@ Measured on this repository the day the tooling was added:
 | `flutter test --coverage`, as-is | 1774 / 2457 | **72.2%** |
 | Every library loaded, generated code excluded | 1737 / 3213 | **54.1%** |
 
+(Those are the figures from the day this was set up. The current total is
+57.9%; run the tool for today's.)
+
 29 of 109 files were absent from the first report, among them `main.dart`,
 `detail_page.dart`, `stats_page.dart`, both theme files and most use cases.
 
@@ -77,24 +80,23 @@ because the number should mean one thing.
 
 ## 4. Where it stands
 
-54.1% overall, by area:
+57.9% overall, by area:
 
 | Area | Coverage |
 | --- | --- |
-| `core/navigation` | 100% |
-| `core/utils` | 89.4% |
+| `core/navigation`, `data/mapper`, `data/models` | 100% |
+| `core/utils` | 90.5% |
 | `presentation/bloc` | 88.6% |
 | `data/repositories` | 87.7% |
-| `data/mapper` | 83.6% |
-| `presentation/widgets` | 75.7% |
-| `domain/entities` | 71.2% |
-| `core/services` | 65.7% |
-| `data/sources` | 48.4% |
+| `presentation/widgets` | 80.5% |
+| `domain/entities` | 76.9% |
+| `data/sources` | 76.6% |
+| `core/services` | 72.6% |
 | `presentation/pages` | 33.0% |
 | `domain/usecases` | 10.0% |
 | `core/analytics` | 7.4% |
 | `presentation/theme` | 6.5% |
-| `main.dart` | 0% |
+| `main.dart`, `core/env.dart` | 0% |
 
 Low is not automatically bad. `presentation/theme` (0/142) and `main.dart`
 (0/55) are declarations and bootstrap: there is no behaviour to assert, and
@@ -102,14 +104,19 @@ testing them would pin down formatting rather than conduct. The nine
 `domain/usecases` files are three lines each and do nothing but forward to a
 repository that is tested at 87.7%.
 
-The gaps worth closing are the ones with logic in them:
+The four gaps this doc first named are closed (#66). Writing those tests
+turned up three defects that no amount of reading had: a notification rule
+that could never fire for a wedding tomorrow and a branch that could never
+run at all (#67), and a preference write that only worked because `main`
+happened to read one first.
+
+What is left, in the order it is worth doing:
 
 | File | Uncovered | Why it matters |
 | --- | --- | --- |
-| `data/sources/remote/firebase_ai_logic_impl.dart` | 78 lines | The parsing pipeline: prompt assembly, the image-fallback decision, the incomplete-schedule branch. The eval set exercises it end to end, but nothing pins its branches. |
-| `core/services/notification_service.dart` | 61 lines | Scheduling, cancelling and the day-before rule. |
-| `presentation/widgets/schedule_detail_column.dart` | 20 lines | Rendered on the result screen and the detail page. |
-| `data/sources/local/app_preferences_local_source.dart` | 9 lines | Reads the flags the backfill and the tour depend on. |
+| `presentation/pages` | 773 lines | The largest remaining block. `create_page.dart` alone carries the share-intent handling, the clipboard peek and the coach-mark tour. |
+| `core/analytics/firebase_analytics_service.dart` | 18 lines | Thin over the SDK; worth it only if the event names start carrying logic. |
+| `data/sources/remote/cloud_function_impl.dart` | 16 lines | The legacy GPT backend, which `main` never selects. Not worth a test while that is true. |
 
 ---
 
