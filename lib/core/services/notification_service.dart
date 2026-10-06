@@ -139,10 +139,15 @@ class NotificationServiceImpl implements NotificationService {
     required Schedule schedule,
   }) async {
     _ensureTimeZones();
+    // Re-express the wedding in Seoul rather than reading its fields as
+    // Seoul: `ScheduleMapper.toEntity` hands back the right *instant* in the
+    // device's own zone, so on a phone outside Korea the fields say 04:30
+    // for a 13:30 ceremony. Converting keeps the moment, and both slots are
+    // then derived from the day it actually falls on there.
     final tz.TZDateTime wedding = _inSeoul(schedule.date);
     final tz.TZDateTime dayBefore =
-        _morningOf(schedule.date.subtract(const Duration(days: 1)));
-    final tz.TZDateTime onTheDay = _morningOf(schedule.date);
+        _morningOf(wedding.subtract(const Duration(days: 1)));
+    final tz.TZDateTime onTheDay = _morningOf(wedding);
     final tz.TZDateTime now = _now(wedding.location);
 
     final String couple = '${schedule.groom} & ${schedule.bride}';
@@ -229,18 +234,16 @@ class NotificationServiceImpl implements NotificationService {
     _timeZonesReady = true;
   }
 
-  /// [at] read as Korean wall time.
+  /// The same instant as [at], put on the Seoul clock.
   ///
-  /// Always Seoul: the wedding is in Korea, so that is the clock its time
-  /// was written on. A user abroad gets the reminder in their own small
-  /// hours, which is a separate question from this one.
-  tz.TZDateTime _inSeoul(DateTime at) => tz.TZDateTime(
-      tz.getLocation('Asia/Seoul'),
-      at.year,
-      at.month,
-      at.day,
-      at.hour,
-      at.minute);
+  /// Converted, not reinterpreted: `ScheduleMapper.toEntity` returns the
+  /// right instant expressed in the device's own zone, so reading its
+  /// fields as Seoul would move a 13:30 ceremony to 04:30 on a phone
+  /// outside Korea. Always Seoul because the wedding is in Korea, and that
+  /// is the clock the reminder is about; a user abroad gets it in their own
+  /// small hours, which is a separate question from this one.
+  tz.TZDateTime _inSeoul(DateTime at) =>
+      tz.TZDateTime.from(at, tz.getLocation('Asia/Seoul'));
 
   /// [day] at the reminder hour, Korean time.
   tz.TZDateTime _morningOf(DateTime day) => tz.TZDateTime(

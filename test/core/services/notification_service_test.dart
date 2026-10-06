@@ -61,8 +61,13 @@ void main() {
   tz.TZDateTime at(int day, int hour, [int minute = 0]) =>
       tz.TZDateTime(seoul, 2026, 11, day, hour, minute);
 
-  /// A wedding on 2026-11-[day] at noon.
-  Schedule wedding(int day) => _wedding(DateTime(2026, 11, day, 12, 0));
+  /// A wedding on 2026-11-[day] at noon Seoul time.
+  ///
+  /// A Seoul instant rather than a local `DateTime`: the rule converts what
+  /// it is given, so stating a wall-clock time here would mean a different
+  /// moment on a machine outside Korea and these cases would turn on where
+  /// the suite runs.
+  Schedule wedding(int day) => _wedding(at(day, 12));
 
   group('the morning before', () {
     test('reminds at 09:00 the day before', () async {
@@ -144,8 +149,7 @@ void main() {
       // hour after it began, which is worse than silence.
       final service = _RecordingService(at(15, 7));
 
-      await service.checkPreviousDayForNotify(
-          schedule: _wedding(DateTime(2026, 11, 15, 8, 0)));
+      await service.checkPreviousDayForNotify(schedule: _wedding(at(15, 8)));
 
       expect(service.scheduled, isEmpty);
     });
@@ -165,6 +169,21 @@ void main() {
 
       expect(service.scheduled, isEmpty);
     });
+  });
+
+  test('reads the wedding as an instant, not as Seoul wall-clock fields',
+      () async {
+    // `ScheduleMapper.toEntity` returns the right instant in the device's
+    // own zone, so on a phone outside Korea a 12:00 Seoul ceremony arrives
+    // with 03:00 in its fields. Reading those as Seoul moved the wedding
+    // nine hours and silently dropped the same-day reminder.
+    final asUtc = _wedding(DateTime.utc(2026, 11, 15, 3));
+    final service = _RecordingService(at(14, 22));
+
+    await service.checkPreviousDayForNotify(schedule: asUtc);
+
+    expect(service.scheduled.single.at, at(15, 9));
+    expect(service.scheduled.single.title, startsWith('오늘'));
   });
 
   test('two weddings get two reminders, keyed apart by link', () async {
