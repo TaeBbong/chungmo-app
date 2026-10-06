@@ -42,16 +42,23 @@ class NotificationServiceImpl implements NotificationService {
   static final FlutterLocalNotificationsPlugin _localNotifyPlugin =
       FlutterLocalNotificationsPlugin();
 
+  /// When a reminder lands, Korean time. One place, because two moments
+  /// are derived from it.
+  static const int _reminderHour = 9;
+
+  /// The timezone database is process-global; prepare it once rather than
+  /// on every date we build.
+  static bool _timeZonesReady = false;
+
   final NowIn _now;
 
   /// The shipping constructor; injectable builds this one.
   NotificationServiceImpl() : _now = tz.TZDateTime.now;
 
-  /// Fixes the clock, so the branches below — which all turn on what time
-  /// it is — can be driven instead of waited for.
+  /// Replaces the clock, so the branches below — which all turn on what
+  /// time it is — can be driven instead of waited for.
   @visibleForTesting
-  NotificationServiceImpl.withClock(tz.TZDateTime fixedNow)
-      : _now = ((_) => fixedNow);
+  NotificationServiceImpl.withClock(NowIn now) : _now = now;
 
   @override
   FlutterLocalNotificationsPlugin getLocalNotificationPlugin() {
@@ -91,7 +98,7 @@ class NotificationServiceImpl implements NotificationService {
         }
       },
     );
-    tz.initializeTimeZones();
+    _ensureTimeZones();
   }
 
   /// `onDidReceiveNotificationResponse` handles onClickNotification from foreground/background state.
@@ -131,11 +138,12 @@ class NotificationServiceImpl implements NotificationService {
   Future<void> checkPreviousDayForNotify({
     required Schedule schedule,
   }) async {
-    final tz.TZDateTime dayBefore = _timeZoneSetting(
-        scheduleDate: schedule.date, hour: 9, minute: 0, daysBefore: 1);
-    final tz.TZDateTime onTheDay = _timeZoneSetting(
-        scheduleDate: schedule.date, hour: 9, minute: 0, daysBefore: 0);
-    final tz.TZDateTime now = _now(dayBefore.location);
+    _ensureTimeZones();
+    final tz.TZDateTime wedding = _inSeoul(schedule.date);
+    final tz.TZDateTime dayBefore =
+        _morningOf(schedule.date.subtract(const Duration(days: 1)));
+    final tz.TZDateTime onTheDay = _morningOf(schedule.date);
+    final tz.TZDateTime now = _now(wedding.location);
 
     final String couple = '${schedule.groom} & ${schedule.bride}';
     final tz.TZDateTime target;
@@ -143,9 +151,11 @@ class NotificationServiceImpl implements NotificationService {
     if (dayBefore.isAfter(now)) {
       target = dayBefore;
       title = '내일 $couple님의 결혼식이 있습니다!';
-    } else if (onTheDay.isAfter(now)) {
+    } else if (onTheDay.isAfter(now) && onTheDay.isBefore(wedding)) {
       // The day-before slot has gone — the invitation arrived late — but
-      // the wedding has not.
+      // the wedding has not. Guarded against the wedding itself, so a
+      // ceremony starting before 09:00 is not 'reminded' about after it
+      // has begun.
       target = onTheDay;
       title = '오늘 $couple님의 결혼식이 있습니다!';
     } else {
@@ -208,24 +218,38 @@ class NotificationServiceImpl implements NotificationService {
     await _localNotifyPlugin.cancel(id);
   }
 
-  /// The wedding's date shifted back [daysBefore] days, at [hour]:[minute]
-  /// Korean time — where the reminder lands.
+  /// Prepares the process-global timezone database, once.
   ///
-  /// Always Seoul: the wedding is in Korea, so 09:00 there is the morning
-  /// the reminder is about. A user abroad gets it at their own small hours,
-  /// which is a separate question from this one.
-  tz.TZDateTime _timeZoneSetting({
-    required DateTime scheduleDate,
-    required int hour,
-    required int minute,
-    int daysBefore = 1,
-  }) {
+  /// Separated out because it is a side effect: the date helpers below are
+  /// pure, and this is the line that is not.
+  void _ensureTimeZones() {
+    if (_timeZonesReady) return;
     tz.initializeTimeZones();
     tz.setLocalLocation(tz.getLocation('Asia/Seoul'));
-    final DateTime day = scheduleDate.subtract(Duration(days: daysBefore));
-    return tz.TZDateTime(tz.getLocation('Asia/Seoul'), day.year, day.month,
-        day.day, hour, minute);
+    _timeZonesReady = true;
   }
+
+  /// [at] read as Korean wall time.
+  ///
+  /// Always Seoul: the wedding is in Korea, so that is the clock its time
+  /// was written on. A user abroad gets the reminder in their own small
+  /// hours, which is a separate question from this one.
+  tz.TZDateTime _inSeoul(DateTime at) => tz.TZDateTime(
+      tz.getLocation('Asia/Seoul'),
+      at.year,
+      at.month,
+      at.day,
+      at.hour,
+      at.minute);
+
+  /// [day] at the reminder hour, Korean time.
+  tz.TZDateTime _morningOf(DateTime day) => tz.TZDateTime(
+      tz.getLocation('Asia/Seoul'),
+      day.year,
+      day.month,
+      day.day,
+      _reminderHour,
+      0);
 
   @override
   Future<void> checkScheduledNotifications() async {
@@ -258,7 +282,7 @@ class NotificationServiceImpl implements NotificationService {
       ),
     );
 
-    tz.setLocalLocation(tz.getLocation('Asia/Seoul'));
+    _ensureTimeZones();
     tz.TZDateTime target = tz.TZDateTime.now(tz.getLocation('Asia/Seoul'))
         .add(const Duration(minutes: 2));
     await _localNotifyPlugin.zonedSchedule(
