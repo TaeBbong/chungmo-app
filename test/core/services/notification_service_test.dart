@@ -23,7 +23,7 @@ class _Scheduled {
 class _RecordingService extends NotificationServiceImpl {
   final List<_Scheduled> scheduled = [];
 
-  _RecordingService(super.fixedNow) : super.withClock();
+  _RecordingService(tz.TZDateTime now) : super.withClock(((_) => now));
 
   @override
   Future<void> addNotifySchedule({
@@ -87,7 +87,7 @@ void main() {
       expect(reminder.payload, 'https://invite.test/a');
     });
 
-    test('takes the slot with minutes to spare', () async {
+    test('takes the slot with an hour to spare', () async {
       // The old guard compared against a fixed 11:00, so it threw this away
       // even though the reminder was still an hour off (#67).
       final service = _RecordingService(at(14, 8));
@@ -111,6 +111,9 @@ void main() {
       final reminder = service.scheduled.single;
       expect(reminder.at, at(15, 9));
       expect(reminder.title, startsWith('오늘'));
+      expect(reminder.title, contains('김민준'));
+      expect(reminder.title, contains('이서연'));
+      expect(reminder.payload, 'https://invite.test/a');
     });
 
     test('standing exactly on the day-before slot moves to the day itself',
@@ -136,6 +139,17 @@ void main() {
   });
 
   group('nothing left to remind about', () {
+    test('a wedding that starts before the reminder hour', () async {
+      // The slot is 09:00; a ceremony at 08:00 would be reminded about an
+      // hour after it began, which is worse than silence.
+      final service = _RecordingService(at(15, 7));
+
+      await service.checkPreviousDayForNotify(
+          schedule: _wedding(DateTime(2026, 11, 15, 8, 0)));
+
+      expect(service.scheduled, isEmpty);
+    });
+
     test('both slots gone on the wedding day', () async {
       final service = _RecordingService(at(15, 10));
 
