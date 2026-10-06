@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -33,10 +34,31 @@ abstract class NotificationService {
   Future<void> addTestNotifySchedule({required int id});
 }
 
+/// Reads the current time in [location]. Defaults to the real clock.
+typedef NowIn = tz.TZDateTime Function(tz.Location location);
+
 @LazySingleton(as: NotificationService)
 class NotificationServiceImpl implements NotificationService {
   static final FlutterLocalNotificationsPlugin _localNotifyPlugin =
       FlutterLocalNotificationsPlugin();
+
+  /// When a reminder lands, Korean time. One place, because two moments
+  /// are derived from it.
+  static const int _reminderHour = 9;
+
+  /// The timezone database is process-global; prepare it once rather than
+  /// on every date we build.
+  static bool _timeZonesReady = false;
+
+  final NowIn _now;
+
+  /// The shipping constructor; injectable builds this one.
+  NotificationServiceImpl() : _now = tz.TZDateTime.now;
+
+  /// Replaces the clock, so the branches below — which all turn on what
+  /// time it is — can be driven instead of waited for.
+  @visibleForTesting
+  NotificationServiceImpl.withClock(NowIn now) : _now = now;
 
   @override
   FlutterLocalNotificationsPlugin getLocalNotificationPlugin() {
@@ -76,7 +98,7 @@ class NotificationServiceImpl implements NotificationService {
         }
       },
     );
-    tz.initializeTimeZones();
+    _ensureTimeZones();
   }
 
   /// `onDidReceiveNotificationResponse` handles onClickNotification from foreground/background state.
@@ -100,41 +122,56 @@ class NotificationServiceImpl implements NotificationService {
     }
   }
 
-  /// Add notification at calculated date(_timeZoneSetting).
+  /// Schedules the reminder for [schedule], at 09:00 Korean time.
   ///
-  /// If calculated date is before now, doesn't make notification.
-  /// If calculated date is now but time is over 11:00am, notify tomorrow 9:00am.
-  /// If calculated date is after today, notify schedule's previous day 9:00am.
+  /// The morning before the wedding if that is still ahead; otherwise the
+  /// morning of the wedding, worded for the day; otherwise nothing, because
+  /// both moments have passed.
+  ///
+  /// This used to compare the slot against a fixed 11:00 rather than
+  /// against now, which dropped the reminder for a wedding tomorrow at
+  /// every hour of the day and left the same-day wording unreachable — a
+  /// 09:00 slot can never be the same instant as 11:00 (#67).
   ///
   /// Called by ScheduleRepository; when user create/edit schedule.
   @override
   Future<void> checkPreviousDayForNotify({
     required Schedule schedule,
   }) async {
-    final int id = await schedule.link.hashUrl;
-    String title = "내일 ${schedule.groom} & ${schedule.bride}님의 결혼식이 있습니다!";
-    tz.TZDateTime scheduleDate =
-        _timeZoneSetting(scheduleDate: schedule.date, hour: 9, minute: 0);
+    _ensureTimeZones();
+    // Re-express the wedding in Seoul rather than reading its fields as
+    // Seoul: `ScheduleMapper.toEntity` hands back the right *instant* in the
+    // device's own zone, so on a phone outside Korea the fields say 04:30
+    // for a 13:30 ceremony. Converting keeps the moment, and both slots are
+    // then derived from the day it actually falls on there.
+    final tz.TZDateTime wedding = _inSeoul(schedule.date);
+    final tz.TZDateTime dayBefore =
+        _morningOf(wedding.subtract(const Duration(days: 1)));
+    final tz.TZDateTime onTheDay = _morningOf(wedding);
+    final tz.TZDateTime now = _now(wedding.location);
 
-    final now = tz.TZDateTime.now(scheduleDate.location);
-    final todayEleven = tz.TZDateTime(
-        scheduleDate.location, now.year, now.month, now.day, 11, 0);
-
-    if (scheduleDate.isAtSameMomentAs(todayEleven) &&
-        now.isAfter(todayEleven)) {
-      final DateTime tomorrow = DateTime.now().add(const Duration(days: 1));
-      scheduleDate = tz.TZDateTime(scheduleDate.location, tomorrow.year,
-          tomorrow.month, tomorrow.day, 9, 0);
-      title = "오늘 ${schedule.groom} & ${schedule.bride}님의 결혼식이 있습니다!";
-    } else if (scheduleDate.isBefore(todayEleven)) {
+    final String couple = '${schedule.groom} & ${schedule.bride}';
+    final tz.TZDateTime target;
+    final String title;
+    if (dayBefore.isAfter(now)) {
+      target = dayBefore;
+      title = '내일 $couple님의 결혼식이 있습니다!';
+    } else if (onTheDay.isAfter(now) && onTheDay.isBefore(wedding)) {
+      // The day-before slot has gone — the invitation arrived late — but
+      // the wedding has not. Guarded against the wedding itself, so a
+      // ceremony starting before 09:00 is not 'reminded' about after it
+      // has begun.
+      target = onTheDay;
+      title = '오늘 $couple님의 결혼식이 있습니다!';
+    } else {
       return;
     }
 
     await addNotifySchedule(
-      id: id,
+      id: await schedule.link.hashUrl,
       appName: '청모',
       title: title,
-      scheduleDate: scheduleDate,
+      scheduleDate: target,
       payload: schedule.link,
     );
   }
@@ -186,19 +223,36 @@ class NotificationServiceImpl implements NotificationService {
     await _localNotifyPlugin.cancel(id);
   }
 
-  /// Calculate targetDate = scheduleDate - 1, so user can get notification on day before event.
-  tz.TZDateTime _timeZoneSetting({
-    required DateTime scheduleDate,
-    required int hour,
-    required int minute,
-  }) {
+  /// Prepares the process-global timezone database, once.
+  ///
+  /// Separated out because it is a side effect: the date helpers below are
+  /// pure, and this is the line that is not.
+  void _ensureTimeZones() {
+    if (_timeZonesReady) return;
     tz.initializeTimeZones();
     tz.setLocalLocation(tz.getLocation('Asia/Seoul'));
-    DateTime previousDay = scheduleDate.subtract(const Duration(days: 1));
-    tz.TZDateTime target = tz.TZDateTime(tz.getLocation('Asia/Seoul'),
-        previousDay.year, previousDay.month, previousDay.day, hour, minute);
-    return target;
+    _timeZonesReady = true;
   }
+
+  /// The same instant as [at], put on the Seoul clock.
+  ///
+  /// Converted, not reinterpreted: `ScheduleMapper.toEntity` returns the
+  /// right instant expressed in the device's own zone, so reading its
+  /// fields as Seoul would move a 13:30 ceremony to 04:30 on a phone
+  /// outside Korea. Always Seoul because the wedding is in Korea, and that
+  /// is the clock the reminder is about; a user abroad gets it in their own
+  /// small hours, which is a separate question from this one.
+  tz.TZDateTime _inSeoul(DateTime at) =>
+      tz.TZDateTime.from(at, tz.getLocation('Asia/Seoul'));
+
+  /// [day] at the reminder hour, Korean time.
+  tz.TZDateTime _morningOf(DateTime day) => tz.TZDateTime(
+      tz.getLocation('Asia/Seoul'),
+      day.year,
+      day.month,
+      day.day,
+      _reminderHour,
+      0);
 
   @override
   Future<void> checkScheduledNotifications() async {
@@ -231,7 +285,7 @@ class NotificationServiceImpl implements NotificationService {
       ),
     );
 
-    tz.setLocalLocation(tz.getLocation('Asia/Seoul'));
+    _ensureTimeZones();
     tz.TZDateTime target = tz.TZDateTime.now(tz.getLocation('Asia/Seoul'))
         .add(const Duration(minutes: 2));
     await _localNotifyPlugin.zonedSchedule(
