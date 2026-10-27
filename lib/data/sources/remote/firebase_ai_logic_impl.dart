@@ -16,6 +16,7 @@ import '../../../core/utils/image_preprocessor.dart';
 import '../../../core/utils/string_extension.dart';
 import '../../../domain/entities/invitation_image.dart';
 import '../../../domain/entities/schedule_draft.dart';
+import '../../../domain/exceptions.dart';
 import '../../mapper/schedule_mapper.dart';
 import '../../models/schedule/schedule_model.dart';
 import 'invitation_prompt.dart';
@@ -74,7 +75,7 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
   @override
   Future<Map<String, String>> extractVenues(List<String> locations) async {
     if (locations.isEmpty) return const {};
-    final String? text = await _generateJson(
+    final String? text = await _callModel(
         [Content.text(venueBackfillPrompt(locations))],
         venueBackfillJsonSchema);
     // A missing body is a failed extraction, not "no venues found": it must
@@ -105,6 +106,8 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
       final crawled = await _crawl(link);
       final prompt = await _linkPrompt(crawled);
       return await _generate(prompt, link);
+    } on RemoteUnavailableException {
+      rethrow;
     } on FormatException {
       rethrow;
     } on TimeoutException {
@@ -167,6 +170,8 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
         ])
       ];
       return await _generate(prompt, syntheticLink);
+    } on RemoteUnavailableException {
+      rethrow;
     } on FormatException {
       rethrow;
     } on TimeoutException {
@@ -187,6 +192,8 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
       final String syntheticLink = 'text://${await text.hashUrl}';
       final prompt = [Content.text(textExtractionPrompt(text))];
       return await _generate(prompt, syntheticLink);
+    } on RemoteUnavailableException {
+      rethrow;
     } on FormatException {
       rethrow;
     } on TimeoutException {
@@ -196,11 +203,34 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
     }
   }
 
+  /// Runs the model, translating a service refusal into a domain failure.
+  ///
+  /// Every `FirebaseAIException` is raised by the backend or by the SDK
+  /// reading its reply, so the invitation was never parsed and retrying the
+  /// same input cannot help until the service recovers. Without this the
+  /// refusal reached the generic `catch (e)` below and was flattened into a
+  /// bare `Exception`, which the presentation layer could only report as an
+  /// unclassified failure.
+  ///
+  /// Matched on the exception type, not on its text. The SDK only produces
+  /// `QuotaExceeded` when the message contains the word "quota"
+  /// (firebase_ai 4.0.0, `lib/src/error.dart:159-161`), and the message
+  /// behind the 2026-10 outage read "Your prepayment credits are depleted",
+  /// which does not — a text check would have missed the very outage this
+  /// was written for.
+  Future<String?> _callModel(
+      List<Content> prompt, Map<String, Object> schema) async {
+    try {
+      return await _generateJson(prompt, schema);
+    } on FirebaseAIException catch (error) {
+      throw RemoteUnavailableException(error.message);
+    }
+  }
+
   /// Runs the model and adapts the response into a [ScheduleModel] keyed
   /// by [link], falling back to the default thumbnail.
   Future<ScheduleModel> _generate(List<Content> prompt, String link) async {
-    final String? text =
-        await _generateJson(prompt, scheduleResponseJsonSchema);
+    final String? text = await _callModel(prompt, scheduleResponseJsonSchema);
     if (text != null) {
       ScheduleModel model = ScheduleModel.fromJson(_toModelJson(text, link));
       if (model.thumbnail.isEmpty) {
