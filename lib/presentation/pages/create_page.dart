@@ -472,33 +472,58 @@ class _CreatePageState extends State<CreatePage>
                           ));
                     }
                     if (state.isError) {
-                      // A format/incomplete failure means the AI answered but
-                      // found no usable schedule — retrying the same input
-                      // won't help, so guide the user instead of blaming the
-                      // server.
+                      // Three different things can have gone wrong and the
+                      // user can only act on one of them.
+                      //
+                      // - unavailable: the service refused the request, so
+                      //   the invitation was never read. Retrying cannot
+                      //   succeed, and asking for it is what sent one user
+                      //   through nine attempts in ten minutes (#72).
+                      // - format/incomplete: the model answered but found no
+                      //   usable schedule; the input is the thing to check.
+                      // - anything else: an ordinary transient failure, where
+                      //   retrying really is the right advice.
+                      final bool unavailable =
+                          state.errorReason == ParseFailureReason.unavailable;
                       final bool notReadable = state.errorReason ==
                               ParseFailureReason.format ||
                           state.errorReason == ParseFailureReason.incomplete;
+                      final IconData icon;
+                      final String title;
+                      final String detail;
+                      if (unavailable) {
+                        icon = Icons.cloud_off_rounded;
+                        title = '지금은 분석할 수 없어요.';
+                        detail = '청첩장 문제가 아니라 서비스가 일시적으로 멈췄어요. '
+                            '잠시 후에 다시 시도해주세요.';
+                      } else if (notReadable) {
+                        icon = Icons.search_off_rounded;
+                        title = '청첩장 정보를 찾지 못했어요.';
+                        detail = '예식 날짜가 담긴 청첩장인지 확인하고 다시 시도해주세요.';
+                      } else {
+                        icon = Icons.search_off_rounded;
+                        title = '다시 시도해주세요.';
+                        detail = '잠시 서버에 문제가 생겼어요.';
+                      }
                       return _analyzeBranch(
                           'error',
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.search_off_rounded,
+                              Icon(icon,
                                   size: 44,
                                   color: Theme.of(context)
                                       .colorScheme
                                       .onSurfaceVariant),
                               const SizedBox(height: Dimens.md),
                               Text(
-                                notReadable ? '청첩장 정보를 찾지 못했어요.' : '다시 시도해주세요.',
+                                title,
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
                               const SizedBox(height: Dimens.xs),
                               Text(
-                                notReadable
-                                    ? '예식 날짜가 담긴 청첩장인지 확인하고 다시 시도해주세요.'
-                                    : '잠시 서버에 문제가 생겼어요.',
+                                detail,
+                                textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               // Partial extraction kept from the failed parse:

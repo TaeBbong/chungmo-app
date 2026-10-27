@@ -13,6 +13,7 @@ import '../../../core/services/notification_service.dart';
 import '../../../domain/entities/invitation_image.dart';
 import '../../../domain/entities/schedule.dart';
 import '../../../domain/entities/schedule_draft.dart';
+import '../../../domain/exceptions.dart';
 import '../../../domain/usecases/usecases.dart';
 
 part 'create_state.dart';
@@ -160,6 +161,11 @@ class CreateCubit extends Cubit<CreateState> {
 
   /// Best-effort classification of a parse failure for the `reason` parameter.
   String _classifyFailure(Object error) {
+    // First: the invitation was never read, so none of the parse-shaped
+    // reasons below apply and the user must not be told to retry.
+    if (error is RemoteUnavailableException) {
+      return ParseFailureReason.unavailable;
+    }
     // Before FormatException: an incomplete parse extends it, and the two
     // must stay distinguishable (draft offered vs nothing readable).
     if (error is IncompleteScheduleException) {
