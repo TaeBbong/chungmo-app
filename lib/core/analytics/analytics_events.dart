@@ -98,6 +98,12 @@ class ParseFailureReason {
   /// The request timed out.
   static const String timeout = 'timeout';
 
+  /// The model backend refused the request — an exhausted quota or prepaid
+  /// balance, a retired model, any other service-side refusal. The
+  /// invitation was never read, so retrying it cannot help until the
+  /// service recovers.
+  static const String unavailable = 'unavailable';
+
   /// Any other, unclassified failure.
   static const String unknown = 'unknown';
 }
