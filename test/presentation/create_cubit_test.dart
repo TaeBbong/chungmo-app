@@ -4,6 +4,7 @@ import 'package:chungmo/core/analytics/noop_analytics_service.dart';
 import 'package:chungmo/domain/entities/invitation_image.dart';
 import 'package:chungmo/domain/entities/schedule.dart';
 import 'package:chungmo/domain/entities/schedule_draft.dart';
+import 'package:chungmo/domain/exceptions.dart';
 import 'package:chungmo/presentation/bloc/create/create_cubit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -89,6 +90,30 @@ void main() {
       verify: (_) {
         verify(analyzeImage.execute(tImage)).called(1);
         verify(save.execute(tImageSchedule)).called(1);
+      },
+    );
+
+    blocTest<CreateCubit, CreateState>(
+      'classifies a service refusal as unavailable, not unknown',
+      build: () {
+        // Before this was classified, the outage reached the user as the
+        // generic "please try again" and one user retried nine times in ten
+        // minutes (#72).
+        when(analyze.execute(tUrl)).thenThrow(
+            const RemoteUnavailableException('credits are depleted'));
+        return cubit;
+      },
+      act: (cubit) => cubit.analyzeLink(tUrl),
+      expect: () => [
+        CreateState.initial().copyWith(isLoading: true, isError: false),
+        CreateState.initial().copyWith(
+            isLoading: false,
+            isError: true,
+            errorReason: ParseFailureReason.unavailable,
+            schedule: null),
+      ],
+      verify: (_) {
+        verifyNever(save.execute(any));
       },
     );
 

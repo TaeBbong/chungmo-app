@@ -13,6 +13,7 @@ import 'package:chungmo/core/utils/constants.dart';
 import 'package:chungmo/core/utils/crawler.dart';
 import 'package:chungmo/data/sources/remote/firebase_ai_logic_impl.dart';
 import 'package:chungmo/domain/entities/schedule_draft.dart';
+import 'package:chungmo/domain/exceptions.dart';
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -299,6 +300,61 @@ void main() {
           FirebaseAiLogicImpl.withSeams(generateJson: _Model(null).call);
 
       expect(
+          source.extractVenues(const ['x']), throwsA(isA<FormatException>()));
+    });
+  });
+
+  group('a refusal from the service', () {
+    /// A source whose model call fails the way the backend makes it fail.
+    FirebaseAiLogicImpl refusing(Object error) =>
+        FirebaseAiLogicImpl.withSeams(generateJson: (_, __) async {
+          throw error;
+        });
+
+    test('surfaces depleted credits as RemoteUnavailableException', () async {
+      // The exact message from the 2026-10 outage. firebase_ai maps to
+      // QuotaExceeded only when the text contains "quota" — this one says
+      // "credits", so it arrives as a plain ServerException and the type,
+      // not the wording, has to carry the meaning.
+      final source = refusing(ServerException(
+          'Your prepayment credits are depleted. Please go to AI Studio at '
+          'https://ai.studio/projects to manage your project and billing.'));
+
+      await expectLater(source.fetchScheduleFromText('청첩장 문자'),
+          throwsA(isA<RemoteUnavailableException>()));
+    });
+
+    test('surfaces an exceeded quota as RemoteUnavailableException', () async {
+      final source = refusing(QuotaExceeded('Quota exceeded for model'));
+
+      await expectLater(source.fetchScheduleFromText('청첩장 문자'),
+          throwsA(isA<RemoteUnavailableException>()));
+    });
+
+    test('surfaces a retired model as RemoteUnavailableException', () async {
+      // What a shut-down model returns; gemini-2.5-flash is deprecated and
+      // will eventually answer this way (#73).
+      final source = refusing(ServerException(
+          'models/gemini-2.5-flash is not found for API version v1beta'));
+
+      await expectLater(source.fetchScheduleFromServer('https://invite.test'),
+          throwsA(isA<RemoteUnavailableException>()));
+    });
+
+    test('lets the backfill see the refusal too', () async {
+      final source = refusing(ServerException('credits are depleted'));
+
+      await expectLater(source.extractVenues(const ['라온컨벤션 3층']),
+          throwsA(isA<RemoteUnavailableException>()));
+    });
+
+    test('keeps an unreadable answer a FormatException', () async {
+      // The guard that stops the new branch from swallowing parse failures:
+      // this one is our own, and must stay classified as the input's fault.
+      final source =
+          FirebaseAiLogicImpl.withSeams(generateJson: _Model(null).call);
+
+      await expectLater(
           source.extractVenues(const ['x']), throwsA(isA<FormatException>()));
     });
   });
