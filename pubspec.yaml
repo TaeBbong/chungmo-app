@@ -68,6 +68,15 @@ dev_dependencies:
   sqflite_common_ffi: ^2.4.3
 
 flutter:
+  config:
+    # Keep iOS on CocoaPods. Swift Package Manager is on by default from
+    # Flutter 3.47, and with it enabled `flutter build ios` fails outright:
+    # xcodebuild cannot resolve flutter_native_splash ('public headers
+    # ("include") directory path ... is invalid'), and receive_sharing_intent
+    # is pinned below 1.9.0 for the Share Extension's pod integration.
+    # Pinned here, not in `flutter config`, so the setting travels with the
+    # repo: a global one is per-machine and absent on CI.
+    enable-swift-package-manager: false
   uses-material-design: true
   assets:
     - assets/images/analyze.lottie
