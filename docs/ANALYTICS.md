@@ -188,6 +188,13 @@ automatically by Firebase Analytics.
 
 Custom keys attached to reports: `remote_source`, `parse_reason`.
 
+### What Crashlytics cannot tell us
+
+Non-fatal reports are uploaded on the app's **next launch**, not when the
+error happens. For the 2026-10-27 backend outage that delay measured about
+23 hours, so Crashlytics is not a channel for anything time-critical. Backend
+availability is watched in Cloud Monitoring instead — see §12.
+
 ### Bot-induced crash noise
 
 Crash-free rate is not read at face value. Two fatal issues in the Android
@@ -285,3 +292,105 @@ Call sites:
 - Invitation content and account numbers stay on-device and are never logged as
   event parameters.
 - Analytics collection follows the platform consent model.
+
+---
+
+## 12. Backend outage detection (Cloud Monitoring)
+
+Crashlytics cannot detect a backend outage. Non-fatal reports upload on the
+app's **next launch**, measured at roughly 23 hours for the 2026-10-27 incident,
+by which time the outage had come and gone. Cloud Monitoring sees the same
+failures within minutes, because the counters are written by the API frontend
+rather than by the app.
+
+### 12.1 What the app's AI traffic looks like
+
+Firebase AI Logic calls are billed and counted as the **consumed API**
+`firebasevertexai.googleapis.com`. Direct Gemini API calls — the eval runner in
+`eval/run_eval.dart` — land on `generativelanguage.googleapis.com` instead, so
+the two are distinguishable and alerting on the app path does not fire when the
+eval suite runs.
+
+Read the app's request counts, split by HTTP status:
+
+```bash
+TOK=$(gcloud auth print-access-token)
+curl -s -G -H "Authorization: Bearer $TOK" \
+  --data-urlencode 'filter=metric.type="serviceruntime.googleapis.com/api/request_count" AND resource.type="consumed_api" AND resource.labels.service="firebasevertexai.googleapis.com"' \
+  --data-urlencode "interval.startTime=$(date -u -v-7d +%Y-%m-%dT%H:%M:%SZ)" \
+  --data-urlencode "interval.endTime=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+  --data-urlencode 'aggregation.alignmentPeriod=600s' \
+  --data-urlencode 'aggregation.perSeriesAligner=ALIGN_SUM' \
+  --data-urlencode 'aggregation.crossSeriesReducer=REDUCE_SUM' \
+  --data-urlencode 'aggregation.groupByFields=metric.labels.response_code' \
+  "https://monitoring.googleapis.com/v3/projects/chung-mo/timeSeries"
+```
+
+The metric is a `DELTA INT64` with labels `protocol`, `response_code`,
+`response_code_class` and `grpc_status_code`. `gcloud alpha monitoring` is not
+installed on the maintainer's machine; the REST API above needs nothing beyond
+an access token.
+
+### 12.2 Reading the status code
+
+| Status | Meaning | What to do |
+| --- | --- | --- |
+| `402` / `429` | Prepaid credits or quota exhausted | Top up; check the billing balance in the console |
+| `404` | The configured model was retired | Move `Constants.geminiModel` forward |
+| `403` | App Check rejected the token | Register the debug token, or check enforcement |
+
+A retired model and an exhausted balance are told apart by the status alone,
+which is why the data layer classifies on the exception type rather than on the
+message text (see `FirebaseAiLogicImpl._callModel`).
+
+### 12.3 The alert policy
+
+`chungmo AI backend is refusing requests` —
+`projects/chung-mo/alertPolicies/10382917754509198714`.
+
+It sums every non-2xx response on `firebasevertexai.googleapis.com` over a
+10-minute window and fires above 2, auto-closing after 30 minutes. Notifications
+go to the `chungmo maintainer email` channel.
+
+**The threshold is measured, not guessed.** Running the policy's own condition
+query over 2026-10-22 to 2026-10-28 gives these 10-minute buckets:
+
+| Window (UTC) | Non-2xx | Verdict at `> 2` |
+| --- | --- | --- |
+| 2026-10-24 15:50 | 1 | silent |
+| 2026-10-27 11:20 | 8 | **fires** |
+| 2026-10-27 11:30 | 1 | silent |
+
+So the policy would have caught the real outage within ten minutes and stayed
+quiet for the isolated transient failure three days earlier. A threshold of 1
+would have paged on that transient; a threshold of 9 would have missed the
+outage.
+
+### 12.4 What is not alertable
+
+The incident's root cause was the message "Your prepayment credits are
+depleted", and **the prepaid balance has no API surface**. Verified three ways:
+
+- `cloudbilling.googleapis.com/v1/billingAccounts/<id>` returns only `open`,
+  `displayName` and `currencyCode` — no balance field.
+- No Cloud Monitoring metric descriptor exposes a balance; the only
+  `billingbudgets.*` metrics are quotas on the number of budgets.
+- No BigQuery billing export exists on the project, so spend history cannot be
+  read either.
+
+The balance is therefore visible only in the Cloud Console. A Cloud Billing
+**budget** is the nearest advance warning — it alerts on spend against an
+amount, not on the remaining balance — and it needs
+`billingbudgets.googleapis.com` enabled plus an amount that only the maintainer
+can set:
+
+```bash
+gcloud services enable billingbudgets.googleapis.com --project=chung-mo
+# then POST to
+# https://billingbudgets.googleapis.com/v1/billingAccounts/<id>/budgets
+# with amount.specifiedAmount (or amount.lastPeriodAmount) and
+# thresholdRules at 0.5 / 0.9 / 1.0, notifying the channel above.
+```
+
+Until then, §12.3 is the detector: it reports the outage when it starts
+affecting users, rather than a day later.
