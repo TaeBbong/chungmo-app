@@ -118,6 +118,20 @@ void main() {
           ModelSelector.isModelNotFound(_notFound('gemini-2.5-flash')), isTrue);
     });
 
+    test('recognises the wording the AI Logic proxy actually sends', () {
+      // Captured on the iPhone 17 simulator, 2026-11-04, through
+      // firebasevertexai.googleapis.com. It differs from the Gemini API's
+      // own wording above ("v1main", "ModelService.ListModels"), which is
+      // why only the stem is matched.
+      expect(
+          ModelSelector.isModelNotFound(ServerException(
+              'models/gemini-0.1-flash-retired is not found for API version '
+              'v1main, or is not supported for generateContent. Call '
+              'ModelService.ListModels to see the list of available models '
+              'and their supported methods.')),
+          isTrue);
+    });
+
     test('does not read a billing refusal as a retired model', () {
       expect(
           ModelSelector.isModelNotFound(

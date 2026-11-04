@@ -53,10 +53,12 @@ class ModelSelector {
   /// Recognised from the message because nothing else survives: the
   /// backend answers 404 NOT_FOUND, but firebase_ai 3.15.0's `parseError`
   /// (`lib/src/error.dart:151`) keeps only the message and drops `code` and
-  /// `status`. The wording is the Gemini API's, e.g. "models/gemini-1.5-flash
-  /// is not found for API version v1beta, or is not supported for
-  /// generateContent". If it ever changes, the cost is today's behaviour —
-  /// no fallback — never a misread outage.
+  /// `status`. Only the stem is matched, because the two backends word the
+  /// rest differently: the Gemini API says "...for API version v1beta...
+  /// Call ListModels", while the Firebase AI Logic proxy the app talks to
+  /// says "...for API version v1main... Call ModelService.ListModels"
+  /// (captured on a device, 2026-11-04). If the stem ever changes, the cost
+  /// is today's behaviour — no fallback — never a misread outage.
   static bool isModelNotFound(FirebaseAIException error) =>
       _notFound.hasMatch(error.message);
 
