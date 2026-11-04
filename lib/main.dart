@@ -14,6 +14,7 @@ import 'core/di/di.dart';
 import 'core/env.dart';
 import 'core/navigation/app_navigation.dart';
 import 'core/services/home_widget_service.dart';
+import 'core/services/model_config.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/preferences_checker.dart';
 import 'core/services/venue_backfill_service.dart';
@@ -66,6 +67,10 @@ void main() async {
     return true;
   };
   await configureDependencies(environment: Env.backendType);
+  // Before anything can call the model — the venue backfill below does on
+  // every launch. Sets the in-app defaults and starts the fetch without
+  // waiting for it.
+  await getIt<ModelConfig>().init();
   final NotificationService notificationService = getIt<NotificationService>();
   await notificationService.getPermissions();
   await notificationService.init();
