@@ -24,6 +24,7 @@
 - [ ] Crashlytics에서 봇 유발 FATAL 2건 mute 처리 — `SignInHubActivity.onCreate` NPE(9건)와 `ActionTrampolineActivity` IllegalArgumentException(7건). 둘 다 전이 의존성의 비노출(`exported="false"`) 액티비티를 extras 없이 cold start한 흔적이고, 모든 이벤트가 동일한 위장 에뮬레이터(`OnePlus8Pro / X86_64 / Android 11`)에서 매일 같은 시간대에 발생합니다. 실사용자 경로가 아니므로 코드 수정 대상이 아니지만, 방치하면 crash-free rate를 왜곡합니다. 자세한 분석은 `docs/ANALYTICS.md` §봇 유발 크래시 참고.
 - [ ] **Gemini 모델 정기 점검** — 월 1회, 그리고 Gemini 지원 종료 공지가 올 때마다 `fvm dart run tool/model_catalog.dart`를 돌립니다. exit 1이면 Remote Config `model_name`을 교체합니다(릴리스 불필요). 정책과 절차는 `docs/MODEL_SELECTION.md`. 2026-11-04 기준 `gemini-3.1-flash-lite`가 서빙되지만 가격표에 stable 이름이 없어 순위를 못 매겼습니다 — preview 가격으로는 현재 모델보다 싸므로 확인할 가치가 있습니다.
 - [x] ~~운영 알림 Discord 연동 (#82)~~ — 2026-11-04. Crashlytics·AI 장애·App Check·예산(월 ₩3,000)·Remote Config 변경을 태그별로 한 채널에 보냅니다. 구성과 테스트 방법은 `docs/ALERTS.md`.
+- [ ] **레거시 Python 함수 `parse_voucher_handler` 정리** — 2026-11-04 보류(메인테이너 결정으로 유지). v1.0~v1.1.0 앱의 링크 파싱 백엔드(OpenAI `gpt-4o-mini`)라서 지우면 그 버전 사용자의 링크 파싱이 바로 멈춥니다. 다만 요청 지표를 보관하는 6주 동안 호출은 2026-10-30의 2건뿐이고, 둘 다 400(링크가 아닌 입력)이었습니다. 호출 위치는 인도 ISP(RPNET, 150.129.146.4)였고 59초 간격으로 크기가 같은 요청이 반복돼 자동화 클라이언트로 보입니다. v1.x에는 Firebase SDK가 없어 앱 쪽 기록으로 확인할 수는 없습니다. 실사용 성공 호출이 계속 0건이면 함수를 지우고 OpenAI 키도 회수합니다. 소스는 GCS `gcf-v2-sources-655915725465-us-central1/parse_voucher_handler/`에 있습니다.
 - [ ] **`gemini-3.5-flash-lite` eval 재실행 (#73)** — 2.1.0은 eval 없이 모델을 바꿨습니다(메인테이너 결정). 40케이스 core 정확도를 2.5-flash 기준선(100%)과 비교하고, 같은 실행에서 `thinkingBudget: 0`의 정확도·출력 토큰 영향도 측정합니다.
 
 ---

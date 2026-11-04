@@ -168,8 +168,8 @@ redeploy a few minutes later succeeded.
   `budgetId` attribute. Then delete its claim object under
   `budget/<budgetId>/` in the bucket.
 - **Remote Config.** Publish the template, even unchanged, with a version
-  description. This publishes to production, so it is the maintainer's
-  step.
+  description. This publishes to production, so it needs the maintainer's
+  go-ahead.
 - **Crashlytics.** Firebase cannot send a test alert. Render the messages
   through `lib/messages.js` and `lib/discord.js` locally, as described in
   §6.
@@ -204,6 +204,11 @@ redeploy a few minutes later succeeded.
     logged as "already posted".
   - 90 % then posted as a new alert.
   - The claim objects were deleted afterwards.
-- **Crashlytics and Remote Config rendering.** All six Crashlytics kinds
-  and a Remote Config diff built from the live template were posted from
-  a local run of the same modules. Discord accepted every one.
+- **Remote Config end to end.** With the maintainer's go-ahead, the live
+  template was republished unchanged as v2. The deployed trigger read v1
+  and v2 and posted `v2: no parameters changed`.
+- **Crashlytics rendering.** All six Crashlytics kinds, and a
+  `model_name` diff built from the live template, were posted from a local
+  run of the same modules. Discord accepted every one. Firebase has no way
+  to send a test Crashlytics alert, so the triggers themselves are first
+  exercised by a real issue.
