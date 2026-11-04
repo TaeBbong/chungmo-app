@@ -24,6 +24,8 @@ fvm dart format --set-exit-if-changed lib test tool eval
 fvm dart run tool/coverage.dart                                # see docs/TEST_COVERAGE.md
 fvm dart run eval/run_eval.dart                                # see docs/PARSING_EVAL.md
 npx firebase-tools@latest deploy --only hosting --project chung-mo
+npm --prefix functions test                                    # alert relay, see docs/ALERTS.md
+npx firebase-tools@latest deploy --only functions:alerts --project chung-mo
 ```
 
 The eval runner needs `GEMINI_API_KEY`, which lives in `~/.zshrc`; a shell may
@@ -45,11 +47,13 @@ All of these, every time:
 3. `fvm flutter test` — green. **Check the exit code**: `flutter test | tail -3`
    reports `tail`'s status, so a failing suite can sail into a commit.
    Redirect to a file and test `$?`.
-4. Parsing or crawler changed → re-run the eval and update the figures quoted
+4. `functions/` changed → `npm --prefix functions test` green, then
+   redeploy `functions:alerts`; a test message per touched path (docs/ALERTS.md §5.1).
+5. Parsing or crawler changed → re-run the eval and update the figures quoted
    in `README.md`, `README.ko.md`, `docs/PARSING_EVAL.md` and the landing page.
-5. Tests were the point of the change → run `tool/coverage.dart` before and
+6. Tests were the point of the change → run `tool/coverage.dart` before and
    after and quote both.
-6. Behaviour a user can feel changed → smoke it on a device (§3).
+7. Behaviour a user can feel changed → smoke it on a device (§3).
 
 ---
 

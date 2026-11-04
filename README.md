@@ -147,7 +147,7 @@ This project is based on **Clean Architecture** to separate concerns and create 
 📂 main.dart      (Application entry point)
 ```
 
-Beyond `lib/`, the repository carries the parsing benchmark (`eval/` — dataset, runner, scorer), the static site and eval fixtures served from Firebase Hosting (`hosting/public/`, [chung-mo.web.app](https://chung-mo.web.app)), and engineering write-ups under `docs/` (isolates, micro-interactions, crawler coverage, parsing eval, test coverage, hosting, analytics, model selection, release checklist).
+Beyond `lib/`, the repository carries the parsing benchmark (`eval/` — dataset, runner, scorer), the static site and eval fixtures served from Firebase Hosting (`hosting/public/`, [chung-mo.web.app](https://chung-mo.web.app)), the Cloud Functions that relay operational alerts to Discord (`functions/`, [docs/ALERTS.md](./docs/ALERTS.md)), and engineering write-ups under `docs/` (isolates, micro-interactions, crawler coverage, parsing eval, test coverage, hosting, analytics, model selection, alerts, release checklist).
 
 The data flow follows a clear, unidirectional pattern from the UI to the data layer, orchestrated by dependency injection (`get_it` and `injectable`).
 

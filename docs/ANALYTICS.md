@@ -350,7 +350,8 @@ message text (see `FirebaseAiLogicImpl._callModel`).
 
 It sums every non-2xx response on `firebasevertexai.googleapis.com` over a
 10-minute window and fires above 2, auto-closing after 30 minutes. Notifications
-go to the `chungmo maintainer email` channel.
+go to the `chungmo maintainer email` channel and, tagged `AI-OUTAGE`, to Discord
+([ALERTS.md](./ALERTS.md)).
 
 **The threshold is measured, not guessed.** Running the policy's own condition
 query over 2026-10-22 to 2026-10-28 gives these 10-minute buckets:
@@ -379,18 +380,9 @@ depleted", and **the prepaid balance has no API surface**. Verified three ways:
   read either.
 
 The balance is therefore visible only in the Cloud Console. A Cloud Billing
-**budget** is the nearest advance warning — it alerts on spend against an
-amount, not on the remaining balance — and it needs
-`billingbudgets.googleapis.com` enabled plus an amount that only the maintainer
-can set:
-
-```bash
-gcloud services enable billingbudgets.googleapis.com --project=chung-mo
-# then POST to
-# https://billingbudgets.googleapis.com/v1/billingAccounts/<id>/budgets
-# with amount.specifiedAmount (or amount.lastPeriodAmount) and
-# thresholdRules at 0.5 / 0.9 / 1.0, notifying the channel above.
-```
-
-Until then, §12.3 is the detector: it reports the outage when it starts
-affecting users, rather than a day later.
+**budget** is the nearest advance warning. It alerts on spend against an
+amount, not on the remaining balance. Since 2026-11-04 a budget `chungmo
+monthly` of KRW 3,000 posts 50 / 90 / 100 % to Discord ([ALERTS.md](./ALERTS.md)).
+It counts gross usage with credits excluded, so it still fires when prepaid
+credit is covering the cost. An exhausted balance itself is still caught only by
+§12.3, which reports the outage as soon as it starts affecting users.
