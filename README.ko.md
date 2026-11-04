@@ -148,7 +148,7 @@ class Env {
 📂 main.dart      (애플리케이션 진입점)
 ```
 
-`lib/` 밖에는 파싱 벤치마크(`eval/` — 데이터셋, 러너, 채점기), Firebase Hosting으로 서빙되는 정적 사이트와 평가 픽스처(`hosting/public/`, [chung-mo.web.app](https://chung-mo.web.app)), 그리고 `docs/` 아래의 기술 문서(isolate, 마이크로 인터랙션, 크롤러 커버리지, 파싱 평가, 테스트 커버리지, 호스팅, 애널리틱스, 릴리스 체크리스트)가 있습니다.
+`lib/` 밖에는 파싱 벤치마크(`eval/` — 데이터셋, 러너, 채점기), Firebase Hosting으로 서빙되는 정적 사이트와 평가 픽스처(`hosting/public/`, [chung-mo.web.app](https://chung-mo.web.app)), 그리고 `docs/` 아래의 기술 문서(isolate, 마이크로 인터랙션, 크롤러 커버리지, 파싱 평가, 테스트 커버리지, 호스팅, 애널리틱스, 모델 선택, 릴리스 체크리스트)가 있습니다.
 
 데이터 흐름은 의존성 주입(`get_it` 및 `injectable`)에 의해 조율되며, UI에서 데이터 레이어로 명확한 단방향 패턴을 따릅니다.
 
@@ -173,6 +173,7 @@ class Env {
 이 프로젝트는 다음과 같은 여러 핵심 패키지를 사용합니다:
 
 - Firebase AI Logic을 통한 Gemini 호출: `firebase_ai` (+ `firebase_app_check`)
+- Gemini 모델 id를 원격으로 관리해 모델이 은퇴해도 릴리스 없이 교체: `firebase_remote_config` ([docs/MODEL_SELECTION.md](./docs/MODEL_SELECTION.md))
 - 상태 관리를 위한 `flutter_bloc`
 - 의존성 주입을 위한 `get_it` 및 `injectable`
 - 로컬 데이터베이스 저장을 위한 `sqflite`
