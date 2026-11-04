@@ -9,9 +9,11 @@ library;
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:chungmo/core/services/model_config.dart';
 import 'package:chungmo/core/utils/constants.dart';
 import 'package:chungmo/core/utils/crawler.dart';
 import 'package:chungmo/data/sources/remote/firebase_ai_logic_impl.dart';
+import 'package:chungmo/data/sources/remote/model_selector.dart';
 import 'package:chungmo/domain/entities/schedule_draft.dart';
 import 'package:chungmo/domain/exceptions.dart';
 import 'package:firebase_ai/firebase_ai.dart';
@@ -357,6 +359,51 @@ void main() {
 
       await expectLater(
           source.extractVenues(const ['x']), throwsA(isA<FormatException>()));
+    });
+  });
+
+  group('a retired model', () {
+    /// A backend that no longer serves [retired]; records what was asked.
+    ({FirebaseAiLogicImpl source, List<String> asked}) retiring(
+        String retired) {
+      final List<String> asked = [];
+      final source = FirebaseAiLogicImpl.withSeams(
+        models: ModelSelector(
+            const FixedModelConfig(['gemini-retired', 'gemini-alias'])),
+        generateJson: (model, _, __) async {
+          asked.add(model);
+          if (model == retired) {
+            throw ServerException('models/$model is not found for API '
+                'version v1beta, or is not supported for generateContent.');
+          }
+          return _response();
+        },
+      );
+      return (source: source, asked: asked);
+    }
+
+    test('still parses the invitation, on the next model', () async {
+      final backend = retiring('gemini-retired');
+
+      final model = await backend.source.fetchScheduleFromText('청첩장 문자');
+
+      expect(model.groom, '김민준');
+      expect(backend.asked, ['gemini-retired', 'gemini-alias']);
+    });
+
+    test('is a service refusal once every model is retired', () async {
+      final List<String> asked = [];
+      final source = FirebaseAiLogicImpl.withSeams(
+        models: ModelSelector(const FixedModelConfig(['a', 'b'])),
+        generateJson: (model, _, __) async {
+          asked.add(model);
+          throw ServerException('models/$model is not found for API version');
+        },
+      );
+
+      await expectLater(source.fetchScheduleFromText('청첩장 문자'),
+          throwsA(isA<RemoteUnavailableException>()));
+      expect(asked, ['a', 'b']);
     });
   });
 }
