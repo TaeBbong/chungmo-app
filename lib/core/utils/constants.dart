@@ -34,9 +34,19 @@ abstract class Constants {
   /// (absent when the schedule has no genuine thumbnail).
   static const String widgetImageKey = 'widget_image';
 
-  /// Gemini model used by every Firebase AI Logic call (invitation parsing
-  /// and the pay recommendation).
+  /// In-app default for the Remote Config parameter `model_name`, which
+  /// picks the Gemini model for every Firebase AI Logic call (invitation
+  /// parsing and the pay recommendation). Used until a fetch completes, and
+  /// as the eval runner's default. See docs/MODEL_SELECTION.md.
   static const String geminiModel = 'gemini-2.5-flash';
+
+  /// Tried when the configured model is no longer served.
+  ///
+  /// Google's alias for the current Gemini Flash-Lite, so it outlives any
+  /// pinned version and stays in the cheapest tier. Resolved to
+  /// `gemini-3.5-flash-lite` on 2026-10-28 and 2026-11-04. Not the default
+  /// because an alias moves without notice, and parsing accuracy with it.
+  static const String geminiSafetyNetModel = 'gemini-flash-lite-latest';
 
   /// Policy pages served from the project's Firebase Hosting site
   /// (`hosting/public`), replacing the former public Notion pages.
