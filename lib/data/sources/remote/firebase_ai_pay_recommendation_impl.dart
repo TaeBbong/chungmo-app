@@ -9,10 +9,10 @@ import 'dart:convert';
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../core/utils/constants.dart';
 import '../../../domain/entities/pay_recommendation.dart';
 import '../../../domain/entities/relation.dart';
 import '../../../domain/entities/schedule.dart';
+import 'model_selector.dart';
 import 'pay_recommendation_source.dart';
 
 /// JSON schema forced on the recommendation response.
@@ -63,11 +63,13 @@ const String _referenceStats = '''
 
 @LazySingleton(as: PayRecommendationSource, env: ['firebase'])
 class FirebaseAiPayRecommendationImpl implements PayRecommendationSource {
-  FirebaseAiPayRecommendationImpl();
+  final ModelSelector _models;
 
-  GenerativeModel _buildModel() {
+  FirebaseAiPayRecommendationImpl(this._models);
+
+  GenerativeModel _buildModel(String model) {
     return FirebaseAI.googleAI().generativeModel(
-      model: Constants.geminiModel,
+      model: model,
       generationConfig: GenerationConfig(
           responseJsonSchema: _recommendationJsonSchema,
           responseMimeType: "application/json"),
@@ -83,7 +85,8 @@ class FirebaseAiPayRecommendationImpl implements PayRecommendationSource {
       final prompt = [
         Content.text(buildPrompt(target: target, history: history))
       ];
-      final response = await _buildModel().generateContent(prompt);
+      final response = await _models
+          .run((model) => _buildModel(model).generateContent(prompt));
       final String? text = response.text;
       if (text == null) {
         throw Exception('[-] Empty recommendation response');

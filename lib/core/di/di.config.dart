@@ -31,6 +31,7 @@ import 'package:chungmo/data/sources/remote/firebase_ai_logic_impl.dart'
     as _i695;
 import 'package:chungmo/data/sources/remote/firebase_ai_pay_recommendation_impl.dart'
     as _i452;
+import 'package:chungmo/data/sources/remote/model_selector.dart' as _i728;
 import 'package:chungmo/data/sources/remote/pay_recommendation_source.dart'
     as _i182;
 import 'package:chungmo/data/sources/remote/schedule_remote_source.dart'
@@ -54,8 +55,8 @@ import 'package:chungmo/domain/usecases/watch_all_schedules_usecase.dart'
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
-const String _firebase = 'firebase';
 const String _cloud = 'cloud';
+const String _firebase = 'firebase';
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -67,10 +68,6 @@ extension GetItInjectableX on _i174.GetIt {
       this,
       environment,
       environmentFilter,
-    );
-    gh.lazySingleton<_i182.PayRecommendationSource>(
-      () => _i452.FirebaseAiPayRecommendationImpl(),
-      registerFor: {_firebase},
     );
     gh.lazySingleton<_i109.NotificationService>(
         () => _i109.NotificationServiceImpl());
@@ -90,22 +87,26 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i774.ShareIntentServiceImpl());
     gh.factory<_i391.PreferencesChecker>(
         () => _i391.PreferencesChecker(gh<_i98.AppPreferencesLocalSource>()));
-    gh.lazySingleton<_i610.PayRecommendationRepository>(
-        () => _i700.PayRecommendationRepositoryImpl(
-              gh<_i182.PayRecommendationSource>(),
-              gh<_i1014.ScheduleLocalSource>(),
-            ));
+    gh.lazySingleton<_i728.ModelSelector>(
+        () => _i728.ModelSelector(gh<_i682.ModelConfig>()));
     gh.lazySingleton<_i153.ScheduleRemoteSource>(
-      () => _i695.FirebaseAiLogicImpl(),
+      () => _i695.FirebaseAiLogicImpl(gh<_i728.ModelSelector>()),
       registerFor: {_firebase},
     );
-    gh.factory<_i1010.RecommendPayUsecase>(() =>
-        _i1010.RecommendPayUsecase(gh<_i610.PayRecommendationRepository>()));
     gh.lazySingleton<_i561.ScheduleRepository>(
         () => _i798.ScheduleRepositoryImpl(
               gh<_i153.ScheduleRemoteSource>(),
               gh<_i1014.ScheduleLocalSource>(),
               gh<_i109.NotificationService>(),
+            ));
+    gh.lazySingleton<_i182.PayRecommendationSource>(
+      () => _i452.FirebaseAiPayRecommendationImpl(gh<_i728.ModelSelector>()),
+      registerFor: {_firebase},
+    );
+    gh.lazySingleton<_i610.PayRecommendationRepository>(
+        () => _i700.PayRecommendationRepositoryImpl(
+              gh<_i182.PayRecommendationSource>(),
+              gh<_i1014.ScheduleLocalSource>(),
             ));
     gh.factory<_i338.AnalyzeImageUsecase>(
         () => _i338.AnalyzeImageUsecase(gh<_i561.ScheduleRepository>()));
@@ -127,6 +128,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i389.WatchAllSchedulesUsecase(gh<_i561.ScheduleRepository>()));
     gh.lazySingleton<_i25.HomeWidgetService>(
         () => _i25.HomeWidgetServiceImpl(gh<_i87.WatchAllSchedulesUsecase>()));
+    gh.factory<_i1010.RecommendPayUsecase>(() =>
+        _i1010.RecommendPayUsecase(gh<_i610.PayRecommendationRepository>()));
     gh.lazySingleton<_i728.VenueBackfillService>(
         () => _i728.VenueBackfillService(
               gh<_i673.BackfillVenuesUsecase>(),
