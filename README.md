@@ -147,7 +147,7 @@ This project is based on **Clean Architecture** to separate concerns and create 
 📂 main.dart      (Application entry point)
 ```
 
-Beyond `lib/`, the repository carries the parsing benchmark (`eval/` — dataset, runner, scorer), the static site and eval fixtures served from Firebase Hosting (`hosting/public/`, [chung-mo.web.app](https://chung-mo.web.app)), and engineering write-ups under `docs/` (isolates, micro-interactions, crawler coverage, parsing eval, test coverage, hosting, analytics, release checklist).
+Beyond `lib/`, the repository carries the parsing benchmark (`eval/` — dataset, runner, scorer), the static site and eval fixtures served from Firebase Hosting (`hosting/public/`, [chung-mo.web.app](https://chung-mo.web.app)), and engineering write-ups under `docs/` (isolates, micro-interactions, crawler coverage, parsing eval, test coverage, hosting, analytics, model selection, release checklist).
 
 The data flow follows a clear, unidirectional pattern from the UI to the data layer, orchestrated by dependency injection (`get_it` and `injectable`).
 
@@ -172,6 +172,7 @@ For detailed information on version changes, see the [Release Notes](./RELEASE.m
 This project uses several key packages, including:
 
 - `firebase_ai` (+ `firebase_app_check`) for Gemini calls through Firebase AI Logic.
+- `firebase_remote_config` for the Gemini model id, so a retired model is replaced without a release ([docs/MODEL_SELECTION.md](./docs/MODEL_SELECTION.md)).
 - `flutter_bloc` for state management.
 - `get_it` and `injectable` for dependency injection.
 - `sqflite` for local database storage.
