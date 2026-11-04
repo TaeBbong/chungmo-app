@@ -38,7 +38,7 @@ abstract class Constants {
   /// picks the Gemini model for every Firebase AI Logic call (invitation
   /// parsing and the pay recommendation). Used until a fetch completes, and
   /// as the eval runner's default. See docs/MODEL_SELECTION.md.
-  static const String geminiModel = 'gemini-2.5-flash';
+  static const String geminiModel = 'gemini-3.5-flash-lite';
 
   /// Tried when the configured model is no longer served.
   ///
