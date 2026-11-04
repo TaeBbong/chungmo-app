@@ -6,7 +6,7 @@ const {LIMITS, post, toPayload} = require("../lib/discord");
 const alert = {tag: "BUDGET", headline: "50% spent", color: 1};
 
 test("puts the tag in content, where a push notification shows it", () => {
-  assert.equal(toPayload(alert).content, "**[BUDGET]** 50% spent");
+  assert.equal(toPayload(alert).content, "[BUDGET] 50% spent");
 });
 
 test("never lets alert text ping anyone", () => {
@@ -61,5 +61,5 @@ test("posts the payload as JSON", async () => {
   await post("https://hook", alert, accept);
   assert.equal(sent.url, "https://hook");
   assert.equal(sent.init.method, "POST");
-  assert.equal(JSON.parse(sent.init.body).content, "**[BUDGET]** 50% spent");
+  assert.equal(JSON.parse(sent.init.body).content, "[BUDGET] 50% spent");
 });

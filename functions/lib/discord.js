@@ -54,7 +54,7 @@ function toPayload(alert) {
   }
   return {
     username: USERNAME,
-    content: truncate(`**[${alert.tag}]** ${alert.headline}`, LIMITS.content),
+    content: truncate(`[${alert.tag}] ${alert.headline}`, LIMITS.content),
     embeds: [embed],
     // Alert text quotes crash titles and config values; never let one ping.
     allowed_mentions: {parse: []},
