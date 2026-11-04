@@ -16,7 +16,10 @@
 ///
 /// Options:
 ///   --model=NAME    judge NAME instead of the live `model_name`
-///   --no-probe      skip the live requests (prices and listing only)
+///
+/// Every candidate is always probed. A listing-only mode was tried and
+/// removed: it reported the retired gemini-2.5-flash-lite as the cheaper
+/// model, which is the very mistake this tool exists to prevent.
 ///
 /// Exit codes: 0 the configured model is served and nothing stable is
 /// cheaper; 1 it should change (not served, unpriced, or a cheaper model
@@ -43,7 +46,6 @@ Future<void> main(List<String> args) async {
       .where((a) => a.startsWith('--model='))
       .map((a) => a.substring('--model='.length))
       .firstOrNull;
-  final bool probe = !args.contains('--no-probe');
 
   final String? apiKey = Platform.environment['GEMINI_API_KEY'];
   if (apiKey == null || apiKey.isEmpty) {
@@ -68,13 +70,8 @@ Future<void> main(List<String> args) async {
     ..sort();
 
   final Map<String, String?> served = {};
-  if (probe) {
-    for (final String model in [
-      ...candidates,
-      Constants.geminiSafetyNetModel
-    ]) {
-      served[model] = await _probe(apiKey, model);
-    }
+  for (final String model in [...candidates, Constants.geminiSafetyNetModel]) {
+    served[model] = await _probe(apiKey, model);
   }
 
   stdout.writeln('Configured: $configured (from $source)\n');
@@ -87,7 +84,7 @@ Future<void> main(List<String> args) async {
   final List<String> unpriced = [];
   for (final String model in candidates) {
     final ModelPrice? price = prices[model];
-    final bool live = !probe || served[model] != null;
+    final bool live = served[model] != null;
     final PriceVerdict? verdict =
         model == configured || !live ? null : comparePrice(price, current);
     final String note = model == configured
@@ -104,15 +101,13 @@ Future<void> main(List<String> args) async {
     stdout.writeln('${model.padRight(26)} '
         '${(price?.input.toStringAsFixed(1) ?? '-').padLeft(9)} '
         '${(price?.output.toStringAsFixed(1) ?? '-').padLeft(9)}  '
-        '${_servedLabel(probe, served, model).padRight(30)} $note');
+        '${_servedLabel(served, model).padRight(30)} $note');
   }
-  if (probe) {
-    stdout.writeln('\nSafety net ${Constants.geminiSafetyNetModel}: '
-        '${_servedLabel(probe, served, Constants.geminiSafetyNetModel)}');
-  }
+  stdout.writeln('\nSafety net ${Constants.geminiSafetyNetModel}: '
+      '${_servedLabel(served, Constants.geminiSafetyNetModel)}');
 
   final List<String> problems = [
-    if (probe && served[configured] == null)
+    if (served[configured] == null)
       '$configured is not served — change model_name now.',
     if (current == null)
       '$configured has no standard text price in the Billing Catalog; '
@@ -141,8 +136,7 @@ Future<void> main(List<String> args) async {
   exit(1);
 }
 
-String _servedLabel(bool probe, Map<String, String?> served, String model) {
-  if (!probe) return 'not probed';
+String _servedLabel(Map<String, String?> served, String model) {
   final String? version = served[model];
   if (version == null) return 'NO';
   return version == model ? 'yes' : 'yes -> $version';
