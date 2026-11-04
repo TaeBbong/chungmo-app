@@ -11,6 +11,7 @@ import 'package:firebase_ai/firebase_ai.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../core/services/model_config.dart';
 import '../../../core/utils/constants.dart';
 import '../../../core/utils/image_preprocessor.dart';
 import '../../../core/utils/string_extension.dart';
@@ -20,16 +21,17 @@ import '../../../domain/exceptions.dart';
 import '../../mapper/schedule_mapper.dart';
 import '../../models/schedule/schedule_model.dart';
 import 'invitation_prompt.dart';
+import 'model_selector.dart';
 import 'schedule_remote_source.dart';
 
-/// Sends [prompt] to the model under [schema] and returns its text.
+/// Sends [prompt] to [model] under [schema] and returns its text.
 ///
 /// The seam this class is tested through. `GenerativeModel` and `Content`
 /// are `final` in firebase_ai, so neither can be mocked; handing back a
 /// plain string instead lets a test drive every branch below without
 /// constructing an SDK object at all.
 typedef GenerateJson = Future<String?> Function(
-    List<Content> prompt, Map<String, Object> schema);
+    String model, List<Content> prompt, Map<String, Object> schema);
 
 /// Crawls an invitation link. Defaults to [crawlInvitation].
 typedef CrawlPage = Future<CrawledInvitation?> Function(String url);
@@ -40,31 +42,38 @@ typedef FetchImages = Future<List<FetchedImage>> Function(List<Uri> urls);
 @LazySingleton(as: ScheduleRemoteSource, env: ['firebase'])
 class FirebaseAiLogicImpl implements ScheduleRemoteSource {
   final GenerateJson _generateJson;
+  final ModelSelector _models;
   final CrawlPage _crawl;
   final FetchImages _fetchImages;
 
   /// The shipping constructor; injectable builds this one.
-  FirebaseAiLogicImpl()
+  FirebaseAiLogicImpl(this._models)
       : _generateJson = _callFirebaseAi,
         _crawl = crawlInvitation,
         _fetchImages = fetchInvitationImages;
 
   /// Replaces the three calls that leave the process — the model and the
   /// two network fetches — leaving the decisions between them intact.
+  ///
+  /// [models] defaults to a single fixed model, so a test that is not about
+  /// model selection need not mention it.
   @visibleForTesting
   FirebaseAiLogicImpl.withSeams({
     required GenerateJson generateJson,
+    ModelSelector? models,
     CrawlPage? crawl,
     FetchImages? fetchImages,
   })  : _generateJson = generateJson,
+        _models =
+            models ?? ModelSelector(const FixedModelConfig(['test-model'])),
         _crawl = crawl ?? crawlInvitation,
         _fetchImages = fetchImages ?? fetchInvitationImages;
 
   static Future<String?> _callFirebaseAi(
-      List<Content> prompt, Map<String, Object> schema) async {
+      String model, List<Content> prompt, Map<String, Object> schema) async {
     final response = await FirebaseAI.googleAI()
         .generativeModel(
-          model: Constants.geminiModel,
+          model: model,
           generationConfig: GenerationConfig(
               responseJsonSchema: schema, responseMimeType: "application/json"),
         )
@@ -205,6 +214,10 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
 
   /// Runs the model, translating a service refusal into a domain failure.
   ///
+  /// The model is the first one [ModelSelector] finds still served; a
+  /// refusal that reaches the catch below was not a retired model, or every
+  /// model was.
+  ///
   /// Every `FirebaseAIException` is raised by the backend or by the SDK
   /// reading its reply, so the invitation was never parsed and retrying the
   /// same input cannot help until the service recovers. Without this the
@@ -214,14 +227,14 @@ class FirebaseAiLogicImpl implements ScheduleRemoteSource {
   ///
   /// Matched on the exception type, not on its text. The SDK only produces
   /// `QuotaExceeded` when the message contains the word "quota"
-  /// (firebase_ai 4.0.0, `lib/src/error.dart:159-161`), and the message
+  /// (firebase_ai 3.15.0, `lib/src/error.dart:159-161`), and the message
   /// behind the 2026-10 outage read "Your prepayment credits are depleted",
   /// which does not — a text check would have missed the very outage this
   /// was written for.
   Future<String?> _callModel(
       List<Content> prompt, Map<String, Object> schema) async {
     try {
-      return await _generateJson(prompt, schema);
+      return await _models.run((model) => _generateJson(model, prompt, schema));
     } on FirebaseAIException catch (error) {
       throw RemoteUnavailableException(error.message);
     }

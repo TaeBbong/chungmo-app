@@ -47,7 +47,8 @@ class _Model {
 
   _Model(this.reply);
 
-  Future<String?> call(List<Content> prompt, Map<String, Object> schema) async {
+  Future<String?> call(
+      String model, List<Content> prompt, Map<String, Object> schema) async {
     prompts.add(prompt);
     schemas.add(schema);
     return reply;
@@ -307,7 +308,7 @@ void main() {
   group('a refusal from the service', () {
     /// A source whose model call fails the way the backend makes it fail.
     FirebaseAiLogicImpl refusing(Object error) =>
-        FirebaseAiLogicImpl.withSeams(generateJson: (_, __) async {
+        FirebaseAiLogicImpl.withSeams(generateJson: (_, __, ___) async {
           throw error;
         });
 
