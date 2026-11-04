@@ -336,7 +336,7 @@ an access token.
 | Status | Meaning | What to do |
 | --- | --- | --- |
 | `402` / `429` | Prepaid credits or quota exhausted | Top up; check the billing balance in the console |
-| `404` | The configured model was retired | Move `Constants.geminiModel` forward |
+| `404` | The configured model was retired | Point the Remote Config `model_name` at a served model (#77); no release needed |
 | `403` | App Check rejected the token | Register the debug token, or check enforcement |
 
 A retired model and an exhausted balance are told apart by the status alone,
